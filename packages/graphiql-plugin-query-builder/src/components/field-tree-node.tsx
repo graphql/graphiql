@@ -43,6 +43,7 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
     onPromoteArg,
     onDemoteArg,
     onExtractFragment,
+    onFocusFragment,
   } = useFieldTreeContext();
 
   const [expanded, setExpanded] = useState(false);
@@ -130,17 +131,32 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
           role="list"
           style={{ paddingLeft: fullPath.length * 12 }}
         >
-          {spreadRefs.map(name => (
-            <li key={name} className="graphiql-qb-fragment-ref-item">
-              <span
-                className="graphiql-qb-fragment-ref"
-                data-testid="fragment-ref"
-              >
-                <span className="graphiql-qb-spread">...</span>
-                {name}
-              </span>
-            </li>
-          ))}
+          {spreadRefs.map(name =>
+            onFocusFragment ? (
+              <li key={name} className="graphiql-qb-fragment-ref-item">
+                <button
+                  type="button"
+                  className="graphiql-qb-fragment-ref graphiql-qb-fragment-ref--button"
+                  data-testid="fragment-ref"
+                  onClick={() => onFocusFragment(name)}
+                  aria-label={`Edit fragment ${name}`}
+                >
+                  <span className="graphiql-qb-spread">...</span>
+                  {name}
+                </button>
+              </li>
+            ) : (
+              <li key={name} className="graphiql-qb-fragment-ref-item">
+                <span
+                  className="graphiql-qb-fragment-ref"
+                  data-testid="fragment-ref"
+                >
+                  <span className="graphiql-qb-spread">...</span>
+                  {name}
+                </span>
+              </li>
+            ),
+          )}
         </ul>
       )}
       {isObject && expanded && namedType && isObjectType(namedType) && (

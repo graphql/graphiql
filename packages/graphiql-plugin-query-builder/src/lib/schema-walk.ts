@@ -16,6 +16,7 @@ import {
 import {
   fieldSegment,
   inlineFragmentSegment,
+  type DefinitionTarget,
   type PathSegment,
 } from './ast-path';
 
@@ -47,22 +48,12 @@ export function readVariables(
  * inside union/interface type conditions too. Returns `[]` when the cursor
  * isn't inside a field or fragment.
  */
-export function fieldPathAtOffset(
-  doc: DocumentNode,
+function pathWithinSelections(
+  rootSelections: readonly SelectionNode[],
   offset: number,
 ): PathSegment[] {
-  const op = doc.definitions.find(
-    d =>
-      d.kind === Kind.OPERATION_DEFINITION &&
-      d.loc != null &&
-      d.loc.start <= offset &&
-      d.loc.end >= offset,
-  );
-  if (!op || op.kind !== Kind.OPERATION_DEFINITION) {
-    return [];
-  }
   const path: PathSegment[] = [];
-  let selections: readonly SelectionNode[] = op.selectionSet.selections;
+  let selections = rootSelections;
   while (true) {
     const selection = selections.find(
       (s): s is FieldNode | InlineFragmentNode =>
@@ -89,6 +80,56 @@ export function fieldPathAtOffset(
     selections = selection.selectionSet.selections;
   }
   return path;
+}
+
+export function fieldPathAtOffset(
+  doc: DocumentNode,
+  offset: number,
+): PathSegment[] {
+  const op = doc.definitions.find(
+    d =>
+      d.kind === Kind.OPERATION_DEFINITION &&
+      d.loc != null &&
+      d.loc.start <= offset &&
+      d.loc.end >= offset,
+  );
+  if (!op || op.kind !== Kind.OPERATION_DEFINITION) {
+    return [];
+  }
+  return pathWithinSelections(op.selectionSet.selections, offset);
+}
+
+/**
+ * Resolves the definition the cursor sits in — an operation or a named
+ * fragment — together with the field path within it. Returns `undefined` when
+ * the cursor is not inside any editable definition. Drives cursor-following:
+ * moving the editor cursor into a fragment switches the builder to editing it.
+ */
+export function cursorContextAtOffset(
+  doc: DocumentNode,
+  offset: number,
+): { target: DefinitionTarget; path: PathSegment[] } | undefined {
+  const def = doc.definitions.find(
+    d =>
+      (d.kind === Kind.OPERATION_DEFINITION ||
+        d.kind === Kind.FRAGMENT_DEFINITION) &&
+      d.loc != null &&
+      d.loc.start <= offset &&
+      d.loc.end >= offset,
+  );
+  if (def?.kind === Kind.OPERATION_DEFINITION) {
+    return {
+      target: { kind: 'operation', name: def.name?.value },
+      path: pathWithinSelections(def.selectionSet.selections, offset),
+    };
+  }
+  if (def?.kind === Kind.FRAGMENT_DEFINITION) {
+    return {
+      target: { kind: 'fragment', name: def.name.value },
+      path: pathWithinSelections(def.selectionSet.selections, offset),
+    };
+  }
+  return undefined;
 }
 
 /**
@@ -220,6 +261,20 @@ export function resolveSchemaArg(
   const rootType =
     schema.getRootType(activeOpKind ?? OperationTypeNode.QUERY) ??
     schema.getQueryType();
+  return resolveSchemaArgFromRoot(schema, rootType ?? undefined, path, argName);
+}
+
+/**
+ * Like {@link resolveSchemaArg} but walks from an explicit `rootType` rather
+ * than an operation kind, so it resolves args inside a fragment (whose root is
+ * its type condition) as well as inside an operation.
+ */
+export function resolveSchemaArgFromRoot(
+  schema: GraphQLSchema,
+  rootType: GraphQLNamedType | undefined,
+  path: PathSegment[],
+  argName: string,
+): GraphQLArgument | undefined {
   if (!rootType || path.length === 0) {
     return;
   }

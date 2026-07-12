@@ -16,6 +16,8 @@ export type FieldTreeCallbacks = {
   onRemoveInlineFragment?: (path: PathSegment[], typeName: string) => void;
   onExtractFragment?: (path: PathSegment[], typeName: string) => void;
   onRenameFragment?: (oldName: string, newName: string) => void;
+  /** Switch to editing a named fragment (from a `...Fragment` reference row). */
+  onFocusFragment?: (fragmentName: string) => void;
 };
 
 export type FieldTreeContextValue = FieldTreeCallbacks & {

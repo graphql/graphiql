@@ -6,16 +6,27 @@ import { listFragments } from '../lib/document-mutator';
 type FragmentSectionProps = {
   /** The current document; used to list existing named fragments. */
   doc: DocumentNode;
+  /** The fragment currently being edited, highlighted in the list. */
+  activeFragmentName?: string;
+  /** Switch to editing a fragment's tree. */
+  onFocusFragment?: (fragmentName: string) => void;
   /** Renames a fragment and every spread that references it. */
   onRenameFragment?: (oldName: string, newName: string) => void;
 };
 
 type FragmentItemProps = {
   name: string;
+  active?: boolean;
+  onFocus?: (fragmentName: string) => void;
   onRename?: (oldName: string, newName: string) => void;
 };
 
-const FragmentItem: FC<FragmentItemProps> = ({ name, onRename }) => {
+const FragmentItem: FC<FragmentItemProps> = ({
+  name,
+  active = false,
+  onFocus,
+  onRename,
+}) => {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(name);
 
@@ -57,8 +68,24 @@ const FragmentItem: FC<FragmentItemProps> = ({ name, onRename }) => {
   }
 
   return (
-    <li className="graphiql-qb-fragment-item">
-      <span className="graphiql-qb-fragment-name">{name}</span>
+    <li
+      className={`graphiql-qb-fragment-item${
+        active ? ' graphiql-qb-fragment-item--active' : ''
+      }`}
+    >
+      {onFocus ? (
+        <button
+          type="button"
+          className="graphiql-qb-fragment-name graphiql-qb-fragment-name--button"
+          aria-current={active ? 'true' : undefined}
+          aria-label={`Edit fragment ${name}`}
+          onClick={() => onFocus(name)}
+        >
+          {name}
+        </button>
+      ) : (
+        <span className="graphiql-qb-fragment-name">{name}</span>
+      )}
       {onRename && (
         <button
           type="button"
@@ -85,6 +112,8 @@ const FragmentItem: FC<FragmentItemProps> = ({ name, onRename }) => {
  */
 export const FragmentSection: FC<FragmentSectionProps> = ({
   doc,
+  activeFragmentName,
+  onFocusFragment,
   onRenameFragment,
 }) => {
   const fragments = listFragments(doc);
@@ -97,7 +126,13 @@ export const FragmentSection: FC<FragmentSectionProps> = ({
       ) : (
         <ul className="graphiql-qb-fragment-list" role="list">
           {fragments.map(name => (
-            <FragmentItem key={name} name={name} onRename={onRenameFragment} />
+            <FragmentItem
+              key={name}
+              name={name}
+              active={name === activeFragmentName}
+              onFocus={onFocusFragment}
+              onRename={onRenameFragment}
+            />
           ))}
         </ul>
       )}

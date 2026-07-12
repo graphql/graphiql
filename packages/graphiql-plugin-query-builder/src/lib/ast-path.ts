@@ -425,8 +425,7 @@ export function findDefinitionIndex(
     return findOperationIndex(doc, target.name);
   }
   return doc.definitions.findIndex(
-    d =>
-      d.kind === Kind.FRAGMENT_DEFINITION && d.name.value === target.name,
+    d => d.kind === Kind.FRAGMENT_DEFINITION && d.name.value === target.name,
   );
 }
 

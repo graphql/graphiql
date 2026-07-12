@@ -130,4 +130,35 @@ describe('QueryBuilder — fragment extraction row action', () => {
       screen.queryByRole('button', { name: /extract admin to a fragment/i }),
     ).not.toBeInTheDocument();
   });
+
+  it('edits a fragment from the fragments list without touching the base query', async () => {
+    const user = userEvent.setup();
+    state.queryText = `
+      { user { ...UserFields } }
+      fragment UserFields on User { name }
+    `;
+    render(<QueryBuilder />);
+
+    // Click the fragment in the list to focus it for editing.
+    await user.click(
+      screen.getByRole('button', { name: /edit fragment UserFields/i }),
+    );
+
+    // The focused fragment editor is rooted at the fragment's type: ticking a
+    // field edits the fragment, not the operation.
+    await user.click(screen.getByRole('checkbox', { name: /toggle email/i }));
+
+    await waitFor(() => {
+      const q = lastQuery();
+      expect(q).toMatch(/fragment UserFields on User\s*{\s*name\s+email\s*}/);
+      // The operation still just spreads the fragment — unchanged.
+      expect(q).toMatch(/user\s*{\s*\.\.\.UserFields\s*}/);
+    });
+
+    // Back to query returns to the operation view.
+    await user.click(screen.getByRole('button', { name: /back to query/i }));
+    expect(
+      screen.queryByRole('button', { name: /back to query/i }),
+    ).not.toBeInTheDocument();
+  });
 });

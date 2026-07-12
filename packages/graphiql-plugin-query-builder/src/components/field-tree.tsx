@@ -106,6 +106,7 @@ type FieldTreeProps = {
   onRemoveInlineFragment?: (path: PathSegment[], typeName: string) => void;
   onExtractFragment?: (path: PathSegment[], typeName: string) => void;
   onRenameFragment?: (oldName: string, newName: string) => void;
+  onFocusFragment?: (fragmentName: string) => void;
 };
 
 export const FieldTree: FC<FieldTreeProps> = ({
@@ -123,6 +124,7 @@ export const FieldTree: FC<FieldTreeProps> = ({
   onRemoveInlineFragment,
   onExtractFragment,
   onRenameFragment,
+  onFocusFragment,
 }) => {
   const contextValue: FieldTreeContextValue = {
     doc,
@@ -137,6 +139,7 @@ export const FieldTree: FC<FieldTreeProps> = ({
     onRemoveInlineFragment,
     onExtractFragment,
     onRenameFragment,
+    onFocusFragment,
   };
 
   return (

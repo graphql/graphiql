@@ -813,6 +813,34 @@ select.graphiql-qb-arg-select:focus {
   color: oklch(var(--accent-blue));
 }
 
+/* The fragment name doubles as a button that opens that fragment for editing. */
+.graphiql-qb-fragment-name--button {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.graphiql-qb-fragment-name--button:hover {
+  text-decoration: underline;
+}
+
+.graphiql-qb-fragment-name--button:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 1px;
+  border-radius: var(--radius-sm);
+}
+
+.graphiql-qb-fragment-item--active {
+  border-radius: var(--radius-sm);
+  background: oklch(var(--bg-subtle));
+}
+
+.graphiql-qb-fragment-item--active .graphiql-qb-fragment-name {
+  font-weight: 600;
+}
+
 .graphiql-qb-fragment-rename {
   flex: 1;
   min-width: 0;
@@ -934,4 +962,81 @@ select.graphiql-qb-arg-select:focus {
   font-family: var(--font-family-mono);
   font-size: var(--font-size-mono);
   color: oklch(var(--accent-blue));
+}
+
+/* The reference doubles as the jump-in point for editing that fragment. */
+.graphiql-qb-fragment-ref--button {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.graphiql-qb-fragment-ref--button:hover {
+  text-decoration: underline;
+}
+
+.graphiql-qb-fragment-ref--button:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 1px;
+  border-radius: var(--radius-sm);
+}
+
+/* =========================================================================
+   Focused fragment editor (shown when the active target is a fragment)
+   ========================================================================= */
+
+.graphiql-qb-fragment-editor-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-6);
+  padding: 0 var(--px-14) var(--px-8);
+}
+
+.graphiql-qb-fragment-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-4);
+  align-self: flex-start;
+  padding: 1px var(--px-6) 1px 2px;
+  border: none;
+  background: none;
+  color: oklch(var(--fg-muted));
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+  border-radius: var(--radius-sm);
+}
+
+.graphiql-qb-fragment-back:hover {
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-qb-fragment-back:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 1px;
+}
+
+.graphiql-qb-fragment-back svg {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+.graphiql-qb-fragment-editor-title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--px-6);
+}
+
+.graphiql-qb-fragment-editor-name {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-mono);
+  font-weight: 600;
+  color: oklch(var(--accent-blue));
+}
+
+.graphiql-qb-fragment-editor-type {
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+  color: oklch(var(--fg-subtle));
 }

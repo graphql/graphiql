@@ -27,12 +27,14 @@ import {
   type ArgValue,
   type DefinitionTarget,
 } from '../lib/document-mutator';
-import { type PathSegment } from '../lib/ast-path';
+import { findDefinition, type PathSegment } from '../lib/ast-path';
 import {
   extractRawArgValue,
   readVariables,
   resolveSchemaArg,
+  resolveSchemaArgFromRoot,
 } from '../lib/schema-walk';
+import { useCursorContext } from './use-cursor-path';
 
 /**
  * Parse query text into a DocumentNode, or null when it's empty or unparseable
@@ -58,8 +60,14 @@ function emptyDoc(): DocumentNode {
 export interface UseWorkingDocumentResult {
   workingDoc: DocumentNode;
   activeOpKind: OperationTypeNode | undefined;
-  /** The definition the tree currently reads and mutates (an operation here). */
+  /** The definition the tree currently reads and mutates (operation or fragment). */
   target: DefinitionTarget;
+  /** Field path under the editor cursor, when it belongs to `target`. */
+  cursorPath: PathSegment[] | undefined;
+  /** Switch the active target to a named fragment (from a click). */
+  handleFocusFragment: (fragmentName: string) => void;
+  /** Return the active target to the operation (from a click). */
+  handleBackToQuery: () => void;
   handleToggle: (path: PathSegment[]) => void;
   handleSetArg: (path: PathSegment[], argName: string, value: ArgValue) => void;
   handlePromoteArg: (
@@ -150,10 +158,44 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     operationName,
   )?.operation;
 
-  // The definition the builder edits. Today this is always the active
-  // operation; cursor-driven fragment editing will make it a fragment target
-  // when the cursor sits inside a fragment definition.
-  const target: DefinitionTarget = { kind: 'operation', name: operationName };
+  // The definition the builder edits follows the editor cursor: moving into a
+  // fragment switches to editing it. A click (focus a fragment / back to query)
+  // sets a manual target that holds until the cursor next moves into a
+  // definition, at which point the editor takes over again.
+  const cursor = useCursorContext();
+  const [manualTarget, setManualTarget] = useState<DefinitionTarget | null>(
+    null,
+  );
+  const cursorKey = cursor.target
+    ? `${cursor.target.kind}:${cursor.target.name ?? ''}`
+    : '';
+  useEffect(() => {
+    // A non-empty key means the cursor is inside a definition; the editor then
+    // takes over, clearing any click-focused target.
+    if (cursorKey) {
+      setManualTarget(null);
+    }
+  }, [cursorKey]);
+
+  const target: DefinitionTarget = manualTarget ??
+    cursor.target ?? { kind: 'operation', name: operationName };
+
+  // Auto-expand the tree to the cursor only when the cursor sits in the
+  // definition we're showing; a click-focused fragment doesn't move the cursor.
+  const cursorPath =
+    cursor.target &&
+    cursor.target.kind === target.kind &&
+    cursor.target.name === target.name
+      ? cursor.path
+      : undefined;
+
+  function handleFocusFragment(fragmentName: string) {
+    setManualTarget({ kind: 'fragment', name: fragmentName });
+  }
+
+  function handleBackToQuery() {
+    setManualTarget({ kind: 'operation', name: operationName });
+  }
 
   // Apply a new working document: update state synchronously, then write it to
   // the editor. The write is synchronous so the query and any variables a
@@ -207,9 +249,22 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
   }
 
   function schemaArgFor(path: PathSegment[], argName: string) {
-    return schema
-      ? resolveSchemaArg(schema, activeOpKind, path, argName)
+    if (!schema) {
+      return;
+    }
+    if (target.kind === 'operation') {
+      return resolveSchemaArg(schema, activeOpKind, path, argName);
+    }
+    // A fragment's fields are walked from its type condition, not an op root.
+    const def = findDefinition(workingDoc, target);
+    const rootTypeName =
+      def?.kind === Kind.FRAGMENT_DEFINITION
+        ? def.typeCondition.name.value
+        : undefined;
+    const rootType = rootTypeName
+      ? (schema.getType(rootTypeName) ?? undefined)
       : undefined;
+    return resolveSchemaArgFromRoot(schema, rootType, path, argName);
   }
 
   function handleSetArg(path: PathSegment[], argName: string, value: ArgValue) {
@@ -312,6 +367,9 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     workingDoc,
     activeOpKind,
     target,
+    cursorPath,
+    handleFocusFragment,
+    handleBackToQuery,
     handleToggle,
     handleSetArg,
     handlePromoteArg,
