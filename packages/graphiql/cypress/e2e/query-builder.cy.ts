@@ -245,7 +245,9 @@ describe('Query Builder – fragment extraction', () => {
       expect(query).to.match(
         /fragment\s+PersonFields\s+on\s+Person\s*{\s*name\s+age\s*}/,
       );
-      expect(query.replaceAll(/\s+/g, '')).to.include('person{...PersonFields}');
+      expect(query.replaceAll(/\s+/g, '')).to.include(
+        'person{...PersonFields}',
+      );
     });
 
     // Return to the operation view.
