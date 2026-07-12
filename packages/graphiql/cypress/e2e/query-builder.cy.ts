@@ -216,4 +216,39 @@ describe('Query Builder – fragment extraction', () => {
       ),
     );
   });
+
+  /**
+   * Clicking a `...FragmentName` reference row opens that fragment for editing.
+   * Ticking a field there edits the fragment definition, not the base query.
+   */
+  it('edits an extracted fragment from its reference row', () => {
+    openQueryBuilder();
+
+    cy.get('[aria-label="Expand person"]').click();
+    cy.get('[aria-label="Toggle name"]').click();
+    cy.get('[aria-label="Extract person to a fragment"]').click({
+      force: true,
+    });
+
+    // Jump into the fragment from the reference row on the person field.
+    cy.get('[data-testid="fragment-ref"]').click();
+    cy.get('[aria-label="Back to query"]').should('be.visible');
+    cy.get('.graphiql-qb-fragment-editor-name').should(
+      'contain.text',
+      'PersonFields',
+    );
+
+    // Tick another field: it lands in the fragment, and the operation still
+    // just spreads it.
+    cy.get('[aria-label="Toggle age"]').click();
+    expectQuery(query => {
+      const compact = query.replaceAll(/\s+/g, '');
+      expect(compact).to.include('fragmentPersonFieldsonPerson{nameage}');
+      expect(compact).to.include('person{...PersonFields}');
+    });
+
+    // Return to the operation view.
+    cy.get('[aria-label="Back to query"]').click();
+    cy.get('[aria-label="Back to query"]').should('not.exist');
+  });
 });
