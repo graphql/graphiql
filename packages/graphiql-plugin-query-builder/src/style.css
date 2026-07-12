@@ -860,30 +860,48 @@ select.graphiql-qb-arg-select:focus {
 
 /* The rename pencil sits next to the fragment name and only fills in on
    hover/focus of the row, matching the row-action reveal pattern. */
-.graphiql-qb-fragment-rename-btn {
+.graphiql-qb-fragment-rename-btn,
+.graphiql-qb-fragment-delete-btn {
   display: inline-flex;
   align-items: center;
-  margin-left: var(--px-6);
   padding: 0;
   border: none;
   background: none;
   color: oklch(var(--fg-subtle));
   cursor: pointer;
   opacity: 0;
-  transition: opacity 80ms;
+  transition:
+    opacity 80ms,
+    color 80ms;
 }
 
-.graphiql-qb-fragment-rename-btn svg {
+.graphiql-qb-fragment-rename-btn {
+  margin-left: var(--px-6);
+}
+
+.graphiql-qb-fragment-delete-btn {
+  margin-left: var(--px-4);
+}
+
+.graphiql-qb-fragment-delete-btn:hover {
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-qb-fragment-rename-btn svg,
+.graphiql-qb-fragment-delete-btn svg {
   width: var(--icon-size-sm);
   height: var(--icon-size-sm);
 }
 
 .graphiql-qb-fragment-item:hover .graphiql-qb-fragment-rename-btn,
-.graphiql-qb-fragment-rename-btn:focus-visible {
+.graphiql-qb-fragment-item:hover .graphiql-qb-fragment-delete-btn,
+.graphiql-qb-fragment-rename-btn:focus-visible,
+.graphiql-qb-fragment-delete-btn:focus-visible {
   opacity: 1;
 }
 
-.graphiql-qb-fragment-rename-btn:focus-visible {
+.graphiql-qb-fragment-rename-btn:focus-visible,
+.graphiql-qb-fragment-delete-btn:focus-visible {
   outline: 2px solid oklch(var(--accent-purple));
   outline-offset: 1px;
   border-radius: var(--radius-sm);

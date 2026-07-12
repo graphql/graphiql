@@ -278,4 +278,30 @@ describe('Query Builder – fragment extraction', () => {
       expect(query).to.match(/fragment\s+PersonFields\s+on\s+Person/);
     });
   });
+
+  /**
+   * Deleting a fragment from the list pastes its selections inline wherever it
+   * was spread and removes the definition.
+   */
+  it('deletes a fragment from the list, inlining it where spread', () => {
+    openQueryBuilder();
+
+    cy.get('[aria-label="Expand person"]').click();
+    cy.get('[aria-label="Toggle name"]').click();
+    cy.get('[aria-label="Extract person to a fragment"]').click({
+      force: true,
+    });
+    cy.get('.graphiql-qb-fragment-name').should('contain.text', 'PersonFields');
+
+    cy.get(
+      '[aria-label="Delete fragment PersonFields, inlining it where spread"]',
+    ).click();
+
+    cy.get('.graphiql-qb-fragment-name').should('not.exist');
+    expectQuery(query => {
+      expect(query).to.not.include('...PersonFields');
+      expect(query).to.not.include('fragment PersonFields');
+      expect(query.replaceAll(/\s+/g, '')).to.include('person{name}');
+    });
+  });
 });

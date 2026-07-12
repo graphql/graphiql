@@ -189,4 +189,54 @@ describe('QueryBuilder — fragment extraction row action', () => {
       screen.queryByRole('button', { name: /back to query/i }),
     ).not.toBeInTheDocument();
   });
+
+  it('deletes a fragment from the list, inlining it where spread', async () => {
+    const user = userEvent.setup();
+    state.queryText = `
+      { user { ...UserFields } }
+      fragment UserFields on User { name email }
+    `;
+    render(<QueryBuilder />);
+
+    await user.click(
+      screen.getByRole('button', { name: /delete fragment UserFields/i }),
+    );
+
+    await waitFor(() => {
+      const q = lastQuery();
+      // Spread and definition are gone; the selections are inlined in place.
+      expect(q).not.toMatch(/\.\.\.UserFields/);
+      expect(q).not.toMatch(/fragment UserFields/);
+      expect(q).toMatch(/user\s*{\s*name\s+email\s*}/);
+    });
+    expect(
+      screen.queryByRole('button', { name: /edit fragment UserFields/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('returns to the operation view when the fragment being edited is deleted', async () => {
+    const user = userEvent.setup();
+    state.queryText = `
+      { user { ...UserFields } }
+      fragment UserFields on User { name }
+    `;
+    render(<QueryBuilder />);
+
+    await user.click(
+      screen.getByRole('button', { name: /edit fragment UserFields/i }),
+    );
+    expect(
+      screen.getByRole('button', { name: /back to query/i }),
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', { name: /delete fragment UserFields/i }),
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('button', { name: /back to query/i }),
+      ).not.toBeInTheDocument(),
+    );
+  });
 });

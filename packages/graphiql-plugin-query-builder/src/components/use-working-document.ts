@@ -17,6 +17,7 @@ import {
   createFragmentFromSelection,
   demoteVariable,
   findOperation,
+  inlineFragment,
   listFragments,
   promoteArgToVariable,
   removeFragmentSpread,
@@ -89,6 +90,8 @@ export interface UseWorkingDocumentResult {
   ) => void;
   handleExtractFragment: (path: PathSegment[], typeName: string) => void;
   handleRenameFragment: (oldName: string, newName: string) => void;
+  /** Deletes a fragment, inlining its selections at every spread site. */
+  handleDeleteFragment: (fragmentName: string) => void;
 }
 
 /**
@@ -377,6 +380,14 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     applyDoc(renameFragment(workingDoc, oldName, newName));
   }
 
+  function handleDeleteFragment(fragmentName: string) {
+    applyDoc(inlineFragment(workingDoc, fragmentName));
+    // If we were editing the deleted fragment, fall back to the operation.
+    if (target.kind === 'fragment' && target.name === fragmentName) {
+      setManualTarget({ kind: 'operation', name: operationName });
+    }
+  }
+
   return {
     workingDoc,
     activeOpKind,
@@ -393,5 +404,6 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     handleRemoveFragmentSpread,
     handleExtractFragment,
     handleRenameFragment,
+    handleDeleteFragment,
   };
 }

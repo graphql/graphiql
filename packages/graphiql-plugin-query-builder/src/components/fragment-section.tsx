@@ -1,4 +1,4 @@
-import { PenIcon } from '@graphiql/react';
+import { CloseIcon, PenIcon } from '@graphiql/react';
 import type { DocumentNode } from 'graphql';
 import { type FC, useState } from 'react';
 import { listFragments } from '../lib/document-mutator';
@@ -12,6 +12,8 @@ type FragmentSectionProps = {
   onFocusFragment?: (fragmentName: string) => void;
   /** Renames a fragment and every spread that references it. */
   onRenameFragment?: (oldName: string, newName: string) => void;
+  /** Deletes a fragment, inlining its selections at every spread site. */
+  onDeleteFragment?: (fragmentName: string) => void;
 };
 
 type FragmentItemProps = {
@@ -19,6 +21,7 @@ type FragmentItemProps = {
   active?: boolean;
   onFocus?: (fragmentName: string) => void;
   onRename?: (oldName: string, newName: string) => void;
+  onDelete?: (fragmentName: string) => void;
 };
 
 const FragmentItem: FC<FragmentItemProps> = ({
@@ -26,6 +29,7 @@ const FragmentItem: FC<FragmentItemProps> = ({
   active = false,
   onFocus,
   onRename,
+  onDelete,
 }) => {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(name);
@@ -99,6 +103,16 @@ const FragmentItem: FC<FragmentItemProps> = ({
           <PenIcon />
         </button>
       )}
+      {onDelete && (
+        <button
+          type="button"
+          className="graphiql-qb-fragment-delete-btn"
+          aria-label={`Delete fragment ${name}, inlining it where spread`}
+          onClick={() => onDelete(name)}
+        >
+          <CloseIcon />
+        </button>
+      )}
     </li>
   );
 };
@@ -115,6 +129,7 @@ export const FragmentSection: FC<FragmentSectionProps> = ({
   activeFragmentName,
   onFocusFragment,
   onRenameFragment,
+  onDeleteFragment,
 }) => {
   const fragments = listFragments(doc);
 
@@ -132,6 +147,7 @@ export const FragmentSection: FC<FragmentSectionProps> = ({
               active={name === activeFragmentName}
               onFocus={onFocusFragment}
               onRename={onRenameFragment}
+              onDelete={onDeleteFragment}
             />
           ))}
         </ul>

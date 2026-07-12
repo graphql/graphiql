@@ -33,6 +33,7 @@ export const QueryBuilder: FC = () => {
     handleRemoveFragmentSpread,
     handleExtractFragment,
     handleRenameFragment,
+    handleDeleteFragment,
   } = useWorkingDocument();
 
   // Per-root manual collapse/expand overrides, keyed by operation kind. Reset
@@ -171,6 +172,7 @@ export const QueryBuilder: FC = () => {
           }
           onFocusFragment={handleFocusFragment}
           onRenameFragment={handleRenameFragment}
+          onDeleteFragment={handleDeleteFragment}
         />
       </div>
     </div>

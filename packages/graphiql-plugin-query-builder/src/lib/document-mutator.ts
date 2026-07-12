@@ -34,6 +34,7 @@ export {
 
 export {
   createFragmentFromSelection,
+  inlineFragment,
   listFragments,
   removeFragmentSpread,
   renameFragment,

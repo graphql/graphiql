@@ -167,6 +167,61 @@ export function removeFragmentSpread(
 }
 
 /**
+ * Deletes the named fragment, inlining it: every `...fragmentName` spread
+ * across the document (operations and other fragments alike) is replaced in
+ * place by the fragment's own selections, and the fragment definition is
+ * removed.
+ *
+ * Assumes each spread site is type-compatible with the fragment's type
+ * condition — the builder only creates spreads on matching-type fields — so the
+ * selections are inlined directly rather than wrapped in an `... on Type`
+ * inline fragment. Overlapping selections are left as-is (GraphQL merges
+ * identically-named fields).
+ *
+ * Returns a new `DocumentNode`; does not mutate `doc`. Returns the original
+ * document unchanged when no fragment named `fragmentName` exists.
+ */
+export function inlineFragment(
+  doc: DocumentNode,
+  fragmentName: string,
+): DocumentNode {
+  const fragment = doc.definitions.find(
+    (d): d is FragmentDefinitionNode =>
+      d.kind === Kind.FRAGMENT_DEFINITION && d.name.value === fragmentName,
+  );
+  if (!fragment) {
+    return doc;
+  }
+  const inlined = fragment.selectionSet.selections;
+
+  const isTargetSpread = (s: { kind: Kind }) =>
+    s.kind === Kind.FRAGMENT_SPREAD &&
+    (s as FragmentSpreadNode).name.value === fragmentName;
+
+  const rewritten = visit(doc, {
+    SelectionSet(node) {
+      if (!node.selections.some(isTargetSpread)) {
+        return undefined;
+      }
+      return {
+        ...node,
+        selections: node.selections.flatMap(s =>
+          isTargetSpread(s) ? inlined : [s],
+        ),
+      };
+    },
+  });
+
+  return {
+    ...rewritten,
+    definitions: rewritten.definitions.filter(
+      d =>
+        !(d.kind === Kind.FRAGMENT_DEFINITION && d.name.value === fragmentName),
+    ),
+  };
+}
+
+/**
  * Renames the named fragment `oldName` to `newName`, updating the definition
  * and every `...oldName` spread across the document (operations and other
  * fragments alike). Returns the original document unchanged when no fragment
