@@ -110,7 +110,7 @@ body.graphiql-dark .graphiql-container {
 .graphiql-dialog {
   &,
   &:is(button) {
-    color: hsl(var(--color-neutral));
+    color: oklch(var(--fg-default));
     font-family: var(--font-family);
     font-size: var(--font-size-body);
     font-weight: var(--font-weight-regular);
@@ -118,20 +118,20 @@ body.graphiql-dark .graphiql-container {
   }
 
   & input {
-    color: hsl(var(--color-neutral));
+    color: oklch(var(--fg-default));
     font-family: var(--font-family);
     font-size: var(--font-size-caption);
 
     &::placeholder {
-      color: hsla(var(--color-neutral), var(--alpha-secondary));
+      color: oklch(var(--fg-muted));
     }
   }
 
   & a {
-    color: hsl(var(--color-primary));
+    color: oklch(var(--accent-blue));
 
     &:focus {
-      outline: hsl(var(--color-primary)) auto 1px;
+      outline: oklch(var(--accent-blue)) auto 1px;
     }
   }
 }

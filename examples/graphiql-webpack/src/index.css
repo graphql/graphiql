@@ -7,7 +7,7 @@ body {
   padding: 0;
   margin: 0;
   min-height: 100vh;
-  background-color: hsl(var(--color-base));
+  background-color: oklch(var(--bg-canvas));
 }
 #root {
   height: 100vh;
@@ -23,40 +23,40 @@ body {
 }
 
 .select-server--button {
-  background-color: hsl(var(--color-primary));
+  background-color: oklch(var(--btn-primary));
   border: 0 none;
   display: block;
   width: 100%;
-  color: hsl(var(--color-base));
+  color: oklch(98% 0 0);
   padding: 0.5rem;
   font-size: 1rem;
   margin-bottom: 1rem;
 }
 
 .select-server--button.disabled {
-  background-color: hsl(var(--color-base));
-  color: hsl(var(--color-primary));
+  background-color: oklch(var(--bg-subtle));
+  color: oklch(var(--fg-disabled));
 }
 
 .select-server--schema-error {
-  color: hsl(var(--color-error));
+  color: oklch(var(--accent-red));
   margin-top: 0.5rem;
   display: block;
 }
 
 .select-server--schema-error code {
   padding: 0.5rem;
-  background-color: hsla(var(--color-base), var(--alpha-secondary));
+  background-color: oklch(var(--bg-subtle));
 }
 
 .select-server--schema-success {
-  color: hsl(var(--color-success));
+  color: oklch(var(--accent-green));
   margin-top: 0.5rem;
   display: block;
 }
 
 .select-server--schema-loading {
-  color: hsl(var(--color-warning));
+  color: oklch(var(--accent-orange));
   margin-top: 0.5rem;
   display: block;
 }
@@ -64,15 +64,15 @@ body {
 input.select-server--input {
   display: block;
   width: 100%;
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
+  color: oklch(var(--fg-muted));
   padding: 0.5rem;
-  background-color: hsla(var(--color-primary), var(--alpha-background-medium));
+  background-color: oklch(var(--accent-blue) / 0.1);
   border: 0 none;
   font-size: 1.05rem;
 }
 
 .select-server--input-error {
-  color: hsl(var(--color-error));
+  color: oklch(var(--accent-red));
   margin-top: 0.5rem;
   display: block;
 }
@@ -96,15 +96,15 @@ li.select-server--previous-entry span {
 
 li.select-server--previous-entry span:hover,
 li.select-server--previous-entry button:hover {
-  background-color: hsl(var(--color-primary));
-  color: hsl(var(--color-base));
+  background-color: oklch(var(--bg-overlay));
+  color: oklch(var(--fg-default));
 }
 
 li.select-server--previous-entry button {
   background-color: transparent;
-  border: hsl(var(--color-neutral));
+  border: oklch(var(--border-default));
   display: flex;
-  color: hsl(var(--color-neutral));
+  color: oklch(var(--fg-muted));
   font-size: 1rem;
   cursor: pointer;
   padding: 0.5rem;

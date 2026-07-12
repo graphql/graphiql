@@ -24,10 +24,7 @@
 }
 
 .graphiql-explorer-root > div > div {
-  border-color: hsla(
-    var(--color-neutral),
-    var(--alpha-background-heavy)
-  ) !important;
+  border-color: oklch(var(--border-default)) !important;
   padding-top: var(--px-16);
 }
 
@@ -40,10 +37,10 @@
 }
 
 .graphiql-explorer-root select {
-  background: hsl(var(--color-base)) !important;
-  border: 1px solid hsla(var(--color-neutral), var(--alpha-secondary));
-  border-radius: var(--border-radius-4);
-  color: hsl(var(--color-neutral)) !important;
+  background: oklch(var(--bg-subtle)) !important;
+  border: 1px solid oklch(var(--border-strong));
+  border-radius: var(--radius-sm);
+  color: oklch(var(--fg-default)) !important;
   margin: 0 var(--px-8);
   padding: var(--px-4) var(--px-6);
 }
@@ -53,7 +50,7 @@
   cursor: pointer;
   line-height: 0 !important;
   margin-left: var(--px-6);
-  color: hsl(var(--color-primary));
+  color: oklch(var(--accent-blue));
   font-size: var(--font-size-h3) !important;
 }
 
@@ -68,8 +65,5 @@
 }
 
 .graphiql-explorer-actions {
-  border-color: hsla(
-    var(--color-neutral),
-    var(--alpha-background-heavy)
-  ) !important;
+  border-color: oklch(var(--border-default)) !important;
 }

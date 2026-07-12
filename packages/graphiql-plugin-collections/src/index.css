@@ -355,7 +355,7 @@
 }
 
 .graphiql-import-export-error {
-  color: oklch(var(--color-error, 60% 0.2 25));
+  color: oklch(var(--accent-red));
   font-size: var(--font-size-hint);
 }
 
