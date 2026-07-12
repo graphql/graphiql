@@ -5,8 +5,15 @@ import type { HttpMethod } from '@graphiql/toolkit';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { parse, OperationDefinitionNode } from 'graphql';
 import { TopBarView } from './';
 import { Tooltip } from '../tooltip';
+
+function opsOf(source: string): OperationDefinitionNode[] {
+  return parse(source).definitions.filter(
+    (d): d is OperationDefinitionNode => d.kind === 'OperationDefinition',
+  );
+}
 
 const DEFAULTS = {
   isFetching: false,
@@ -235,5 +242,143 @@ describe('TopBarView', () => {
   it('has role="banner" on the header element', () => {
     const { container } = render(<TopBarView {...DEFAULTS} />);
     expect(container.querySelector('header[role="banner"]')).not.toBeNull();
+  });
+
+  describe('operation picker', () => {
+    const TWO_OPS = opsOf('query Alpha { a }\nquery Beta { b }');
+
+    it('shows no caret with zero or one operation', () => {
+      const { rerender } = render(<TopBarView {...DEFAULTS} operations={[]} />);
+      expect(
+        screen.queryByRole('button', { name: 'Choose operation to run' }),
+      ).not.toBeInTheDocument();
+
+      rerender(
+        <TopBarView {...DEFAULTS} operations={opsOf('query Alpha { a }')} />,
+      );
+      expect(
+        screen.queryByRole('button', { name: 'Choose operation to run' }),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows no caret when an operation name is pinned via overrideOperationName', () => {
+      render(
+        <TopBarView
+          {...DEFAULTS}
+          operations={TWO_OPS}
+          overrideOperationName="Alpha"
+        />,
+      );
+      expect(
+        screen.queryByRole('button', { name: 'Choose operation to run' }),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows a caret with more than one operation', () => {
+      render(<TopBarView {...DEFAULTS} operations={TWO_OPS} />);
+      expect(
+        screen.getByRole('button', { name: 'Choose operation to run' }),
+      ).toBeInTheDocument();
+    });
+
+    it('lists every operation by name in the menu', async () => {
+      const user = userEvent.setup();
+      render(<TopBarView {...DEFAULTS} operations={TWO_OPS} />);
+      await user.click(
+        screen.getByRole('button', { name: 'Choose operation to run' }),
+      );
+      expect(
+        await screen.findByRole('menuitem', { name: 'Alpha' }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('menuitem', { name: 'Beta' }),
+      ).toBeInTheDocument();
+    });
+
+    it('sets the operation name and runs when picking an operation', async () => {
+      const user = userEvent.setup();
+      const onRun = vi.fn();
+      const onSetOperationName = vi.fn();
+      render(
+        <TopBarView
+          {...DEFAULTS}
+          operations={TWO_OPS}
+          operationName="Alpha"
+          onRun={onRun}
+          onSetOperationName={onSetOperationName}
+        />,
+      );
+      await user.click(
+        screen.getByRole('button', { name: 'Choose operation to run' }),
+      );
+      await user.click(await screen.findByRole('menuitem', { name: 'Beta' }));
+      expect(onSetOperationName).toHaveBeenCalledWith('Beta');
+      expect(onRun).toHaveBeenCalled();
+    });
+
+    it('does not call setOperationName when picking the already-active operation', async () => {
+      const user = userEvent.setup();
+      const onRun = vi.fn();
+      const onSetOperationName = vi.fn();
+      render(
+        <TopBarView
+          {...DEFAULTS}
+          operations={TWO_OPS}
+          operationName="Alpha"
+          onRun={onRun}
+          onSetOperationName={onSetOperationName}
+        />,
+      );
+      await user.click(
+        screen.getByRole('button', { name: 'Choose operation to run' }),
+      );
+      await user.click(await screen.findByRole('menuitem', { name: 'Alpha' }));
+      expect(onSetOperationName).not.toHaveBeenCalled();
+      expect(onRun).toHaveBeenCalled();
+    });
+
+    it('disables a menu item whose operation is blocked for the current method', async () => {
+      const user = userEvent.setup();
+      const ops = opsOf('query Q { a }\nmutation M { b }');
+      renderTopBar(
+        <TopBarView
+          {...DEFAULTS}
+          method="GET"
+          supportedMethods={['GET', 'POST']}
+          transportMethod="GET"
+          operations={ops}
+        />,
+      );
+      await user.click(
+        screen.getByRole('button', { name: 'Choose operation to run' }),
+      );
+      const queryItem = await screen.findByRole('menuitem', { name: 'Q' });
+      const mutationItem = screen.getByRole('menuitem', { name: 'M' });
+      expect(queryItem).not.toHaveAttribute('data-disabled');
+      expect(mutationItem).toHaveAttribute('data-disabled');
+    });
+
+    it('renders the active operation name beside the Run button', () => {
+      render(
+        <TopBarView {...DEFAULTS} operations={TWO_OPS} operationName="Beta" />,
+      );
+      expect(screen.getByText('Beta')).toBeInTheDocument();
+    });
+
+    it('renders no active-operation label for an unnamed single operation', () => {
+      render(<TopBarView {...DEFAULTS} operations={opsOf('{ a }')} />);
+      expect(
+        document.querySelector('.graphiql-top-bar-active-operation'),
+      ).toBeNull();
+    });
+
+    it('renders no active-operation label when the cursor is outside every operation', () => {
+      render(
+        <TopBarView {...DEFAULTS} operations={TWO_OPS} operationName={null} />,
+      );
+      expect(
+        document.querySelector('.graphiql-top-bar-active-operation'),
+      ).toBeNull();
+    });
   });
 });
