@@ -15,7 +15,6 @@ export type FieldTreeCallbacks = {
   onAddInlineFragment?: (path: PathSegment[], typeName: string) => void;
   onRemoveInlineFragment?: (path: PathSegment[], typeName: string) => void;
   onExtractFragment?: (path: PathSegment[], typeName: string) => void;
-  onSpreadFragment?: (path: PathSegment[], fragmentName: string) => void;
   onRenameFragment?: (oldName: string, newName: string) => void;
 };
 

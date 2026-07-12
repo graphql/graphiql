@@ -34,10 +34,7 @@ export {
 export {
   createFragmentFromSelection,
   listFragments,
-  listFragmentInfos,
   renameFragment,
-  spreadExistingFragment,
-  type FragmentInfo,
 } from './fragments';
 
 export {

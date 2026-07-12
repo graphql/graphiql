@@ -22,7 +22,6 @@ import {
   removeInlineFragment,
   renameFragment,
   setFieldArgument,
-  spreadExistingFragment,
   suggestVarName,
   toggleFieldSelection,
   type ArgValue,
@@ -73,7 +72,6 @@ export interface UseWorkingDocumentResult {
   handleAddInlineFragment: (path: PathSegment[], typeName: string) => void;
   handleRemoveInlineFragment: (path: PathSegment[], typeName: string) => void;
   handleExtractFragment: (path: PathSegment[], typeName: string) => void;
-  handleSpreadFragment: (path: PathSegment[], fragmentName: string) => void;
   handleRenameFragment: (oldName: string, newName: string) => void;
 }
 
@@ -311,17 +309,6 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     );
   }
 
-  function handleSpreadFragment(path: PathSegment[], fragmentName: string) {
-    const next = spreadExistingFragment(
-      workingDoc,
-      path,
-      fragmentName,
-      operationName,
-    );
-    applyDoc(next);
-    reconcileVariablesJson(next);
-  }
-
   function handleRenameFragment(oldName: string, newName: string) {
     applyDoc(renameFragment(workingDoc, oldName, newName));
   }
@@ -336,7 +323,6 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     handleAddInlineFragment,
     handleRemoveInlineFragment,
     handleExtractFragment,
-    handleSpreadFragment,
     handleRenameFragment,
   };
 }

@@ -862,12 +862,12 @@ select.graphiql-qb-arg-select:focus {
 }
 
 /* =========================================================================
-   Row-level fragment actions (extract / spread) + the extracted-spread badge
+   Row-level fragment actions (extract) + the extracted-spread badge
    ========================================================================= */
 
-/* The extract / spread buttons live in the field header and stay hidden until
-   the row is hovered or one of them is focused, so they don't clutter every
-   composite row. Mirrors the inline-fragment header reveal pattern. */
+/* The extract button lives in the field header and stays hidden until the row
+   is hovered or the button is focused, so it doesn't clutter every composite
+   row. Mirrors the inline-fragment header reveal pattern. */
 .graphiql-qb-field-actions {
   display: inline-flex;
   align-items: center;
@@ -882,8 +882,7 @@ select.graphiql-qb-arg-select:focus {
   opacity: 1;
 }
 
-.graphiql-qb-extract-fragment-btn,
-.graphiql-qb-spread-fragment-btn {
+.graphiql-qb-extract-fragment-btn {
   display: inline-flex;
   align-items: center;
   gap: var(--px-4);
@@ -906,14 +905,12 @@ select.graphiql-qb-arg-select:focus {
   height: var(--icon-size-sm);
 }
 
-.graphiql-qb-extract-fragment-btn:hover,
-.graphiql-qb-spread-fragment-btn:hover {
+.graphiql-qb-extract-fragment-btn:hover {
   background: oklch(var(--bg-overlay));
   color: oklch(var(--fg-default));
 }
 
-.graphiql-qb-extract-fragment-btn:focus-visible,
-.graphiql-qb-spread-fragment-btn:focus-visible {
+.graphiql-qb-extract-fragment-btn:focus-visible {
   outline: 2px solid oklch(var(--accent-purple));
   outline-offset: 1px;
 }

@@ -27,7 +27,6 @@ export const QueryBuilder: FC = () => {
     handleAddInlineFragment,
     handleRemoveInlineFragment,
     handleExtractFragment,
-    handleSpreadFragment,
     handleRenameFragment,
   } = useWorkingDocument();
 
@@ -132,7 +131,6 @@ export const QueryBuilder: FC = () => {
                   onAddInlineFragment={handleAddInlineFragment}
                   onRemoveInlineFragment={handleRemoveInlineFragment}
                   onExtractFragment={handleExtractFragment}
-                  onSpreadFragment={handleSpreadFragment}
                   onRenameFragment={handleRenameFragment}
                 />
               )}

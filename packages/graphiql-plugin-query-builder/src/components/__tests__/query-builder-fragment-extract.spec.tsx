@@ -1,8 +1,8 @@
 /**
  * Integration test for the contextual fragment-extraction row action. Renders
  * QueryBuilder against a schema, expands a composite field, and drives the
- * row's "Extract to fragment" / "Use ...Fragment" actions, asserting the editor
- * receives the correctly-mutated query — no editor cursor involved.
+ * row's "Extract to fragment" action, asserting the editor receives the
+ * correctly-mutated query — no editor cursor involved.
  */
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -83,30 +83,6 @@ describe('QueryBuilder — fragment extraction row action', () => {
       expect(q).toMatch(/fragment UserFields on User/);
       expect(q).toMatch(/name/);
       expect(q).toMatch(/email/);
-    });
-  });
-
-  it('offers the extracted fragment for reuse on a second field of the same type', async () => {
-    const user = userEvent.setup();
-    // Start from a document that already has UserFields and a bare `admin`.
-    state.queryText = `
-      { user { ...UserFields } admin { name } }
-      fragment UserFields on User { name email }
-    `;
-    render(<QueryBuilder />);
-
-    await user.click(screen.getByRole('button', { name: /expand admin/i }));
-
-    const reuse = await screen.findByRole('button', {
-      name: /spread UserFields into admin/i,
-    });
-    await user.click(reuse);
-
-    await waitFor(() => {
-      const q = lastQuery();
-      expect(q).toMatch(/admin\s*{\s*\.\.\.UserFields\s*}/);
-      // No duplicate fragment definition.
-      expect(q.match(/fragment UserFields/g)).toHaveLength(1);
     });
   });
 

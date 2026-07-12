@@ -14,7 +14,6 @@ import {
   getFieldArgValues,
   getFieldArgVariables,
   isFieldSelected,
-  listFragmentInfos,
 } from '../lib/document-mutator';
 import {
   fieldSegment,
@@ -44,7 +43,6 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
     onPromoteArg,
     onDemoteArg,
     onExtractFragment,
-    onSpreadFragment,
   } = useFieldTreeContext();
 
   const [expanded, setExpanded] = useState(false);
@@ -90,17 +88,6 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
     hasExtractableSelection,
   );
 
-  // Offer "spread here" when this composite row can hold a fragment and the
-  // document already defines one on a matching type. Skip it once the row is
-  // itself a spread.
-  const matchingFragments =
-    isFragmentTarget &&
-    namedType &&
-    onSpreadFragment &&
-    spreadName === undefined
-      ? listFragmentInfos(doc).filter(info => info.typeName === namedType.name)
-      : [];
-
   const { flash, current, nodeRef } = useCursorReveal(
     fullPath,
     cursorPath,
@@ -130,12 +117,6 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
         argVariables={argVariables}
         fragmentSpread={spreadName}
         onExtractFragment={handleExtract}
-        spreadableFragments={matchingFragments}
-        onSpreadFragment={
-          onSpreadFragment && matchingFragments.length > 0
-            ? name => onSpreadFragment(fullPath, name)
-            : undefined
-        }
         onToggle={onToggle}
         onExpand={handleExpand}
         onSetArg={onSetArg}

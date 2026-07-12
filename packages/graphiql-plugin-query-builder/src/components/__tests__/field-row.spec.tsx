@@ -343,28 +343,6 @@ describe('FieldRow — extract to fragment', () => {
     const badge = screen.getByTestId('field-spread');
     expect(badge).toHaveTextContent('FriendFields');
   });
-
-  it('offers "Use ...Fragment" for each spreadable fragment', async () => {
-    const onSpreadFragment = vi.fn();
-    render(
-      <FieldRow
-        field={friendsField}
-        path={[]}
-        selected={false}
-        hasChildren
-        expanded
-        spreadableFragments={[{ name: 'FriendFields', typeName: 'Friend' }]}
-        onSpreadFragment={onSpreadFragment}
-        onToggle={() => {}}
-        onExpand={() => {}}
-      />,
-    );
-    const btn = screen.getByRole('button', {
-      name: /spread FriendFields into friends/i,
-    });
-    await userEvent.click(btn);
-    expect(onSpreadFragment).toHaveBeenCalledWith('FriendFields');
-  });
 });
 
 describe('FieldRow — deprecated fields', () => {

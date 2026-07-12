@@ -193,38 +193,6 @@ describe('Query Builder – fragment extraction', () => {
   });
 
   /**
-   * With a document that already defines a Person fragment, a second Person
-   * field offers "Use ...PersonFields" instead of forcing a new fragment.
-   */
-  it('reuses an existing fragment on another field of the same type', () => {
-    const QUERY = `{
-  person { ...PersonFields }
-  test { person { name } }
-}
-
-fragment PersonFields on Person {
-  name
-}
-`;
-    cy.visit(`?query=${encodeURIComponent(QUERY)}`);
-    openQueryBuilder();
-
-    // Drill into test → person (a second Person-typed field) and reuse.
-    cy.get('[aria-label="Expand test"]').click();
-    cy.get('[aria-label="Expand person"]').filter(':visible').last().click();
-    cy.get('[aria-label="Spread PersonFields into person"]').click({
-      force: true,
-    });
-
-    expectQuery(query => {
-      const compact = query.replaceAll(/\s+/g, '');
-      expect(compact).to.include('test{person{...PersonFields}}');
-      // Exactly one fragment definition — no duplicate created.
-      expect(compact.match(/fragmentPersonFields/g)).to.have.length(1);
-    });
-  });
-
-  /**
    * The extract action is a plain, keyboard-focusable <button> (no negative
    * tabindex, no hover-only operability): it can take focus and activate while
    * focused. Native Enter/Space activation of the button element is covered by

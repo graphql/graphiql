@@ -27,25 +27,6 @@ export function listFragments(doc: DocumentNode): string[] {
     .map(f => f.name.value);
 }
 
-/** A named fragment definition's name paired with its type condition. */
-export type FragmentInfo = {
-  name: string;
-  typeName: string;
-};
-
-/**
- * Returns the name and type condition of every named fragment definition in
- * `doc`, in document order. Used to offer "spread here" on rows whose type
- * matches an existing fragment.
- */
-export function listFragmentInfos(doc: DocumentNode): FragmentInfo[] {
-  return doc.definitions
-    .filter(
-      (d): d is FragmentDefinitionNode => d.kind === Kind.FRAGMENT_DEFINITION,
-    )
-    .map(f => ({ name: f.name.value, typeName: f.typeCondition.name.value }));
-}
-
 /**
  * Extracts the selection set of the field at `path` into a new named fragment
  * definition (`fragmentName on typeName`), and replaces the field's selections
@@ -118,56 +99,6 @@ export function createFragmentFromSelection(
     ...updatedDoc,
     definitions: [...updatedDoc.definitions, fragmentDef],
   };
-}
-
-/**
- * Replaces the selection set of the field at `path` with a single spread of the
- * existing named fragment `fragmentName` (`...fragmentName`). Unlike
- * `createFragmentFromSelection` this reuses a fragment already defined in the
- * document instead of creating a new one.
- *
- * Returns a new `DocumentNode`; does not mutate `doc`. Returns the original
- * document unchanged when the path does not resolve to a field with a selection
- * set.
- */
-export function spreadExistingFragment(
-  doc: DocumentNode,
-  path: PathSegment[],
-  fragmentName: string,
-  operationName?: string,
-): DocumentNode {
-  const operation = findOperation(doc, operationName);
-  if (!operation) {
-    return doc;
-  }
-
-  const targetSelectionSet = findSelectionSet(operation.selectionSet, path);
-  if (!targetSelectionSet) {
-    return doc;
-  }
-
-  const spread: FragmentSpreadNode = {
-    kind: Kind.FRAGMENT_SPREAD,
-    name: { kind: Kind.NAME, value: fragmentName },
-    directives: [],
-  };
-
-  const spreadSet: SelectionSetNode = {
-    kind: Kind.SELECTION_SET,
-    selections: [spread],
-  };
-
-  return mapOperation(doc, operationName, op => {
-    const newSelectionSet = replaceFieldSelectionSet(
-      op.selectionSet,
-      path,
-      spreadSet,
-    );
-    if (newSelectionSet === op.selectionSet) {
-      return op;
-    }
-    return { ...op, selectionSet: newSelectionSet };
-  });
 }
 
 /**
