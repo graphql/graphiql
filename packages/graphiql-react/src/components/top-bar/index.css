@@ -238,11 +238,16 @@
   gap: var(--px-6);
 }
 
-.graphiql-top-bar-run-menu-item--active::before {
+/* Every item reserves the dot's gutter so names stay left-aligned whether or
+   not the item is active; only the active item paints its dot. */
+.graphiql-top-bar-run-menu-item::before {
   content: '';
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: oklch(var(--accent-green));
   flex-shrink: 0;
+}
+
+.graphiql-top-bar-run-menu-item--active::before {
+  background: oklch(var(--accent-green));
 }
