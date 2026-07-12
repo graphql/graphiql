@@ -1,8 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { HttpMethod } from '@graphiql/toolkit';
+import { parse, OperationDefinitionNode } from 'graphql';
 import { GraphiQLProvider } from '../provider';
 import { TopBar, TopBarView } from './';
 import { Tooltip } from '../tooltip';
+
+function opsOf(source: string): OperationDefinitionNode[] {
+  return parse(source).definitions.filter(
+    (d): d is OperationDefinitionNode => d.kind === 'OperationDefinition',
+  );
+}
 
 const postOnlyTransport = {
   url: 'https://api.example.com/graphql',
@@ -106,6 +113,57 @@ export const MutationBlockedOverGet: Story = {
         runDisabledReason="Mutations can only be sent via POST"
         onRun={() => {}}
         onSetMethod={() => {}}
+      />
+    </Tooltip.Provider>
+  ),
+};
+
+/**
+ * A single operation: the Run button is a plain pill, no caret.
+ */
+export const SingleOperationNoCaret: Story = {
+  render: () => (
+    <Tooltip.Provider>
+      <TopBarView
+        version="v6.0.0-alpha.1"
+        isFetching={false}
+        url="https://api.example.com/graphql"
+        method="POST"
+        supportedMethods={['POST']}
+        operations={opsOf('query GetWidget { widget { id } }')}
+        operationName={null}
+        onRun={() => {}}
+        onSetMethod={() => {}}
+      />
+    </Tooltip.Provider>
+  ),
+};
+
+/**
+ * Several named operations: the Run button grows a caret opening the
+ * operation picker. GET is selected, so the mutation's menu item is disabled.
+ */
+export const MultipleOperationsWithPicker: Story = {
+  render: () => (
+    <Tooltip.Provider>
+      <TopBarView
+        version="v6.0.0-alpha.1"
+        isFetching={false}
+        url="https://api.example.com/graphql"
+        method="GET"
+        supportedMethods={['GET', 'POST']}
+        transportMethod="GET"
+        operations={opsOf(
+          [
+            'query Alpha { widget { id } }',
+            'query Beta { gadget { id } }',
+            'mutation CreateWidget { createWidget { id } }',
+          ].join('\n\n'),
+        )}
+        operationName="Beta"
+        onRun={() => {}}
+        onSetMethod={() => {}}
+        onSetOperationName={() => {}}
       />
     </Tooltip.Provider>
   ),

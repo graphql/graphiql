@@ -112,21 +112,72 @@
   white-space: nowrap;
 }
 
+/* The split Run control: a primary run half and, when the document has more
+   than one operation, a caret half opening the operation picker. Both halves
+   render their own green fill so `:hover`/`:active` on either (which also
+   match this wrapper, per normal CSS bubbling) can brighten/darken the whole
+   pill as one piece. */
 .graphiql-top-bar-run {
   display: inline-flex;
   align-items: center;
-  gap: var(--px-8);
-  padding: 0 var(--px-10);
-  height: 28px;
-  background: oklch(var(--btn-primary));
-  border: 1px solid oklch(var(--btn-primary-border));
   border-radius: var(--radius-md);
   color: #fff;
   font-family: var(--font-family);
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-medium);
-  cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.graphiql-top-bar-run:hover {
+  filter: brightness(1.1);
+}
+
+.graphiql-top-bar-run:active {
+  filter: brightness(0.92);
+}
+
+.graphiql-top-bar-run-primary,
+.graphiql-top-bar-run-caret {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  background: oklch(var(--btn-primary));
+  border: 1px solid oklch(var(--btn-primary-border));
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* The caret is an `UnStyledButton`, whose `all: unset` resets `box-sizing` to
+   `content-box` — its border would add to the 28px height and make it stand a
+   pixel taller than the primary half. Scope under `.graphiql-top-bar-run` so
+   this wins on specificity, not load order. */
+.graphiql-top-bar-run .graphiql-top-bar-run-caret {
+  box-sizing: border-box;
+}
+
+.graphiql-top-bar-run-primary {
+  gap: var(--px-8);
+  padding: 0 var(--px-10);
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+/* No caret to pair with (a single operation, or an override pinning it) —
+   the primary half is the whole pill. */
+.graphiql-top-bar-run-primary--solo {
+  border-radius: var(--radius-md);
+}
+
+.graphiql-top-bar-run-caret {
+  padding: 0 var(--px-8);
+  border-left: none;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.graphiql-top-bar-run-caret-icon {
+  width: 8px;
+  height: auto;
   flex-shrink: 0;
 }
 
@@ -152,7 +203,7 @@
   color: #fff;
 }
 
-.graphiql-top-bar-run:disabled {
+.graphiql-top-bar-run-primary:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   /* Let pointer events fall through to the tooltip-target wrapper so the
@@ -160,12 +211,43 @@
   pointer-events: none;
 }
 
-.graphiql-top-bar-run:not(:disabled):hover {
-  filter: brightness(1.1);
+.graphiql-top-bar-run-caret:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Scoped under `.graphiql-top-bar-run` so this outranks the global
+   `.graphiql-container :focus-visible` ring on specificity, not load order —
+   an inset ring (rather than the global's outward one) keeps the two halves'
+   rings from overlapping each other. */
+.graphiql-top-bar-run .graphiql-top-bar-run-primary:focus-visible,
+.graphiql-top-bar-run .graphiql-top-bar-run-caret:focus-visible {
+  outline: 2px solid oklch(var(--accent-blue));
+  outline-offset: -2px;
 }
 
 .graphiql-top-bar-run-tooltip-target {
   display: inline-flex;
   flex-shrink: 0;
   cursor: not-allowed;
+}
+
+.graphiql-top-bar-run-menu-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-6);
+}
+
+/* Every item reserves the dot's gutter so names stay left-aligned whether or
+   not the item is active; only the active item paints its dot. */
+.graphiql-top-bar-run-menu-item::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.graphiql-top-bar-run-menu-item--active::before {
+  background: oklch(var(--accent-green));
 }

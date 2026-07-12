@@ -4,10 +4,12 @@
 
 import type { FC } from 'react';
 import type { HttpMethod } from '@graphiql/toolkit';
+import type { OperationDefinitionNode } from 'graphql';
 import { useGraphiQL, useGraphiQLActions } from '../provider';
 import { KeycapHint, MODIFIER } from '../keycap-hint';
 import { Tooltip } from '../tooltip';
-import { GraphQLLogoIcon, PlayIcon } from '../../icons';
+import { DropdownMenu } from '../dropdown-menu';
+import { GraphQLLogoIcon, PlayIcon, ChevronDownIcon } from '../../icons';
 import { cn, getRunBlockReason, resolveActiveOperation } from '../../utility';
 import './index.css';
 
@@ -17,10 +19,15 @@ export type TopBarProps = {
 };
 
 export const TopBar: FC<TopBarProps> = ({ version }) => {
-  const { run, setTransportMethod } = useGraphiQLActions();
+  const { run, setTransportMethod, setOperationName } = useGraphiQLActions();
   const isFetching = useGraphiQL(state => state.isFetching);
   const transport = useGraphiQL(state => state.transport);
   const transportMethod = useGraphiQL(state => state.transportMethod);
+  const operations = useGraphiQL(state => state.operations);
+  const operationName = useGraphiQL(state => state.operationName);
+  const overrideOperationName = useGraphiQL(
+    state => state.overrideOperationName,
+  );
   const runDisabledReason = useGraphiQL(state =>
     getRunBlockReason(
       state.transportMethod,
@@ -40,8 +47,13 @@ export const TopBar: FC<TopBarProps> = ({ version }) => {
       method={method}
       supportedMethods={supportedMethods}
       runDisabledReason={runDisabledReason}
+      operations={operations}
+      operationName={operationName}
+      overrideOperationName={overrideOperationName}
+      transportMethod={transportMethod}
       onRun={run}
       onSetMethod={setTransportMethod}
+      onSetOperationName={setOperationName}
     />
   );
 };
@@ -54,8 +66,15 @@ export type TopBarViewProps = {
   supportedMethods: HttpMethod[];
   /** Non-null when Run is blocked; the string is the reason shown in a tooltip. */
   runDisabledReason?: string | null;
+  /** The document's operations. A caret + picker only appears for more than one. */
+  operations?: OperationDefinitionNode[];
+  operationName?: string | null;
+  /** When set, an external caller has pinned the operation; the picker is hidden. */
+  overrideOperationName?: string | null;
+  transportMethod?: HttpMethod | null;
   onRun: () => void;
   onSetMethod: (method: HttpMethod) => void;
+  onSetOperationName?: (operationName: string) => void;
 };
 
 export const TopBarView: FC<TopBarViewProps> = ({
@@ -65,8 +84,13 @@ export const TopBarView: FC<TopBarViewProps> = ({
   method,
   supportedMethods,
   runDisabledReason = null,
+  operations = [],
+  operationName = null,
+  overrideOperationName = null,
+  transportMethod = null,
   onRun,
   onSetMethod,
+  onSetOperationName,
 }) => {
   const canSwitch = supportedMethods.length > 1;
   const isBlocked = runDisabledReason !== null;
@@ -80,10 +104,26 @@ export const TopBarView: FC<TopBarViewProps> = ({
   const switchTarget =
     isBlocked && supportedMethods.includes('POST') ? 'POST' : nextMethod;
 
-  const runButton = (
+  // A picker only makes sense when there's a choice to make, and only when
+  // nothing outside the editor has already pinned the operation to run.
+  const hasOptions =
+    operations.length > 1 && typeof overrideOperationName !== 'string';
+  const activeOperation = resolveActiveOperation(operations, operationName);
+
+  const selectOperation = (selectedOperationName: string | undefined) => {
+    if (selectedOperationName && selectedOperationName !== operationName) {
+      onSetOperationName?.(selectedOperationName);
+    }
+    onRun();
+  };
+
+  const primaryButton = (
     <button
       type="button"
-      className="graphiql-top-bar-run"
+      className={cn(
+        'graphiql-top-bar-run-primary',
+        !hasOptions && 'graphiql-top-bar-run-primary--solo',
+      )}
       onClick={onRun}
       disabled={isFetching || isBlocked}
       aria-label="Run query"
@@ -96,6 +136,67 @@ export const TopBarView: FC<TopBarViewProps> = ({
         ariaLabel="Run query shortcut"
       />
     </button>
+  );
+
+  const runButton = (
+    <div className="graphiql-top-bar-run">
+      {isBlocked ? (
+        <Tooltip label={runDisabledReason}>
+          {/* A native disabled button emits no pointer/focus events, so Radix
+              would never open the tooltip. Wrap it in a focusable span that
+              receives the events instead. */}
+          <span className="graphiql-top-bar-run-tooltip-target" tabIndex={0}>
+            {primaryButton}
+          </span>
+        </Tooltip>
+      ) : (
+        primaryButton
+      )}
+
+      {hasOptions && (
+        <>
+          <span className="graphiql-top-bar-run-sep" aria-hidden="true" />
+          <DropdownMenu>
+            <DropdownMenu.Button
+              type="button"
+              className="graphiql-top-bar-run-caret"
+              disabled={isFetching}
+              aria-label="Choose operation to run"
+            >
+              <ChevronDownIcon
+                className="graphiql-top-bar-run-caret-icon"
+                aria-hidden="true"
+              />
+            </DropdownMenu.Button>
+            <DropdownMenu.Content align="end">
+              {operations.map((operation, i) => {
+                const opName = operation.name?.value;
+                const label = opName ?? `<Unnamed ${operation.operation}>`;
+                const isActive = operation === activeOperation;
+                return (
+                  <DropdownMenu.Item
+                    key={`${label}-${i}`}
+                    disabled={
+                      getRunBlockReason(transportMethod, operation) !== null
+                    }
+                    onSelect={() => selectOperation(opName)}
+                  >
+                    <span
+                      className={cn(
+                        'graphiql-top-bar-run-menu-item',
+                        isActive && 'graphiql-top-bar-run-menu-item--active',
+                      )}
+                    >
+                      {label}
+                    </span>
+                  </DropdownMenu.Item>
+                );
+              })}
+            </DropdownMenu.Content>
+          </DropdownMenu>
+        </>
+      )}
+    </div>
   );
 
   return (
@@ -129,18 +230,7 @@ export const TopBarView: FC<TopBarViewProps> = ({
         <span className="graphiql-top-bar-endpoint-url">{url}</span>
       </div>
 
-      {isBlocked ? (
-        <Tooltip label={runDisabledReason}>
-          {/* A native disabled button emits no pointer/focus events, so Radix
-              would never open the tooltip. Wrap it in a focusable span that
-              receives the events instead. */}
-          <span className="graphiql-top-bar-run-tooltip-target" tabIndex={0}>
-            {runButton}
-          </span>
-        </Tooltip>
-      ) : (
-        runButton
-      )}
+      {runButton}
     </header>
   );
 };
