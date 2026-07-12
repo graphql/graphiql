@@ -130,20 +130,29 @@ tooltips. All these descriptions can also be found in the
 All the components from `@graphiql/react` have been designed with customization
 in mind. We achieve this using CSS variables.
 
-All variables that are available for customization can be found in the
-[`root.css` file](https://github.com/graphql/graphiql/blob/main/packages/graphiql-react/src/style/root.css).
+As of v6 the customization surface is the OKLCH design-token set in the
+[`tokens.css` file](https://github.com/graphql/graphiql/blob/main/packages/graphiql-react/src/style/tokens.css).
 
 ### Colors
 
-Colors are defined using the
-[HSL format](https://en.wikipedia.org/wiki/HSL_and_HSV). All CSS variables for
+> **Deprecated (v6):** The v5 `--color-*` HSL variables (`--color-primary`,
+> `--color-neutral`, `--color-base`, and so on) described below are **deprecated
+> as of v6** and are no longer read by any component. They remain defined —
+> frozen at their v5 values — for backward compatibility, but overriding them no
+> longer re-themes GraphiQL. Retheme with the OKLCH tokens in
+> [`tokens.css`](https://github.com/graphql/graphiql/blob/main/packages/graphiql-react/src/style/tokens.css)
+> instead; the [v6 migration guide](https://github.com/graphql/graphiql/blob/main/docs/migration/graphiql-6.0.0.md#migrating---color--overrides)
+> maps each v5 variable to its v6 replacement.
+
+The deprecated v5 colors are defined using the
+[HSL format](https://en.wikipedia.org/wiki/HSL_and_HSV): all CSS variables for
 colors are defined as a list of the three values that make up HSL (hue,
 saturation and lightness).
 
-This approach allows `@graphiql/react` to use transparent colors by passing the
-value of the CSS variable in the `hsla` function. This enables us to provide
-truly reusable UI elements where good contrasts are preserved regardless of the
-elements background.
+This approach allowed `@graphiql/react` to use transparent colors by passing the
+value of the CSS variable in the `hsla` function. The v6 OKLCH tokens keep the
+same idea — the triplet is composed with `oklch(var(--x) / <alpha>)` — so
+transparency still works at the call site.
 
 ## Development
 
