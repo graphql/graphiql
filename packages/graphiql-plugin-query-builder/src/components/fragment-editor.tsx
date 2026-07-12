@@ -28,6 +28,7 @@ type FragmentEditorProps = {
   onSetArg: (path: PathSegment[], argName: string, value: ArgValue) => void;
   onAddInlineFragment: (path: PathSegment[], typeName: string) => void;
   onRemoveInlineFragment: (path: PathSegment[], typeName: string) => void;
+  onRemoveFragmentSpread: (path: PathSegment[], fragmentName: string) => void;
   onExtractFragment: (path: PathSegment[], typeName: string) => void;
   onRenameFragment: (oldName: string, newName: string) => void;
   onFocusFragment: (fragmentName: string) => void;
@@ -50,6 +51,7 @@ export const FragmentEditor: FC<FragmentEditorProps> = ({
   onSetArg,
   onAddInlineFragment,
   onRemoveInlineFragment,
+  onRemoveFragmentSpread,
   onExtractFragment,
   onRenameFragment,
   onFocusFragment,
@@ -79,8 +81,12 @@ export const FragmentEditor: FC<FragmentEditorProps> = ({
           <span>Back to query</span>
         </button>
         <div className="graphiql-qb-fragment-editor-title">
-          <span className="graphiql-qb-fragment-editor-name">
-            {fragmentName}
+          <span className="graphiql-qb-fragment-editor-heading">
+            Editing{' '}
+            <span className="graphiql-qb-fragment-editor-name">
+              {fragmentName}
+            </span>{' '}
+            fragment
           </span>
           {typeName && (
             <span className="graphiql-qb-fragment-editor-type">
@@ -101,6 +107,7 @@ export const FragmentEditor: FC<FragmentEditorProps> = ({
           onSetArg={onSetArg}
           onAddInlineFragment={onAddInlineFragment}
           onRemoveInlineFragment={onRemoveInlineFragment}
+          onRemoveFragmentSpread={onRemoveFragmentSpread}
           onExtractFragment={onExtractFragment}
           onRenameFragment={onRenameFragment}
           onFocusFragment={onFocusFragment}

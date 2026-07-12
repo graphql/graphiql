@@ -19,6 +19,7 @@ import {
   findOperation,
   listFragments,
   promoteArgToVariable,
+  removeFragmentSpread,
   removeInlineFragment,
   renameFragment,
   setFieldArgument,
@@ -82,6 +83,10 @@ export interface UseWorkingDocumentResult {
   ) => void;
   handleAddInlineFragment: (path: PathSegment[], typeName: string) => void;
   handleRemoveInlineFragment: (path: PathSegment[], typeName: string) => void;
+  handleRemoveFragmentSpread: (
+    path: PathSegment[],
+    fragmentName: string,
+  ) => void;
   handleExtractFragment: (path: PathSegment[], typeName: string) => void;
   handleRenameFragment: (oldName: string, newName: string) => void;
 }
@@ -343,6 +348,15 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     reconcileVariablesJson(next);
   }
 
+  function handleRemoveFragmentSpread(
+    path: PathSegment[],
+    fragmentName: string,
+  ) {
+    const next = removeFragmentSpread(workingDoc, path, fragmentName, target);
+    applyDoc(next);
+    reconcileVariablesJson(next);
+  }
+
   // Lift the selection at `path` into a new named fragment on `typeName`,
   // replacing the selection with a spread. The name is auto-generated
   // (`${typeName}Fields`, de-duped against existing fragments) and stays
@@ -376,6 +390,7 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     handleDemoteArg,
     handleAddInlineFragment,
     handleRemoveInlineFragment,
+    handleRemoveFragmentSpread,
     handleExtractFragment,
     handleRenameFragment,
   };

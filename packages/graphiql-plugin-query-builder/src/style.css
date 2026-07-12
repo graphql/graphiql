@@ -955,6 +955,7 @@ select.graphiql-qb-arg-select:focus {
 .graphiql-qb-fragment-ref-item {
   display: flex;
   align-items: center;
+  gap: var(--px-6);
   min-height: var(--px-24);
 }
 
@@ -989,17 +990,19 @@ select.graphiql-qb-arg-select:focus {
 .graphiql-qb-fragment-editor-header {
   display: flex;
   flex-direction: column;
-  gap: var(--px-6);
-  padding: 0 var(--px-14) var(--px-8);
+  gap: var(--px-12);
+  padding: var(--px-12) var(--px-14) var(--px-12);
+  border-bottom: 1px solid oklch(var(--border-default));
+  margin-bottom: var(--px-8);
 }
 
 .graphiql-qb-fragment-back {
   display: inline-flex;
   align-items: center;
-  gap: var(--px-4);
+  gap: var(--px-6);
   align-self: flex-start;
-  padding: 1px var(--px-6) 1px 2px;
-  border: none;
+  padding: var(--px-4) var(--px-8);
+  border: 1px solid oklch(var(--border-default));
   background: none;
   color: oklch(var(--fg-muted));
   cursor: pointer;
@@ -1024,13 +1027,19 @@ select.graphiql-qb-arg-select:focus {
 
 .graphiql-qb-fragment-editor-title {
   display: flex;
-  align-items: baseline;
-  gap: var(--px-6);
+  flex-direction: column;
+  gap: var(--px-4);
+}
+
+.graphiql-qb-fragment-editor-heading {
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  font-weight: 600;
+  color: oklch(var(--fg-default));
 }
 
 .graphiql-qb-fragment-editor-name {
   font-family: var(--font-family-mono);
-  font-size: var(--font-size-mono);
   font-weight: 600;
   color: oklch(var(--accent-blue));
 }

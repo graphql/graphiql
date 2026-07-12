@@ -117,6 +117,34 @@ describe('QueryBuilder — fragment extraction row action', () => {
     });
   });
 
+  it('removes the spread when its reference row is unchecked', async () => {
+    const user = userEvent.setup();
+    state.queryText = `
+      { user { ...UserFields email } }
+      fragment UserFields on User { name }
+    `;
+    render(<QueryBuilder />);
+
+    await user.click(screen.getByRole('button', { name: /expand user/i }));
+
+    // The spread reference is a checked box; unchecking it removes the spread.
+    const spreadBox = await screen.findByRole('checkbox', {
+      name: /remove fragment spread UserFields/i,
+    });
+    expect(spreadBox).toBeChecked();
+    await user.click(spreadBox);
+
+    await waitFor(() => {
+      const q = lastQuery();
+      // Spread gone, sibling field kept, fragment definition still present.
+      expect(q).not.toMatch(/\.\.\.UserFields/);
+      expect(q).toMatch(/user\s*{\s*email\s*}/);
+      expect(q).toMatch(/fragment UserFields on User/);
+    });
+    // The reference row disappears with the spread.
+    expect(screen.queryByTestId('fragment-ref')).not.toBeInTheDocument();
+  });
+
   it('does not offer extraction on a composite row with no selection', async () => {
     const user = userEvent.setup();
     state.queryText = '{ user { name } }';

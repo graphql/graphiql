@@ -11,10 +11,12 @@ import {
   findDefinition,
   findSelectionSet,
   mapDefinition,
+  removeField,
   replaceFieldSelectionSet,
   type DefinitionTarget,
   type PathSegment,
 } from './ast-path';
+import { pruneUnusedVariableDefinitions } from './field-selection';
 
 /**
  * Returns the names of all named fragment definitions in `doc`, in document
@@ -100,6 +102,68 @@ export function createFragmentFromSelection(
     ...updatedDoc,
     definitions: [...updatedDoc.definitions, fragmentDef],
   };
+}
+
+/**
+ * Removes the `...fragmentName` spread from the selection set of the field at
+ * `fieldPath` (or the definition root when `fieldPath` is empty) in the
+ * definition addressed by `target`. If that leaves the field with no
+ * selections, the field itself is pruned; if it empties an operation, the
+ * operation is dropped.
+ *
+ * Returns a new `DocumentNode`; does not mutate `doc`. Returns the original
+ * document unchanged when no such spread is present.
+ */
+export function removeFragmentSpread(
+  doc: DocumentNode,
+  fieldPath: PathSegment[],
+  fragmentName: string,
+  target: DefinitionTarget,
+): DocumentNode {
+  return mapDefinition(doc, target, def => {
+    const targetSet =
+      fieldPath.length === 0
+        ? def.selectionSet
+        : findSelectionSet(def.selectionSet, fieldPath);
+    if (!targetSet) {
+      return def;
+    }
+
+    const remaining = targetSet.selections.filter(
+      s => !(s.kind === Kind.FRAGMENT_SPREAD && s.name.value === fragmentName),
+    );
+    if (remaining.length === targetSet.selections.length) {
+      return def;
+    }
+
+    let newSelectionSet: SelectionSetNode;
+    if (fieldPath.length === 0) {
+      newSelectionSet = { ...def.selectionSet, selections: remaining };
+    } else if (remaining.length === 0) {
+      // The spread was the field's only selection; drop the field too.
+      newSelectionSet = removeField(def.selectionSet, fieldPath);
+    } else {
+      newSelectionSet = replaceFieldSelectionSet(def.selectionSet, fieldPath, {
+        kind: Kind.SELECTION_SET,
+        selections: remaining,
+      });
+    }
+
+    if (newSelectionSet.selections.length === 0) {
+      // An operation with no selection set is unprintable; a fragment can't be
+      // emptied without orphaning its own spreads. Drop the operation; leave
+      // the fragment intact.
+      return def.kind === Kind.OPERATION_DEFINITION ? null : def;
+    }
+    if (def.kind === Kind.FRAGMENT_DEFINITION) {
+      return { ...def, selectionSet: newSelectionSet };
+    }
+    // Removing the spread can orphan a variable a field inside it referenced.
+    return pruneUnusedVariableDefinitions(
+      { ...def, selectionSet: newSelectionSet },
+      doc,
+    );
+  });
 }
 
 /**

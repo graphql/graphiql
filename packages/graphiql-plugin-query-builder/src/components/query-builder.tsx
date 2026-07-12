@@ -30,6 +30,7 @@ export const QueryBuilder: FC = () => {
     handleDemoteArg,
     handleAddInlineFragment,
     handleRemoveInlineFragment,
+    handleRemoveFragmentSpread,
     handleExtractFragment,
     handleRenameFragment,
   } = useWorkingDocument();
@@ -88,6 +89,7 @@ export const QueryBuilder: FC = () => {
             onSetArg={handleSetArg}
             onAddInlineFragment={handleAddInlineFragment}
             onRemoveInlineFragment={handleRemoveInlineFragment}
+            onRemoveFragmentSpread={handleRemoveFragmentSpread}
             onExtractFragment={handleExtractFragment}
             onRenameFragment={handleRenameFragment}
             onFocusFragment={handleFocusFragment}
@@ -152,6 +154,7 @@ export const QueryBuilder: FC = () => {
                     onDemoteArg={handleDemoteArg}
                     onAddInlineFragment={handleAddInlineFragment}
                     onRemoveInlineFragment={handleRemoveInlineFragment}
+                    onRemoveFragmentSpread={handleRemoveFragmentSpread}
                     onExtractFragment={handleExtractFragment}
                     onRenameFragment={handleRenameFragment}
                     onFocusFragment={handleFocusFragment}

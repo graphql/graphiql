@@ -254,4 +254,28 @@ describe('Query Builder – fragment extraction', () => {
     cy.get('[aria-label="Back to query"]').click();
     cy.get('[aria-label="Back to query"]').should('not.exist');
   });
+
+  /**
+   * The spread reference is a checked row; unchecking it removes the spread and
+   * the row disappears.
+   */
+  it('removes the spread when its reference row is unchecked', () => {
+    openQueryBuilder();
+
+    cy.get('[aria-label="Expand person"]').click();
+    cy.get('[aria-label="Toggle name"]').click();
+    cy.get('[aria-label="Extract person to a fragment"]').click({
+      force: true,
+    });
+    cy.get('[data-testid="fragment-ref"]').should('be.visible');
+
+    cy.get('[aria-label="Remove fragment spread PersonFields"]').click();
+
+    cy.get('[data-testid="fragment-ref"]').should('not.exist');
+    expectQuery(query => {
+      expect(query).to.not.include('...PersonFields');
+      // The fragment definition itself remains in the document.
+      expect(query).to.match(/fragment\s+PersonFields\s+on\s+Person/);
+    });
+  });
 });

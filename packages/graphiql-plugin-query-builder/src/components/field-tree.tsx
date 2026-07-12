@@ -104,6 +104,7 @@ type FieldTreeProps = {
   onDemoteArg?: (path: PathSegment[], argName: string, varName: string) => void;
   onAddInlineFragment?: (path: PathSegment[], typeName: string) => void;
   onRemoveInlineFragment?: (path: PathSegment[], typeName: string) => void;
+  onRemoveFragmentSpread?: (path: PathSegment[], fragmentName: string) => void;
   onExtractFragment?: (path: PathSegment[], typeName: string) => void;
   onRenameFragment?: (oldName: string, newName: string) => void;
   onFocusFragment?: (fragmentName: string) => void;
@@ -122,6 +123,7 @@ export const FieldTree: FC<FieldTreeProps> = ({
   onDemoteArg,
   onAddInlineFragment,
   onRemoveInlineFragment,
+  onRemoveFragmentSpread,
   onExtractFragment,
   onRenameFragment,
   onFocusFragment,
@@ -137,6 +139,7 @@ export const FieldTree: FC<FieldTreeProps> = ({
     onDemoteArg,
     onAddInlineFragment,
     onRemoveInlineFragment,
+    onRemoveFragmentSpread,
     onExtractFragment,
     onRenameFragment,
     onFocusFragment,

@@ -44,6 +44,7 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
     onDemoteArg,
     onExtractFragment,
     onFocusFragment,
+    onRemoveFragmentSpread,
   } = useFieldTreeContext();
 
   const [expanded, setExpanded] = useState(false);
@@ -131,9 +132,20 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
           role="list"
           style={{ paddingLeft: fullPath.length * 12 }}
         >
-          {spreadRefs.map(name =>
-            onFocusFragment ? (
-              <li key={name} className="graphiql-qb-fragment-ref-item">
+          {spreadRefs.map(name => (
+            <li key={name} className="graphiql-qb-fragment-ref-item">
+              {onRemoveFragmentSpread && (
+                // A checked box: the spread is a selection. Unchecking removes
+                // it, and the row disappears with the spread.
+                <input
+                  type="checkbox"
+                  className="graphiql-qb-field-checkbox"
+                  checked
+                  onChange={() => onRemoveFragmentSpread(fullPath, name)}
+                  aria-label={`Remove fragment spread ${name}`}
+                />
+              )}
+              {onFocusFragment ? (
                 <button
                   type="button"
                   className="graphiql-qb-fragment-ref graphiql-qb-fragment-ref--button"
@@ -144,9 +156,7 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
                   <span className="graphiql-qb-spread">...</span>
                   {name}
                 </button>
-              </li>
-            ) : (
-              <li key={name} className="graphiql-qb-fragment-ref-item">
+              ) : (
                 <span
                   className="graphiql-qb-fragment-ref"
                   data-testid="fragment-ref"
@@ -154,9 +164,9 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
                   <span className="graphiql-qb-spread">...</span>
                   {name}
                 </span>
-              </li>
-            ),
-          )}
+              )}
+            </li>
+          ))}
         </ul>
       )}
       {isObject && expanded && namedType && isObjectType(namedType) && (

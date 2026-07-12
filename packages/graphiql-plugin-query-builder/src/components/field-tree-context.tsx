@@ -14,6 +14,8 @@ export type FieldTreeCallbacks = {
   onDemoteArg?: (path: PathSegment[], argName: string, varName: string) => void;
   onAddInlineFragment?: (path: PathSegment[], typeName: string) => void;
   onRemoveInlineFragment?: (path: PathSegment[], typeName: string) => void;
+  /** Removes a `...FragmentName` spread from a field's selection. */
+  onRemoveFragmentSpread?: (path: PathSegment[], fragmentName: string) => void;
   onExtractFragment?: (path: PathSegment[], typeName: string) => void;
   onRenameFragment?: (oldName: string, newName: string) => void;
   /** Switch to editing a named fragment (from a `...Fragment` reference row). */
