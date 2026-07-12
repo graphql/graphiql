@@ -48,7 +48,7 @@ The new tokens are stored as `L% C H` component triplets (lightness percent, chr
 
 There is no published mapping from the nine v5 `--color-*` names to these — the two palettes aren't a 1:1 redesign of each other. Some v5 roles split into several v6 tokens (one `--color-base` background becomes four: `--bg-canvas`, `--bg-elevated`, `--bg-subtle`, `--bg-overlay`), and v6 introduces categories v5 didn't have at all, like a three-step border scale and a dedicated `--fg-disabled` / `--fg-dim` pair for de-emphasized text. If you have a bespoke theme, treat the new token list as a fresh design surface to map your brand colors onto rather than a mechanical find-and-replace of the old one.
 
-The v5 variables are still documented in the [`@graphiql/react` README](../../packages/graphiql-react/README.md#theming); the new token file itself, [`tokens.css`](../../packages/graphiql-react/src/style/tokens.css), is the source of truth for the v6 set until the README catches up.
+Both token sets are documented in the [`@graphiql/react` README](../../packages/graphiql-react/README.md#theming); [`tokens.css`](../../packages/graphiql-react/src/style/tokens.css) remains the canonical source for exact values.
 
 ### Migrating `--color-*` overrides
 
