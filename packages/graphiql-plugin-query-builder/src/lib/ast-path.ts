@@ -3,6 +3,7 @@ import {
   type ArgumentNode,
   type DocumentNode,
   type FieldNode,
+  type FragmentDefinitionNode,
   type InlineFragmentNode,
   type OperationDefinitionNode,
   type SelectionNode,
@@ -15,6 +16,22 @@ export type PathSegment =
   | { kind: 'inlineFragment'; typeName: string };
 
 export type Path = PathSegment[];
+
+/**
+ * The definition the builder is currently editing: either an operation
+ * (identified by name, or the first operation when unnamed) or a named
+ * fragment. Every read/mutation helper resolves the selection set it works on
+ * from this target, so the same tree and handlers drive operation and fragment
+ * editing alike.
+ */
+export type DefinitionTarget =
+  | { kind: 'operation'; name?: string }
+  | { kind: 'fragment'; name: string };
+
+/** A definition the builder can edit: an operation or a named fragment. */
+export type EditableDefinitionNode =
+  | OperationDefinitionNode
+  | FragmentDefinitionNode;
 
 export function fieldSegment(name: string): PathSegment {
   return { kind: 'field', name };
@@ -393,4 +410,93 @@ export function mapOperation(
     newDefinitions[index] = result;
   }
   return { ...doc, definitions: newDefinitions };
+}
+
+/**
+ * Returns the index in `doc.definitions` of the definition addressed by
+ * `target` — the matching operation (see {@link findOperationIndex}) or the
+ * named fragment. Returns -1 when no such definition exists.
+ */
+export function findDefinitionIndex(
+  doc: DocumentNode,
+  target: DefinitionTarget,
+): number {
+  if (target.kind === 'operation') {
+    return findOperationIndex(doc, target.name);
+  }
+  return doc.definitions.findIndex(
+    d => d.kind === Kind.FRAGMENT_DEFINITION && d.name.value === target.name,
+  );
+}
+
+/**
+ * Resolves the definition node addressed by `target`, or `undefined` when the
+ * document has no matching definition.
+ */
+export function findDefinition(
+  doc: DocumentNode,
+  target: DefinitionTarget,
+): EditableDefinitionNode | undefined {
+  const index = findDefinitionIndex(doc, target);
+  if (index === -1) {
+    return undefined;
+  }
+  const def = doc.definitions[index];
+  if (
+    def?.kind === Kind.OPERATION_DEFINITION ||
+    def?.kind === Kind.FRAGMENT_DEFINITION
+  ) {
+    return def;
+  }
+  return undefined;
+}
+
+/**
+ * Finds the definition addressed by `target`, calls `fn` with it, and returns a
+ * new `DocumentNode` with the result spliced back into `definitions`. When `fn`
+ * returns `null` the definition is removed entirely. Returns `doc` unchanged
+ * when no matching definition exists or `fn` returns the same reference.
+ */
+export function mapDefinition(
+  doc: DocumentNode,
+  target: DefinitionTarget,
+  fn: (definition: EditableDefinitionNode) => EditableDefinitionNode | null,
+): DocumentNode {
+  const index = findDefinitionIndex(doc, target);
+  if (index === -1) {
+    return doc;
+  }
+  const def = doc.definitions[index];
+  if (
+    def?.kind !== Kind.OPERATION_DEFINITION &&
+    def?.kind !== Kind.FRAGMENT_DEFINITION
+  ) {
+    return doc;
+  }
+  const result = fn(def);
+  if (result === def) {
+    return doc;
+  }
+  const newDefinitions = [...doc.definitions];
+  if (result === null) {
+    newDefinitions.splice(index, 1);
+  } else {
+    newDefinitions[index] = result;
+  }
+  return { ...doc, definitions: newDefinitions };
+}
+
+/**
+ * A source offset just inside the selection set of the definition addressed by
+ * `target`, or `undefined` when it can't be located. Used to move the editor
+ * cursor into a definition so the builder — which follows the cursor — switches
+ * to editing it. Requires `doc` to carry location info (parse without
+ * `noLocation`).
+ */
+export function definitionSelectionOffset(
+  doc: DocumentNode,
+  target: DefinitionTarget,
+): number | undefined {
+  const loc = findDefinition(doc, target)?.selectionSet.loc;
+  return loc ? loc.start + 1 : undefined;
 }

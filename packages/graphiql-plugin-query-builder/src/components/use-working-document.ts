@@ -17,20 +17,30 @@ import {
   createFragmentFromSelection,
   demoteVariable,
   findOperation,
+  inlineFragment,
   listFragments,
   promoteArgToVariable,
+  removeFragmentSpread,
   removeInlineFragment,
+  renameFragment,
   setFieldArgument,
   suggestVarName,
   toggleFieldSelection,
   type ArgValue,
+  type DefinitionTarget,
 } from '../lib/document-mutator';
-import { type PathSegment } from '../lib/ast-path';
+import {
+  definitionSelectionOffset,
+  findDefinition,
+  type PathSegment,
+} from '../lib/ast-path';
 import {
   extractRawArgValue,
   readVariables,
   resolveSchemaArg,
+  resolveSchemaArgFromRoot,
 } from '../lib/schema-walk';
+import { useCursorContext } from './use-cursor-path';
 
 /**
  * Parse query text into a DocumentNode, or null when it's empty or unparseable
@@ -56,6 +66,14 @@ function emptyDoc(): DocumentNode {
 export interface UseWorkingDocumentResult {
   workingDoc: DocumentNode;
   activeOpKind: OperationTypeNode | undefined;
+  /** The definition the tree currently reads and mutates (operation or fragment). */
+  target: DefinitionTarget;
+  /** Field path under the editor cursor, when it belongs to `target`. */
+  cursorPath: PathSegment[] | undefined;
+  /** Switch the active target to a named fragment (from a click). */
+  handleFocusFragment: (fragmentName: string) => void;
+  /** Return the active target to the operation (from a click). */
+  handleBackToQuery: () => void;
   handleToggle: (path: PathSegment[]) => void;
   handleSetArg: (path: PathSegment[], argName: string, value: ArgValue) => void;
   handlePromoteArg: (
@@ -70,10 +88,14 @@ export interface UseWorkingDocumentResult {
   ) => void;
   handleAddInlineFragment: (path: PathSegment[], typeName: string) => void;
   handleRemoveInlineFragment: (path: PathSegment[], typeName: string) => void;
-  handleCreateFragment: (
-    cursorPath: PathSegment[],
-    fragmentType: { name: string },
+  handleRemoveFragmentSpread: (
+    path: PathSegment[],
+    fragmentName: string,
   ) => void;
+  handleExtractFragment: (path: PathSegment[], typeName: string) => void;
+  handleRenameFragment: (oldName: string, newName: string) => void;
+  /** Deletes a fragment, inlining its selections at every spread site. */
+  handleDeleteFragment: (fragmentName: string) => void;
 }
 
 /**
@@ -148,6 +170,76 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     operationName,
   )?.operation;
 
+  // The editor cursor is the single source of truth for what's being edited:
+  // its definition is the active target. "Editing a fragment" is just the
+  // cursor being inside that fragment, tracked here as its name (null = the
+  // operation). The focus/back handlers below don't set this directly; they
+  // move the editor cursor, and the resulting cursor update flows back here.
+  const cursor = useCursorContext();
+  const [activeFragment, setActiveFragment] = useState<string | null>(null);
+  // The active fragment the cursor implies: its name inside a fragment, null
+  // inside an operation, undefined when outside any definition (leave as-is).
+  const cursorFragment: string | null | undefined =
+    cursor.target?.kind === 'fragment'
+      ? cursor.target.name
+      : cursor.target?.kind === 'operation'
+        ? null
+        : undefined;
+  useEffect(() => {
+    if (cursorFragment !== undefined) {
+      setActiveFragment(cursorFragment);
+    }
+  }, [cursorFragment]);
+
+  const target: DefinitionTarget =
+    activeFragment != null
+      ? { kind: 'fragment', name: activeFragment }
+      : { kind: 'operation', name: operationName };
+
+  // Auto-expand the tree to the cursor only when the cursor sits in the
+  // definition we're showing.
+  const cursorInTarget =
+    cursor.target != null &&
+    (activeFragment != null
+      ? cursor.target.kind === 'fragment' &&
+        cursor.target.name === activeFragment
+      : cursor.target.kind === 'operation');
+  const cursorPath = cursorInTarget ? cursor.path : undefined;
+
+  // Move the editor cursor into a definition; the cursor update then switches
+  // the active target (above). Setting the target this way — rather than
+  // directly — keeps the editor and builder from diverging, which is what made
+  // the old click-override approach prone to stale-target bugs.
+  function moveCursorToTarget(next: DefinitionTarget) {
+    // Optimistically reflect the move so the panel updates without waiting for
+    // the debounced cursor read (and for the no-editor case in tests).
+    setActiveFragment(next.kind === 'fragment' ? next.name : null);
+    if (!queryEditor) {
+      return;
+    }
+    const model = queryEditor.getModel();
+    if (!model) {
+      return;
+    }
+    let offset: number | undefined;
+    try {
+      offset = definitionSelectionOffset(parse(model.getValue()), next);
+    } catch {
+      return;
+    }
+    if (offset != null) {
+      queryEditor.setPosition(model.getPositionAt(offset));
+    }
+  }
+
+  function handleFocusFragment(fragmentName: string) {
+    moveCursorToTarget({ kind: 'fragment', name: fragmentName });
+  }
+
+  function handleBackToQuery() {
+    moveCursorToTarget({ kind: 'operation', name: operationName });
+  }
+
   // Apply a new working document: update state synchronously, then write it to
   // the editor. The write is synchronous so the query and any variables a
   // handler writes alongside it stay consistent, and so the editor reflects the
@@ -194,15 +286,28 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
   }
 
   function handleToggle(path: PathSegment[]) {
-    const next = toggleFieldSelection(workingDoc, path, operationName);
+    const next = toggleFieldSelection(workingDoc, path, target);
     applyDoc(next);
     reconcileVariablesJson(next);
   }
 
   function schemaArgFor(path: PathSegment[], argName: string) {
-    return schema
-      ? resolveSchemaArg(schema, activeOpKind, path, argName)
+    if (!schema) {
+      return;
+    }
+    if (target.kind === 'operation') {
+      return resolveSchemaArg(schema, activeOpKind, path, argName);
+    }
+    // A fragment's fields are walked from its type condition, not an op root.
+    const def = findDefinition(workingDoc, target);
+    const rootTypeName =
+      def?.kind === Kind.FRAGMENT_DEFINITION
+        ? def.typeCondition.name.value
+        : undefined;
+    const rootType = rootTypeName
+      ? (schema.getType(rootTypeName) ?? undefined)
       : undefined;
+    return resolveSchemaArgFromRoot(schema, rootType, path, argName);
   }
 
   function handleSetArg(path: PathSegment[], argName: string, value: ArgValue) {
@@ -212,9 +317,7 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     }
 
     const valueNode = argValueToValueNode(schemaArg.type, value);
-    applyDoc(
-      setFieldArgument(workingDoc, path, argName, valueNode, operationName),
-    );
+    applyDoc(setFieldArgument(workingDoc, path, argName, valueNode, target));
   }
 
   function handlePromoteArg(
@@ -274,54 +377,68 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
   }
 
   function handleAddInlineFragment(path: PathSegment[], typeName: string) {
-    applyDoc(addInlineFragment(workingDoc, path, typeName, operationName));
+    applyDoc(addInlineFragment(workingDoc, path, typeName, target));
   }
 
   function handleRemoveInlineFragment(path: PathSegment[], typeName: string) {
-    const next = removeInlineFragment(
-      workingDoc,
-      path,
-      typeName,
-      operationName,
-    );
+    const next = removeInlineFragment(workingDoc, path, typeName, target);
     applyDoc(next);
     reconcileVariablesJson(next);
   }
 
-  // A fragment can be extracted from the field the cursor is in, as long as it
-  // resolves to a composite type (object or interface — those have a selection
-  // set worth lifting out). cursorPath and fragmentType are passed in from the
-  // component, which computes them from useCursorPath + schema.
-  function handleCreateFragment(
-    cursorPath: PathSegment[],
-    fragmentType: { name: string },
+  function handleRemoveFragmentSpread(
+    path: PathSegment[],
+    fragmentName: string,
   ) {
-    const base = `${fragmentType.name}Fields`;
+    const next = removeFragmentSpread(workingDoc, path, fragmentName, target);
+    applyDoc(next);
+    reconcileVariablesJson(next);
+  }
+
+  // Lift the selection at `path` into a new named fragment on `typeName`,
+  // replacing the selection with a spread. The name is auto-generated
+  // (`${typeName}Fields`, de-duped against existing fragments) and stays
+  // editable afterwards from the fragment list.
+  function handleExtractFragment(path: PathSegment[], typeName: string) {
+    const base = `${typeName}Fields`;
     const existing = new Set(listFragments(workingDoc));
     let name = base;
     for (let n = 2; existing.has(name); n++) {
       name = `${base}_${n}`;
     }
     applyDoc(
-      createFragmentFromSelection(
-        workingDoc,
-        cursorPath,
-        name,
-        fragmentType.name,
-        operationName,
-      ),
+      createFragmentFromSelection(workingDoc, path, name, typeName, target),
     );
+  }
+
+  function handleRenameFragment(oldName: string, newName: string) {
+    applyDoc(renameFragment(workingDoc, oldName, newName));
+  }
+
+  function handleDeleteFragment(fragmentName: string) {
+    applyDoc(inlineFragment(workingDoc, fragmentName));
+    // If we were editing the deleted fragment, fall back to the operation.
+    if (activeFragment === fragmentName) {
+      moveCursorToTarget({ kind: 'operation', name: operationName });
+    }
   }
 
   return {
     workingDoc,
     activeOpKind,
+    target,
+    cursorPath,
+    handleFocusFragment,
+    handleBackToQuery,
     handleToggle,
     handleSetArg,
     handlePromoteArg,
     handleDemoteArg,
     handleAddInlineFragment,
     handleRemoveInlineFragment,
-    handleCreateFragment,
+    handleRemoveFragmentSpread,
+    handleExtractFragment,
+    handleRenameFragment,
+    handleDeleteFragment,
   };
 }

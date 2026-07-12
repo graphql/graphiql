@@ -271,6 +271,63 @@ describe('FieldRow', () => {
   });
 });
 
+describe('FieldRow — extract to fragment', () => {
+  it('renders the extract action when onExtractFragment is supplied', () => {
+    render(
+      <FieldRow
+        field={friendsField}
+        path={[]}
+        selected={false}
+        hasChildren
+        expanded
+        onExtractFragment={() => {}}
+        onToggle={() => {}}
+        onExpand={() => {}}
+      />,
+    );
+    expect(
+      screen.getByRole('button', { name: /extract friends to a fragment/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('does not render the extract action when onExtractFragment is absent', () => {
+    render(
+      <FieldRow
+        field={friendsField}
+        path={[]}
+        selected={false}
+        hasChildren
+        expanded
+        onToggle={() => {}}
+        onExpand={() => {}}
+      />,
+    );
+    expect(
+      screen.queryByRole('button', { name: /extract .* to a fragment/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('fires onExtractFragment when the action is clicked', async () => {
+    const onExtractFragment = vi.fn();
+    render(
+      <FieldRow
+        field={friendsField}
+        path={[]}
+        selected={false}
+        hasChildren
+        expanded
+        onExtractFragment={onExtractFragment}
+        onToggle={() => {}}
+        onExpand={() => {}}
+      />,
+    );
+    await userEvent.click(
+      screen.getByRole('button', { name: /extract friends to a fragment/i }),
+    );
+    expect(onExtractFragment).toHaveBeenCalledOnce();
+  });
+});
+
 describe('FieldRow — deprecated fields', () => {
   it('marks a deprecated field and surfaces the reason', async () => {
     render(

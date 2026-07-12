@@ -124,12 +124,14 @@ const ReactiveHarness: FC<HarnessProps> = ({
     }
   })();
 
-  const argValues = getFieldArgValues(doc, path);
+  const argValues = getFieldArgValues(doc, path, { kind: 'operation' });
   const value: ArgValue = argValues[argName] ?? [];
 
   const handleChange = (next: ArgValue) => {
     const valueNode = argValueToValueNode(arg.type, next);
-    const nextDoc = setFieldArgument(doc, path, argName, valueNode);
+    const nextDoc = setFieldArgument(doc, path, argName, valueNode, {
+      kind: 'operation',
+    });
     setQuery(print(nextDoc));
   };
 

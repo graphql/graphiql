@@ -291,6 +291,7 @@ describe('argValueToValueNode round-trip', () => {
       [fieldSegment('hero')],
       'name',
       argValueToValueNode(GraphQLString, read as string),
+      { kind: 'operation' },
     );
     expect(print(written)).toBe(print(d));
   });
@@ -306,6 +307,7 @@ describe('argValueToValueNode round-trip', () => {
       [fieldSegment('hero')],
       'count',
       argValueToValueNode(GraphQLInt, read as string),
+      { kind: 'operation' },
     );
     expect(print(written)).toBe(print(d));
   });
@@ -315,7 +317,9 @@ describe('argValueToValueNode round-trip', () => {
     const listType = new GraphQLList(GraphQLInt);
     const value: ArgValue = ['1', '2', '3'];
     const node = argValueToValueNode(listType, value);
-    const written = setFieldArgument(d, [fieldSegment('items')], 'ids', node);
+    const written = setFieldArgument(d, [fieldSegment('items')], 'ids', node, {
+      kind: 'operation',
+    });
     const printed = print(written);
     expect(() => parse(printed)).not.toThrow();
     expect(printed).toMatch(/ids: \[1, 2, 3\]/);
@@ -332,6 +336,7 @@ describe('argValueToValueNode round-trip', () => {
       [fieldSegment('hero')],
       'episodes',
       node,
+      { kind: 'operation' },
     );
     const printed = print(written);
     expect(() => parse(printed)).not.toThrow();
@@ -349,6 +354,7 @@ describe('argValueToValueNode round-trip', () => {
       [fieldSegment('createTag')],
       'input',
       node,
+      { kind: 'operation' },
     );
     const printed = print(written);
     expect(() => parse(printed)).not.toThrow();
@@ -374,6 +380,7 @@ describe('argValueToValueNode round-trip', () => {
       [fieldSegment('createTags')],
       'tags',
       node,
+      { kind: 'operation' },
     );
     const printed = print(written);
     expect(() => parse(printed)).not.toThrow();

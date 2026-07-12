@@ -1,6 +1,7 @@
 import {
   ChevronDownIcon,
   MarkdownContent,
+  MergeIcon,
   Tooltip,
   typeCategory,
 } from '@graphiql/react';
@@ -27,6 +28,11 @@ type FieldRowProps = {
    * badge instead of the literal input control.
    */
   argVariables?: Record<string, string>;
+  /**
+   * Extracts the current selection into a new fragment. Present only on a
+   * composite row that is expanded with a non-empty selection to lift out.
+   */
+  onExtractFragment?: () => void;
   onToggle: (path: PathSegment[]) => void;
   onExpand: (path: PathSegment[]) => void;
   onSetArg?: (path: PathSegment[], argName: string, value: ArgValue) => void;
@@ -48,6 +54,7 @@ export const FieldRow: FC<FieldRowProps> = ({
   current = false,
   argValues = {},
   argVariables = {},
+  onExtractFragment,
   onToggle,
   onExpand,
   onSetArg,
@@ -126,6 +133,19 @@ export const FieldRow: FC<FieldRowProps> = ({
               DEP
             </span>
           </Tooltip>
+        )}
+        {onExtractFragment && (
+          <span className="graphiql-qb-field-actions">
+            <button
+              type="button"
+              className="graphiql-qb-extract-fragment-btn"
+              onClick={onExtractFragment}
+              aria-label={`Extract ${field.name} to a fragment`}
+            >
+              <MergeIcon />
+              <span>Extract to fragment</span>
+            </button>
+          </span>
         )}
         <span
           className={`graphiql-qb-field-type graphiql-qb-field-type--${typeColorCategory}`}

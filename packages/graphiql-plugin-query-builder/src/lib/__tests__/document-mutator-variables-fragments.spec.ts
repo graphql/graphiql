@@ -373,6 +373,7 @@ describe('createFragmentFromSelection', () => {
       [fieldSegment('hero')],
       'HeroDetails',
       'Hero',
+      { kind: 'operation' },
     );
     const printed = print(result);
     expect(printed).toMatch(/fragment HeroDetails on Hero/);
@@ -388,6 +389,7 @@ describe('createFragmentFromSelection', () => {
       [fieldSegment('hero')],
       'HeroDetails',
       'Hero',
+      { kind: 'operation' },
     );
     const printed = print(result);
     expect(printed).toMatch(/\.\.\.HeroDetails/);
@@ -400,6 +402,7 @@ describe('createFragmentFromSelection', () => {
       [fieldSegment('hero')],
       'HeroDetails',
       'Hero',
+      { kind: 'operation' },
     );
     const defs = result.definitions;
     expect(defs).toHaveLength(2);
@@ -414,6 +417,7 @@ describe('createFragmentFromSelection', () => {
       [fieldSegment('droid')],
       'DroidFields',
       'Droid',
+      { kind: 'operation' },
     );
     expect(print(result)).toBe(print(d));
   });
@@ -425,6 +429,7 @@ describe('createFragmentFromSelection', () => {
       [fieldSegment('hero')],
       'HeroFull',
       'Hero',
+      { kind: 'operation' },
     );
     expect(() => parse(print(result))).not.toThrow();
   });
@@ -433,14 +438,18 @@ describe('createFragmentFromSelection', () => {
 describe('toggleFieldSelection — unused variable cleanup', () => {
   it('drops a variable definition orphaned by removing its field', () => {
     const d = doc('query A($x: String) { hero(id: $x) { name } droid }');
-    const result = toggleFieldSelection(d, [fieldSegment('hero')]);
+    const result = toggleFieldSelection(d, [fieldSegment('hero')], {
+      kind: 'operation',
+    });
     expect(print(result)).not.toContain('$x');
     expect(print(result)).toContain('droid');
   });
 
   it('keeps a variable still referenced by another field', () => {
     const d = doc('query A($x: String) { hero(id: $x) other(id: $x) }');
-    const result = toggleFieldSelection(d, [fieldSegment('hero')]);
+    const result = toggleFieldSelection(d, [fieldSegment('hero')], {
+      kind: 'operation',
+    });
     expect(print(result)).toContain('$x');
     expect(print(result)).toContain('other(id: $x)');
   });
@@ -449,10 +458,11 @@ describe('toggleFieldSelection — unused variable cleanup', () => {
     const d = doc(
       'query A($x: String) { hero { ...F } } fragment F on Hero { friend(id: $x) }',
     );
-    const result = toggleFieldSelection(d, [
-      fieldSegment('hero'),
-      fieldSegment('name'),
-    ]);
+    const result = toggleFieldSelection(
+      d,
+      [fieldSegment('hero'), fieldSegment('name')],
+      { kind: 'operation' },
+    );
     expect(print(result)).toContain('$x');
   });
 });

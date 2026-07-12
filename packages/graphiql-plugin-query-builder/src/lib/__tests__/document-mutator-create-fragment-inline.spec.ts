@@ -21,6 +21,7 @@ describe('createFragmentFromSelection with inline-fragment path segments', () =>
       path,
       'HumanDetails',
       'Human',
+      { kind: 'operation' },
     );
     const printed = print(result);
 
@@ -35,7 +36,13 @@ describe('createFragmentFromSelection with inline-fragment path segments', () =>
     const d = doc('{ search { ... on Human { name } } }');
     const path = [fieldSegment('search'), inlineFragmentSegment('Human')];
 
-    const result = createFragmentFromSelection(d, path, 'HumanFields', 'Human');
+    const result = createFragmentFromSelection(
+      d,
+      path,
+      'HumanFields',
+      'Human',
+      { kind: 'operation' },
+    );
 
     expect(result.definitions).toHaveLength(2);
     const fragDef = result.definitions.find(
@@ -48,7 +55,13 @@ describe('createFragmentFromSelection with inline-fragment path segments', () =>
     const d = doc('{ search { ... on Human { name } } }');
     const path = [fieldSegment('search'), inlineFragmentSegment('Human')];
 
-    const result = createFragmentFromSelection(d, path, 'HumanFields', 'Human');
+    const result = createFragmentFromSelection(
+      d,
+      path,
+      'HumanFields',
+      'Human',
+      { kind: 'operation' },
+    );
 
     // findSelectionSet must handle inline-fragment path segments, not just Kind.FIELD.
     expect(print(result)).not.toBe(print(d));
@@ -58,7 +71,13 @@ describe('createFragmentFromSelection with inline-fragment path segments', () =>
     const d = doc('{ search { ... on Human { name } } }');
     const path = [fieldSegment('search'), inlineFragmentSegment('Droid')];
 
-    const result = createFragmentFromSelection(d, path, 'DroidFields', 'Droid');
+    const result = createFragmentFromSelection(
+      d,
+      path,
+      'DroidFields',
+      'Droid',
+      { kind: 'operation' },
+    );
 
     expect(print(result)).toBe(print(d));
   });
@@ -77,6 +96,7 @@ describe('createFragmentFromSelection with inline-fragment path segments', () =>
       path,
       'HumanFriendFields',
       'Human',
+      { kind: 'operation' },
     );
     const printed = print(result);
 

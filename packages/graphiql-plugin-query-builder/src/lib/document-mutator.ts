@@ -13,6 +13,7 @@ export {
   fieldSegment,
   inlineFragmentSegment,
   segmentsEqual,
+  type DefinitionTarget,
   type Path,
   type PathSegment,
 } from './ast-path';
@@ -31,7 +32,15 @@ export {
   suggestVarName,
 } from './variables';
 
-export { createFragmentFromSelection, listFragments } from './fragments';
+export {
+  createFragmentFromSelection,
+  inlineFragment,
+  listFragments,
+  listFragmentInfos,
+  removeFragmentSpread,
+  renameFragment,
+  type FragmentInfo,
+} from './fragments';
 
 export {
   addInlineFragment,

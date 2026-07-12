@@ -229,6 +229,7 @@ export const FieldTreeRootOnly: Story = {
         type={QueryType}
         path={[]}
         doc={emptyDoc}
+        target={{ kind: 'operation' }}
         onToggle={() => {}}
         onSetArg={() => {}}
       />
@@ -249,6 +250,7 @@ export const FieldTreeWithSelections: Story = {
         type={QueryType}
         path={[]}
         doc={preSelectedDoc}
+        target={{ kind: 'operation' }}
         onToggle={() => {}}
         onSetArg={() => {}}
       />
@@ -595,16 +597,16 @@ const docWithFragments = parse(`
 export const FragmentSectionEmpty: Story = {
   render: () => (
     <div style={{ padding: 16, width: 320 }}>
-      <FragmentSection doc={docNoFragments} onCreateFragment={() => {}} />
+      <FragmentSection doc={docNoFragments} />
     </div>
   ),
 };
 
-/** Fragment panel listing two existing named fragments. */
+/** Fragment panel listing two existing named fragments, each with an editable name. */
 export const FragmentSectionWithFragments: Story = {
   render: () => (
     <div style={{ padding: 16, width: 320 }}>
-      <FragmentSection doc={docWithFragments} onCreateFragment={() => {}} />
+      <FragmentSection doc={docWithFragments} onRenameFragment={() => {}} />
     </div>
   ),
 };

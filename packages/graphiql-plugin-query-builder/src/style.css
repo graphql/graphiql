@@ -798,39 +798,301 @@ select.graphiql-qb-arg-select:focus {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 
 .graphiql-qb-fragment-item {
   display: flex;
   align-items: center;
-  padding: 2px 0;
+  gap: var(--px-8);
+  min-height: 30px;
+  padding: var(--px-6) var(--px-8) var(--px-6) var(--px-14);
+  border-radius: var(--radius-sm);
+  transition: background 80ms;
+}
+
+.graphiql-qb-fragment-item:hover {
+  background: oklch(var(--fg-default) / 0.05);
+}
+
+.graphiql-qb-fragment-item--active {
+  background: oklch(var(--bg-subtle));
+}
+
+/* The name + type condition; the whole thing opens the fragment for editing. */
+.graphiql-qb-fragment-open {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--px-6);
+}
+
+.graphiql-qb-fragment-open--button {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.graphiql-qb-fragment-open--button:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 
 .graphiql-qb-fragment-name {
   font-family: var(--font-family-mono);
-  font-size: var(--font-size-mono);
+  font-size: var(--font-size-eyebrow);
+  font-weight: 600;
   color: oklch(var(--accent-blue));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.graphiql-qb-create-fragment-btn {
-  margin-top: var(--px-8);
+.graphiql-qb-fragment-type {
+  flex-shrink: 0;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-eyebrow);
+  color: oklch(var(--fg-subtle));
+  white-space: nowrap;
+}
+
+.graphiql-qb-fragment-type-name {
+  color: oklch(var(--type-composite));
+}
+
+.graphiql-qb-fragment-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--px-4);
+  opacity: 0;
+  transition: opacity 80ms;
+}
+
+.graphiql-qb-fragment-item:hover .graphiql-qb-fragment-actions,
+.graphiql-qb-fragment-actions:focus-within {
+  opacity: 1;
+}
+
+.graphiql-qb-fragment-rename {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-mono);
+  color: oklch(var(--fg-default));
   background: oklch(var(--bg-subtle));
   border: 1px solid oklch(var(--border-strong));
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
+  padding: 1px var(--px-6);
+}
+
+.graphiql-qb-fragment-rename:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 1px;
+}
+
+/* Row actions live in the right-aligned actions cluster, which reveals on row
+   hover/focus (see .graphiql-qb-fragment-actions above). */
+.graphiql-qb-fragment-rename-btn,
+.graphiql-qb-fragment-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--px-4);
+  border: none;
+  background: none;
+  color: oklch(var(--fg-subtle));
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition:
+    color 80ms,
+    background 80ms;
+}
+
+.graphiql-qb-fragment-rename-btn:hover,
+.graphiql-qb-fragment-delete-btn:hover {
+  color: oklch(var(--fg-default));
+  background: oklch(var(--fg-default) / 0.08);
+}
+
+.graphiql-qb-fragment-rename-btn svg,
+.graphiql-qb-fragment-delete-btn svg {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+.graphiql-qb-fragment-rename-btn:focus-visible,
+.graphiql-qb-fragment-delete-btn:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 1px;
+  border-radius: var(--radius-sm);
+}
+
+/* =========================================================================
+   Row-level fragment actions (extract) + the extracted-spread badge
+   ========================================================================= */
+
+/* The extract button lives in the field header and stays hidden until the row
+   is hovered or the button is focused, so it doesn't clutter every composite
+   row. Mirrors the inline-fragment header reveal pattern. */
+.graphiql-qb-field-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-6);
+  margin-left: var(--px-6);
+  opacity: 0;
+  transition: opacity 80ms;
+}
+
+.graphiql-qb-field-header:hover .graphiql-qb-field-actions,
+.graphiql-qb-field-actions:focus-within {
+  opacity: 1;
+}
+
+.graphiql-qb-extract-fragment-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-4);
+  padding: 1px var(--px-6);
+  border: 1px solid oklch(var(--border-strong));
+  border-radius: var(--radius-sm);
+  background: oklch(var(--bg-subtle));
   color: oklch(var(--fg-muted));
   cursor: pointer;
   font-family: var(--font-family);
-  font-size: var(--font-size-small);
-  padding: var(--px-6) var(--px-12);
-  width: 100%;
-  text-align: left;
+  font-size: var(--font-size-eyebrow);
+  white-space: nowrap;
   transition:
     background 80ms,
     color 80ms;
 }
 
-.graphiql-qb-create-fragment-btn:hover {
+.graphiql-qb-extract-fragment-btn svg {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+.graphiql-qb-extract-fragment-btn:hover {
   background: oklch(var(--bg-overlay));
   color: oklch(var(--fg-default));
+}
+
+.graphiql-qb-extract-fragment-btn:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 1px;
+}
+
+/* Fragment spreads in a field's selection render as reference rows among its
+   children (`...FragmentName`), so an extracted field stays a normal editable
+   composite instead of collapsing into a badge. */
+.graphiql-qb-fragment-refs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.graphiql-qb-fragment-ref-item {
+  display: flex;
+  align-items: center;
+  gap: var(--px-6);
+  /* Matches the field header's left padding so the spread's checkbox lines up
+     with the sibling field checkboxes (which sit at indent + this padding). */
+  padding-left: var(--px-8);
+  min-height: var(--px-24);
+}
+
+.graphiql-qb-fragment-ref {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-mono);
+  color: oklch(var(--accent-blue));
+}
+
+/* The reference doubles as the jump-in point for editing that fragment. */
+.graphiql-qb-fragment-ref--button {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.graphiql-qb-fragment-ref--button:hover {
+  text-decoration: underline;
+}
+
+.graphiql-qb-fragment-ref--button:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 1px;
+  border-radius: var(--radius-sm);
+}
+
+/* =========================================================================
+   Focused fragment editor (shown when the active target is a fragment)
+   ========================================================================= */
+
+.graphiql-qb-fragment-editor-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-12);
+  padding: var(--px-12) var(--px-14) var(--px-12);
+  border-bottom: 1px solid oklch(var(--border-default));
+  margin-bottom: var(--px-8);
+}
+
+.graphiql-qb-fragment-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-6);
+  align-self: flex-start;
+  padding: var(--px-4) var(--px-8);
+  border: 1px solid oklch(var(--border-default));
+  background: none;
+  color: oklch(var(--fg-muted));
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+  border-radius: var(--radius-sm);
+}
+
+.graphiql-qb-fragment-back:hover {
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-qb-fragment-back:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 1px;
+}
+
+.graphiql-qb-fragment-back svg {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+.graphiql-qb-fragment-editor-title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-4);
+}
+
+.graphiql-qb-fragment-editor-heading {
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  font-weight: 600;
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-qb-fragment-editor-name {
+  font-family: var(--font-family-mono);
+  font-weight: 600;
+  color: oklch(var(--accent-blue));
+}
+
+.graphiql-qb-fragment-editor-type {
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+  color: oklch(var(--fg-subtle));
 }

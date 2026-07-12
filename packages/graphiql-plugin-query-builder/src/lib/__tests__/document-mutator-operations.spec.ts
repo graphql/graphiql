@@ -26,7 +26,7 @@ describe('toggleFieldSelection — named operation targeting', () => {
     const result = toggleFieldSelection(
       d,
       [fieldSegment('createHero'), fieldSegment('name')],
-      'B',
+      { kind: 'operation', name: 'B' },
     );
     const printed = print(result);
 
@@ -52,7 +52,7 @@ describe('toggleFieldSelection — named operation targeting', () => {
     const result = toggleFieldSelection(
       d,
       [fieldSegment('hero'), fieldSegment('name')],
-      'A',
+      { kind: 'operation', name: 'A' },
     );
     const printed = print(result);
 
@@ -72,36 +72,62 @@ describe('toggleFieldSelection — named operation targeting', () => {
 describe('isFieldSelected — per operation name', () => {
   it('returns true for a field in A when targeting A', () => {
     const d = twoOpDoc();
-    expect(isFieldSelected(d, [fieldSegment('hero')], 'A')).toBe(true);
+    expect(
+      isFieldSelected(d, [fieldSegment('hero')], {
+        kind: 'operation',
+        name: 'A',
+      }),
+    ).toBe(true);
   });
 
   it('returns false for a field in A when targeting B', () => {
     const d = twoOpDoc();
     // hero is in A, not in B
-    expect(isFieldSelected(d, [fieldSegment('hero')], 'B')).toBe(false);
+    expect(
+      isFieldSelected(d, [fieldSegment('hero')], {
+        kind: 'operation',
+        name: 'B',
+      }),
+    ).toBe(false);
   });
 
   it('returns true for a field in B when targeting B', () => {
     const d = twoOpDoc();
-    expect(isFieldSelected(d, [fieldSegment('createHero')], 'B')).toBe(true);
+    expect(
+      isFieldSelected(d, [fieldSegment('createHero')], {
+        kind: 'operation',
+        name: 'B',
+      }),
+    ).toBe(true);
   });
 
   it('returns false for a field in B when targeting A', () => {
     const d = twoOpDoc();
-    expect(isFieldSelected(d, [fieldSegment('createHero')], 'A')).toBe(false);
+    expect(
+      isFieldSelected(d, [fieldSegment('createHero')], {
+        kind: 'operation',
+        name: 'A',
+      }),
+    ).toBe(false);
   });
 });
 
 describe('getFieldArgValues / setFieldArgument — named operation', () => {
   it('reads arg values from the correct operation', () => {
     const d = twoOpDoc();
-    const values = getFieldArgValues(d, [fieldSegment('createHero')], 'B');
+    const values = getFieldArgValues(d, [fieldSegment('createHero')], {
+      kind: 'operation',
+      name: 'B',
+    });
     expect(values['name']).toBe('Luke');
   });
 
   it('returns empty when path resolves in a different operation', () => {
     const d = twoOpDoc();
-    const values = getFieldArgValues(d, [fieldSegment('createHero')], 'A');
+    const values = getFieldArgValues(d, [fieldSegment('createHero')], {
+      kind: 'operation',
+      name: 'A',
+    });
     expect(Object.keys(values)).toHaveLength(0);
   });
 
@@ -113,17 +139,19 @@ describe('getFieldArgValues / setFieldArgument — named operation', () => {
       [fieldSegment('createHero')],
       'name',
       valueNode,
-      'B',
+      { kind: 'operation', name: 'B' },
     );
 
-    const valuesB = getFieldArgValues(
-      result,
-      [fieldSegment('createHero')],
-      'B',
-    );
+    const valuesB = getFieldArgValues(result, [fieldSegment('createHero')], {
+      kind: 'operation',
+      name: 'B',
+    });
     expect(valuesB['name']).toBe('Leia');
 
-    const valuesA = getFieldArgValues(result, [fieldSegment('hero')], 'A');
+    const valuesA = getFieldArgValues(result, [fieldSegment('hero')], {
+      kind: 'operation',
+      name: 'A',
+    });
     expect(Object.keys(valuesA)).toHaveLength(0);
   });
 });
@@ -131,27 +159,39 @@ describe('getFieldArgValues / setFieldArgument — named operation', () => {
 describe('backward-compatibility — no operationName falls back to first operation', () => {
   it('isFieldSelected without operationName targets the first operation', () => {
     const d = twoOpDoc();
-    expect(isFieldSelected(d, [fieldSegment('hero')])).toBe(true);
-    expect(isFieldSelected(d, [fieldSegment('createHero')])).toBe(false);
+    expect(
+      isFieldSelected(d, [fieldSegment('hero')], { kind: 'operation' }),
+    ).toBe(true);
+    expect(
+      isFieldSelected(d, [fieldSegment('createHero')], { kind: 'operation' }),
+    ).toBe(false);
   });
 
   it('toggleFieldSelection without operationName modifies the first operation', () => {
     const d = twoOpDoc();
-    const result = toggleFieldSelection(d, [
-      fieldSegment('hero'),
-      fieldSegment('name'),
-    ]);
-    expect(
-      isFieldSelected(
-        result,
-        [fieldSegment('hero'), fieldSegment('name')],
-        'A',
-      ),
-    ).toBe(true);
-    expect(isFieldSelected(result, [fieldSegment('createHero')], 'B')).toBe(
-      true,
+    const result = toggleFieldSelection(
+      d,
+      [fieldSegment('hero'), fieldSegment('name')],
+      { kind: 'operation' },
     );
-    expect(isFieldSelected(result, [fieldSegment('hero')], 'B')).toBe(false);
+    expect(
+      isFieldSelected(result, [fieldSegment('hero'), fieldSegment('name')], {
+        kind: 'operation',
+        name: 'A',
+      }),
+    ).toBe(true);
+    expect(
+      isFieldSelected(result, [fieldSegment('createHero')], {
+        kind: 'operation',
+        name: 'B',
+      }),
+    ).toBe(true);
+    expect(
+      isFieldSelected(result, [fieldSegment('hero')], {
+        kind: 'operation',
+        name: 'B',
+      }),
+    ).toBe(false);
   });
 
   it('getFieldArgValues without operationName reads from the first operation', () => {
@@ -159,7 +199,9 @@ describe('backward-compatibility — no operationName falls back to first operat
     const d = parse(`query A { hero(id: "1") { name } } mutation B { noop }`, {
       noLocation: true,
     });
-    const values = getFieldArgValues(d, [fieldSegment('hero')]);
+    const values = getFieldArgValues(d, [fieldSegment('hero')], {
+      kind: 'operation',
+    });
     expect(values['id']).toBe('1');
   });
 });
@@ -167,9 +209,12 @@ describe('backward-compatibility — no operationName falls back to first operat
 describe('fallback when operationName does not match any operation', () => {
   it('isFieldSelected falls back to first operation on unknown name', () => {
     const d = twoOpDoc();
-    expect(isFieldSelected(d, [fieldSegment('hero')], 'NonExistent')).toBe(
-      true,
-    );
+    expect(
+      isFieldSelected(d, [fieldSegment('hero')], {
+        kind: 'operation',
+        name: 'NonExistent',
+      }),
+    ).toBe(true);
   });
 
   it('toggleFieldSelection falls back to first operation on unknown name', () => {
@@ -177,25 +222,30 @@ describe('fallback when operationName does not match any operation', () => {
     const result = toggleFieldSelection(
       d,
       [fieldSegment('hero'), fieldSegment('name')],
-      'NoMatch',
+      { kind: 'operation', name: 'NoMatch' },
     );
     expect(
-      isFieldSelected(
-        result,
-        [fieldSegment('hero'), fieldSegment('name')],
-        'A',
-      ),
+      isFieldSelected(result, [fieldSegment('hero'), fieldSegment('name')], {
+        kind: 'operation',
+        name: 'A',
+      }),
     ).toBe(true);
-    expect(isFieldSelected(result, [fieldSegment('createHero')], 'B')).toBe(
-      true,
-    );
+    expect(
+      isFieldSelected(result, [fieldSegment('createHero')], {
+        kind: 'operation',
+        name: 'B',
+      }),
+    ).toBe(true);
   });
 
   it('getFieldArgValues falls back to first operation on unknown name', () => {
     const d = parse(`query A { hero(id: "1") { name } } mutation B { noop }`, {
       noLocation: true,
     });
-    const values = getFieldArgValues(d, [fieldSegment('hero')], 'NoMatch');
+    const values = getFieldArgValues(d, [fieldSegment('hero')], {
+      kind: 'operation',
+      name: 'NoMatch',
+    });
     expect(values['id']).toBe('1');
   });
 });

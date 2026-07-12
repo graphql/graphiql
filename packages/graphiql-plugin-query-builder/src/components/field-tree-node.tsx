@@ -1,4 +1,5 @@
 import {
+  Kind,
   getNamedType,
   isInterfaceType,
   isObjectType,
@@ -14,7 +15,12 @@ import {
   getFieldArgVariables,
   isFieldSelected,
 } from '../lib/document-mutator';
-import { fieldSegment, type PathSegment } from '../lib/ast-path';
+import {
+  fieldSegment,
+  findDefinition,
+  findSelectionSet,
+  type PathSegment,
+} from '../lib/ast-path';
 import { useFieldTreeContext } from './field-tree-context';
 import { FieldTreeList } from './field-tree';
 import { FieldRow } from './field-row';
@@ -30,26 +36,61 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
   const {
     doc,
     schema,
-    operationName,
+    target,
     cursorPath,
     onToggle,
     onSetArg,
     onPromoteArg,
     onDemoteArg,
+    onExtractFragment,
+    onFocusFragment,
+    onRemoveFragmentSpread,
   } = useFieldTreeContext();
 
   const [expanded, setExpanded] = useState(false);
   const fullPath = [...path, fieldSegment(field.name)];
-  const argValues = getFieldArgValues(doc, fullPath, operationName);
-  const argVariables = getFieldArgVariables(doc, fullPath, operationName);
+  const argValues = getFieldArgValues(doc, fullPath, target);
+  const argVariables = getFieldArgVariables(doc, fullPath, target);
 
   const namedType = getNamedType(field.type);
   const isObject = isObjectType(namedType);
+  const isInterface = isInterfaceType(namedType);
   const isAbstract =
     namedType !== undefined &&
     (isUnionType(namedType) || isInterfaceType(namedType));
-  const selected = isFieldSelected(doc, fullPath, operationName);
+  const selected = isFieldSelected(doc, fullPath, target);
   const hasChildren = isObject || isAbstract;
+
+  // Fragments only make sense on a composite selection set that has fields to
+  // lift out. An object or interface type qualifies; a bare union does not (it
+  // has no directly-selectable fields of its own).
+  const isFragmentTarget = isObject || isInterface;
+  const definition = findDefinition(doc, target);
+  const nodeSelectionSet = definition
+    ? findSelectionSet(definition.selectionSet, fullPath)
+    : undefined;
+  const nodeSelections = nodeSelectionSet?.selections ?? [];
+
+  // Fragment spreads sitting in this field's selection (e.g. after extraction,
+  // `person { ...PersonFields }`) render as reference rows among the field's
+  // children. The field itself stays a normal, editable composite — ticking
+  // more fields adds them alongside the spread in the base query.
+  const spreadRefs = nodeSelections
+    .filter(s => s.kind === Kind.FRAGMENT_SPREAD)
+    .map(s => s.name.value);
+
+  // Offer extraction only when there's a concrete selection to lift out — a
+  // bare spread has nothing new to extract.
+  const hasExtractableSelection = nodeSelections.some(
+    s => s.kind === Kind.FIELD || s.kind === Kind.INLINE_FRAGMENT,
+  );
+  const canExtract = Boolean(
+    isFragmentTarget &&
+    namedType &&
+    onExtractFragment &&
+    expanded &&
+    hasExtractableSelection,
+  );
 
   const { flash, current, nodeRef } = useCursorReveal(
     fullPath,
@@ -60,6 +101,11 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
   function handleExpand() {
     setExpanded(prev => !prev);
   }
+
+  const handleExtract =
+    canExtract && namedType
+      ? () => onExtractFragment!(fullPath, namedType.name)
+      : undefined;
 
   return (
     <div className="graphiql-qb-field-node" ref={nodeRef}>
@@ -73,12 +119,56 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
         current={current}
         argValues={argValues}
         argVariables={argVariables}
+        onExtractFragment={handleExtract}
         onToggle={onToggle}
         onExpand={handleExpand}
         onSetArg={onSetArg}
         onPromoteArg={onPromoteArg}
         onDemoteArg={onDemoteArg}
       />
+      {expanded && spreadRefs.length > 0 && (
+        <ul
+          className="graphiql-qb-fragment-refs"
+          role="list"
+          style={{ paddingLeft: fullPath.length * 12 }}
+        >
+          {spreadRefs.map(name => (
+            <li key={name} className="graphiql-qb-fragment-ref-item">
+              {onRemoveFragmentSpread && (
+                // A checked box: the spread is a selection. Unchecking removes
+                // it, and the row disappears with the spread.
+                <input
+                  type="checkbox"
+                  className="graphiql-qb-field-checkbox"
+                  checked
+                  onChange={() => onRemoveFragmentSpread(fullPath, name)}
+                  aria-label={`Remove fragment spread ${name}`}
+                />
+              )}
+              {onFocusFragment ? (
+                <button
+                  type="button"
+                  className="graphiql-qb-fragment-ref graphiql-qb-fragment-ref--button"
+                  data-testid="fragment-ref"
+                  onClick={() => onFocusFragment(name)}
+                  aria-label={`Edit fragment ${name}`}
+                >
+                  <span className="graphiql-qb-spread">...</span>
+                  {name}
+                </button>
+              ) : (
+                <span
+                  className="graphiql-qb-fragment-ref"
+                  data-testid="fragment-ref"
+                >
+                  <span className="graphiql-qb-spread">...</span>
+                  {name}
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
       {isObject && expanded && namedType && isObjectType(namedType) && (
         <FieldTreeList type={namedType as GraphQLObjectType} path={fullPath} />
       )}

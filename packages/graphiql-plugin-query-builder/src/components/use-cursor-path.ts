@@ -1,19 +1,31 @@
 import { useGraphiQL, useMonaco } from '@graphiql/react';
 import { parse } from 'graphql';
 import { useEffect, useState } from 'react';
-import { type PathSegment } from '../lib/ast-path';
-import { fieldPathAtOffset } from '../lib/schema-walk';
+import { type DefinitionTarget, type PathSegment } from '../lib/ast-path';
+import { cursorContextAtOffset } from '../lib/schema-walk';
+
+export interface CursorContext {
+  /** The definition the cursor sits in, or undefined when it's outside one. */
+  target: DefinitionTarget | undefined;
+  /** Field path under the cursor within `target`; empty when not on a field. */
+  path: PathSegment[];
+}
+
+const EMPTY_CONTEXT: CursorContext = { target: undefined, path: [] };
 
 /**
- * Tracks the field path under the editor cursor so the tree can expand down to
- * it. Subscribes to the query editor directly (debounced to avoid thrashing
- * while typing), ignoring cursor resets caused by our own writes.
+ * Tracks the definition (operation or fragment) and field path under the editor
+ * cursor. The builder follows this: the cursor's definition is the one being
+ * edited, and the path expands the tree down to the cursor. Subscribes to the
+ * query editor directly (debounced to avoid thrashing while typing), reacting
+ * only to explicit user cursor moves — not the cursor resets our own writes
+ * cause.
  */
-export function useCursorPath(): PathSegment[] {
+export function useCursorContext(): CursorContext {
   const queryEditor = useGraphiQL(state => state.queryEditor);
   const monaco = useMonaco(state => state.monaco);
 
-  const [cursorPath, setCursorPath] = useState<PathSegment[]>([]);
+  const [context, setContext] = useState<CursorContext>(EMPTY_CONTEXT);
   useEffect(() => {
     if (!queryEditor) {
       return;
@@ -26,11 +38,16 @@ export function useCursorPath(): PathSegment[] {
         return;
       }
       const offset = model.getOffsetAt(pos);
+      let resolved:
+        | { target: DefinitionTarget | undefined; path: PathSegment[] }
+        | undefined;
       try {
-        setCursorPath(fieldPathAtOffset(parse(model.getValue()), offset));
+        resolved = cursorContextAtOffset(parse(model.getValue()), offset);
       } catch {
-        // Unparseable in-progress edit — leave the path as-is.
+        // Unparseable in-progress edit — leave the context as-is.
+        return;
       }
+      setContext(resolved ?? EMPTY_CONTEXT);
     };
     const schedule = () => {
       clearTimeout(timer);
@@ -49,5 +66,5 @@ export function useCursorPath(): PathSegment[] {
     };
   }, [queryEditor, monaco]);
 
-  return cursorPath;
+  return context;
 }

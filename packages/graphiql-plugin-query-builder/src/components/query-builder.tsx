@@ -4,12 +4,12 @@ import {
   PanelHeader,
   useGraphiQL,
 } from '@graphiql/react';
-import { OperationTypeNode, isInterfaceType, isObjectType } from 'graphql';
+import { OperationTypeNode } from 'graphql';
 import { type FC, useEffect, useState } from 'react';
-import { countSelectedFields, resolveFieldNamedType } from '../lib/schema-walk';
+import { countSelectedFields } from '../lib/schema-walk';
 import { FragmentSection } from './fragment-section';
+import { FragmentEditor } from './fragment-editor';
 import { FieldTree } from './field-tree';
-import { useCursorPath } from './use-cursor-path';
 import { useWorkingDocument } from './use-working-document';
 import './../style.css';
 
@@ -20,16 +20,21 @@ export const QueryBuilder: FC = () => {
   const {
     workingDoc,
     activeOpKind,
+    target,
+    cursorPath,
+    handleFocusFragment,
+    handleBackToQuery,
     handleToggle,
     handleSetArg,
     handlePromoteArg,
     handleDemoteArg,
     handleAddInlineFragment,
     handleRemoveInlineFragment,
-    handleCreateFragment,
+    handleRemoveFragmentSpread,
+    handleExtractFragment,
+    handleRenameFragment,
+    handleDeleteFragment,
   } = useWorkingDocument();
-
-  const cursorPath = useCursorPath();
 
   // Per-root manual collapse/expand overrides, keyed by operation kind. Reset
   // whenever the active operation kind changes so the newly active root opens.
@@ -39,18 +44,6 @@ export const QueryBuilder: FC = () => {
   useEffect(() => {
     setManualExpanded({});
   }, [activeOpKind]);
-
-  // A fragment can be extracted from the field the cursor is in, as long as it
-  // resolves to a composite type (object or interface — those have a selection
-  // set worth lifting out).
-  const fragmentType =
-    schema && cursorPath.length > 0
-      ? resolveFieldNamedType(schema, activeOpKind, cursorPath)
-      : undefined;
-  const canCreateFragment = Boolean(
-    fragmentType &&
-    (isObjectType(fragmentType) || isInterfaceType(fragmentType)),
-  );
 
   const header = (
     <PanelHeader
@@ -85,74 +78,101 @@ export const QueryBuilder: FC = () => {
     <div className="graphiql-query-builder">
       {header}
       <div className="graphiql-qb-body">
-        {rootTypes.map(({ op: opKind, type: rootType }) => {
-          const isActiveRoot = opKind === activeOpKind;
-          const expanded = manualExpanded[opKind] ?? isActiveRoot;
-          return (
-            <section
-              key={rootType.name}
-              className="graphiql-qb-root-section"
-              data-active={isActiveRoot ? 'true' : 'false'}
-            >
-              <button
-                type="button"
-                className="graphiql-qb-op-header"
-                disabled={!isActiveRoot}
-                aria-expanded={expanded}
-                title={
-                  isActiveRoot
-                    ? undefined
-                    : `Move the cursor into a ${opKind} operation to edit ${rootType.name} fields`
-                }
-                onClick={() =>
-                  setManualExpanded(prev => ({ ...prev, [opKind]: !expanded }))
-                }
+        {target.kind === 'fragment' ? (
+          <FragmentEditor
+            fragmentName={target.name}
+            doc={workingDoc}
+            schema={schema}
+            target={target}
+            cursorPath={cursorPath}
+            onBack={handleBackToQuery}
+            onToggle={handleToggle}
+            onSetArg={handleSetArg}
+            onAddInlineFragment={handleAddInlineFragment}
+            onRemoveInlineFragment={handleRemoveInlineFragment}
+            onRemoveFragmentSpread={handleRemoveFragmentSpread}
+            onExtractFragment={handleExtractFragment}
+            onRenameFragment={handleRenameFragment}
+            onFocusFragment={handleFocusFragment}
+          />
+        ) : (
+          rootTypes.map(({ op: opKind, type: rootType }) => {
+            const isActiveRoot = opKind === activeOpKind;
+            const expanded = manualExpanded[opKind] ?? isActiveRoot;
+            return (
+              <section
+                key={rootType.name}
+                className="graphiql-qb-root-section"
+                data-active={isActiveRoot ? 'true' : 'false'}
               >
-                <span
-                  className={
-                    expanded
-                      ? 'graphiql-qb-chevron-expanded'
-                      : 'graphiql-qb-chevron-collapsed'
+                <button
+                  type="button"
+                  className="graphiql-qb-op-header"
+                  disabled={!isActiveRoot}
+                  aria-expanded={expanded}
+                  title={
+                    isActiveRoot
+                      ? undefined
+                      : `Move the cursor into a ${opKind} operation to edit ${rootType.name} fields`
+                  }
+                  onClick={() =>
+                    setManualExpanded(prev => ({
+                      ...prev,
+                      [opKind]: !expanded,
+                    }))
                   }
                 >
-                  <ChevronDownIcon />
-                </span>
-                <MethodPill operation={opKind} />
-                <span className="graphiql-qb-op-name graphiql-qb-root-name">
-                  {rootType.name}
-                </span>
-                {isActiveRoot && (
-                  <span className="graphiql-qb-op-count">
-                    {selectedCount} selected
+                  <span
+                    className={
+                      expanded
+                        ? 'graphiql-qb-chevron-expanded'
+                        : 'graphiql-qb-chevron-collapsed'
+                    }
+                  >
+                    <ChevronDownIcon />
                   </span>
+                  <MethodPill operation={opKind} />
+                  <span className="graphiql-qb-op-name graphiql-qb-root-name">
+                    {rootType.name}
+                  </span>
+                  {isActiveRoot && (
+                    <span className="graphiql-qb-op-count">
+                      {selectedCount} selected
+                    </span>
+                  )}
+                </button>
+                {expanded && (
+                  <FieldTree
+                    type={rootType}
+                    path={[]}
+                    doc={workingDoc}
+                    schema={schema ?? undefined}
+                    target={target}
+                    cursorPath={isActiveRoot ? cursorPath : undefined}
+                    onToggle={handleToggle}
+                    onSetArg={handleSetArg}
+                    onPromoteArg={handlePromoteArg}
+                    onDemoteArg={handleDemoteArg}
+                    onAddInlineFragment={handleAddInlineFragment}
+                    onRemoveInlineFragment={handleRemoveInlineFragment}
+                    onRemoveFragmentSpread={handleRemoveFragmentSpread}
+                    onExtractFragment={handleExtractFragment}
+                    onRenameFragment={handleRenameFragment}
+                    onFocusFragment={handleFocusFragment}
+                  />
                 )}
-              </button>
-              {expanded && (
-                <FieldTree
-                  type={rootType}
-                  path={[]}
-                  doc={workingDoc}
-                  schema={schema ?? undefined}
-                  operationName={operationName}
-                  cursorPath={isActiveRoot ? cursorPath : undefined}
-                  onToggle={handleToggle}
-                  onSetArg={handleSetArg}
-                  onPromoteArg={handlePromoteArg}
-                  onDemoteArg={handleDemoteArg}
-                  onAddInlineFragment={handleAddInlineFragment}
-                  onRemoveInlineFragment={handleRemoveInlineFragment}
-                />
-              )}
-            </section>
-          );
-        })}
+              </section>
+            );
+          })
+        )}
         <FragmentSection
           doc={workingDoc}
-          onCreateFragment={
-            canCreateFragment
-              ? () => handleCreateFragment(cursorPath, fragmentType!)
-              : undefined
+          activeFragmentName={
+            target.kind === 'fragment' ? target.name : undefined
           }
+          onFocusFragment={handleFocusFragment}
+          onRenameFragment={handleRenameFragment}
+          onDeleteFragment={handleDeleteFragment}
         />
       </div>
     </div>

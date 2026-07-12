@@ -154,3 +154,154 @@ describe('Query Builder – list argument (Int[])', () => {
     });
   });
 });
+
+describe('Query Builder – fragment extraction', () => {
+  /**
+   * Expand a composite field, select a scalar child, then extract the row to a
+   * fragment. The selection becomes a spread and a matching fragment definition
+   * is appended.
+   */
+  it('extracts a selected subtree into a named fragment via the row action', () => {
+    openQueryBuilder();
+
+    // Expand `person` (a Person-typed composite) and select `name`.
+    cy.get('[aria-label="Expand person"]').click();
+    cy.get('[aria-label="Toggle name"]').click();
+    expectQuery(query =>
+      expect(query.replaceAll(/\s+/g, '')).to.include('person{name}'),
+    );
+
+    // The extract action reveals on hover; force the click since it starts at
+    // opacity 0 until the row is hovered.
+    cy.get('[aria-label="Extract person to a fragment"]').click({
+      force: true,
+    });
+
+    expectQuery(query => {
+      const compact = query.replaceAll(/\s+/g, '');
+      expect(compact).to.include('person{...PersonFields}');
+      expect(query).to.match(/fragment\s+PersonFields\s+on\s+Person/);
+      expect(compact).to.include('name');
+    });
+
+    // The fragment is listed and the extracted field shows a spread reference
+    // among its children (the row stays an editable composite, not a badge).
+    cy.get('.graphiql-qb-fragment-name').should('contain.text', 'PersonFields');
+    cy.get('[data-testid="fragment-ref"]').should(
+      'contain.text',
+      'PersonFields',
+    );
+  });
+
+  /**
+   * The extract action is a plain, keyboard-focusable <button> (no negative
+   * tabindex, no hover-only operability): it can take focus and activate while
+   * focused. Native Enter/Space activation of the button element is covered by
+   * the plugin unit tests via userEvent.
+   */
+  it('exposes the extract action as a focusable, operable button', () => {
+    openQueryBuilder();
+
+    cy.get('[aria-label="Expand person"]').click();
+    cy.get('[aria-label="Toggle name"]').click();
+
+    cy.get('[aria-label="Extract person to a fragment"]')
+      .focus()
+      .should('be.focused')
+      .click();
+
+    expectQuery(query =>
+      expect(query.replaceAll(/\s+/g, '')).to.include(
+        'person{...PersonFields}',
+      ),
+    );
+  });
+
+  /**
+   * Clicking a `...FragmentName` reference row opens that fragment for editing.
+   * Ticking a field there edits the fragment definition, not the base query.
+   */
+  it('edits an extracted fragment from its reference row', () => {
+    openQueryBuilder();
+
+    cy.get('[aria-label="Expand person"]').click();
+    cy.get('[aria-label="Toggle name"]').click();
+    cy.get('[aria-label="Extract person to a fragment"]').click({
+      force: true,
+    });
+
+    // Jump into the fragment from the reference row on the person field.
+    cy.get('[data-testid="fragment-ref"]').click();
+    cy.get('[aria-label="Back to query"]').should('be.visible');
+    cy.get('.graphiql-qb-fragment-editor-name').should(
+      'contain.text',
+      'PersonFields',
+    );
+
+    // Tick another field: it lands in the fragment, and the operation still
+    // just spreads it.
+    cy.get('[aria-label="Toggle age"]').click();
+    expectQuery(query => {
+      expect(query).to.match(
+        /fragment\s+PersonFields\s+on\s+Person\s*{\s*name\s+age\s*}/,
+      );
+      expect(query.replaceAll(/\s+/g, '')).to.include(
+        'person{...PersonFields}',
+      );
+    });
+
+    // Return to the operation view.
+    cy.get('[aria-label="Back to query"]').click();
+    cy.get('[aria-label="Back to query"]').should('not.exist');
+  });
+
+  /**
+   * The spread reference is a checked row; unchecking it removes the spread and
+   * the row disappears.
+   */
+  it('removes the spread when its reference row is unchecked', () => {
+    openQueryBuilder();
+
+    cy.get('[aria-label="Expand person"]').click();
+    cy.get('[aria-label="Toggle name"]').click();
+    cy.get('[aria-label="Extract person to a fragment"]').click({
+      force: true,
+    });
+    cy.get('[data-testid="fragment-ref"]').should('be.visible');
+
+    cy.get('[aria-label="Remove fragment spread PersonFields"]').click();
+
+    cy.get('[data-testid="fragment-ref"]').should('not.exist');
+    expectQuery(query => {
+      expect(query).to.not.include('...PersonFields');
+      // The fragment definition itself remains in the document.
+      expect(query).to.match(/fragment\s+PersonFields\s+on\s+Person/);
+    });
+  });
+
+  /**
+   * Deleting a fragment from the list pastes its selections inline wherever it
+   * was spread and removes the definition.
+   */
+  it('deletes a fragment from the list, inlining it where spread', () => {
+    openQueryBuilder();
+
+    cy.get('[aria-label="Expand person"]').click();
+    cy.get('[aria-label="Toggle name"]').click();
+    cy.get('[aria-label="Extract person to a fragment"]').click({
+      force: true,
+    });
+    cy.get('.graphiql-qb-fragment-name').should('contain.text', 'PersonFields');
+
+    cy.get(
+      '[aria-label="Delete fragment PersonFields, inlining it where spread"]',
+    ).click();
+
+    cy.get('.graphiql-qb-fragment-name').should('not.exist');
+    expectQuery(query => {
+      expect(query).to.not.include('...PersonFields');
+      expect(query).to.not.include('fragment PersonFields');
+      expect(query.replaceAll(/\s+/g, '')).to.include('person{name}');
+    });
+  });
+});

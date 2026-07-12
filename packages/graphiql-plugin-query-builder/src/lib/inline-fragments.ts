@@ -9,10 +9,11 @@ import {
   addField,
   fieldSegment,
   findNodeAtPath,
-  findOperation,
+  findDefinition,
   inlineFragmentSegment,
-  mapOperation,
+  mapDefinition,
   removeField,
+  type DefinitionTarget,
   type PathSegment,
 } from './ast-path';
 import { pruneUnusedVariableDefinitions } from './field-selection';
@@ -20,33 +21,33 @@ import { pruneUnusedVariableDefinitions } from './field-selection';
 function findFieldSelectionSet(
   doc: DocumentNode,
   path: PathSegment[],
-  operationName?: string,
+  target: DefinitionTarget,
 ): SelectionSetNode | undefined {
-  const operation = findOperation(doc, operationName);
-  if (!operation) {
+  const definition = findDefinition(doc, target);
+  if (!definition) {
     return undefined;
   }
 
   if (path.length === 0) {
-    return operation.selectionSet;
+    return definition.selectionSet;
   }
 
-  const node = findNodeAtPath(operation.selectionSet, path);
+  const node = findNodeAtPath(definition.selectionSet, path);
   return node?.selectionSet;
 }
 
 /**
- * Returns `true` when the field at `path` in the target operation (by name,
- * or the first operation when unspecified) of `doc` already contains an
+ * Returns `true` when the field at `path` in the definition addressed by
+ * `target` (an operation or a named fragment) of `doc` already contains an
  * `... on TypeName` inline fragment with the given `typeName`.
  */
 export function isInlineFragmentPresent(
   doc: DocumentNode,
   path: PathSegment[],
   typeName: string,
-  operationName?: string,
+  target: DefinitionTarget,
 ): boolean {
-  const selectionSet = findFieldSelectionSet(doc, path, operationName);
+  const selectionSet = findFieldSelectionSet(doc, path, target);
   if (!selectionSet) {
     return false;
   }
@@ -59,8 +60,8 @@ export function isInlineFragmentPresent(
 
 /**
  * Adds an `... on TypeName { __typename }` inline fragment to the field at
- * `path` in the target operation (by name, or the first operation when
- * unspecified) of `doc`. If the fragment is already present this is a no-op.
+ * `path` in the definition addressed by `target` (an operation or a named
+ * fragment) of `doc`. If the fragment is already present this is a no-op.
  *
  * Creates the field's selection set when the field currently has none.
  *
@@ -70,13 +71,13 @@ export function addInlineFragment(
   doc: DocumentNode,
   path: PathSegment[],
   typeName: string,
-  operationName?: string,
+  target: DefinitionTarget,
 ): DocumentNode {
   if (path.length === 0) {
     return doc;
   }
 
-  if (isInlineFragmentPresent(doc, path, typeName, operationName)) {
+  if (isInlineFragmentPresent(doc, path, typeName, target)) {
     return doc;
   }
 
@@ -89,15 +90,15 @@ export function addInlineFragment(
     inlineFragmentSegment(typeName),
     fieldSegment('__typename'),
   ];
-  return mapOperation(doc, operationName, operation => ({
-    ...operation,
-    selectionSet: addField(operation.selectionSet, fragmentPath),
+  return mapDefinition(doc, target, definition => ({
+    ...definition,
+    selectionSet: addField(definition.selectionSet, fragmentPath),
   }));
 }
 
 /**
  * Removes the `... on TypeName` inline fragment from the field at `path` in
- * the target operation (by name, or the first operation when unspecified) of
+ * the definition addressed by `target` (an operation or a named fragment) of
  * `doc`. If no such fragment exists this is a no-op.
  *
  * Returns a new `DocumentNode`; does not mutate `doc`.
@@ -106,7 +107,7 @@ export function removeInlineFragment(
   doc: DocumentNode,
   path: PathSegment[],
   typeName: string,
-  operationName?: string,
+  target: DefinitionTarget,
 ): DocumentNode {
   if (path.length === 0) {
     return doc;
@@ -114,21 +115,29 @@ export function removeInlineFragment(
 
   // Remove the entire inline fragment by treating it as a leaf path segment.
   const fragmentPath = [...path, inlineFragmentSegment(typeName)];
-  return mapOperation(doc, operationName, operation => {
-    const newSelectionSet = removeField(operation.selectionSet, fragmentPath);
-    if (newSelectionSet === operation.selectionSet) {
-      return operation;
+  return mapDefinition(doc, target, definition => {
+    const newSelectionSet = removeField(definition.selectionSet, fragmentPath);
+    if (newSelectionSet === definition.selectionSet) {
+      return definition;
     }
 
     if (newSelectionSet.selections.length === 0) {
-      // Removing the fragment emptied the operation; drop it (an operation with
-      // no selection set is unprintable).
-      return null;
+      if (definition.kind === Kind.OPERATION_DEFINITION) {
+        // Removing the fragment emptied the operation; drop it (an operation
+        // with no selection set is unprintable).
+        return null;
+      }
+      // Emptying a named fragment would orphan its spreads; keep it intact.
+      return definition;
+    }
+
+    if (definition.kind === Kind.FRAGMENT_DEFINITION) {
+      return { ...definition, selectionSet: newSelectionSet };
     }
 
     // Dropping the fragment can orphan a variable a field inside it used.
     return pruneUnusedVariableDefinitions(
-      { ...operation, selectionSet: newSelectionSet },
+      { ...definition, selectionSet: newSelectionSet },
       doc,
     );
   });

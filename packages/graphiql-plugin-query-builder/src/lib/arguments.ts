@@ -7,9 +7,10 @@ import {
 
 import {
   findNodeAtPath,
-  findOperation,
-  mapOperation,
+  findDefinition,
+  mapDefinition,
   setArgInSelectionSet,
+  type DefinitionTarget,
   type PathSegment,
 } from './ast-path';
 import { type ArgValue, valueNodeToArgValue } from './arg-value';
@@ -23,18 +24,18 @@ import { type ArgValue, valueNodeToArgValue } from './arg-value';
 export function getFieldArgVariables(
   doc: DocumentNode,
   path: PathSegment[],
-  operationName?: string,
+  target: DefinitionTarget,
 ): Record<string, string> {
   if (path.length === 0) {
     return {};
   }
 
-  const operation = findOperation(doc, operationName);
-  if (!operation) {
+  const definition = findDefinition(doc, target);
+  if (!definition) {
     return {};
   }
 
-  const node = findNodeAtPath(operation.selectionSet, path);
+  const node = findNodeAtPath(definition.selectionSet, path);
   if (!node) {
     return {};
   }
@@ -50,7 +51,7 @@ export function getFieldArgVariables(
 
 /**
  * Returns a map of argument name → `ArgValue` for the field at `path`
- * in the target operation (by name, or the first operation when unspecified)
+ * in the definition addressed by `target` (an operation or a named fragment)
  * of `doc`. Values are extracted from the AST and converted to `ArgValue`
  * (leaves become strings; lists and input objects become arrays and plain
  * objects). Arguments not present in the doc are omitted from the returned
@@ -59,18 +60,18 @@ export function getFieldArgVariables(
 export function getFieldArgValues(
   doc: DocumentNode,
   path: PathSegment[],
-  operationName?: string,
+  target: DefinitionTarget,
 ): Record<string, ArgValue> {
   if (path.length === 0) {
     return {};
   }
 
-  const operation = findOperation(doc, operationName);
-  if (!operation) {
+  const definition = findDefinition(doc, target);
+  if (!definition) {
     return {};
   }
 
-  const node = findNodeAtPath(operation.selectionSet, path);
+  const node = findNodeAtPath(definition.selectionSet, path);
   if (!node) {
     return {};
   }
@@ -84,7 +85,7 @@ export function getFieldArgValues(
 
 /**
  * Sets or removes a named argument on the field located at `path` within the
- * target operation (by name, or the first operation when unspecified) of `doc`.
+ * definition addressed by `target` (an operation or a named fragment) of `doc`.
  * When `value` is `undefined` the argument is removed; otherwise it is added
  * or updated in place.
  *
@@ -95,22 +96,22 @@ export function setFieldArgument(
   path: PathSegment[],
   argName: string,
   value: ValueNode | undefined,
-  operationName?: string,
+  target: DefinitionTarget,
 ): DocumentNode {
   if (path.length === 0) {
     return doc;
   }
 
-  return mapOperation(doc, operationName, operation => {
+  return mapDefinition(doc, target, definition => {
     const newSelectionSet = setArgInSelectionSet(
-      operation.selectionSet,
+      definition.selectionSet,
       path,
       argName,
       value,
     );
-    if (newSelectionSet === operation.selectionSet) {
-      return operation;
+    if (newSelectionSet === definition.selectionSet) {
+      return definition;
     }
-    return { ...operation, selectionSet: newSelectionSet };
+    return { ...definition, selectionSet: newSelectionSet };
   });
 }
