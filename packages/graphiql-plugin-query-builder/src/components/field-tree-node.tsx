@@ -17,7 +17,7 @@ import {
 } from '../lib/document-mutator';
 import {
   fieldSegment,
-  findOperation,
+  findDefinition,
   findSelectionSet,
   type PathSegment,
 } from '../lib/ast-path';
@@ -36,7 +36,7 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
   const {
     doc,
     schema,
-    operationName,
+    target,
     cursorPath,
     onToggle,
     onSetArg,
@@ -47,8 +47,8 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
 
   const [expanded, setExpanded] = useState(false);
   const fullPath = [...path, fieldSegment(field.name)];
-  const argValues = getFieldArgValues(doc, fullPath, operationName);
-  const argVariables = getFieldArgVariables(doc, fullPath, operationName);
+  const argValues = getFieldArgValues(doc, fullPath, target);
+  const argVariables = getFieldArgVariables(doc, fullPath, target);
 
   const namedType = getNamedType(field.type);
   const isObject = isObjectType(namedType);
@@ -56,16 +56,16 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
   const isAbstract =
     namedType !== undefined &&
     (isUnionType(namedType) || isInterfaceType(namedType));
-  const selected = isFieldSelected(doc, fullPath, operationName);
+  const selected = isFieldSelected(doc, fullPath, target);
   const hasChildren = isObject || isAbstract;
 
   // Fragments only make sense on a composite selection set that has fields to
   // lift out. An object or interface type qualifies; a bare union does not (it
   // has no directly-selectable fields of its own).
   const isFragmentTarget = isObject || isInterface;
-  const operation = findOperation(doc, operationName);
-  const nodeSelectionSet = operation
-    ? findSelectionSet(operation.selectionSet, fullPath)
+  const definition = findDefinition(doc, target);
+  const nodeSelectionSet = definition
+    ? findSelectionSet(definition.selectionSet, fullPath)
     : undefined;
   const nodeSelections = nodeSelectionSet?.selections ?? [];
 

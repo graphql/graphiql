@@ -8,10 +8,11 @@ import {
 } from 'graphql';
 
 import {
-  findOperation,
+  findDefinition,
   findSelectionSet,
-  mapOperation,
+  mapDefinition,
   replaceFieldSelectionSet,
+  type DefinitionTarget,
   type PathSegment,
 } from './ast-path';
 
@@ -41,16 +42,16 @@ export function createFragmentFromSelection(
   path: PathSegment[],
   fragmentName: string,
   typeName: string,
-  operationName?: string,
+  target: DefinitionTarget,
 ): DocumentNode {
-  // Resolve the target selection set before entering mapOperation so we can
+  // Resolve the target selection set before entering mapDefinition so we can
   // bail early and avoid building the fragment def when the path is missing.
-  const operation = findOperation(doc, operationName);
-  if (!operation) {
+  const definition = findDefinition(doc, target);
+  if (!definition) {
     return doc;
   }
 
-  const targetSelectionSet = findSelectionSet(operation.selectionSet, path);
+  const targetSelectionSet = findSelectionSet(definition.selectionSet, path);
   if (!targetSelectionSet || targetSelectionSet.selections.length === 0) {
     return doc;
   }
@@ -78,17 +79,17 @@ export function createFragmentFromSelection(
   };
 
   let changed = false;
-  const updatedDoc = mapOperation(doc, operationName, op => {
+  const updatedDoc = mapDefinition(doc, target, def => {
     const newSelectionSet = replaceFieldSelectionSet(
-      op.selectionSet,
+      def.selectionSet,
       path,
       spreadSet,
     );
-    if (newSelectionSet === op.selectionSet) {
-      return op;
+    if (newSelectionSet === def.selectionSet) {
+      return def;
     }
     changed = true;
-    return { ...op, selectionSet: newSelectionSet };
+    return { ...def, selectionSet: newSelectionSet };
   });
 
   if (!changed) {

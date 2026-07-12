@@ -1,6 +1,6 @@
 import type { DocumentNode, GraphQLSchema } from 'graphql';
 import { createContext, useContext, type ReactNode } from 'react';
-import type { ArgValue } from '../lib/document-mutator';
+import type { ArgValue, DefinitionTarget } from '../lib/document-mutator';
 import type { PathSegment } from '../lib/ast-path';
 
 export type FieldTreeCallbacks = {
@@ -21,7 +21,8 @@ export type FieldTreeCallbacks = {
 export type FieldTreeContextValue = FieldTreeCallbacks & {
   doc: DocumentNode;
   schema?: GraphQLSchema;
-  operationName?: string;
+  /** The definition (operation or fragment) the tree reads and mutates. */
+  target: DefinitionTarget;
   cursorPath?: PathSegment[];
 };
 

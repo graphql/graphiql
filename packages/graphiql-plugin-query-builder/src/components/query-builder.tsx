@@ -20,6 +20,7 @@ export const QueryBuilder: FC = () => {
   const {
     workingDoc,
     activeOpKind,
+    target,
     handleToggle,
     handleSetArg,
     handlePromoteArg,
@@ -122,7 +123,7 @@ export const QueryBuilder: FC = () => {
                   path={[]}
                   doc={workingDoc}
                   schema={schema ?? undefined}
-                  operationName={operationName}
+                  target={target}
                   cursorPath={isActiveRoot ? cursorPath : undefined}
                   onToggle={handleToggle}
                   onSetArg={handleSetArg}

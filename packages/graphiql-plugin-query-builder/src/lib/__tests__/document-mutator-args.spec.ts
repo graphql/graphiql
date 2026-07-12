@@ -89,40 +89,64 @@ describe('scalarToValueNode', () => {
 describe('setFieldArgument', () => {
   it('adds an Int arg to a field that has no args', () => {
     const d = doc('{ hero }');
-    const result = setFieldArgument(d, [fieldSegment('hero')], 'id', {
-      kind: Kind.INT,
-      value: '1',
-    });
+    const result = setFieldArgument(
+      d,
+      [fieldSegment('hero')],
+      'id',
+      {
+        kind: Kind.INT,
+        value: '1',
+      },
+      { kind: 'operation' },
+    );
     const printed = print(result);
     expect(printed).toMatch(/hero\(id: 1\)/);
   });
 
   it('adds a String arg (printed with quotes)', () => {
     const d = doc('{ hero }');
-    const result = setFieldArgument(d, [fieldSegment('hero')], 'name', {
-      kind: Kind.STRING,
-      value: 'Luke',
-    });
+    const result = setFieldArgument(
+      d,
+      [fieldSegment('hero')],
+      'name',
+      {
+        kind: Kind.STRING,
+        value: 'Luke',
+      },
+      { kind: 'operation' },
+    );
     const printed = print(result);
     expect(printed).toMatch(/hero\(name: "Luke"\)/);
   });
 
   it('adds an Enum arg (printed without quotes)', () => {
     const d = doc('{ hero }');
-    const result = setFieldArgument(d, [fieldSegment('hero')], 'episode', {
-      kind: Kind.ENUM,
-      value: 'JEDI',
-    });
+    const result = setFieldArgument(
+      d,
+      [fieldSegment('hero')],
+      'episode',
+      {
+        kind: Kind.ENUM,
+        value: 'JEDI',
+      },
+      { kind: 'operation' },
+    );
     const printed = print(result);
     expect(printed).toMatch(/hero\(episode: JEDI\)/);
   });
 
   it('updates an existing arg', () => {
     const d = doc('{ hero(id: 1) }');
-    const result = setFieldArgument(d, [fieldSegment('hero')], 'id', {
-      kind: Kind.INT,
-      value: '2',
-    });
+    const result = setFieldArgument(
+      d,
+      [fieldSegment('hero')],
+      'id',
+      {
+        kind: Kind.INT,
+        value: '2',
+      },
+      { kind: 'operation' },
+    );
     const printed = print(result);
     expect(printed).toMatch(/hero\(id: 2\)/);
     expect(printed).not.toMatch(/id: 1/);
@@ -130,7 +154,13 @@ describe('setFieldArgument', () => {
 
   it('removes an arg when value is undefined', () => {
     const d = doc('{ hero(id: 1, name: "Luke") }');
-    const result = setFieldArgument(d, [fieldSegment('hero')], 'id', undefined);
+    const result = setFieldArgument(
+      d,
+      [fieldSegment('hero')],
+      'id',
+      undefined,
+      { kind: 'operation' },
+    );
     const printed = print(result);
     expect(printed).not.toMatch(/id:/);
     expect(printed).toMatch(/name: "Luke"/);
@@ -146,6 +176,7 @@ describe('setFieldArgument', () => {
         kind: Kind.INT,
         value: '5',
       },
+      { kind: 'operation' },
     );
     const printed = print(result);
     expect(printed).toMatch(/friends\(first: 5\)/);
@@ -153,19 +184,31 @@ describe('setFieldArgument', () => {
 
   it('does nothing when the field path does not exist', () => {
     const d = doc('{ hero }');
-    const result = setFieldArgument(d, [fieldSegment('droid')], 'id', {
-      kind: Kind.INT,
-      value: '1',
-    });
+    const result = setFieldArgument(
+      d,
+      [fieldSegment('droid')],
+      'id',
+      {
+        kind: Kind.INT,
+        value: '1',
+      },
+      { kind: 'operation' },
+    );
     expect(print(result)).toBe(print(d));
   });
 
   it('preserves existing sibling args when adding a new one', () => {
     const d = doc('{ hero(id: 1) }');
-    const result = setFieldArgument(d, [fieldSegment('hero')], 'episode', {
-      kind: Kind.ENUM,
-      value: 'JEDI',
-    });
+    const result = setFieldArgument(
+      d,
+      [fieldSegment('hero')],
+      'episode',
+      {
+        kind: Kind.ENUM,
+        value: 'JEDI',
+      },
+      { kind: 'operation' },
+    );
     const printed = print(result);
     expect(printed).toMatch(/id: 1/);
     expect(printed).toMatch(/episode: JEDI/);

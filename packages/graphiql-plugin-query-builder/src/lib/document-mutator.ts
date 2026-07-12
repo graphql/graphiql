@@ -13,6 +13,7 @@ export {
   fieldSegment,
   inlineFragmentSegment,
   segmentsEqual,
+  type DefinitionTarget,
   type Path,
   type PathSegment,
 } from './ast-path';

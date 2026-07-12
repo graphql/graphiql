@@ -14,23 +14,29 @@ function doc(query: string) {
 describe('isInlineFragmentPresent', () => {
   it('returns false when there is no inline fragment at the path', () => {
     const d = doc('{ search { __typename } }');
-    expect(isInlineFragmentPresent(d, [fieldSegment('search')], 'Human')).toBe(
-      false,
-    );
+    expect(
+      isInlineFragmentPresent(d, [fieldSegment('search')], 'Human', {
+        kind: 'operation',
+      }),
+    ).toBe(false);
   });
 
   it('returns true when an inline fragment is present at the path', () => {
     const d = doc('{ search { ... on Human { name } } }');
-    expect(isInlineFragmentPresent(d, [fieldSegment('search')], 'Human')).toBe(
-      true,
-    );
+    expect(
+      isInlineFragmentPresent(d, [fieldSegment('search')], 'Human', {
+        kind: 'operation',
+      }),
+    ).toBe(true);
   });
 
   it('returns false for a different type condition at the same path', () => {
     const d = doc('{ search { ... on Human { name } } }');
-    expect(isInlineFragmentPresent(d, [fieldSegment('search')], 'Droid')).toBe(
-      false,
-    );
+    expect(
+      isInlineFragmentPresent(d, [fieldSegment('search')], 'Droid', {
+        kind: 'operation',
+      }),
+    ).toBe(false);
   });
 
   it('returns true for a deeply nested inline fragment', () => {
@@ -42,6 +48,7 @@ describe('isInlineFragmentPresent', () => {
         d,
         [fieldSegment('hero'), fieldSegment('companions')],
         'Droid',
+        { kind: 'operation' },
       ),
     ).toBe(true);
   });
@@ -50,28 +57,40 @@ describe('isInlineFragmentPresent', () => {
 describe('addInlineFragment', () => {
   it('adds an inline fragment to a field that has no inline fragments yet', () => {
     const d = doc('{ search { __typename } }');
-    const result = addInlineFragment(d, [fieldSegment('search')], 'Human');
+    const result = addInlineFragment(d, [fieldSegment('search')], 'Human', {
+      kind: 'operation',
+    });
     const printed = print(result);
     expect(printed).toContain('... on Human');
     expect(
-      isInlineFragmentPresent(result, [fieldSegment('search')], 'Human'),
+      isInlineFragmentPresent(result, [fieldSegment('search')], 'Human', {
+        kind: 'operation',
+      }),
     ).toBe(true);
   });
 
   it('adds a second inline fragment without removing the first', () => {
     const d = doc('{ search { ... on Human { name } } }');
-    const result = addInlineFragment(d, [fieldSegment('search')], 'Droid');
+    const result = addInlineFragment(d, [fieldSegment('search')], 'Droid', {
+      kind: 'operation',
+    });
     expect(
-      isInlineFragmentPresent(result, [fieldSegment('search')], 'Human'),
+      isInlineFragmentPresent(result, [fieldSegment('search')], 'Human', {
+        kind: 'operation',
+      }),
     ).toBe(true);
     expect(
-      isInlineFragmentPresent(result, [fieldSegment('search')], 'Droid'),
+      isInlineFragmentPresent(result, [fieldSegment('search')], 'Droid', {
+        kind: 'operation',
+      }),
     ).toBe(true);
   });
 
   it('is a no-op when the inline fragment already exists', () => {
     const d = doc('{ search { ... on Human { name } } }');
-    const result = addInlineFragment(d, [fieldSegment('search')], 'Human');
+    const result = addInlineFragment(d, [fieldSegment('search')], 'Human', {
+      kind: 'operation',
+    });
     const printed = print(result);
     const matches = printed.match(/\.\.\. on Human/g) ?? [];
     expect(matches.length).toBe(1);
@@ -79,15 +98,21 @@ describe('addInlineFragment', () => {
 
   it('creates the field selection set when the field has none', () => {
     const d = doc('{ search }');
-    const result = addInlineFragment(d, [fieldSegment('search')], 'Human');
+    const result = addInlineFragment(d, [fieldSegment('search')], 'Human', {
+      kind: 'operation',
+    });
     expect(
-      isInlineFragmentPresent(result, [fieldSegment('search')], 'Human'),
+      isInlineFragmentPresent(result, [fieldSegment('search')], 'Human', {
+        kind: 'operation',
+      }),
     ).toBe(true);
   });
 
   it('produces parseable output', () => {
     const d = doc('{ search { __typename } }');
-    const result = addInlineFragment(d, [fieldSegment('search')], 'Human');
+    const result = addInlineFragment(d, [fieldSegment('search')], 'Human', {
+      kind: 'operation',
+    });
     expect(() => print(result)).not.toThrow();
   });
 
@@ -97,28 +122,39 @@ describe('addInlineFragment', () => {
       d,
       [fieldSegment('hero'), fieldSegment('companions')],
       'Droid',
+      { kind: 'operation' },
     );
     expect(
       isInlineFragmentPresent(
         result,
         [fieldSegment('hero'), fieldSegment('companions')],
         'Droid',
+        { kind: 'operation' },
       ),
     ).toBe(true);
   });
 
   it('creates the parent field when the path does not resolve to an existing one', () => {
     const d = doc('{ hero }');
-    const result = addInlineFragment(d, [fieldSegment('nonexistent')], 'Human');
+    const result = addInlineFragment(
+      d,
+      [fieldSegment('nonexistent')],
+      'Human',
+      { kind: 'operation' },
+    );
     expect(
-      isInlineFragmentPresent(result, [fieldSegment('nonexistent')], 'Human'),
+      isInlineFragmentPresent(result, [fieldSegment('nonexistent')], 'Human', {
+        kind: 'operation',
+      }),
     ).toBe(true);
     expect(print(result)).toContain('hero');
   });
 
   it('includes __typename in the new fragment selection set', () => {
     const d = doc('{ search }');
-    const result = addInlineFragment(d, [fieldSegment('search')], 'Human');
+    const result = addInlineFragment(d, [fieldSegment('search')], 'Human', {
+      kind: 'operation',
+    });
     const printed = print(result);
     expect(printed).toContain('__typename');
   });
@@ -127,9 +163,13 @@ describe('addInlineFragment', () => {
 describe('removeInlineFragment', () => {
   it('removes an existing inline fragment from the path', () => {
     const d = doc('{ search { ... on Human { name } } }');
-    const result = removeInlineFragment(d, [fieldSegment('search')], 'Human');
+    const result = removeInlineFragment(d, [fieldSegment('search')], 'Human', {
+      kind: 'operation',
+    });
     expect(
-      isInlineFragmentPresent(result, [fieldSegment('search')], 'Human'),
+      isInlineFragmentPresent(result, [fieldSegment('search')], 'Human', {
+        kind: 'operation',
+      }),
     ).toBe(false);
   });
 
@@ -137,24 +177,34 @@ describe('removeInlineFragment', () => {
     const d = doc(
       '{ search { ... on Human { name } ... on Droid { primaryFunction } } }',
     );
-    const result = removeInlineFragment(d, [fieldSegment('search')], 'Human');
+    const result = removeInlineFragment(d, [fieldSegment('search')], 'Human', {
+      kind: 'operation',
+    });
     expect(
-      isInlineFragmentPresent(result, [fieldSegment('search')], 'Human'),
+      isInlineFragmentPresent(result, [fieldSegment('search')], 'Human', {
+        kind: 'operation',
+      }),
     ).toBe(false);
     expect(
-      isInlineFragmentPresent(result, [fieldSegment('search')], 'Droid'),
+      isInlineFragmentPresent(result, [fieldSegment('search')], 'Droid', {
+        kind: 'operation',
+      }),
     ).toBe(true);
   });
 
   it('is a no-op when the inline fragment does not exist', () => {
     const d = doc('{ search { __typename } }');
-    const result = removeInlineFragment(d, [fieldSegment('search')], 'Human');
+    const result = removeInlineFragment(d, [fieldSegment('search')], 'Human', {
+      kind: 'operation',
+    });
     expect(print(result)).toBe(print(d));
   });
 
   it('produces parseable output', () => {
     const d = doc('{ search { ... on Human { name } } }');
-    const result = removeInlineFragment(d, [fieldSegment('search')], 'Human');
+    const result = removeInlineFragment(d, [fieldSegment('search')], 'Human', {
+      kind: 'operation',
+    });
     expect(() => print(result)).not.toThrow();
   });
 
@@ -166,12 +216,14 @@ describe('removeInlineFragment', () => {
       d,
       [fieldSegment('hero'), fieldSegment('companions')],
       'Droid',
+      { kind: 'operation' },
     );
     expect(
       isInlineFragmentPresent(
         result,
         [fieldSegment('hero'), fieldSegment('companions')],
         'Droid',
+        { kind: 'operation' },
       ),
     ).toBe(false);
   });
@@ -182,6 +234,7 @@ describe('removeInlineFragment', () => {
       d,
       [fieldSegment('nonexistent')],
       'Human',
+      { kind: 'operation' },
     );
     expect(print(result)).toBe(print(d));
   });
@@ -190,7 +243,9 @@ describe('removeInlineFragment', () => {
     const d = doc(
       'query A($x: ID) { hero { ... on Human { f(id: $x) } } other }',
     );
-    const result = removeInlineFragment(d, [fieldSegment('hero')], 'Human');
+    const result = removeInlineFragment(d, [fieldSegment('hero')], 'Human', {
+      kind: 'operation',
+    });
     const printed = print(result);
     // hero (now empty) is pruned; $x is no longer referenced.
     expect(printed).not.toContain('$x');
@@ -201,25 +256,38 @@ describe('removeInlineFragment', () => {
 describe('addInlineFragment / removeInlineFragment round-trip', () => {
   it('adding then removing restores the original document', () => {
     const d = doc('{ search { __typename } }');
-    const added = addInlineFragment(d, [fieldSegment('search')], 'Human');
+    const added = addInlineFragment(d, [fieldSegment('search')], 'Human', {
+      kind: 'operation',
+    });
     const removed = removeInlineFragment(
       added,
       [fieldSegment('search')],
       'Human',
+      { kind: 'operation' },
     );
     expect(print(removed)).toBe(print(d));
   });
 
   it('multiple add/remove cycles stay consistent', () => {
     const d = doc('{ search }');
-    const a1 = addInlineFragment(d, [fieldSegment('search')], 'Human');
-    const a2 = addInlineFragment(a1, [fieldSegment('search')], 'Droid');
-    const r1 = removeInlineFragment(a2, [fieldSegment('search')], 'Human');
-    expect(isInlineFragmentPresent(r1, [fieldSegment('search')], 'Human')).toBe(
-      false,
-    );
-    expect(isInlineFragmentPresent(r1, [fieldSegment('search')], 'Droid')).toBe(
-      true,
-    );
+    const a1 = addInlineFragment(d, [fieldSegment('search')], 'Human', {
+      kind: 'operation',
+    });
+    const a2 = addInlineFragment(a1, [fieldSegment('search')], 'Droid', {
+      kind: 'operation',
+    });
+    const r1 = removeInlineFragment(a2, [fieldSegment('search')], 'Human', {
+      kind: 'operation',
+    });
+    expect(
+      isInlineFragmentPresent(r1, [fieldSegment('search')], 'Human', {
+        kind: 'operation',
+      }),
+    ).toBe(false);
+    expect(
+      isInlineFragmentPresent(r1, [fieldSegment('search')], 'Droid', {
+        kind: 'operation',
+      }),
+    ).toBe(true);
   });
 });

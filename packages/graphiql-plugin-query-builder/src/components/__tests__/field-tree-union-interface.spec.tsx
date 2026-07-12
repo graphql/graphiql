@@ -132,6 +132,7 @@ describe('FieldTree — union field', () => {
         path={[]}
         doc={doc('{ __typename }')}
         schema={SchemaWithUnion}
+        target={{ kind: 'operation' }}
         onToggle={() => {}}
         onSetArg={() => {}}
       />,
@@ -146,6 +147,7 @@ describe('FieldTree — union field', () => {
         path={[]}
         doc={doc('{ __typename }')}
         schema={SchemaWithUnion}
+        target={{ kind: 'operation' }}
         onToggle={() => {}}
         onSetArg={() => {}}
       />,
@@ -163,6 +165,7 @@ describe('FieldTree — union field', () => {
         path={[]}
         doc={doc('{ __typename }')}
         schema={SchemaWithUnion}
+        target={{ kind: 'operation' }}
         onToggle={() => {}}
         onSetArg={() => {}}
       />,
@@ -186,6 +189,7 @@ describe('FieldTree — union field', () => {
         path={[]}
         doc={doc('{ __typename }')}
         schema={SchemaWithUnion}
+        target={{ kind: 'operation' }}
         onToggle={() => {}}
         onSetArg={() => {}}
       />,
@@ -212,6 +216,7 @@ describe('FieldTree — union field', () => {
         path={[]}
         doc={doc('{ __typename }')}
         schema={SchemaWithUnion}
+        target={{ kind: 'operation' }}
         onToggle={() => {}}
         onSetArg={() => {}}
         onAddInlineFragment={onAdd}
@@ -234,6 +239,7 @@ describe('FieldTree — union field', () => {
         path={[]}
         doc={doc('{ search { ... on Human { name } } }')}
         schema={SchemaWithUnion}
+        target={{ kind: 'operation' }}
         onToggle={() => {}}
         onSetArg={() => {}}
         onRemoveInlineFragment={onRemove}
@@ -257,6 +263,7 @@ describe('FieldTree — union field', () => {
         path={[]}
         doc={doc('{ search { ... on Droid { primaryFunction } } }')}
         schema={SchemaWithUnion}
+        target={{ kind: 'operation' }}
         onToggle={() => {}}
         onSetArg={() => {}}
       />,
@@ -278,6 +285,7 @@ describe('FieldTree — interface field', () => {
         path={[]}
         doc={doc('{ __typename }')}
         schema={SchemaWithInterface}
+        target={{ kind: 'operation' }}
         onToggle={() => {}}
         onSetArg={() => {}}
       />,
@@ -303,6 +311,7 @@ describe('FieldTree — interface field', () => {
         path={[]}
         doc={doc('{ __typename }')}
         schema={SchemaWithInterface}
+        target={{ kind: 'operation' }}
         onToggle={() => {}}
         onSetArg={() => {}}
       />,
@@ -325,6 +334,7 @@ describe('FieldTree — interface field', () => {
         path={[]}
         doc={doc('{ __typename }')}
         schema={SchemaWithInterface}
+        target={{ kind: 'operation' }}
         onToggle={() => {}}
         onSetArg={() => {}}
       />,
@@ -348,6 +358,7 @@ describe('FieldTree — interface field', () => {
         path={[]}
         doc={doc('{ __typename }')}
         schema={SchemaWithInterface}
+        target={{ kind: 'operation' }}
         onToggle={() => {}}
         onSetArg={() => {}}
       />,
@@ -364,6 +375,7 @@ describe('FieldTree — interface field', () => {
         path={[]}
         doc={doc('{ character { ... on HumanCharacter { name } } }')}
         schema={SchemaWithInterface}
+        target={{ kind: 'operation' }}
         onToggle={() => {}}
         onSetArg={() => {}}
       />,
@@ -383,6 +395,7 @@ describe('FieldTree — interface field', () => {
         path={[]}
         doc={doc('{ __typename }')}
         schema={SchemaWithInterface}
+        target={{ kind: 'operation' }}
         onToggle={onToggle}
         onSetArg={() => {}}
       />,
@@ -408,6 +421,7 @@ describe('FieldTree — interface implementing interface', () => {
         path={[]}
         doc={doc('{ __typename }')}
         schema={SchemaWithNode}
+        target={{ kind: 'operation' }}
         onToggle={() => {}}
         onSetArg={() => {}}
       />,
@@ -434,6 +448,7 @@ describe('FieldTree — interface implementing interface', () => {
         path={[]}
         doc={doc('{ __typename }')}
         schema={SchemaWithNode}
+        target={{ kind: 'operation' }}
         onToggle={() => {}}
         onSetArg={() => {}}
       />,

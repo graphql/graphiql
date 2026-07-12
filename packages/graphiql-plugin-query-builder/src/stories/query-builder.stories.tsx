@@ -229,6 +229,7 @@ export const FieldTreeRootOnly: Story = {
         type={QueryType}
         path={[]}
         doc={emptyDoc}
+        target={{ kind: 'operation' }}
         onToggle={() => {}}
         onSetArg={() => {}}
       />
@@ -249,6 +250,7 @@ export const FieldTreeWithSelections: Story = {
         type={QueryType}
         path={[]}
         doc={preSelectedDoc}
+        target={{ kind: 'operation' }}
         onToggle={() => {}}
         onSetArg={() => {}}
       />

@@ -45,6 +45,7 @@ function renderTree(cursorPath?: PathSegment[]) {
       doc={doc('{ __typename }')}
       schema={schema}
       cursorPath={cursorPath}
+      target={{ kind: 'operation' }}
       onToggle={() => {}}
       onSetArg={() => {}}
     />,
@@ -78,6 +79,7 @@ describe('FieldTree — cursor reveal', () => {
         doc={doc('{ __typename }')}
         schema={schema}
         cursorPath={[fieldSegment('parent'), fieldSegment('child')]}
+        target={{ kind: 'operation' }}
         onToggle={() => {}}
         onSetArg={() => {}}
       />,

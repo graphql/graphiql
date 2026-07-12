@@ -8,10 +8,11 @@ import {
 
 import {
   addField,
+  findDefinition,
+  mapDefinition,
   findNodeAtPath,
-  findOperation,
-  mapOperation,
   removeField,
+  type DefinitionTarget,
   type PathSegment,
 } from './ast-path';
 
@@ -58,29 +59,29 @@ export function pruneUnusedVariableDefinitions(
 }
 
 /**
- * Returns whether the field at the given path is present in the target
- * operation (by name, or the first operation when unspecified) of `doc`.
+ * Returns whether the field at the given path is present in the definition
+ * addressed by `target` (an operation or a named fragment) of `doc`.
  */
 export function isFieldSelected(
   doc: DocumentNode,
   path: PathSegment[],
-  operationName?: string,
+  target: DefinitionTarget,
 ): boolean {
   if (path.length === 0) {
     return false;
   }
 
-  const operation = findOperation(doc, operationName);
-  if (!operation) {
+  const definition = findDefinition(doc, target);
+  if (!definition) {
     return false;
   }
 
-  return findNodeAtPath(operation.selectionSet, path) !== undefined;
+  return findNodeAtPath(definition.selectionSet, path) !== undefined;
 }
 
 /**
- * Toggles the field at `path` in the target operation (by name, or the first
- * operation when unspecified) of `doc`:
+ * Toggles the field at `path` in the definition addressed by `target` (an
+ * operation or a named fragment) of `doc`:
  * - If the field is already selected, removes it (along with its children).
  * - If the field is not selected, adds it (creating intermediate selection
  *   sets as needed).
@@ -90,27 +91,37 @@ export function isFieldSelected(
 export function toggleFieldSelection(
   doc: DocumentNode,
   path: PathSegment[],
-  operationName?: string,
+  target: DefinitionTarget,
 ): DocumentNode {
   if (path.length === 0) {
     return doc;
   }
 
-  const selected = isFieldSelected(doc, path, operationName);
-  return mapOperation(doc, operationName, operation => {
+  const selected = isFieldSelected(doc, path, target);
+  return mapDefinition(doc, target, definition => {
     const newSelectionSet = selected
-      ? removeField(operation.selectionSet, path)
-      : addField(operation.selectionSet, path);
+      ? removeField(definition.selectionSet, path)
+      : addField(definition.selectionSet, path);
 
     if (newSelectionSet.selections.length === 0) {
-      // Removing the last field empties the operation. An operation with no
-      // selection set is unprintable (it would fail to parse and leave the
-      // builder out of sync), so drop the whole operation definition instead.
-      return null;
+      if (definition.kind === Kind.OPERATION_DEFINITION) {
+        // Removing the last field empties the operation. An operation with no
+        // selection set is unprintable (it would fail to parse and leave the
+        // builder out of sync), so drop the whole operation definition instead.
+        return null;
+      }
+      // A fragment can't be emptied without becoming invalid and orphaning its
+      // spreads, so removing its last field is a no-op. Deleting a fragment
+      // outright is a separate action.
+      return definition;
+    }
+
+    if (definition.kind === Kind.FRAGMENT_DEFINITION) {
+      return { ...definition, selectionSet: newSelectionSet };
     }
 
     let newOperation: OperationDefinitionNode = {
-      ...operation,
+      ...definition,
       selectionSet: newSelectionSet,
     };
     // Removing a field can orphan a promoted variable; drop any now-unused

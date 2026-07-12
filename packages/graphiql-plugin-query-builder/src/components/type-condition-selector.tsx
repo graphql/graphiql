@@ -63,13 +63,13 @@ export const TypeConditionSelector: FC<TypeConditionSelectorProps> = ({
   fieldPath,
   abstractType,
 }) => {
-  const { doc, schema, operationName, cursorPath } = useFieldTreeContext();
+  const { doc, schema, target, cursorPath } = useFieldTreeContext();
   // Whether the document currently has a type condition selected under this
   // field. Recomputed each render so a fragment added after mount can open the
   // section (see the effect below).
   const hasSelectedCondition = (
     schema ? applicableTypeConditions(abstractType, schema) : []
-  ).some(t => isInlineFragmentPresent(doc, fieldPath, t.name, operationName));
+  ).some(t => isInlineFragmentPresent(doc, fieldPath, t.name, target));
   const [expanded, setExpanded] = useState(hasSelectedCondition);
 
   // Open the section when a type condition becomes selected in the document.
@@ -117,7 +117,7 @@ export const TypeConditionSelector: FC<TypeConditionSelectorProps> = ({
           doc,
           fieldPath,
           conditionType.name,
-          operationName,
+          target,
         );
 
         return (

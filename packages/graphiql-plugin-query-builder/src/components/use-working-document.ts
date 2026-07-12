@@ -25,6 +25,7 @@ import {
   suggestVarName,
   toggleFieldSelection,
   type ArgValue,
+  type DefinitionTarget,
 } from '../lib/document-mutator';
 import { type PathSegment } from '../lib/ast-path';
 import {
@@ -57,6 +58,8 @@ function emptyDoc(): DocumentNode {
 export interface UseWorkingDocumentResult {
   workingDoc: DocumentNode;
   activeOpKind: OperationTypeNode | undefined;
+  /** The definition the tree currently reads and mutates (an operation here). */
+  target: DefinitionTarget;
   handleToggle: (path: PathSegment[]) => void;
   handleSetArg: (path: PathSegment[], argName: string, value: ArgValue) => void;
   handlePromoteArg: (
@@ -147,6 +150,11 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     operationName,
   )?.operation;
 
+  // The definition the builder edits. Today this is always the active
+  // operation; cursor-driven fragment editing will make it a fragment target
+  // when the cursor sits inside a fragment definition.
+  const target: DefinitionTarget = { kind: 'operation', name: operationName };
+
   // Apply a new working document: update state synchronously, then write it to
   // the editor. The write is synchronous so the query and any variables a
   // handler writes alongside it stay consistent, and so the editor reflects the
@@ -193,7 +201,7 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
   }
 
   function handleToggle(path: PathSegment[]) {
-    const next = toggleFieldSelection(workingDoc, path, operationName);
+    const next = toggleFieldSelection(workingDoc, path, target);
     applyDoc(next);
     reconcileVariablesJson(next);
   }
@@ -211,9 +219,7 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     }
 
     const valueNode = argValueToValueNode(schemaArg.type, value);
-    applyDoc(
-      setFieldArgument(workingDoc, path, argName, valueNode, operationName),
-    );
+    applyDoc(setFieldArgument(workingDoc, path, argName, valueNode, target));
   }
 
   function handlePromoteArg(
@@ -273,16 +279,11 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
   }
 
   function handleAddInlineFragment(path: PathSegment[], typeName: string) {
-    applyDoc(addInlineFragment(workingDoc, path, typeName, operationName));
+    applyDoc(addInlineFragment(workingDoc, path, typeName, target));
   }
 
   function handleRemoveInlineFragment(path: PathSegment[], typeName: string) {
-    const next = removeInlineFragment(
-      workingDoc,
-      path,
-      typeName,
-      operationName,
-    );
+    const next = removeInlineFragment(workingDoc, path, typeName, target);
     applyDoc(next);
     reconcileVariablesJson(next);
   }
@@ -299,13 +300,7 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
       name = `${base}_${n}`;
     }
     applyDoc(
-      createFragmentFromSelection(
-        workingDoc,
-        path,
-        name,
-        typeName,
-        operationName,
-      ),
+      createFragmentFromSelection(workingDoc, path, name, typeName, target),
     );
   }
 
@@ -316,6 +311,7 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
   return {
     workingDoc,
     activeOpKind,
+    target,
     handleToggle,
     handleSetArg,
     handlePromoteArg,

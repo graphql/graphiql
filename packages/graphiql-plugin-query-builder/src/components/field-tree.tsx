@@ -5,7 +5,11 @@ import {
   type GraphQLSchema,
 } from 'graphql';
 import { type FC, useState } from 'react';
-import { isFieldSelected, type ArgValue } from '../lib/document-mutator';
+import {
+  isFieldSelected,
+  type ArgValue,
+  type DefinitionTarget,
+} from '../lib/document-mutator';
 import { fieldSegment, type PathSegment } from '../lib/ast-path';
 import {
   FIELD_LIST_THRESHOLD,
@@ -27,7 +31,7 @@ type FieldTreeListProps = {
 };
 
 export const FieldTreeList: FC<FieldTreeListProps> = ({ type, path }) => {
-  const { doc, operationName } = useFieldTreeContext();
+  const { doc, target } = useFieldTreeContext();
   const [expanded, setExpanded] = useState(false);
   const [filter, setFilter] = useState('');
 
@@ -37,7 +41,7 @@ export const FieldTreeList: FC<FieldTreeListProps> = ({ type, path }) => {
   // line up with the rows at this nesting level instead of spanning the pane.
   const indent = path.length * 12;
   const isSelected = (fieldName: string): boolean =>
-    isFieldSelected(doc, [...path, fieldSegment(fieldName)], operationName);
+    isFieldSelected(doc, [...path, fieldSegment(fieldName)], target);
 
   // A field under the editor cursor is always present in the document (the cursor
   // path is parsed from the query), so it is selected and already pinned visible
@@ -87,7 +91,7 @@ type FieldTreeProps = {
   path: PathSegment[];
   doc: DocumentNode;
   schema?: GraphQLSchema;
-  operationName?: string;
+  target: DefinitionTarget;
   /** Absolute field path under the editor cursor; ancestors auto-expand. */
   cursorPath?: PathSegment[];
   onToggle: (path: PathSegment[]) => void;
@@ -109,7 +113,7 @@ export const FieldTree: FC<FieldTreeProps> = ({
   path,
   doc,
   schema,
-  operationName,
+  target,
   cursorPath,
   onToggle,
   onSetArg,
@@ -123,7 +127,7 @@ export const FieldTree: FC<FieldTreeProps> = ({
   const contextValue: FieldTreeContextValue = {
     doc,
     schema,
-    operationName,
+    target,
     cursorPath,
     onToggle,
     onSetArg,
