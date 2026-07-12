@@ -801,7 +801,6 @@ select.graphiql-qb-arg-select:focus {
   gap: 1px;
 }
 
-/* Roomier rows echoing the operation headers: a bold name and its type
    condition on the left, the row actions pinned to the right. */
 .graphiql-qb-fragment-item {
   display: flex;
