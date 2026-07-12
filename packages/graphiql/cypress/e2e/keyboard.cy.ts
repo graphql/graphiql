@@ -209,13 +209,13 @@ describe('keyboard navigation', () => {
     cy.focused().should('have.attr', 'aria-label', 'Edit label');
   });
 
-  // There is no standalone execute-button dropdown in the current UI: the
-  // active operation follows the editor cursor (see operation-cursor.cy.ts),
-  // and Run executes whichever operation the cursor is in. This is the real
-  // keyboard path for picking one of several operations before running it —
-  // the run step itself goes through the Run button rather than the
-  // Ctrl/Cmd-Enter shortcut, since that modifier is OS-dependent and this
-  // test only needs to prove the cursor-driven selection feeds the run.
+  // The active operation follows the editor cursor by default (see
+  // operation-cursor.cy.ts), and Run executes whichever operation the cursor
+  // is in — no menu pick required. This is that default path; the next test
+  // covers the Run button's caret menu for picking explicitly. The run step
+  // here goes through the Run button rather than the Ctrl/Cmd-Enter shortcut,
+  // since that modifier is OS-dependent and this test only needs to prove
+  // the cursor-driven selection feeds the run.
   it('Keyboard-driven operation selection runs the operation under the cursor', () => {
     cy.visitWithOp({
       query: 'query A { __typename }\nquery B { __typename }\n',
@@ -233,5 +233,37 @@ describe('keyboard navigation', () => {
     cy.focused().should('have.class', 'inputarea');
     cy.clickExecuteQuery();
     cy.get('.result-window').should('contain.text', '__typename');
+  });
+
+  it('The Run button caret opens a keyboard-operable operation picker', () => {
+    cy.visitWithOp({
+      query: 'query A { __typename }\nquery B { __typename }\n',
+    });
+    cy.get('.graphiql-query-editor .view-lines').should('exist');
+    cy.activateOperation('A');
+
+    // Real OS-level focus is already established by `activateOperation`'s
+    // keyboard interaction with the editor above; `.focus()` here just moves
+    // it to the caret without a trusted event, which Radix doesn't require —
+    // only the key presses that follow need to be trusted.
+    cy.get('[aria-label="Choose operation to run"]').as('caret').focus();
+    cy.realPress('Enter');
+    cy.get('[role="menu"]').should('be.visible');
+
+    // The menu opens with the first item (A) highlighted; move to B and pick it.
+    cy.realPress('ArrowDown');
+    cy.realPress('Enter');
+    cy.get('.graphiql-tab-active .graphiql-tab-button').should(
+      'contain.text',
+      'B',
+    );
+    cy.get('.result-window').should('contain.text', '__typename');
+
+    cy.get('@caret').focus();
+    cy.realPress('Enter');
+    cy.get('[role="menu"]').should('be.visible');
+    cy.realPress('Escape');
+    cy.get('[role="menu"]').should('not.exist');
+    cy.focused().should('have.attr', 'aria-label', 'Choose operation to run');
   });
 });
