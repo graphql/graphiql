@@ -1,7 +1,7 @@
 import { CloseIcon, PenIcon } from '@graphiql/react';
 import type { DocumentNode } from 'graphql';
 import { type FC, useState } from 'react';
-import { listFragments } from '../lib/document-mutator';
+import { listFragmentInfos } from '../lib/document-mutator';
 
 type FragmentSectionProps = {
   /** The current document; used to list existing named fragments. */
@@ -18,6 +18,7 @@ type FragmentSectionProps = {
 
 type FragmentItemProps = {
   name: string;
+  typeName: string;
   active?: boolean;
   onFocus?: (fragmentName: string) => void;
   onRename?: (oldName: string, newName: string) => void;
@@ -26,6 +27,7 @@ type FragmentItemProps = {
 
 const FragmentItem: FC<FragmentItemProps> = ({
   name,
+  typeName,
   active = false,
   onFocus,
   onRename,
@@ -71,6 +73,15 @@ const FragmentItem: FC<FragmentItemProps> = ({
     );
   }
 
+  const label = (
+    <>
+      <span className="graphiql-qb-fragment-name">{name}</span>
+      <span className="graphiql-qb-fragment-type">
+        on <span className="graphiql-qb-fragment-type-name">{typeName}</span>
+      </span>
+    </>
+  );
+
   return (
     <li
       className={`graphiql-qb-fragment-item${
@@ -80,38 +91,42 @@ const FragmentItem: FC<FragmentItemProps> = ({
       {onFocus ? (
         <button
           type="button"
-          className="graphiql-qb-fragment-name graphiql-qb-fragment-name--button"
+          className="graphiql-qb-fragment-open graphiql-qb-fragment-open--button"
           aria-current={active ? 'true' : undefined}
           aria-label={`Edit fragment ${name}`}
           onClick={() => onFocus(name)}
         >
-          {name}
+          {label}
         </button>
       ) : (
-        <span className="graphiql-qb-fragment-name">{name}</span>
+        <span className="graphiql-qb-fragment-open">{label}</span>
       )}
-      {onRename && (
-        <button
-          type="button"
-          className="graphiql-qb-fragment-rename-btn"
-          aria-label={`Rename fragment ${name}`}
-          onClick={() => {
-            setDraft(name);
-            setEditing(true);
-          }}
-        >
-          <PenIcon />
-        </button>
-      )}
-      {onDelete && (
-        <button
-          type="button"
-          className="graphiql-qb-fragment-delete-btn"
-          aria-label={`Delete fragment ${name}, inlining it where spread`}
-          onClick={() => onDelete(name)}
-        >
-          <CloseIcon />
-        </button>
+      {(onRename || onDelete) && (
+        <span className="graphiql-qb-fragment-actions">
+          {onRename && (
+            <button
+              type="button"
+              className="graphiql-qb-fragment-rename-btn"
+              aria-label={`Rename fragment ${name}`}
+              onClick={() => {
+                setDraft(name);
+                setEditing(true);
+              }}
+            >
+              <PenIcon />
+            </button>
+          )}
+          {onDelete && (
+            <button
+              type="button"
+              className="graphiql-qb-fragment-delete-btn"
+              aria-label={`Delete fragment ${name}, inlining it where spread`}
+              onClick={() => onDelete(name)}
+            >
+              <CloseIcon />
+            </button>
+          )}
+        </span>
       )}
     </li>
   );
@@ -131,7 +146,7 @@ export const FragmentSection: FC<FragmentSectionProps> = ({
   onRenameFragment,
   onDeleteFragment,
 }) => {
-  const fragments = listFragments(doc);
+  const fragments = listFragmentInfos(doc);
 
   return (
     <section className="graphiql-qb-fragment-section" aria-label="Fragments">
@@ -140,10 +155,11 @@ export const FragmentSection: FC<FragmentSectionProps> = ({
         <p className="graphiql-qb-fragment-empty">No fragments defined.</p>
       ) : (
         <ul className="graphiql-qb-fragment-list" role="list">
-          {fragments.map(name => (
+          {fragments.map(({ name, typeName }) => (
             <FragmentItem
               key={name}
               name={name}
+              typeName={typeName}
               active={name === activeFragmentName}
               onFocus={onFocusFragment}
               onRename={onRenameFragment}

@@ -30,6 +30,24 @@ export function listFragments(doc: DocumentNode): string[] {
     .map(f => f.name.value);
 }
 
+/** A named fragment's name paired with its type condition. */
+export type FragmentInfo = {
+  name: string;
+  typeName: string;
+};
+
+/**
+ * Returns the name and type condition of every named fragment definition in
+ * `doc`, in document order.
+ */
+export function listFragmentInfos(doc: DocumentNode): FragmentInfo[] {
+  return doc.definitions
+    .filter(
+      (d): d is FragmentDefinitionNode => d.kind === Kind.FRAGMENT_DEFINITION,
+    )
+    .map(f => ({ name: f.name.value, typeName: f.typeCondition.name.value }));
+}
+
 /**
  * Extracts the selection set of the field at `path` into a new named fragment
  * definition (`fragmentName on typeName`), and replaces the field's selections

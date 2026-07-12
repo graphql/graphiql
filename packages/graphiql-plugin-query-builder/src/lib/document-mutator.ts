@@ -36,8 +36,10 @@ export {
   createFragmentFromSelection,
   inlineFragment,
   listFragments,
+  listFragmentInfos,
   removeFragmentSpread,
   renameFragment,
+  type FragmentInfo,
 } from './fragments';
 
 export {
