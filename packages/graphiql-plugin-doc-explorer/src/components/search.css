@@ -7,7 +7,7 @@
     & .graphiql-doc-explorer-search-input {
       background: oklch(var(--bg-canvas));
       border: 1px solid oklch(var(--border-default));
-      box-shadow: 0 4px 12px oklch(0% 0 0 / 0.3);
+      box-shadow: var(--shadow-popover);
     }
   }
 }
@@ -46,7 +46,7 @@
   background-color: oklch(var(--bg-canvas));
   border: 1px solid oklch(var(--border-default));
   border-radius: var(--border-radius-4);
-  box-shadow: 0 4px 12px oklch(0% 0 0 / 0.3);
+  box-shadow: var(--shadow-popover);
   max-height: 400px;
   overflow-y: auto;
   margin: 0;
