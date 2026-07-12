@@ -34,12 +34,6 @@
       integrity="{{GRAPHIQL_CSS_INTEGRITY}}"
       crossorigin="anonymous"
     />
-    <link
-      rel="stylesheet"
-      href="{{PLUGIN_EXPLORER_CSS_URL}}"
-      integrity="{{PLUGIN_EXPLORER_CSS_INTEGRITY}}"
-      crossorigin="anonymous"
-    />
     <!--
      * Note:
      * The ?standalone flag bundles the module along with all of its `dependencies`, excluding `peerDependencies`, into a single JavaScript file.

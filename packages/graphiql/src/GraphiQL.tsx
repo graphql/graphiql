@@ -257,7 +257,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     initialHeaders,
     tabs,
     activeTabIndex,
-    isFetching,
     visiblePlugin,
     operations,
     plugins,
@@ -269,7 +268,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       'initialHeaders',
       'tabs',
       'activeTabIndex',
-      'isFetching',
       'visiblePlugin',
       'operations',
       'plugins',
@@ -614,7 +612,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                     className="graphiql-response-column"
                   >
                     <div className="graphiql-response">
-                      {isFetching && <Spinner />}
                       <ResponseEditor responseTooltip={responseTooltip} />
                       {footer}
                     </div>

@@ -90,7 +90,7 @@ export const SearchRow: FC = () => {
             inputRef.current.focus();
           }}
         >
-          <MagnifyingGlassIcon />
+          <MagnifyingGlassIcon aria-hidden="true" />
           <ComboboxInput
             autoComplete="off"
             onChange={event => setSearchValue(event.target.value)}
