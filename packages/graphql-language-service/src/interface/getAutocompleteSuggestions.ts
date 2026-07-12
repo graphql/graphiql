@@ -39,6 +39,8 @@ import {
   assertAbstractType,
   doTypesOverlap,
   getNamedType,
+  getNullableType,
+  isListType,
   isAbstractType,
   isCompositeType,
   isInputType,
@@ -575,6 +577,25 @@ function getSuggestionsForInputValues(
 ): Array<CompletionItem> {
   const namedInputType = getNamedType(typeInfo.inputType!);
 
+  // When the value position expects a list (e.g. `[Episode]`), a bare literal
+  // like `JEDI` is invalid — it must be wrapped as `[JEDI]`. The online parser
+  // unwraps one list level each time the cursor moves inside a list literal
+  // (`[ | ]`), so the number of list wrappers still present here is exactly how
+  // many brackets we need to add (handles nested lists like `[[Episode]]` too).
+  // Variable completions ($var) reference the whole list and must not be wrapped.
+  let listDepth = 0;
+  let unwrapped: GraphQLType | null | undefined = getNullableType(
+    typeInfo.inputType,
+  );
+  while (unwrapped && isListType(unwrapped)) {
+    listDepth++;
+    unwrapped = getNullableType(unwrapped.ofType);
+  }
+  const wrap = (literal: string): string | undefined =>
+    listDepth > 0
+      ? '['.repeat(listDepth) + literal + ']'.repeat(listDepth)
+      : undefined;
+
   const queryVariables: CompletionItem[] = getVariableCompletions(
     queryText,
     schema,
@@ -588,6 +609,7 @@ function getSuggestionsForInputValues(
       values
         .map<CompletionItem>((value: GraphQLEnumValue) => ({
           label: value.name,
+          insertText: wrap(value.name),
           detail: String(namedInputType),
           documentation: value.description ?? undefined,
           deprecated: Boolean(value.deprecationReason),
@@ -605,6 +627,7 @@ function getSuggestionsForInputValues(
       queryVariables.concat([
         {
           label: 'true',
+          insertText: wrap('true'),
           detail: String(GraphQLBoolean),
           documentation: 'Not false.',
           kind: CompletionItemKind.Variable,
@@ -612,6 +635,7 @@ function getSuggestionsForInputValues(
         },
         {
           label: 'false',
+          insertText: wrap('false'),
           detail: String(GraphQLBoolean),
           documentation: 'Not true.',
           kind: CompletionItemKind.Variable,
