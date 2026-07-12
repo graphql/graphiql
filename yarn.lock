@@ -11413,6 +11413,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cypress-real-events@npm:^1.15.0":
+  version: 1.15.0
+  resolution: "cypress-real-events@npm:1.15.0"
+  peerDependencies:
+    cypress: ^4.x || ^5.x || ^6.x || ^7.x || ^8.x || ^9.x || ^10.x || ^11.x || ^12.x || ^13.x || ^14.x || ^15.x
+  checksum: 10c0/effb064bed46c8f059ff0b4d315e3cf0a23e2d411948431475ef1b939db8cc1624a7ca033a57dd8d8e3a297240deb298423464bf12a441330d449a06060ba423
+  languageName: node
+  linkType: hard
+
 "cypress@npm:^13.13.2":
   version: 13.13.2
   resolution: "cypress@npm:13.13.2"
@@ -14672,6 +14681,7 @@ __metadata:
     cross-env: "npm:^7.0.2"
     cypress: "npm:^13.13.2"
     cypress-axe: "npm:^1"
+    cypress-real-events: "npm:^1.15.0"
     graphql: "npm:^16.11.0"
     graphql-ws: "npm:^5.5.5"
     lightningcss: "npm:^1.29.3"

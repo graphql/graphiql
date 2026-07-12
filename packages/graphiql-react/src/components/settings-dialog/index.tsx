@@ -1,6 +1,6 @@
 'use no memo';
 
-import type { FC } from 'react';
+import type { FC, RefObject } from 'react';
 import { Dialog } from '../dialog';
 import { SegmentedControl } from '../segmented-control';
 import { useGraphiQL, useGraphiQLActions } from '../provider';
@@ -83,6 +83,11 @@ export interface SettingsDialogProps {
    * Whether the "persist headers" control is shown.
    */
   showPersistHeadersSettings?: boolean;
+  /**
+   * The element focus should return to when the dialog closes, usually the
+   * button that opened it.
+   */
+  restoreFocusRef?: RefObject<HTMLElement | null>;
 }
 
 /**
@@ -95,6 +100,7 @@ export const SettingsDialog: FC<SettingsDialogProps> = ({
   onOpenChange,
   forcedTheme,
   showPersistHeadersSettings,
+  restoreFocusRef,
 }) => {
   const { theme, setTheme, density, setDensity, fontSize, setFontSize } =
     useGraphiQLSettings();
@@ -155,7 +161,11 @@ export const SettingsDialog: FC<SettingsDialogProps> = ({
   }, [forcedThemeSetting, theme, setTheme]);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={onOpenChange}
+      restoreFocusRef={restoreFocusRef}
+    >
       <div className="graphiql-settings-dialog">
         <Dialog.Header>Settings</Dialog.Header>
 

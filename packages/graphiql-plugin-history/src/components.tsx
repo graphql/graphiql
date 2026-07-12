@@ -89,12 +89,19 @@ export const HistoryItem: FC<QueryHistoryItemProps> = props => {
   );
   const inputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const editButtonRef = useRef<HTMLButtonElement>(null);
   const [isEditable, setIsEditable] = useState(false);
+  const wasEditable = useRef(false);
 
   useEffect(() => {
     if (isEditable) {
       inputRef.current?.focus();
+    } else if (wasEditable.current) {
+      // The input unmounts on save/cancel; without this the browser drops
+      // focus to <body> instead of keeping it on the row.
+      editButtonRef.current?.focus();
     }
+    wasEditable.current = isEditable;
   }, [isEditable]);
 
   const displayName =
@@ -150,7 +157,7 @@ export const HistoryItem: FC<QueryHistoryItemProps> = props => {
             defaultValue={props.item.label}
             ref={inputRef}
             onKeyDown={e => {
-              if (e.key === 'Esc') {
+              if (e.key === 'Escape') {
                 setIsEditable(false);
               } else if (e.key === 'Enter') {
                 setIsEditable(false);
@@ -195,6 +202,7 @@ export const HistoryItem: FC<QueryHistoryItemProps> = props => {
           <div className="graphiql-history-item-actions">
             <Tooltip label="Edit label">
               <UnStyledButton
+                ref={editButtonRef}
                 type="button"
                 className="graphiql-history-item-action"
                 onClick={handleEditLabel}

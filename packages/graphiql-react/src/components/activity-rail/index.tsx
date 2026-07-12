@@ -1,6 +1,6 @@
 'use no memo';
 
-import type { FC } from 'react';
+import type { FC, RefObject } from 'react';
 import { useGraphiQL, useGraphiQLActions } from '../provider';
 import type { GraphiQLPlugin } from '../../stores/plugin';
 import { Tooltip } from '../tooltip';
@@ -15,11 +15,17 @@ export interface ActivityRailProps {
   onPluginToggle?: (nextPlugin: GraphiQLPlugin | null) => void;
   /** Called when the settings gear button is clicked. */
   onSettingsClick?: () => void;
+  /**
+   * Attached to the settings gear button so the settings dialog can restore
+   * focus to it on close.
+   */
+  settingsButtonRef?: RefObject<HTMLButtonElement | null>;
 }
 
 export const ActivityRail: FC<ActivityRailProps> = ({
   onPluginToggle,
   onSettingsClick,
+  settingsButtonRef,
 }) => {
   const plugins = useGraphiQL(state => state.plugins);
   const visiblePlugin = useGraphiQL(state => state.visiblePlugin);
@@ -57,6 +63,7 @@ export const ActivityRail: FC<ActivityRailProps> = ({
       {onSettingsClick && (
         <Tooltip label="Settings">
           <button
+            ref={settingsButtonRef}
             type="button"
             className="graphiql-activity-rail-settings"
             aria-label="Settings"
