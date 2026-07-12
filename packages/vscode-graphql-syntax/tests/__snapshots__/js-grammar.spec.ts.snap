@@ -471,6 +471,18 @@ foo.graphql();                                             |
                                                            | 
 const afterMember = 'after';                               | 
                                                            | 
+class PrivateGraphqlClient {                               | 
+  #graphql(query) {                                        | 
+    return query;                                          | 
+  }                                                        | 
+                                                           | 
+  execute() {                                              | 
+    return this.#graphql('query { id }');                  | 
+  }                                                        | 
+}                                                          | 
+                                                           | 
+const afterPrivateMember = 'after';                        | 
+                                                           | 
 graphql.experimental                                       | entity.name.function.tagged-template.js
 (                                                          | 
 \`                                                          | punctuation.definition.string.template.begin.js
@@ -664,6 +676,23 @@ id                                                                   | meta.embe
 }                                                                    | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
 \`                                                                    | punctuation.definition.string.template.end.js
 ;                                                                    | 
+                                                                     | 
+const quotedGenericQuery =                                           | 
+graphql                                                              | entity.name.function.tagged-template.js
+<{ operator: '>' }>(                                                 | 
+'                                                                    | punctuation.definition.string.template.begin.js
+query                                                                | meta.embedded.block.graphql keyword.operation.graphql
+                                                                     | meta.embedded.block.graphql meta.selectionset.graphql
+{                                                                    | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+                                                                     | meta.embedded.block.graphql meta.selectionset.graphql
+id                                                                   | meta.embedded.block.graphql meta.selectionset.graphql variable.graphql
+                                                                     | meta.embedded.block.graphql meta.selectionset.graphql
+}                                                                    | meta.embedded.block.graphql meta.selectionset.graphql punctuation.operation.graphql
+'                                                                    | punctuation.definition.string.template.end.js
+)                                                                    | 
+;                                                                    | 
+                                                                     | 
+const afterQuotedGeneric = 'after';                                  | 
                                                                      | 
 const query =                                                        | 
 graphql                                                              | entity.name.function.tagged-template.js

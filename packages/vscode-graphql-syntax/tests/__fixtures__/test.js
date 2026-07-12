@@ -116,6 +116,18 @@ foo.graphql();
 
 const afterMember = 'after';
 
+class PrivateGraphqlClient {
+  #graphql(query) {
+    return query;
+  }
+
+  execute() {
+    return this.#graphql('query { id }');
+  }
+}
+
+const afterPrivateMember = 'after';
+
 graphql.experimental(`query { id }`);
 
 obj.graphql.experimental(`query { id }`);

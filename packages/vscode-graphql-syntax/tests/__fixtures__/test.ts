@@ -31,6 +31,10 @@ const nestedQuery = graphql<Result<User>>('query { id }');
 
 const nestedTaggedQuery = graphql<Result<User>>`query { id }`;
 
+const quotedGenericQuery = graphql<{ operator: '>' }>('query { id }');
+
+const afterQuotedGeneric = 'after';
+
 const query = graphql('query { id }');
 
 const query = graphql<Generic>('query { id }');
