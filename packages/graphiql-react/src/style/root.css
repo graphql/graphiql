@@ -135,3 +135,15 @@ body.graphiql-dark .graphiql-container {
     }
   }
 }
+
+/*
+ * Global focus ring. Any keyboard-focused control inside the app (and inside
+ * portaled dialogs) gets a visible outline in the blue accent, which clears
+ * WCAG non-text contrast against the canvas in both themes. Components that
+ * need a different offset can still override `outline-offset` locally.
+ */
+.graphiql-container :focus-visible,
+.graphiql-dialog :focus-visible {
+  outline: 2px solid oklch(var(--accent-blue));
+  outline-offset: 2px;
+}

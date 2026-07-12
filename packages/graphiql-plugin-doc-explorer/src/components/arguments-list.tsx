@@ -26,7 +26,11 @@ export const ArgumentsList: FC<ArgumentsListProps> = ({ title, args }) => {
         onClick={() => setExpanded(e => !e)}
         aria-expanded={expanded}
       >
-        {expanded ? <ChevronDownIcon /> : <ChevronUpIcon />}
+        {expanded ? (
+          <ChevronDownIcon aria-hidden="true" />
+        ) : (
+          <ChevronUpIcon aria-hidden="true" />
+        )}
         <span>
           {title}{' '}
           <span className="graphiql-doc-explorer-arguments-list-count">

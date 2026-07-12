@@ -52,7 +52,11 @@ export const FieldsList: FC<FieldsListProps> = ({ type, activeFieldName }) => {
         onClick={() => setExpanded(e => !e)}
         aria-expanded={expanded}
       >
-        {expanded ? <ChevronDownIcon /> : <ChevronUpIcon />}
+        {expanded ? (
+          <ChevronDownIcon aria-hidden="true" />
+        ) : (
+          <ChevronUpIcon aria-hidden="true" />
+        )}
         <span>
           FIELDS{' '}
           <span className="graphiql-doc-explorer-fields-list-count">

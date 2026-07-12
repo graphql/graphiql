@@ -169,8 +169,13 @@ export const HistoryItem: FC<QueryHistoryItemProps> = props => {
           <UnStyledButton type="button" ref={buttonRef} onClick={handleSave}>
             Save
           </UnStyledButton>
-          <UnStyledButton type="button" ref={buttonRef} onClick={handleClose}>
-            <CloseIcon />
+          <UnStyledButton
+            type="button"
+            ref={buttonRef}
+            onClick={handleClose}
+            aria-label="Cancel"
+          >
+            <CloseIcon aria-hidden="true" />
           </UnStyledButton>
         </>
       ) : (
