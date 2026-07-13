@@ -12,7 +12,8 @@ import {
   createEditor,
   onEditorContainerKeyDown,
 } from '../utility/create-editor';
-import { debounce, pick, cleanupDisposables, cn } from '../utility';
+import { clsx } from 'clsx';
+import { debounce, pick, cleanupDisposables } from '../utility';
 import { Uri, Range } from '../utility/monaco-ssr';
 import type { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import {
@@ -428,7 +429,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       tabIndex={0}
       onKeyDown={onEditorContainerKeyDown}
       {...props}
-      className={cn('graphiql-editor', props.className)}
+      className={clsx('graphiql-editor', props.className)}
     />
   );
 };

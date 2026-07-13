@@ -13,7 +13,8 @@ import {
   onEditorContainerKeyDown,
 } from '../utility/create-editor';
 import { Range } from '../utility/monaco-ssr';
-import { pick, cleanupDisposables, cn } from '../utility';
+import { clsx } from 'clsx';
+import { pick, cleanupDisposables } from '../utility';
 import { KEY_BINDINGS, URI_NAME } from '../constants';
 import type { EditorProps } from '../types';
 import type * as monaco from 'monaco-editor';
@@ -181,7 +182,7 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
   const showHeader = !isFetcherPath || showUpgradeBanner;
 
   return (
-    <div {...props} className={cn('graphiql-response-pane', props.className)}>
+    <div {...props} className={clsx('graphiql-response-pane', props.className)}>
       {showHeader && (
         <ResponseHeader
           status={lastResponse?.status}
