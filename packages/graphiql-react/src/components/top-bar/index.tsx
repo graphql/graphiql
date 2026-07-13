@@ -10,7 +10,8 @@ import { KeycapHint, MODIFIER } from '../keycap-hint';
 import { Tooltip } from '../tooltip';
 import { DropdownMenu } from '../dropdown-menu';
 import { GraphQLLogoIcon, PlayIcon, ChevronDownIcon } from '../../icons';
-import { cn, getRunBlockReason, resolveActiveOperation } from '../../utility';
+import { clsx } from 'clsx';
+import { getRunBlockReason, resolveActiveOperation } from '../../utility';
 import './index.css';
 
 export type TopBarProps = {
@@ -120,7 +121,7 @@ export const TopBarView: FC<TopBarViewProps> = ({
   const primaryButton = (
     <button
       type="button"
-      className={cn(
+      className={clsx(
         'graphiql-top-bar-run-primary',
         !hasOptions && 'graphiql-top-bar-run-primary--solo',
       )}
@@ -182,7 +183,7 @@ export const TopBarView: FC<TopBarViewProps> = ({
                     onSelect={() => selectOperation(opName)}
                   >
                     <span
-                      className={cn(
+                      className={clsx(
                         'graphiql-top-bar-run-menu-item',
                         isActive && 'graphiql-top-bar-run-menu-item--active',
                       )}
@@ -213,7 +214,7 @@ export const TopBarView: FC<TopBarViewProps> = ({
         <Tooltip label={`Switch to ${switchTarget}`}>
           <button
             type="button"
-            className={cn(
+            className={clsx(
               'graphiql-top-bar-method-toggle',
               isBlocked && 'graphiql-top-bar-method-toggle--attention',
             )}

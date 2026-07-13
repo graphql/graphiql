@@ -1,5 +1,5 @@
 import { ComponentProps, FC, forwardRef } from 'react';
-import { cn } from '../../utility';
+import { clsx } from 'clsx';
 import {
   Trigger,
   Portal,
@@ -36,7 +36,7 @@ const Content: FC<DropdownMenuContentProps> = ({
       <RadixContent
         align={align}
         sideOffset={sideOffset}
-        className={cn('graphiql-dropdown-content', className)}
+        className={clsx('graphiql-dropdown-content', className)}
         {...props}
       >
         {children}
@@ -46,14 +46,14 @@ const Content: FC<DropdownMenuContentProps> = ({
 };
 
 const Item: FC<DropdownMenuItemProps> = ({ className, children, ...props }) => (
-  <RadixItem className={cn('graphiql-dropdown-item', className)} {...props}>
+  <RadixItem className={clsx('graphiql-dropdown-item', className)} {...props}>
     {children}
   </RadixItem>
 );
 
 const Separator: FC<ComponentProps<'div'>> = ({ className, ...props }) => (
   <RadixSeparator
-    className={cn('graphiql-dropdown-separator', className)}
+    className={clsx('graphiql-dropdown-separator', className)}
     {...props}
   />
 );

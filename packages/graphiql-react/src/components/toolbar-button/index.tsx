@@ -4,7 +4,7 @@ import {
   useState,
   ComponentPropsWithoutRef,
 } from 'react';
-import { clsx as cn } from 'clsx';
+import { clsx } from 'clsx';
 import { Tooltip } from '../tooltip';
 import { UnStyledButton } from '../button';
 import './index.css';
@@ -38,7 +38,7 @@ export const ToolbarButton = forwardRef<HTMLButtonElement, ToolbarButtonProps>(
           {...props}
           ref={ref}
           type="button"
-          className={cn(
+          className={clsx(
             'graphiql-toolbar-button',
             error && 'error',
             props.className,

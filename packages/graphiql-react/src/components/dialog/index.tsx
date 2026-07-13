@@ -1,4 +1,4 @@
-import { cn } from '../../utility';
+import { clsx } from 'clsx';
 import { forwardRef, FC, ComponentPropsWithoutRef, RefObject } from 'react';
 import { CloseIcon } from '../../icons';
 import { UnStyledButton } from '../button';
@@ -17,7 +17,7 @@ const DialogClose = forwardRef<
       {...props}
       ref={ref}
       type="button"
-      className={cn('graphiql-dialog-close', props.className)}
+      className={clsx('graphiql-dialog-close', props.className)}
     >
       <VisuallyHidden>Close dialog</VisuallyHidden>
       <CloseIcon />
@@ -36,7 +36,11 @@ const DialogHeader = forwardRef<
   HTMLDivElement,
   ComponentPropsWithoutRef<'div'>
 >(({ children, className, ...props }, ref) => (
-  <div {...props} ref={ref} className={cn('graphiql-dialog-header', className)}>
+  <div
+    {...props}
+    ref={ref}
+    className={clsx('graphiql-dialog-header', className)}
+  >
     {typeof children === 'string' ? (
       <D.Title className="graphiql-dialog-title">{children}</D.Title>
     ) : (
@@ -50,7 +54,11 @@ DialogHeader.displayName = 'Dialog.Header';
 /** The content region of a dialog, with consistent padding. */
 const DialogBody = forwardRef<HTMLDivElement, ComponentPropsWithoutRef<'div'>>(
   ({ children, className, ...props }, ref) => (
-    <div {...props} ref={ref} className={cn('graphiql-dialog-body', className)}>
+    <div
+      {...props}
+      ref={ref}
+      className={clsx('graphiql-dialog-body', className)}
+    >
       {children}
     </div>
   ),
@@ -62,7 +70,11 @@ const DialogFooter = forwardRef<
   HTMLDivElement,
   ComponentPropsWithoutRef<'div'>
 >(({ children, className, ...props }, ref) => (
-  <div {...props} ref={ref} className={cn('graphiql-dialog-footer', className)}>
+  <div
+    {...props}
+    ref={ref}
+    className={clsx('graphiql-dialog-footer', className)}
+  >
     {children}
   </div>
 ));
