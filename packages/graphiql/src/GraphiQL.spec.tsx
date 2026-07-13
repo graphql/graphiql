@@ -231,6 +231,27 @@ describe('GraphiQL', () => {
     });
   }); // default query
 
+  describe('brand', () => {
+    it('shows the default GraphiQL wordmark when brand is unset', async () => {
+      const { getByText } = render(<GraphiQL fetcher={noOpFetcher} />);
+
+      await waitFor(() => {
+        expect(getByText('GraphiQL')).toBeInTheDocument();
+      });
+    });
+
+    it('overrides the top bar branding with the brand prop', async () => {
+      const { getByText, queryByText } = render(
+        <GraphiQL fetcher={noOpFetcher} brand="My Company" />,
+      );
+
+      await waitFor(() => {
+        expect(getByText('My Company')).toBeInTheDocument();
+        expect(queryByText('GraphiQL')).not.toBeInTheDocument();
+      });
+    });
+  });
+
   // TODO: rewrite these plugin tests after plugin API has more structure
   describe('plugins', () => {
     it('displays correct plugin when visiblePlugin prop is used', async () => {
@@ -627,7 +648,7 @@ describe('GraphiQL', () => {
         </>
       );
 
-      const { container, queryByRole } = render(
+      const { container } = render(
         <GraphiQL fetcher={noOpFetcher}>{myFragment}</GraphiQL>,
       );
 
@@ -636,14 +657,13 @@ describe('GraphiQL', () => {
           container.querySelector('.graphiql-container'),
         ).toBeInTheDocument();
         expect(
-          container.querySelector('.graphiql-logo'),
+          container.querySelector('.graphiql-footer'),
         ).not.toBeInTheDocument();
-        expect(queryByRole('toolbar')).not.toBeInTheDocument();
       });
     });
 
     it('properly ignores non-override children components', async () => {
-      const { container, queryByRole } = render(
+      const { container } = render(
         <GraphiQL fetcher={noOpFetcher}>
           <MyFunctionalComponent />
         </GraphiQL>,
@@ -654,9 +674,8 @@ describe('GraphiQL', () => {
           container.querySelector('.graphiql-container'),
         ).toBeInTheDocument();
         expect(
-          container.querySelector('.graphiql-logo'),
+          container.querySelector('.graphiql-footer'),
         ).not.toBeInTheDocument();
-        expect(queryByRole('toolbar')).not.toBeInTheDocument();
       });
     });
 
@@ -668,7 +687,7 @@ describe('GraphiQL', () => {
         }
       }
 
-      const { container, queryByRole } = render(
+      const { container } = render(
         <GraphiQL fetcher={noOpFetcher}>
           <MyClassComponent />
         </GraphiQL>,
@@ -679,43 +698,8 @@ describe('GraphiQL', () => {
           container.querySelector('.graphiql-container'),
         ).toBeInTheDocument();
         expect(
-          container.querySelector('.graphiql-logo'),
+          container.querySelector('.graphiql-footer'),
         ).not.toBeInTheDocument();
-        expect(queryByRole('toolbar')).not.toBeInTheDocument();
-      });
-    });
-
-    describe('GraphiQL.Logo', () => {
-      it('can be overridden using the exported type', async () => {
-        const { getByText } = render(
-          <GraphiQL fetcher={noOpFetcher}>
-            <GraphiQL.Logo>My Exported Type Logo</GraphiQL.Logo>
-          </GraphiQL>,
-        );
-
-        await waitFor(() => {
-          expect(getByText('My Exported Type Logo')).toBeInTheDocument();
-        });
-      });
-    });
-
-    describe('GraphiQL.Toolbar', () => {
-      it('can be overridden using the exported type', async () => {
-        const { container } = render(
-          <GraphiQL fetcher={noOpFetcher}>
-            <GraphiQL.Toolbar>
-              {() => <ToolbarButton label="My Fun Label" />}
-            </GraphiQL.Toolbar>
-          </GraphiQL>,
-        );
-
-        await waitFor(() => {
-          expect(
-            container.querySelectorAll(
-              '[role="toolbar"] .graphiql-toolbar-button',
-            ),
-          ).toHaveLength(1);
-        });
       });
     });
 
@@ -739,7 +723,7 @@ describe('GraphiQL', () => {
   });
 
   describe('tab strip actions', () => {
-    it('renders exactly one prettify, merge, copy, and save action, and no legacy toolbar or logo', async () => {
+    it('renders exactly one prettify, merge, copy, and save action', async () => {
       const { container } = render(
         <GraphiQL fetcher={noOpFetcher} onSaveQuery={() => {}} />,
       );
@@ -759,12 +743,6 @@ describe('GraphiQL', () => {
         expect(
           container.querySelectorAll('[aria-label="Save query"]'),
         ).toHaveLength(1);
-        expect(
-          container.querySelector('.graphiql-toolbar'),
-        ).not.toBeInTheDocument();
-        expect(
-          container.querySelector('.graphiql-logo'),
-        ).not.toBeInTheDocument();
       });
     });
 

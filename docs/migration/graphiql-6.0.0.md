@@ -1,6 +1,6 @@
 # Upgrading `graphiql` to `6.0.0`
 
-GraphiQL 6 is a visual redesign built on a new OKLCH color system, plus a handful of mostly additive API changes: a `Transport` API that sits alongside the existing `Fetcher`, a settings dialog for theme/density/font-size, and two new first-party plugins (a visual query builder and operation collections) installed by default. The one breaking change is that the hooks deprecated in v5 are now removed, each with a drop-in replacement. See [discussion #4219](https://github.com/graphql/graphiql/discussions/4219) for the design background and to leave feedback.
+GraphiQL 6 is a visual redesign built on a new OKLCH color system, plus a handful of mostly additive API changes: a `Transport` API that sits alongside the existing `Fetcher`, a settings dialog for theme/density/font-size, and two new first-party plugins (a visual query builder and operation collections) installed by default. The breaking changes are the removal of the hooks deprecated in v5 and the removal of the `GraphiQL.Toolbar` / `GraphiQL.Logo` composable slots, each with a drop-in replacement. See [discussion #4219](https://github.com/graphql/graphiql/discussions/4219) for the design background and to leave feedback.
 
 If something in your integration breaks that isn't covered here, please open an issue and we'll add it.
 
@@ -9,18 +9,19 @@ If something in your integration breaks that isn't covered here, please open an 
 1. [Overview](#overview)
 2. [CSS and retheming](#css-and-retheming)
 3. [Removed hooks](#removed-hooks)
-4. [New `transport` prop](#new-transport-prop)
-5. [New first-party plugins](#new-first-party-plugins)
-6. [`@graphiql/plugin-explorer` removal](#graphiqlplugin-explorer-removal)
-7. [Theme, density, and font-size settings](#theme-density-and-font-size-settings)
-8. [Considering for removal in v7](#considering-for-removal-in-v7)
-9. [Other notes](#other-notes)
+4. [Removed `GraphiQL.Toolbar` and `GraphiQL.Logo`](#removed-graphiqltoolbar-and-graphiqllogo)
+5. [New `transport` prop](#new-transport-prop)
+6. [New first-party plugins](#new-first-party-plugins)
+7. [`@graphiql/plugin-explorer` removal](#graphiqlplugin-explorer-removal)
+8. [Theme, density, and font-size settings](#theme-density-and-font-size-settings)
+9. [Considering for removal in v7](#considering-for-removal-in-v7)
+10. [Other notes](#other-notes)
 
 ## Overview
 
 Visually, v6 introduces a new OKLCH-based design-token system, restyles every primitive component (buttons, dialogs, tabs, dropdowns, tooltips), and reworks the app chrome around a top bar, an activity rail, and a side panel. Functionally, the biggest changes are a new `Transport` API for the network layer, the active operation following your cursor instead of only updating on run, and two new default-installed plugins: a visual query builder and operation collections.
 
-Most of this is additive and requires no rewrite: the old `fetcher` prop and the old CSS variables keep working. The one breaking change to watch for is the removal of the hooks that were deprecated back in v5 (`useEditorContext`, `usePluginContext`, and the rest). Each has a direct replacement, covered below. Read the sections relevant to your setup and treat the rest as optional cleanup.
+Most of this is additive and requires no rewrite: the old `fetcher` prop and the old CSS variables keep working. Two things to watch for: the hooks that were deprecated back in v5 (`useEditorContext`, `usePluginContext`, and the rest) are now removed, and the composable `GraphiQL.Toolbar` / `GraphiQL.Logo` children are gone in favor of a plugin `sessionActions` and a `brand` prop on the top bar. Each has a direct replacement, covered below. Read the sections relevant to your setup and treat the rest as optional cleanup.
 
 ## CSS and retheming
 
@@ -194,6 +195,93 @@ const { addToHistory } = useHistoryActions();
 ```
 
 See the [`@graphiql/react` README](../../packages/graphiql-react/README.md#available-stores) for the full list of available store selectors and actions.
+
+## Removed `GraphiQL.Toolbar` and `GraphiQL.Logo`
+
+`<GraphiQL.Toolbar>` and `<GraphiQL.Logo>` are removed. Both were compound-component children you passed to `<GraphiQL>` to customize the editor toolbar and the corner branding; in v6 those render sites don't exist anymore (the toolbar's default prettify/merge/copy actions and the corner logo were already removed from the default render in a prior v6 change), so the slots had nowhere natural left to render. `<GraphiQL.Footer>` is unchanged and still works exactly as before.
+
+### `GraphiQL.Toolbar` → plugin `sessionActions`
+
+Custom editor actions now live in the tab strip, next to prettify/merge/copy/save, through a plugin's `sessionActions`: an always-mounted component every registered plugin can provide, regardless of whether that plugin's pane is visible.
+
+**Before:**
+
+```tsx
+import { GraphiQL } from 'graphiql';
+import { ToolbarButton } from '@graphiql/react';
+
+function App() {
+  return (
+    <GraphiQL fetcher={fetcher}>
+      <GraphiQL.Toolbar>
+        {({ prettify, merge, copy }) => (
+          <>
+            {prettify}
+            {merge}
+            {copy}
+            <ToolbarButton label="My custom action" onClick={onClick} />
+          </>
+        )}
+      </GraphiQL.Toolbar>
+    </GraphiQL>
+  );
+}
+```
+
+**After:**
+
+```tsx
+import { GraphiQL } from 'graphiql';
+import { HISTORY_PLUGIN } from '@graphiql/plugin-history';
+import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
+import { collectionsPlugin } from '@graphiql/plugin-collections';
+import { ToolbarButton, type GraphiQLPlugin } from '@graphiql/react';
+
+const myActionsPlugin: GraphiQLPlugin = {
+  title: 'My Plugin',
+  icon: MyIcon,
+  content: MyPluginPanel,
+  sessionActions: () => (
+    <ToolbarButton label="My custom action" onClick={onClick} />
+  ),
+};
+
+function App() {
+  return (
+    <GraphiQL
+      fetcher={fetcher}
+      plugins={[
+        HISTORY_PLUGIN,
+        QUERY_BUILDER_PLUGIN,
+        collectionsPlugin(),
+        myActionsPlugin,
+      ]}
+    />
+  );
+}
+```
+
+Prettify, merge, and copy no longer need re-wiring: they're built into the tab strip by default. Passing the `plugins` prop replaces the default-installed plugin set (as it always has), so include the ones you still want (`HISTORY_PLUGIN`, `QUERY_BUILDER_PLUGIN`, `collectionsPlugin()`) alongside your own.
+
+### `GraphiQL.Logo` → the top bar's `brand` prop
+
+Branding is customized through a `brand` prop passed straight to `<GraphiQL>` (or to `<TopBar>` directly if you're composing your own layout with `GraphiQLInterface`). It accepts any `ReactNode` and replaces the default hexagon icon + "GraphiQL" wordmark; leave it unset to keep the default.
+
+**Before:**
+
+```tsx
+<GraphiQL fetcher={fetcher}>
+  <GraphiQL.Logo>My Company</GraphiQL.Logo>
+</GraphiQL>
+```
+
+**After:**
+
+```tsx
+<GraphiQL fetcher={fetcher} brand="My Company" />
+```
+
+`brand` isn't limited to text — pass any element, like your own logo image alongside a label.
 
 ## New `transport` prop
 

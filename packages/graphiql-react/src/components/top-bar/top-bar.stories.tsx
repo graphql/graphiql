@@ -100,6 +100,23 @@ export const NoVersion: Story = {
   ],
 };
 
+/** Custom branding in place of the default hexagon icon + "GraphiQL" wordmark. */
+export const CustomBrand: Story = {
+  args: {
+    version: 'v6.0.0-alpha.1',
+    brand: <span style={{ fontWeight: 600 }}>My Company GraphQL Explorer</span>,
+  },
+  decorators: [
+    Story => (
+      <Tooltip.Provider>
+        <GraphiQLProvider transport={postOnlyTransport}>
+          <Story />
+        </GraphiQLProvider>
+      </Tooltip.Provider>
+    ),
+  ],
+};
+
 /** GET selected with a mutation in the editor: Run disabled, method toggle highlighted. */
 export const MutationBlockedOverGet: Story = {
   render: () => (

@@ -132,14 +132,15 @@ For props documentation, see the
 Parts of the UI can be customized by passing children to the `GraphiQL` or the
 `GraphiQLInterface` component.
 
-- `<GraphiQL.Logo>`: Replace the GraphiQL logo with your own.
-
-- `<GraphiQL.Toolbar>`: Add a custom toolbar below the execution button. Pass
-  the empty `<GraphiQL.Toolbar />` if an empty toolbar is desired. Use the
-  components provided by `@graphiql/react` to create toolbar buttons with proper
-  styles.
-
 - `<GraphiQL.Footer>`: Add a custom footer shown below the response editor.
+
+Branding and toolbar customization moved off the children API in `graphiql@6`:
+
+- Replace the top bar's default hexagon icon + "GraphiQL" wordmark with the
+  `brand` prop, e.g. `<GraphiQL brand="My Company" />`.
+- Add custom toolbar buttons through a plugin's `sessionActions`, which renders
+  into the tab strip alongside prettify/merge/copy/save. See the
+  [v6 migration guide](../../docs/migration/graphiql-6.0.0.md) for details.
 
 ### Plugins
 

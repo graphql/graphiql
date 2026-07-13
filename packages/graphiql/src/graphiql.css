@@ -121,24 +121,6 @@ button.graphiql-tab-strip-action {
   }
 }
 
-/* The GraphiQL.Logo slot, opt-in only: branding lives in the top bar by default */
-.graphiql-container .graphiql-logo {
-  margin-left: auto;
-  color: oklch(var(--fg-muted));
-  font-size: var(--font-size-h4);
-  font-weight: var(--font-weight-medium);
-}
-
-/* Undo default link styling for the default GraphiQL logo link */
-.graphiql-container .graphiql-logo .graphiql-logo-link {
-  color: oklch(var(--fg-muted));
-  text-decoration: none;
-
-  &:focus {
-    outline: oklch(var(--accent-blue)) auto 1px;
-  }
-}
-
 /* The editor of the session */
 .graphiql-container #graphiql-session {
   display: flex;
@@ -161,27 +143,6 @@ button.graphiql-tab-strip-action {
   column-gap: var(--px-16);
   display: flex;
   width: 100%;
-}
-
-/* The GraphiQL.Toolbar slot, opt-in only: prettify/merge/copy live in the
-   tab strip by default */
-.graphiql-container .graphiql-toolbar {
-  width: var(--toolbar-width);
-  display: flex;
-  flex-direction: column;
-  gap: var(--px-8);
-}
-
-.graphiql-container .graphiql-toolbar > button {
-  flex-shrink: 0;
-}
-
-/* The toolbar icons */
-.graphiql-toolbar-icon {
-  color: oklch(var(--fg-subtle));
-  display: block;
-  height: calc(var(--toolbar-width) - (var(--px-8) * 2));
-  width: calc(var(--toolbar-width) - (var(--px-8) * 2));
 }
 
 /* The tab bar for editor tools */
@@ -226,7 +187,6 @@ button.graphiql-tab-strip-action {
    * setting the position of this to `relative` makes sure this element will
    * always be on top of any editors.
    */
-.graphiql-container .graphiql-toolbar,
 .graphiql-container .graphiql-editor-tools,
 .graphiql-container .graphiql-editor-tool {
   position: relative;

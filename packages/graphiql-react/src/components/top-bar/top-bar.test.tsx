@@ -41,6 +41,14 @@ describe('TopBarView', () => {
     expect(screen.getByText('GraphiQL')).toBeInTheDocument();
   });
 
+  it('renders custom branding in place of the default wordmark', () => {
+    const { queryByText } = render(
+      <TopBarView {...DEFAULTS} brand={<span>My Company</span>} />,
+    );
+    expect(queryByText('My Company')).toBeInTheDocument();
+    expect(queryByText('GraphiQL')).not.toBeInTheDocument();
+  });
+
   it('renders the version pill when provided', () => {
     render(<TopBarView {...DEFAULTS} version="v6.0.0-alpha.1" />);
     expect(screen.getByText('v6.0.0-alpha.1')).toBeInTheDocument();

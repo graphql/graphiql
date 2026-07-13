@@ -2,7 +2,7 @@
 // opt this file out so `useGraphiQL` / `useGraphiQLActions` stay live.
 'use no memo';
 
-import type { FC } from 'react';
+import type { FC, ReactNode } from 'react';
 import type { HttpMethod } from '@graphiql/toolkit';
 import type { OperationDefinitionNode } from 'graphql';
 import { useGraphiQL, useGraphiQLActions } from '../provider';
@@ -17,9 +17,14 @@ import './index.css';
 export type TopBarProps = {
   /** Version string shown in the brand pill. */
   version?: string;
+  /**
+   * Custom branding rendered in place of the default GraphiQL icon + wordmark.
+   * @default the GraphiQL hexagon icon and "GraphiQL" wordmark
+   */
+  brand?: ReactNode;
 };
 
-export const TopBar: FC<TopBarProps> = ({ version }) => {
+export const TopBar: FC<TopBarProps> = ({ version, brand }) => {
   const { run, setTransportMethod, setOperationName } = useGraphiQLActions();
   const isFetching = useGraphiQL(state => state.isFetching);
   const transport = useGraphiQL(state => state.transport);
@@ -43,6 +48,7 @@ export const TopBar: FC<TopBarProps> = ({ version }) => {
   return (
     <TopBarView
       version={version}
+      brand={brand}
       isFetching={isFetching}
       url={url}
       method={method}
@@ -61,6 +67,7 @@ export const TopBar: FC<TopBarProps> = ({ version }) => {
 
 export type TopBarViewProps = {
   version?: string;
+  brand?: ReactNode;
   isFetching: boolean;
   url: string;
   method: HttpMethod;
@@ -80,6 +87,7 @@ export type TopBarViewProps = {
 
 export const TopBarView: FC<TopBarViewProps> = ({
   version,
+  brand,
   isFetching,
   url,
   method,
@@ -203,8 +211,15 @@ export const TopBarView: FC<TopBarViewProps> = ({
   return (
     <header className="graphiql-top-bar" role="banner">
       <div className="graphiql-top-bar-brand">
-        <GraphQLLogoIcon className="graphiql-top-bar-logo" aria-hidden="true" />
-        <span className="graphiql-top-bar-wordmark">GraphiQL</span>
+        {brand ?? (
+          <>
+            <GraphQLLogoIcon
+              className="graphiql-top-bar-logo"
+              aria-hidden="true"
+            />
+            <span className="graphiql-top-bar-wordmark">GraphiQL</span>
+          </>
+        )}
         {version && <span className="graphiql-top-bar-version">{version}</span>}
       </div>
 

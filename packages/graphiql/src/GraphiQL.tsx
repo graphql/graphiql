@@ -51,12 +51,7 @@ import {
 } from '@graphiql/plugin-doc-explorer';
 import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
 import { collectionsPlugin } from '@graphiql/plugin-collections';
-import {
-  ActivityBar,
-  GraphiQLLogo,
-  GraphiQLToolbar,
-  GraphiQLFooter,
-} from './ui';
+import { ActivityBar, GraphiQLFooter } from './ui';
 
 const DEFAULT_PLUGINS = [
   HISTORY_PLUGIN,
@@ -104,22 +99,11 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   forcedTheme,
   confirmCloseTab,
   className,
+  brand,
 
   children,
   ...props
 }) => {
-  // @ts-expect-error -- Prop is removed
-  if (props.toolbar?.additionalContent) {
-    throw new TypeError(
-      'The `toolbar.additionalContent` prop has been removed. Use render props on `GraphiQL.Toolbar` component instead.',
-    );
-  }
-  // @ts-expect-error -- Prop is removed
-  if (props.toolbar?.additionalComponent) {
-    throw new TypeError(
-      'The `toolbar.additionalComponent` prop has been removed. Use render props on `GraphiQL.Toolbar` component instead.',
-    );
-  }
   // @ts-expect-error -- Prop is removed
   if (props.keyMap) {
     throw new TypeError(
@@ -143,6 +127,7 @@ const GraphiQL_: FC<GraphiQLProps> = ({
     forcedTheme,
     confirmCloseTab,
     className,
+    brand,
   };
   const hasHistoryPlugin = plugins.includes(HISTORY_PLUGIN);
   const HistoryToUse = hasHistoryPlugin ? HistoryStore : Fragment;
@@ -184,7 +169,8 @@ export interface GraphiQLInterfaceProps
     Pick<
       ComponentPropsWithoutRef<typeof ActivityBar>,
       'forcedTheme' | 'showPersistHeadersSettings'
-    > {
+    >,
+    Pick<ComponentPropsWithoutRef<typeof TopBar>, 'brand'> {
   children?: ReactNode;
   /**
    * Set the default state for the editor tools.
@@ -240,6 +226,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   onEditHeaders,
   responseTooltip,
   showPersistHeadersSettings,
+  brand,
 }) => {
   const {
     addTab,
@@ -336,22 +323,12 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     storageKey: 'secondaryEditorFlex',
   });
 
-  const { logo, toolbar, footer, children } = Children.toArray(
-    $children,
-  ).reduce<{
-    logo?: ReactNode;
-    toolbar?: ReactNode;
+  const { footer, children } = Children.toArray($children).reduce<{
     footer?: ReactNode;
     children: ReactNode[];
   }>(
     (acc, curr) => {
       switch (getChildComponentType(curr)) {
-        case GraphiQL.Logo:
-          acc.logo = curr;
-          break;
-        case GraphiQL.Toolbar:
-          acc.toolbar = curr;
-          break;
         case GraphiQL.Footer:
           acc.footer = curr;
           break;
@@ -413,7 +390,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
         ref={editorToolsFirstRef}
       >
         {hasMonaco ? <QueryEditor onEdit={onEditQuery} /> : <Spinner />}
-        {toolbar}
       </section>
 
       <div ref={editorToolsDragBarRef} className="graphiql-editor-tools">
@@ -463,7 +439,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
           ref={setContainerRef}
           className={clsx('graphiql-container', className)}
         >
-          <TopBar />
+          <TopBar brand={brand} />
           <div className="graphiql-body">
             <ActivityBar
               forcedTheme={forcedTheme}
@@ -593,7 +569,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                           ) : null,
                         )}
                       </div>
-                      {logo}
                     </div>
                     <div
                       role="tabpanel"
@@ -641,7 +616,5 @@ function getChildComponentType(child: ReactNode) {
 
 // Export main windows/panes to be used separately if desired.
 export const GraphiQL = Object.assign(GraphiQL_, {
-  Logo: GraphiQLLogo,
-  Toolbar: GraphiQLToolbar,
   Footer: GraphiQLFooter,
 });

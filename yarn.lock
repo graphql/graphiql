@@ -12996,6 +12996,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-graphiql-vite-react-router@workspace:examples/graphiql-vite-react-router"
   dependencies:
+    "@graphiql/plugin-collections": "npm:^0.1.0-alpha.0"
+    "@graphiql/plugin-history": "npm:^0.4.2"
+    "@graphiql/plugin-query-builder": "npm:^0.1.0-alpha.0"
     "@graphiql/react": "npm:^0.37.7"
     "@react-router/dev": "npm:^7"
     "@react-router/fs-routes": "npm:^7"
