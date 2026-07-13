@@ -16,7 +16,7 @@
 
 .graphiql-var-hint {
   margin-left: auto;
-  font-size: var(--font-size-hint);
+  font-size: var(--font-size-eyebrow);
   color: oklch(var(--fg-subtle));
   white-space: nowrap;
 }
