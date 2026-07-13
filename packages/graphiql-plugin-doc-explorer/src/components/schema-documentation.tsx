@@ -3,6 +3,7 @@ import type { GraphQLSchema } from 'graphql';
 import { MarkdownContent } from '@graphiql/react';
 import { ExplorerSection } from './section';
 import { TypeLink } from './type-link';
+import { VirtualList } from './virtual-list';
 import './schema-documentation.css';
 
 type SchemaDocumentationProps = {
@@ -11,6 +12,8 @@ type SchemaDocumentationProps = {
    */
   schema: GraphQLSchema;
 };
+
+const UNVIRTUALIZED_MAX_LENGTH = 1000;
 
 export const SchemaDocumentation: FC<SchemaDocumentationProps> = ({
   schema,
@@ -24,6 +27,11 @@ export const SchemaDocumentation: FC<SchemaDocumentationProps> = ({
     mutationType?.name,
     subscriptionType?.name,
   ];
+  const allTypes = Object.values(typeMap).filter(
+    type =>
+      !ignoreTypesInAllSchema.includes(type.name) &&
+      !type.name.startsWith('__'),
+  );
 
   return (
     <>
@@ -56,23 +64,22 @@ export const SchemaDocumentation: FC<SchemaDocumentationProps> = ({
           </div>
         )}
       </ExplorerSection>
-      <ExplorerSection title="All Schema Types">
-        <div>
-          {Object.values(typeMap).map(type => {
-            if (
-              ignoreTypesInAllSchema.includes(type.name) ||
-              type.name.startsWith('__')
-            ) {
-              return null;
-            }
-
-            return (
+      <ExplorerSection className="all-types" title="All Schema Types">
+        {allTypes.length > UNVIRTUALIZED_MAX_LENGTH ? (
+          <VirtualList
+            items={allTypes}
+            estimateSize={() => 23}
+            renderItem={type => <TypeLink type={type} />}
+          />
+        ) : (
+          <div>
+            {allTypes.map(type => (
               <div key={type.name}>
                 <TypeLink type={type} />
               </div>
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        )}
       </ExplorerSection>
     </>
   );

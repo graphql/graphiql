@@ -42,9 +42,11 @@ bobbybobby
 borggreve
 bram
 browserslistrc
+cacheable
 calar
 chainable
 changesets
+classname
 clsx
 codebases
 codegen
@@ -142,7 +144,6 @@ nauroze
 newhope
 ngql
 nextjs
-nodenext
 nishchit
 nocheck
 nocursor
@@ -161,6 +162,7 @@ orche
 orta
 outdir
 outlineable
+overscan
 ovsx
 oxfmt
 oxlint
@@ -218,6 +220,7 @@ svgo
 svgr
 tanay
 tanaypratap
+tanstack
 testid
 testonly
 therox
@@ -235,6 +238,7 @@ unfocus
 unnormalized
 unparsable
 unsubscribable
+unvirtualized
 urigo
 urql
 usememo
