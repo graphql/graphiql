@@ -12,26 +12,26 @@
 
 .graphiql-doc-explorer-field-card-name {
   font-family: var(--font-family-mono);
-  font-size: 14px;
+  font-size: var(--font-size-mono);
   font-weight: 600;
   color: oklch(var(--accent-green-light));
 }
 
 .graphiql-doc-explorer-field-card-colon {
   font-family: var(--font-family-mono);
-  font-size: 14px;
+  font-size: var(--font-size-mono);
   color: oklch(var(--fg-muted));
 }
 
 .graphiql-doc-explorer-field-card-type {
   font-family: var(--font-family-mono);
-  font-size: 14px;
+  font-size: var(--font-size-mono);
   color: oklch(var(--fg-default));
 }
 
 .graphiql-doc-explorer-field-card-description {
   margin: 0 0 var(--px-6);
-  font-size: 12px;
+  font-size: var(--font-size-mono);
   color: oklch(var(--fg-muted));
   line-height: 17px;
 }

@@ -116,7 +116,7 @@
 
 .graphiql-doc-explorer-search-divider {
   color: oklch(var(--fg-muted));
-  font-size: var(--font-size-hint);
+  font-size: var(--font-size-eyebrow);
   font-weight: var(--font-weight-medium);
   margin-top: var(--px-8);
   padding: var(--px-8) var(--px-12);

@@ -5,7 +5,7 @@
   padding: 1px 5px;
   border-radius: var(--radius-sm);
   font-family: var(--font-family-mono);
-  font-size: 9px;
+  font-size: var(--font-size-eyebrow);
   font-weight: 700;
   letter-spacing: 0.04em;
   line-height: 1.4;

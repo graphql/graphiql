@@ -16,7 +16,7 @@
 .graphiql-history-empty {
   padding: var(--px-8) var(--px-12);
   color: oklch(var(--fg-subtle));
-  font-size: var(--font-size-hint);
+  font-size: var(--font-size-eyebrow);
 }
 
 .graphiql-history-item {

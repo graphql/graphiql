@@ -12,7 +12,7 @@
 
 .graphiql-collections-status {
   padding: var(--px-4) var(--px-12);
-  font-size: var(--font-size-hint);
+  font-size: var(--font-size-eyebrow);
   color: oklch(var(--accent-green));
 }
 
@@ -29,7 +29,7 @@
 .graphiql-collections-loading {
   padding: var(--px-8) var(--px-12);
   color: oklch(var(--fg-subtle));
-  font-size: var(--font-size-hint);
+  font-size: var(--font-size-eyebrow);
 }
 
 .graphiql-collections-toolbar {
@@ -55,7 +55,7 @@
   padding: var(--px-4) var(--px-8);
   border-radius: var(--border-radius-4);
   color: oklch(var(--fg-subtle));
-  font-size: var(--font-size-hint);
+  font-size: var(--font-size-eyebrow);
 }
 
 .graphiql-collections-action:hover {
@@ -126,7 +126,7 @@
 }
 
 .graphiql-collection-badge {
-  font-size: var(--font-size-hint);
+  font-size: var(--font-size-eyebrow);
   color: oklch(var(--fg-subtle));
   background: oklch(var(--bg-subtle));
   padding: 0 var(--px-6);
@@ -134,7 +134,7 @@
 }
 
 .graphiql-collection-chevron {
-  font-size: var(--font-size-hint);
+  font-size: var(--font-size-eyebrow);
   color: oklch(var(--fg-subtle));
   flex-shrink: 0;
 }
@@ -199,7 +199,7 @@
 
 .graphiql-collection-empty-hint {
   padding: var(--px-6) var(--px-12) var(--px-8) var(--px-20);
-  font-size: var(--font-size-hint);
+  font-size: var(--font-size-eyebrow);
   color: oklch(var(--fg-subtle));
   font-style: italic;
 }
@@ -264,7 +264,7 @@
 }
 
 .graphiql-collection-item-description {
-  font-size: var(--font-size-hint);
+  font-size: var(--font-size-eyebrow);
   color: oklch(var(--fg-subtle));
   overflow: hidden;
   text-overflow: ellipsis;
@@ -294,7 +294,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--px-4);
-  font-size: var(--font-size-hint);
+  font-size: var(--font-size-eyebrow);
   color: oklch(var(--fg-subtle));
 }
 
@@ -349,14 +349,14 @@
 }
 
 .graphiql-import-export-mode legend {
-  font-size: var(--font-size-hint);
+  font-size: var(--font-size-eyebrow);
   color: oklch(var(--fg-subtle));
   margin-bottom: var(--px-4);
 }
 
 .graphiql-import-export-error {
   color: oklch(var(--accent-red));
-  font-size: var(--font-size-hint);
+  font-size: var(--font-size-eyebrow);
 }
 
 /* Conflict dialog */
@@ -380,7 +380,7 @@
 
 .graphiql-conflict-review-hint-label {
   margin: 0;
-  font-size: var(--font-size-hint);
+  font-size: var(--font-size-eyebrow);
   color: oklch(var(--fg-subtle));
 }
 
@@ -417,13 +417,13 @@
 }
 
 .graphiql-conflict-review-collection {
-  font-size: var(--font-size-hint);
+  font-size: var(--font-size-eyebrow);
   color: oklch(var(--fg-subtle));
   white-space: nowrap;
 }
 
 .graphiql-conflict-review-hint {
-  font-size: var(--font-size-hint);
+  font-size: var(--font-size-eyebrow);
   color: oklch(var(--fg-subtle));
   white-space: nowrap;
 }

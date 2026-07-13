@@ -17,7 +17,7 @@
   margin: 0;
   color: oklch(var(--fg-strong));
   font-family: var(--font-family);
-  font-size: 12px;
+  font-size: var(--font-size-mono);
   font-weight: 600;
   line-height: 1.3;
 }

@@ -7,6 +7,6 @@
 }
 
 .graphiql-doc-explorer-deprecation-label {
-  font-size: var(--font-size-hint);
+  font-size: var(--font-size-eyebrow);
   font-weight: var(--font-weight-medium);
 }
