@@ -16,7 +16,7 @@
   border: none;
   cursor: pointer;
   color: oklch(var(--fg-subtle));
-  font-size: 10px;
+  font-size: var(--font-size-eyebrow);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -93,7 +93,7 @@
   align-items: baseline;
   gap: var(--px-6);
   font-family: var(--font-family-mono);
-  font-size: 12px;
+  font-size: var(--font-size-mono);
 }
 
 .graphiql-doc-explorer-field-row-name {
@@ -112,7 +112,7 @@
 
 /* Optional description */
 .graphiql-doc-explorer-field-row-desc {
-  font-size: 11px;
+  font-size: var(--font-size-small);
   color: oklch(var(--fg-subtle));
   line-height: 15px;
 }

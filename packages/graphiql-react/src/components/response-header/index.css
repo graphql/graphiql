@@ -14,7 +14,7 @@
   align-items: center;
   gap: var(--px-6);
   font-family: var(--font-family-mono);
-  font-size: 11.5px;
+  font-size: var(--font-size-mono);
   line-height: 1;
 }
 
@@ -47,7 +47,7 @@
 
 .graphiql-response-meta {
   font-family: var(--font-family-mono);
-  font-size: 11.5px;
+  font-size: var(--font-size-mono);
   color: oklch(var(--fg-muted));
   line-height: 1;
 }
@@ -118,7 +118,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--px-6);
-  font-size: 11.5px;
+  font-size: var(--font-size-small);
   line-height: 1;
   color: oklch(var(--fg-default));
 }
