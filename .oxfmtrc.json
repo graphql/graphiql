@@ -6,7 +6,11 @@
   "proseWrap": "never",
   "printWidth": 80,
   "sortPackageJson": false,
-  "ignorePatterns": ["**/CHANGELOG.md", "working-group/agendas/**"],
+  "ignorePatterns": [
+    "**/CHANGELOG.md",
+    "working-group/agendas/**",
+    "packages/vscode-graphql-syntax/tests/__fixtures__/**"
+  ],
   "overrides": [
     {
       "files": ["*.md", "*.mdx"],
