@@ -61,9 +61,10 @@
   cursor: pointer;
   text-align: left;
   width: 100%;
+  transition: background var(--transition-fast);
 
   &:hover {
-    background: oklch(var(--fg-default) / 0.04);
+    background: oklch(var(--bg-subtle));
   }
 
   &:focus-visible {
@@ -72,7 +73,7 @@
   }
 }
 
-/* Active row — blue accent */
+/* Active row — blue accent, reserved for the selected field */
 .graphiql-doc-explorer-field-row--active {
   background: oklch(var(--accent-blue) / 0.08);
   border-left-color: oklch(var(--accent-blue));

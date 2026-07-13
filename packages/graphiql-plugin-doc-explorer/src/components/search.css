@@ -72,17 +72,11 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   cursor: pointer;
+  transition: background-color var(--transition-fast);
 
-  &[data-headlessui-state='active'] {
-    background-color: oklch(var(--fg-default) / 0.08);
-  }
-
+  &[data-headlessui-state='active'],
   &:hover {
-    background-color: oklch(var(--fg-default) / 0.12);
-  }
-
-  &[data-headlessui-state='active']:hover {
-    background-color: oklch(var(--fg-default) / 0.16);
+    background-color: oklch(var(--bg-subtle));
   }
 
   & + & {
