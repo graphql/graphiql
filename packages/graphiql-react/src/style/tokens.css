@@ -173,6 +173,14 @@
   --dialog-padding-y: 16px;
   --dialog-bar-padding-y: 6px;
   --dialog-gap: 16px;
+
+  /* Icon-button hit-target sizes. -sm/-md/-lg cover the three sizes icon
+     buttons render at today (response header / activity rail / top-bar
+     toolbar), so all three can read one scale instead of each hardcoding
+     its own pixel value. */
+  --icon-button-size-sm: 28px;
+  --icon-button-size-md: 32px;
+  --icon-button-size-lg: 40px;
 }
 
 [data-density='compact'] {
@@ -188,6 +196,9 @@
   --dialog-padding-y: 12px;
   --dialog-bar-padding-y: 4px;
   --dialog-gap: 12px;
+  --icon-button-size-sm: 24px;
+  --icon-button-size-md: 26px;
+  --icon-button-size-lg: 34px;
 }
 
 [data-density='spacious'] {
@@ -203,6 +214,9 @@
   --dialog-padding-y: 20px;
   --dialog-bar-padding-y: 10px;
   --dialog-gap: 20px;
+  --icon-button-size-sm: 34px;
+  --icon-button-size-md: 40px;
+  --icon-button-size-lg: 48px;
 }
 
 /* -------------------------------------------------------------------------

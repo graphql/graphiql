@@ -1,12 +1,15 @@
 .graphiql-status-bar {
   display: flex;
   align-items: center;
-  gap: var(--px-14);
+  gap: var(--px-12);
   height: var(--status-bar-height);
   flex-shrink: 0;
   padding: 0 var(--px-12);
   background: oklch(var(--bg-elevated));
   border-top: 1px solid oklch(var(--border-default));
+  /* Mono + eyebrow + --fg-subtle is intentional here — the status bar
+     reads as a quiet metadata strip, unlike the top bar's primary-content
+     type scale. Leave this as-is. */
   color: oklch(var(--fg-subtle));
   font-family: var(--font-family-mono);
   font-size: var(--font-size-eyebrow);
