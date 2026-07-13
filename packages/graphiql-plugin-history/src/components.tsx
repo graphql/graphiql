@@ -1,7 +1,7 @@
 import type { QueryStoreItem } from '@graphiql/toolkit';
 import { FC, MouseEventHandler, useEffect, useRef, useState } from 'react';
+import { clsx } from 'clsx';
 import {
-  cn,
   CloseIcon,
   PenIcon,
   StarFilledIcon,
@@ -153,7 +153,7 @@ export const HistoryItem: FC<QueryHistoryItemProps> = props => {
     : null;
 
   return (
-    <li className={cn('graphiql-history-item', isEditable && 'editable')}>
+    <li className={clsx('graphiql-history-item', isEditable && 'editable')}>
       {isEditable ? (
         <>
           <input

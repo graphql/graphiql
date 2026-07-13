@@ -11,6 +11,7 @@ import type {
   ComponentPropsWithoutRef,
 } from 'react';
 import { Children, useEffect, useRef, useState, Fragment } from 'react';
+import { clsx } from 'clsx';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
@@ -37,7 +38,6 @@ import {
   useGraphiQLSettings,
   pick,
   EditorProps,
-  cn,
   useGraphiQLActions,
   useMonaco,
   VariableEditor,
@@ -461,7 +461,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       <PortalProvider container={portalContainer}>
         <div
           ref={setContainerRef}
-          className={cn('graphiql-container', className)}
+          className={clsx('graphiql-container', className)}
         >
           <TopBar />
           <div className="graphiql-body">
