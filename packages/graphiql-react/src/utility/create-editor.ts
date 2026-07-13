@@ -58,7 +58,10 @@ export function createEditor(
       verticalScrollbarSize: 10,
     },
     scrollBeyondLastLine: false, // cleans up unnecessary "padding-bottom" on each editor
-    fontFamily: '"Fira Code"',
+    // Keep in sync with `--font-family-mono` in `tokens.css`; a literal name
+    // is required here since Monaco measures character widths via canvas,
+    // which can't resolve CSS custom properties.
+    fontFamily: '"JetBrains Mono"',
     // Enable font ligatures and fix incorrect caret position on Windows
     // See: https://github.com/graphql/graphiql/issues/4040
     fontLigatures: true,
