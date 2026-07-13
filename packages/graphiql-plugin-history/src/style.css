@@ -23,11 +23,14 @@
   border-bottom: 1px solid oklch(var(--border-default));
   display: flex;
   align-items: stretch;
+  transition: background-color var(--transition-fast);
 
   &:hover {
-    background-color: oklch(var(--accent-blue) / 0.06);
+    background-color: oklch(var(--bg-subtle));
   }
 
+  /* Editing (rename) is an active state, not a hover — keeps the accent-blue
+     tint reserved for active/selected. */
   &.editable {
     background-color: oklch(var(--accent-blue) / 0.08);
 
@@ -129,10 +132,13 @@
   display: flex;
   padding: var(--px-6);
   border-radius: var(--radius-sm);
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
 
   &:hover {
     color: oklch(var(--fg-default));
-    background-color: oklch(var(--fg-default) / 0.06);
+    background-color: oklch(var(--bg-subtle));
   }
 
   & > svg {

@@ -36,9 +36,10 @@
   width: 100%;
   font-family: var(--font-family-mono);
   font-size: 12px;
+  transition: background var(--transition-fast);
 
   &:hover {
-    background: oklch(var(--fg-default) / 0.04);
+    background: oklch(var(--bg-subtle));
   }
 
   &:focus-visible {
@@ -72,9 +73,10 @@
   cursor: pointer;
   text-align: left;
   width: 100%;
+  transition: background var(--transition-fast);
 
   &:hover {
-    background: oklch(var(--fg-default) / 0.04);
+    background: oklch(var(--bg-subtle));
   }
 
   &:focus-visible {

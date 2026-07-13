@@ -97,6 +97,9 @@
   /* Shadows */
   --shadow-popover:
     0 4px 12px oklch(0% 0 0 / 0.3), 0 1px 3px oklch(0% 0 0 / 0.15);
+
+  /* Motion */
+  --transition-fast: 120ms ease;
 }
 
 [data-theme='light'] {
