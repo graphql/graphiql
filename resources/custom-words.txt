@@ -90,6 +90,7 @@ firecamp
 flowtests
 foldgutter
 foldmarker
+fontsource
 gdezerno
 ghapi
 gillam

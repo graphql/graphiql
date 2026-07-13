@@ -67,15 +67,27 @@ can import them from `@graphiql/react/style.css`.
 > rendered inside an element that has a class name `graphiql-container`.
 
 By default, the UI components will try to use the
-[Roboto](https://fonts.google.com/specimen/Roboto) font for regular text and the
-[Fira Code](https://fonts.google.com/specimen/Fira+Code) font for mono-space
-text. If you want to use the default fonts you can load them using these files:
+[Inter](https://rsms.me/inter/) font for regular text and the
+[JetBrains Mono](https://www.jetbrains.com/lp/mono/) font for mono-space text.
+If you want to use the default fonts you can load them using these files:
+
+- `@graphiql/react/font/inter.css`
+- `@graphiql/react/font/jetbrains-mono.css`
+
+You can, of course, use any other method to load these fonts (for example,
+loading them from Google Fonts). The bundled files are self-hosted subsets
+(Latin + Latin Extended, regular and italic) built from the
+[`@fontsource-variable/inter`](https://fontsource.org/fonts/inter) and
+[`@fontsource-variable/jetbrains-mono`](https://fontsource.org/fonts/jetbrains-mono)
+packages; see `Inter-LICENSE.txt` and `JetBrainsMono-LICENSE.txt` alongside
+them for licensing (both OFL-1.1).
+
+If you'd rather use the previous v5 fonts, [Roboto](https://fonts.google.com/specimen/Roboto)
+and [Fira Code](https://fonts.google.com/specimen/Fira+Code), self-hosted
+copies are still bundled and can be loaded instead:
 
 - `@graphiql/react/font/roboto.css`
-- `@graphiql/react/font/fira-code.css`.
-
-You can, of course, use any other method to load these fonts (for example, loading
-them from Google Fonts).
+- `@graphiql/react/font/fira-code.css`
 
 Further details on how to use `@graphiql/react` can be found in the reference
 implementation of a GraphQL IDE - Graph*i*QL - in the
