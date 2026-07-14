@@ -71,8 +71,8 @@
   --btn-primary-border: 62.22% 0.166 146; /* #2EA043 */
 
   /* Typography */
-  --font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-family-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-family: 'Roboto', ui-sans-serif, system-ui, sans-serif;
+  --font-family-mono: 'Fira Code', ui-monospace, monospace;
   --letter-spacing-ui: -0.005em;
 
   /* Spacing scale */

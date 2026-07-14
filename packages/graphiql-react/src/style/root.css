@@ -33,8 +33,6 @@
   --alpha-background-light: 0.07;
 
   /* Font */
-  --font-family: 'Roboto', sans-serif;
-  --font-family-mono: 'Fira Code', monospace;
   --font-size-inline-code: calc(13rem / 16);
   --font-size-body: calc(15rem / 16);
   --font-size-h4: calc(18rem / 16);
