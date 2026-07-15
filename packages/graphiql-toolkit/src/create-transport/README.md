@@ -17,6 +17,28 @@ incremental delivery over `multipart/mixed` is on by default (disable it with
 `enableIncrementalDelivery: false`). GET is opt-in via `method`/
 `supportedMethods`.
 
+`send()` takes a `TransportRequest`: `query`, `operationName`, `variables`,
+`extensions` (GraphQL-over-HTTP extensions, e.g. for automatic persisted
+queries — JSON-stringified into the URL for `GET`/`QUERY`, sent in the body
+otherwise), per-request `headers`, and `signal` to cancel the request with an
+`AbortController`:
+
+```ts
+const controller = new AbortController();
+
+const response = transport.send({
+  query: 'query Hello { hello }',
+  signal: controller.signal,
+});
+
+// Cancel the in-flight request.
+controller.abort();
+```
+
+For a subscription, prefer stopping the returned `AsyncIterable` (call
+`.return()` on its iterator) over `signal` — an aborted signal only cancels
+the initial HTTP request, not an open socket.
+
 ## Subscriptions
 
 `createTransport` does **not** build a subscription client for you, and it is
@@ -30,6 +52,7 @@ type SubscriptionClient = {
       query: string;
       operationName?: string | null;
       variables?: Record<string, unknown>;
+      extensions?: Record<string, unknown>;
     },
     sink: {
       next: (value: ExecutionResult) => void;
@@ -174,7 +197,7 @@ subscription operations are routed to the client above.
 ## Migrating from `createGraphiQLFetcher`
 
 `createGraphiQLFetcher` hardwired subscriptions to WebSockets via
-`subscriptionUrl`/`wsClient`/`legacyClient`. `createTransport` replaces those
+`subscriptionUrl`/`wsClient`/`legacyWsClient`. `createTransport` replaces those
 with the single `subscriptionClient` option. See the
 [GraphiQL 6 migration guide](../../../../docs/migration/graphiql-6.0.0.md) for
 the full upgrade path.

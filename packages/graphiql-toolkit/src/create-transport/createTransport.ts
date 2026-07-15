@@ -7,6 +7,7 @@ import {
 } from '../create-fetcher/lib';
 import type {
   CreateFetcherOptions,
+  FetcherOpts,
   FetcherParams,
 } from '../create-fetcher/types';
 import type {
@@ -18,15 +19,22 @@ import type {
   TransportResponse,
 } from './types';
 
-function selectedOperationIsSubscription(
+/**
+ * Parse the query once and classify the selected operation, rather than
+ * parsing separately to check for a subscription and again to check for a
+ * mutation. Returns `undefined` for an unparseable query or when the
+ * selected operation can't be resolved (no `operationName` match, or more
+ * than one operation with none specified).
+ */
+function classifySelectedOperation(
   query: string,
   operationName?: string | null,
-): boolean {
+): 'query' | 'mutation' | 'subscription' | undefined {
   let document;
   try {
     document = parse(query);
   } catch {
-    return false;
+    return undefined;
   }
   const operations = document.definitions.filter(
     (def): def is OperationDefinitionNode => def.kind === 'OperationDefinition',
@@ -36,28 +44,7 @@ function selectedOperationIsSubscription(
     : operations.length === 1
       ? operations[0]
       : undefined;
-  return operation?.operation === 'subscription';
-}
-
-function selectedOperationIsMutation(
-  query: string,
-  operationName?: string | null,
-): boolean {
-  let document;
-  try {
-    document = parse(query);
-  } catch {
-    return false;
-  }
-  const operations = document.definitions.filter(
-    (def): def is OperationDefinitionNode => def.kind === 'OperationDefinition',
-  );
-  const operation = operationName
-    ? operations.find(op => op.name?.value === operationName)
-    : operations.length === 1
-      ? operations[0]
-      : undefined;
-  return operation?.operation === 'mutation';
+  return operation?.operation;
 }
 
 const byteLength = (value: string): number =>
@@ -130,10 +117,19 @@ export function createTransport(opts: CreateTransportOptions): Transport {
       query: req.query,
       operationName: req.operationName ?? undefined,
       variables: req.variables,
+      extensions: req.extensions,
     };
-    const fetcherOpts = req.headers ? { headers: req.headers } : undefined;
+    const fetcherOpts: FetcherOpts | undefined =
+      req.headers || req.signal
+        ? { headers: req.headers, signal: req.signal }
+        : undefined;
 
-    if (selectedOperationIsSubscription(req.query, req.operationName)) {
+    const selectedOperation = classifySelectedOperation(
+      req.query,
+      req.operationName,
+    );
+
+    if (selectedOperation === 'subscription') {
       return subscribe(opts.subscriptionClient, params);
     }
 
@@ -144,10 +140,7 @@ export function createTransport(opts: CreateTransportOptions): Transport {
     // is a mutation, use POST if it is available. If POST is not supported,
     // throw — a spec-compliant server would reject the request anyway.
     let method: HttpMethod = activeMethod;
-    if (
-      activeMethod !== 'POST' &&
-      selectedOperationIsMutation(req.query, req.operationName)
-    ) {
+    if (activeMethod !== 'POST' && selectedOperation === 'mutation') {
       if (!supportedMethods.includes('POST')) {
         throw new Error(
           `Cannot execute a mutation over ${activeMethod}. ` +

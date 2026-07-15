@@ -233,5 +233,157 @@ describe('TransportHookRegistry', () => {
       expect(cb).toHaveBeenNthCalledWith(1, r1);
       expect(cb).toHaveBeenNthCalledWith(2, r2);
     });
+
+    it('return() on an iterator obtained from a single [Symbol.asyncIterator]() call disposes the underlying iterable', async () => {
+      // This is the pattern a consumer (e.g. the execution store) must follow:
+      // call `[Symbol.asyncIterator]()` exactly once, then drive and dispose
+      // that same iterator. `send()` returns a fresh iterable object whose
+      // `[Symbol.asyncIterator]()` mints new internal state on every call, so
+      // calling it a second time to dispose would tear down an iterator that
+      // never actually ran anything.
+      let disposed = false;
+      async function* underlying() {
+        try {
+          yield makeResponse();
+          yield makeResponse();
+        } finally {
+          disposed = true;
+        }
+      }
+
+      const registry = new TransportHookRegistry();
+      const transport = registry.wrap(makeTransport(() => underlying()));
+
+      const sendResult = transport.send(
+        makeRequest(),
+      ) as AsyncIterable<TransportResponse>;
+      const iterator = sendResult[Symbol.asyncIterator]();
+
+      const first = await iterator.next();
+      expect(first.done).toBe(false);
+
+      await iterator.return?.();
+
+      expect(disposed).toBe(true);
+    });
+
+    it('calling [Symbol.asyncIterator]() a second time yields an independent iterator', async () => {
+      // Documents the exact pitfall bug 2 is about: a second call does NOT return
+      // the same iterator that is actively being driven, so disposing it has
+      // no effect on the one actually running.
+      async function* underlying() {
+        yield makeResponse();
+        yield makeResponse();
+      }
+
+      const registry = new TransportHookRegistry();
+      const transport = registry.wrap(makeTransport(() => underlying()));
+
+      const sendResult = transport.send(
+        makeRequest(),
+      ) as AsyncIterable<TransportResponse>;
+      const driving = sendResult[Symbol.asyncIterator]();
+      const fresh = sendResult[Symbol.asyncIterator]();
+
+      expect(fresh).not.toBe(driving);
+    });
+  });
+
+  describe('onError', () => {
+    it('calls registered callbacks when send() rejects (promise path)', async () => {
+      const registry = new TransportHookRegistry();
+      const cb = vi.fn();
+      registry.onError(cb);
+      const error = new Error('network down');
+      const request = makeRequest();
+      const transport = registry.wrap(
+        makeTransport(async () => {
+          throw error;
+        }),
+      );
+
+      await expect(
+        collect(transport.send(request) as AsyncIterable<TransportResponse>),
+      ).rejects.toThrow('network down');
+
+      expect(cb).toHaveBeenCalledOnce();
+      expect(cb).toHaveBeenCalledWith(error, request);
+    });
+
+    it('calls registered callbacks when the iterable path rejects mid-stream', async () => {
+      const registry = new TransportHookRegistry();
+      const cb = vi.fn();
+      registry.onError(cb);
+      const error = new Error('socket closed');
+      async function* boom() {
+        yield makeResponse();
+        throw error;
+      }
+      const transport = registry.wrap(makeTransport(() => boom()));
+
+      await expect(
+        collect(
+          transport.send(makeRequest()) as AsyncIterable<TransportResponse>,
+        ),
+      ).rejects.toThrow('socket closed');
+
+      expect(cb).toHaveBeenCalledOnce();
+    });
+
+    it('fires when an onBeforeSend hook throws', async () => {
+      const registry = new TransportHookRegistry();
+      const hookError = new Error('bad header');
+      registry.onBeforeSend(() => {
+        throw hookError;
+      });
+      const cb = vi.fn();
+      registry.onError(cb);
+      const transport = registry.wrap(
+        makeTransport(async () => makeResponse()),
+      );
+
+      await expect(
+        collect(
+          transport.send(makeRequest()) as AsyncIterable<TransportResponse>,
+        ),
+      ).rejects.toThrow('bad header');
+
+      expect(cb).toHaveBeenCalledOnce();
+    });
+
+    it('does not fire on success', async () => {
+      const registry = new TransportHookRegistry();
+      const cb = vi.fn();
+      registry.onError(cb);
+      const transport = registry.wrap(
+        makeTransport(async () => makeResponse()),
+      );
+
+      await collect(
+        transport.send(makeRequest()) as AsyncIterable<TransportResponse>,
+      );
+
+      expect(cb).not.toHaveBeenCalled();
+    });
+
+    it('cleanup removes the callback', async () => {
+      const registry = new TransportHookRegistry();
+      const cb = vi.fn();
+      const remove = registry.onError(cb);
+      remove();
+      const transport = registry.wrap(
+        makeTransport(async () => {
+          throw new Error('boom');
+        }),
+      );
+
+      await expect(
+        collect(
+          transport.send(makeRequest()) as AsyncIterable<TransportResponse>,
+        ),
+      ).rejects.toThrow('boom');
+
+      expect(cb).not.toHaveBeenCalled();
+    });
   });
 });

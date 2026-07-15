@@ -122,6 +122,16 @@ export interface ExecutionSlice {
   subscription: Unsubscribable | null;
 
   /**
+   * Aborts the in-flight query or mutation sent through `transport`.
+   * `null` when nothing is in flight, when the request is a subscription
+   * (torn down via `subscription` instead), or when using the deprecated
+   * `fetcher`, which has no cancellation mechanism.
+   *
+   * @default null
+   */
+  abortController: AbortController | null;
+
+  /**
    * The operation name that will be sent with all GraphQL requests.
    * @default null
    */
@@ -316,6 +326,7 @@ export const createExecutionSlice: CreateExecutionSlice =
       responseView: 'json' as ResponseView,
       transportUpgradeBannerDismissed: false,
       subscription: null,
+      abortController: null,
       queryId: 0,
       transportMethod: initial.transport?.method ?? null,
       actions: {
@@ -338,9 +349,14 @@ export const createExecutionSlice: CreateExecutionSlice =
           set({ transportMethod: method });
         },
         stop() {
-          set(({ subscription }) => {
+          set(({ subscription, abortController }) => {
             subscription?.unsubscribe();
-            return { isFetching: false, subscription: null };
+            abortController?.abort();
+            return {
+              isFetching: false,
+              subscription: null,
+              abortController: null,
+            };
           });
         },
         async run() {
@@ -428,6 +444,10 @@ export const createExecutionSlice: CreateExecutionSlice =
           setResponse('');
           set({ isFetching: true });
           const fetchStartMs = Date.now();
+          // Populated for the `transport` query/mutation path only; read from
+          // the `catch` block to tell a user-initiated `stop()` apart from a
+          // genuine request failure.
+          let controller: AbortController | undefined;
           try {
             const fullResponse: ExecutionResult = {};
             const handleResponse = (
@@ -464,6 +484,7 @@ export const createExecutionSlice: CreateExecutionSlice =
 
               set({
                 isFetching: false,
+                abortController: null,
                 lastResponse:
                   envelope ??
                   buildFetcherFallbackResponse(
@@ -477,21 +498,39 @@ export const createExecutionSlice: CreateExecutionSlice =
             const opName = overrideOperationName ?? operationName;
 
             if (transport) {
+              controller = new AbortController();
+              set({ abortController: controller });
               const result = transport.send({
                 query,
                 variables,
                 operationName: opName,
                 headers: headers as Record<string, string> | undefined,
+                signal: controller.signal,
               });
 
               if (isAsyncIterable(result)) {
-                const iter = result as AsyncIterable<TransportResponse>;
+                // Capture the iterator once and drive/dispose the same
+                // object. `result[Symbol.asyncIterator]()` mints a fresh
+                // iterator on every call (see `transport-hooks.ts#wrap`), so
+                // calling it again from `unsubscribe` would tear down a
+                // throwaway iterator instead of the one actually running —
+                // the underlying subscription would never dispose.
+                const it = (result as AsyncIterable<TransportResponse>)[
+                  Symbol.asyncIterator
+                ]();
                 const newSubscription = {
-                  unsubscribe: () => iter[Symbol.asyncIterator]().return?.(),
+                  unsubscribe: () => it.return?.(),
                 };
-                set({ subscription: newSubscription });
-                for await (const tr of iter) {
-                  handleResponse(tr.body as ExecutionResult, tr);
+                set({ subscription: newSubscription, abortController: null });
+                for (
+                  let step = await it.next();
+                  !step.done;
+                  step = await it.next()
+                ) {
+                  handleResponse(
+                    step.value.body as ExecutionResult,
+                    step.value,
+                  );
                 }
                 set({ isFetching: false, subscription: null });
               } else {
@@ -528,12 +567,20 @@ export const createExecutionSlice: CreateExecutionSlice =
                 });
                 set({ subscription: newSubscription });
               } else if (isAsyncIterable(value)) {
+                // Same fix as the `transport` path above: capture the
+                // iterator once so `unsubscribe` disposes the iterator that
+                // is actually driving the loop, not a freshly minted one.
+                const it = value[Symbol.asyncIterator]();
                 const newSubscription = {
-                  unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
+                  unsubscribe: () => it.return?.(),
                 };
                 set({ subscription: newSubscription });
-                for await (const result of value) {
-                  handleResponse(result);
+                for (
+                  let step = await it.next();
+                  !step.done;
+                  step = await it.next()
+                ) {
+                  handleResponse(step.value);
                 }
                 set({ isFetching: false, subscription: null });
               } else {
@@ -545,11 +592,19 @@ export const createExecutionSlice: CreateExecutionSlice =
               );
             }
           } catch (error) {
+            // A user-initiated `stop()` already reset `isFetching` /
+            // `subscription` / `abortController` and aborted `controller`.
+            // Don't overwrite the response pane with an abort error in that
+            // case — only a genuine failure should surface one.
+            if (controller?.signal.aborted) {
+              return;
+            }
             const errorText = formatError(error);
             set({
               isFetching: false,
               lastResponse: buildErrorResponse(errorText, fetchStartMs),
               subscription: null,
+              abortController: null,
             });
             setResponse(errorText);
           }

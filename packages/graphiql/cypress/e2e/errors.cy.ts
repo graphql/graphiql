@@ -10,13 +10,7 @@ describe('Errors', () => {
     cy.assertQueryResult({
       errors: [
         {
-          /**
-           * The exact error message can differ depending on the browser and
-           * its JSON parser. This is the error you get in Electron (which
-           * we use to run the tests headless), the error in the latest Chrome
-           * version is different!
-           */
-          message: 'Unexpected token \'B\', "Bad Gateway" is not valid JSON',
+          message: 'Bad Gateway',
         },
       ],
     });

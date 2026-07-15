@@ -37,6 +37,13 @@ export type PluginTransportContext = {
    * Returns a cleanup function; call it to remove the hook.
    */
   onResponse: TransportHookRegistry['onResponse'];
+
+  /**
+   * Register a callback that runs when a request fails outright — a thrown
+   * `onBeforeSend` hook, a network error — instead of resolving to a
+   * `TransportResponse`. Returns a cleanup function; call it to remove the hook.
+   */
+  onError: TransportHookRegistry['onError'];
 };
 
 /**
@@ -68,6 +75,7 @@ export function useGraphiQLPluginContext(): GraphiQLPluginContext {
     transport: {
       onBeforeSend: registry.onBeforeSend.bind(registry),
       onResponse: registry.onResponse.bind(registry),
+      onError: registry.onError.bind(registry),
     },
   };
 }
