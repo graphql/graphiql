@@ -34,13 +34,32 @@ function mockResponse(
   body: unknown,
   init: { status?: number; statusText?: string; headers?: HeadersInit } = {},
 ) {
+  const status = init.status ?? 200;
   return {
-    status: init.status ?? 200,
+    status,
     statusText: init.statusText ?? 'OK',
+    ok: status >= 200 && status < 300,
     headers: new Headers(
       init.headers ?? { 'content-type': 'application/json' },
     ),
     json: () => Promise.resolve(body),
+    text: () => Promise.resolve(JSON.stringify(body)),
+  };
+}
+
+/** A response whose body is not valid JSON, e.g. an HTML error page or a plain-text 401. */
+function mockRawResponse(
+  raw: string,
+  init: { status?: number; statusText?: string; headers?: HeadersInit } = {},
+) {
+  const status = init.status ?? 500;
+  return {
+    status,
+    statusText: init.statusText ?? 'Internal Server Error',
+    ok: status >= 200 && status < 300,
+    headers: new Headers(init.headers ?? { 'content-type': 'text/html' }),
+    json: () => Promise.reject(new SyntaxError('Unexpected token')),
+    text: () => Promise.resolve(raw),
   };
 }
 
@@ -114,6 +133,90 @@ describe('createTransport — query / mutation', () => {
       query: QUERY,
     })) as TransportResponse;
     expect(response.ok).toBe(false);
+  });
+
+  it('sets ok=false for a non-2xx status even when the body has no errors', async () => {
+    // A 401 with `{ data: null }` and no `errors` array used to be `ok: true`
+    // because `ok` only consulted the GraphQL body, colliding with the HTTP
+    // meaning of `Response.ok`.
+    const transport = createTransport({
+      url: URL,
+      enableIncrementalDelivery: false,
+      fetch: mockFetchWith(
+        { data: null },
+        { status: 401, statusText: 'Unauthorized' },
+      ),
+    });
+    const response = (await transport.send({
+      query: QUERY,
+    })) as TransportResponse;
+    expect(response.ok).toBe(false);
+    expect(response.status).toBe(401);
+  });
+
+  it('resolves a TransportResponse carrying the real status when the body is not JSON', async () => {
+    // A 500 from a proxy, a plain-text 401, or an empty 204 must never make
+    // `send()` reject — the caller needs `status`/`statusText`/`headers`
+    // precisely when the body can't be parsed.
+    const transport = createTransport({
+      url: URL,
+      enableIncrementalDelivery: false,
+      fetch: vi.fn().mockResolvedValue(
+        mockRawResponse('<html><body>Bad Gateway</body></html>', {
+          status: 502,
+          statusText: 'Bad Gateway',
+        }),
+      ) as unknown as typeof fetch,
+    });
+
+    const response = (await transport.send({
+      query: QUERY,
+    })) as TransportResponse;
+
+    expect(response.ok).toBe(false);
+    expect(response.status).toBe(502);
+    expect(response.statusText).toBe('Bad Gateway');
+    expect(response.body).toMatchObject({
+      errors: [{ message: '<html><body>Bad Gateway</body></html>' }],
+    });
+  });
+
+  it('encodes extensions in the request body for POST', async () => {
+    const mockFetch = vi
+      .fn()
+      .mockResolvedValue(mockResponse({ data: { __typename: 'Query' } }));
+    const transport = createTransport({
+      url: URL,
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as unknown as typeof fetch,
+    });
+
+    await transport.send({
+      query: QUERY,
+      extensions: { persistedQuery: { sha256Hash: 'abc' } },
+    });
+
+    const [, fetchInit] = mockFetch.mock.calls[0] as [string, RequestInit];
+    expect(JSON.parse(fetchInit.body as string)).toMatchObject({
+      extensions: { persistedQuery: { sha256Hash: 'abc' } },
+    });
+  });
+
+  it('threads an AbortSignal into the underlying fetch call', async () => {
+    const mockFetch = vi
+      .fn()
+      .mockResolvedValue(mockResponse({ data: {} })) as unknown as Mock;
+    const transport = createTransport({
+      url: URL,
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as unknown as typeof fetch,
+    });
+    const controller = new AbortController();
+
+    await transport.send({ query: QUERY, signal: controller.signal });
+
+    const [, fetchInit] = mockFetch.mock.calls[0] as [string, RequestInit];
+    expect(fetchInit.signal).toBe(controller.signal);
   });
 });
 
@@ -303,6 +406,25 @@ describe('createTransport — GET method', () => {
     expect(parsed.searchParams.get('operationName')).toBe('Q');
   });
 
+  it('GET query encodes extensions as a JSON string in the URL', async () => {
+    const extensions = { persistedQuery: { sha256Hash: 'abc' } };
+    const transport = createTransport({
+      url: URL,
+      method: 'GET',
+      supportedMethods: ['GET', 'POST'],
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as typeof fetch,
+    });
+
+    await transport.send({ query: QUERY_WITH_VARS, extensions });
+
+    const [fetchedUrl] = mockFetch.mock.calls[0] as [string];
+    const parsed = new globalThis.URL(fetchedUrl);
+    expect(parsed.searchParams.get('extensions')).toBe(
+      JSON.stringify(extensions),
+    );
+  });
+
   it('GET query omits variables and operationName when absent', async () => {
     const transport = createTransport({
       url: URL,
@@ -408,6 +530,60 @@ describe('createTransport — GET method', () => {
     expect((fetchInit.headers as Record<string, string>).accept).toMatch(
       'application/graphql-response+json',
     );
+  });
+
+  it('the default transport (incremental delivery on) still requests the spec media type', async () => {
+    // `enableIncrementalDelivery` defaults to true, routing through
+    // `multipartHttpTransport`. Its accept header must advertise
+    // `application/graphql-response+json` too, not just `multipartHttpTransport`'s
+    // own `application/json, multipart/mixed` — otherwise the default transport
+    // silently asks spec-compliant servers to fall back to legacy semantics.
+    const transport = createTransport({
+      url: URL,
+      fetch: mockFetch as typeof fetch,
+    });
+
+    // Incremental delivery on means `send()` returns an AsyncIterable; drain
+    // it to actually trigger the underlying fetch call.
+    for await (const _ of transport.send({
+      query: QUERY,
+    }) as AsyncIterable<unknown>) {
+      // consume
+    }
+
+    const [, fetchInit] = mockFetch.mock.calls[0] as [string, RequestInit];
+    expect((fetchInit.headers as Record<string, string>).accept).toMatch(
+      'application/graphql-response+json',
+    );
+  });
+
+  it('the default transport also resolves a TransportResponse when the body is not JSON', async () => {
+    // Same non-JSON-body guarantee as the simple path, but through
+    // `multipartHttpTransport`'s single-response branch (the default when
+    // incremental delivery is on and the server answers without `multipart/mixed`).
+    const transport = createTransport({
+      url: URL,
+      fetch: vi
+        .fn()
+        .mockResolvedValue(
+          mockRawResponse('Unauthorized', { status: 401 }),
+        ) as unknown as typeof fetch,
+    });
+
+    const result = transport.send({
+      query: QUERY,
+    }) as AsyncIterable<TransportResponse>;
+    const chunk: TransportResponse[] = [];
+    for await (const v of result) {
+      chunk.push(v);
+    }
+
+    expect(chunk).toHaveLength(1);
+    expect(chunk[0]).toMatchObject({
+      ok: false,
+      status: 401,
+      body: { errors: [{ message: 'Unauthorized' }] },
+    });
   });
 });
 

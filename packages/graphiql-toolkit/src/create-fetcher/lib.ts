@@ -52,6 +52,31 @@ const headersToObject = (
 };
 
 /**
+ * Read an HTTP response body as text and attempt to parse it as JSON. A non-JSON
+ * body (an HTML error page, a plain-text 401, an empty 204) must never throw —
+ * the caller still needs the HTTP status/headers even when the body isn't
+ * parseable, so a parse failure is folded into a synthetic error result that
+ * carries the raw text, rather than propagating the `SyntaxError`.
+ */
+async function readResponseBody(
+  response: Response,
+): Promise<{ body: TransportResponse['body']; raw: string }> {
+  const raw = await response.text();
+  try {
+    return { body: JSON.parse(raw) as TransportResponse['body'], raw };
+  } catch {
+    const message =
+      raw ||
+      response.statusText ||
+      `Empty response (status ${response.status})`;
+    return {
+      body: { errors: [{ message }] } as unknown as TransportResponse['body'],
+      raw,
+    };
+  }
+}
+
+/**
  * Build a `TransportResponse` from a parsed body and the HTTP `Response` it came
  * from. This is the single place wire metadata is read off the response, so the
  * `Fetcher` projection and `createTransport` observe identical data.
@@ -61,11 +86,13 @@ function toTransportResponse(
   response: Response,
   startMs: number,
   requestBody?: string,
+  rawResponseText?: string,
 ): TransportResponse {
   const errors = (body as { errors?: unknown } | null)?.errors;
+  const hasErrors = Array.isArray(errors) && errors.length > 0;
   const contentLength = response.headers?.get?.('content-length');
   return {
-    ok: !Array.isArray(errors) || errors.length === 0,
+    ok: response.ok && !hasErrors,
     status: response.status,
     statusText: response.statusText,
     headers: headersToObject(response.headers),
@@ -75,7 +102,7 @@ function toTransportResponse(
       request: requestBody === undefined ? undefined : byteLength(requestBody),
       response: contentLength
         ? Number(contentLength)
-        : byteLength(JSON.stringify(body)),
+        : byteLength(rawResponseText ?? JSON.stringify(body)),
     },
   };
 }
@@ -116,6 +143,9 @@ function buildGetUrl(baseUrl: string, graphQLParams: FetcherParams): string {
   if (graphQLParams.variables != null) {
     params.set('variables', JSON.stringify(graphQLParams.variables));
   }
+  if (graphQLParams.extensions != null) {
+    params.set('extensions', JSON.stringify(graphQLParams.extensions));
+  }
   const sep = baseUrl.includes('?') ? '&' : '?';
   return `${baseUrl}${sep}${params.toString()}`;
 }
@@ -148,19 +178,21 @@ export const simpleHttpTransport =
       const url = buildGetUrl(options.url, graphQLParams);
       const response = await httpFetch(url, {
         method: 'GET',
+        signal: fetcherOpts?.signal,
         headers: {
           accept: 'application/graphql-response+json, application/json;q=0.9',
           ...options.headers,
           ...fetcherOpts?.headers,
         },
       });
-      const body = await response.json();
-      return toTransportResponse(body, response, startMs);
+      const { body, raw } = await readResponseBody(response);
+      return toTransportResponse(body, response, startMs, undefined, raw);
     }
     const requestBody = JSON.stringify(graphQLParams);
     const response = await httpFetch(options.url, {
       method,
       body: requestBody,
+      signal: fetcherOpts?.signal,
       headers: {
         'content-type': 'application/json',
         accept: 'application/graphql-response+json, application/json;q=0.9',
@@ -168,8 +200,8 @@ export const simpleHttpTransport =
         ...fetcherOpts?.headers,
       },
     });
-    const body = await response.json();
-    return toTransportResponse(body, response, startMs, requestBody);
+    const { body, raw } = await readResponseBody(response);
+    return toTransportResponse(body, response, startMs, requestBody, raw);
   };
 
 /**
@@ -287,8 +319,10 @@ export const multipartHttpTransport = (
       const url = buildGetUrl(options.url, graphQLParams);
       rawResponse = await httpFetch(url, {
         method: 'GET',
+        signal: fetcherOpts?.signal,
         headers: {
-          accept: 'application/json, multipart/mixed',
+          accept:
+            'application/graphql-response+json, application/json, multipart/mixed',
           ...options.headers,
           ...fetcherOpts?.headers,
         },
@@ -298,9 +332,11 @@ export const multipartHttpTransport = (
       rawResponse = await httpFetch(options.url, {
         method,
         body: requestBody,
+        signal: fetcherOpts?.signal,
         headers: {
           'content-type': 'application/json',
-          accept: 'application/json, multipart/mixed',
+          accept:
+            'application/graphql-response+json, application/json, multipart/mixed',
           ...options.headers,
           // allow user-defined headers to override
           // the static provided headers
@@ -314,12 +350,8 @@ export const multipartHttpTransport = (
 
     // Single, non-multipart response: behaves like the simple transport.
     if (!isAsyncIterable(response)) {
-      yield toTransportResponse(
-        await response.json(),
-        rawResponse,
-        startMs,
-        requestBody,
-      );
+      const { body, raw } = await readResponseBody(response);
+      yield toTransportResponse(body, rawResponse, startMs, requestBody, raw);
       return;
     }
 
