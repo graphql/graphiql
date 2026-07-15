@@ -24,7 +24,7 @@
   & > div {
     font-family: var(--font-family) !important;
     padding: 0 !important;
-    font-size: var(--font-size-body) !important;
+    font-size: var(--font-size-body-legacy) !important;
   }
   & > div:first-of-type {
     display: flex;

@@ -13,7 +13,7 @@
  * via PortalProvider, so they inherit these variables through DOM ancestry.
  */
 .graphiql-container {
-  /* DEPRECATED (v5): retained frozen for backward compatibility and the CodeMirror-based explorer plugin. Do not add new usages — use the OKLCH tokens in tokens.css. */
+  /* DEPRECATED (v5): retained frozen for backward compatibility and the CodeMirror-based code-exporter plugin. Do not add new usages — use the OKLCH tokens in tokens.css. */
   /* Colors */
   --color-primary: 320, 95%, 43%;
   --color-secondary: 242, 51%, 61%;
@@ -36,7 +36,8 @@
   --font-family: 'Roboto', sans-serif;
   --font-family-mono: 'Fira Code', monospace;
   --font-size-inline-code: calc(13rem / 16);
-  --font-size-body: calc(15rem / 16);
+  /* Renamed off the v6 preset name `--font-size-body` (tokens.css) so this frozen v5 value stops overriding it on `.graphiql-container` at equal specificity. Only the legacy code-exporter plugin consumes it. */
+  --font-size-body-legacy: calc(15rem / 16);
   --font-size-h4: calc(18rem / 16);
   --font-size-h3: calc(22rem / 16);
   --font-size-h2: calc(29rem / 16);
