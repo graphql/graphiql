@@ -29,12 +29,11 @@ export type {
 } from './segmented-control';
 export { MethodPill } from './method-pill';
 export type { MethodPillProps, Operation } from './method-pill';
-export { TopBar, TopBarView } from './top-bar';
-export type { TopBarProps, TopBarViewProps } from './top-bar';
-export { StatusBar, StatusBarView } from './status-bar';
-export type { ConnectionStatus, StatusBarViewProps } from './status-bar';
-export { SidePanel, SidePanelView } from './side-panel';
-export type { SidePanelViewProps } from './side-panel';
+export { TopBar } from './top-bar';
+export type { TopBarProps } from './top-bar';
+export { StatusBar } from './status-bar';
+export type { ConnectionStatus } from './status-bar';
+export { SidePanel } from './side-panel';
 export { ActivityRail } from './activity-rail';
 export type { ActivityRailProps } from './activity-rail';
 export { ResponseHeader } from './response-header';
