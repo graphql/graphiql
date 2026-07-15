@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-query-builder",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-alpha.1",
   "sideEffects": [
     "*.css"
   ],
@@ -41,7 +41,7 @@
     "build-storybook": "storybook build"
   },
   "peerDependencies": {
-    "@graphiql/react": "^0.37.0",
+    "@graphiql/react": "^1.0.0-alpha.0",
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
@@ -50,7 +50,7 @@
     "react-compiler-runtime": "19.1.0-rc.1"
   },
   "devDependencies": {
-    "@graphiql/react": "^0.37.4",
+    "@graphiql/react": "^1.0.0-alpha.0",
     "@storybook/addon-a11y": "^10.3.6",
     "@storybook/addon-vitest": "^10.3.6",
     "@storybook/react-vite": "^10.3.6",

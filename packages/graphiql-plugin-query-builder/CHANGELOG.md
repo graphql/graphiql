@@ -1,0 +1,12 @@
+# @graphiql/plugin-query-builder
+
+## 0.1.0-alpha.1
+
+### Patch Changes
+
+- [#4352](https://github.com/graphql/graphiql/pull/4352) [`f8a9445`](https://github.com/graphql/graphiql/commit/f8a944505a0fbb9245b4ea1a3ca67bd50d4b7991) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add `@graphiql/plugin-query-builder`, a first-party visual query builder. It renders the schema's root types as a collapsible tree; checking a field adds it to the current operation and unchecking removes it, with the document parsed, mutated, and reprinted through the `graphql` package's AST utilities. Fields expose argument inputs (scalars, enums, lists, and input objects, including lists of input objects), scalar arguments can be promoted to variables, named fragments can be extracted from a field's selection and edited in place, and union/interface fields offer inline-fragment type-condition selectors.
+
+  The query builder is default-installed in the `graphiql` meta-package, so it is available with no extra setup.
+
+- Updated dependencies [[`0f96193`](https://github.com/graphql/graphiql/commit/0f9619393e65a406fad09b3c1260b8a58c4e74c3), [`1919f6a`](https://github.com/graphql/graphiql/commit/1919f6a85f697a251cad98a082ac397aca99e44a), [`b6f8dc6`](https://github.com/graphql/graphiql/commit/b6f8dc6f247b63c19fe2b7962866508c5d0fb219), [`d4f0268`](https://github.com/graphql/graphiql/commit/d4f026853b89b9755f28d8f4059fcba419aa6d5a), [`c25bfd5`](https://github.com/graphql/graphiql/commit/c25bfd5b51ad98f36cbdb81a7486380f8dd1ab6a), [`f8a9445`](https://github.com/graphql/graphiql/commit/f8a944505a0fbb9245b4ea1a3ca67bd50d4b7991), [`1ce71e4`](https://github.com/graphql/graphiql/commit/1ce71e407dd3b457d6fecc9e7ad0b3ad246c693b), [`f45e26b`](https://github.com/graphql/graphiql/commit/f45e26b6eff736c2faddbafd82550ddfc3efa860), [`827da62`](https://github.com/graphql/graphiql/commit/827da6263685aa6e2f4df98ab7aaf032d2783605), [`df03c92`](https://github.com/graphql/graphiql/commit/df03c925ca99510f0435e0b98f284ca5159d2158), [`b6f8dc6`](https://github.com/graphql/graphiql/commit/b6f8dc6f247b63c19fe2b7962866508c5d0fb219), [`a0fe11a`](https://github.com/graphql/graphiql/commit/a0fe11aeb40861b586b4cfa5678b8ebe1bea4a19), [`b6f8dc6`](https://github.com/graphql/graphiql/commit/b6f8dc6f247b63c19fe2b7962866508c5d0fb219), [`093cb10`](https://github.com/graphql/graphiql/commit/093cb100a4524b1005b82c1c064bb897416bfc82), [`b6f8dc6`](https://github.com/graphql/graphiql/commit/b6f8dc6f247b63c19fe2b7962866508c5d0fb219)]:
+  - @graphiql/react@1.0.0-alpha.0

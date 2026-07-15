@@ -1,5 +1,69 @@
 # @graphiql/react
 
+## 1.0.0-alpha.0
+
+### Major Changes
+
+- [#4423](https://github.com/graphql/graphiql/pull/4423) [`f45e26b`](https://github.com/graphql/graphiql/commit/f45e26b6eff736c2faddbafd82550ddfc3efa860) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - `cn` is no longer exported from `@graphiql/react`; import `clsx` directly.
+
+- [#4393](https://github.com/graphql/graphiql/pull/4393) [`827da62`](https://github.com/graphql/graphiql/commit/827da6263685aa6e2f4df98ab7aaf032d2783605) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Remove deprecated hooks: `useEditorContext`, `useExecutionContext`, `usePluginContext`, `useSchemaContext`, `useTheme`, `useStorage`, `useStorageContext`, `usePrettifyEditors`, `useCopyQuery`, `useMergeQuery`, the `*Store` aliases (in `@graphiql/react`); `useExplorerContext` (in `@graphiql/plugin-doc-explorer`); and `useHistoryContext` (in `@graphiql/plugin-history`). Replacements were available since v5 — see the v6 migration guide for one-line replacements.
+
+### Minor Changes
+
+- [#4411](https://github.com/graphql/graphiql/pull/4411) [`b6f8dc6`](https://github.com/graphql/graphiql/commit/b6f8dc6f247b63c19fe2b7962866508c5d0fb219) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - New `@graphiql/plugin-collections` plugin for saving named operations into folder collections and reusing them later, default-installed in the `graphiql` meta-package so a Collections rail icon appears out of the box (passing the `plugins` prop opts out of the default set as before).
+  - Collapsible tree UI with inline rename, hover-revealed row actions, and QRY/MUT/SUB pills (a `MIX` pill when a saved document holds more than one operation).
+  - Save the current operation with ⌘S/Ctrl+S or the tab-strip Save button. An operation opened from a collection stays linked, so re-saving updates it in place; otherwise a "Save to collection" dialog opens. Clicking a saved item opens it in a new tab.
+  - Reorder within and across collections by drag-and-drop or keyboard (focus a row's drag handle, Space to grab, arrow keys to move, Space to drop, Escape to cancel).
+  - Copy a raw query or Share an importable envelope from any row; collection headers expose Share. Paste or drop a collections export anywhere in the pane to merge it in, or import/export JSON from the dialog. Imports reconcile by stable id, so re-importing updates in place and never duplicates; a conflict dialog lets you apply incoming changes, keep yours, or review each, and merge never deletes.
+  - Pluggable persistence via the `storage` option (defaults to `localStorage`), plus `readOnly`, `allowImportExport`, and `allowReplace` for governed deployments.
+
+  To support this without the core depending on any specific plugin, `@graphiql/react` gains a save API: `registerSaveHandler(handler)` (⌘S and the Save button fan out to every registered handler plus the `onSaveQuery` prop, and the dirty-state affordance only appears when at least one is registered), the `onSaveQuery(tab)` prop with `markTabSaved(tabId)` for deferred saves, and `GraphiQLPlugin.sessionActions`, an always-mounted plugin slot for toolbar buttons, dialogs, or behavior registration. The dirty-state dot now means "a saved operation has unsaved edits" and survives a reload, so a tab that was never saved reads clean.
+
+- [#4277](https://github.com/graphql/graphiql/pull/4277) [`d4f0268`](https://github.com/graphql/graphiql/commit/d4f026853b89b9755f28d8f4059fcba419aa6d5a) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a `KeycapHint` primitive for displaying inline keyboard shortcuts (e.g. `⌘K`, `⌘⏎`), available for general consumer use. It takes semantic modifier names via the `MODIFIER` constant: `MODIFIER.Meta` renders as `⌘` on macOS and `Ctrl` elsewhere; `Ctrl`/`Alt`/`Shift` render as Mac glyphs (`⌃`/`⌥`/`⇧`) on macOS and plain text on other platforms; `Enter` renders as `⏎` everywhere.
+
+- [#4285](https://github.com/graphql/graphiql/pull/4285) [`c25bfd5`](https://github.com/graphql/graphiql/commit/c25bfd5b51ad98f36cbdb81a7486380f8dd1ab6a) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a `MethodPill` primitive: a small colored pill labeling an operation as QRY (query), MUT (mutation), or SUB (subscription).
+
+- [#4352](https://github.com/graphql/graphiql/pull/4352) [`f8a9445`](https://github.com/graphql/graphiql/commit/f8a944505a0fbb9245b4ea1a3ca67bd50d4b7991) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - The active operation now follows the editor cursor. As you move the cursor between operations in a multi-operation document, `operationName` updates to the operation the cursor sits in, so the operation dropdown and operation-aware plugins all reflect where you are editing. Previously `operationName` only changed on run-at-cursor or via the operation dropdown.
+
+  Two consequences if you embed GraphiQL: the `onEditOperationName` callback now fires when the cursor crosses into a different named operation, and a tab containing multiple operations shows the active operation name with a `+N` count of the others. Pinning an operation with the `operationName` prop still overrides cursor tracking.
+
+  The Run button now offers an operation picker: in a document with multiple named operations, a dropdown on the Run button lets you choose which operation to run, and the menu marks which operation is currently active. The active operation still follows the editor cursor by default.
+
+- [#4284](https://github.com/graphql/graphiql/pull/4284) [`1ce71e4`](https://github.com/graphql/graphiql/commit/1ce71e407dd3b457d6fecc9e7ad0b3ad246c693b) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a `PanelHeader` primitive for side panels. Renders a title, optional subtitle, and optional action-icon row.
+
+- [#4411](https://github.com/graphql/graphiql/pull/4411) [`b6f8dc6`](https://github.com/graphql/graphiql/commit/b6f8dc6f247b63c19fe2b7962866508c5d0fb219) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a response pane header with real status, elapsed time, and response size from the active transport, a copy button, and a JSON / Tree / Table view toggle (the selection is persisted and restored on reload).
+  - **Tree** renders the response JSON as a collapsible tree with type-colored values; top-level nodes expand by default and deeper levels start collapsed.
+  - **Table** renders each list field as its own table captioned with its path (e.g. `test.person.friends`); sibling and aliased lists each get a table, nested objects and arrays show as shorthand summaries, and non-list responses show an empty state.
+
+- [#4282](https://github.com/graphql/graphiql/pull/4282) [`a0fe11a`](https://github.com/graphql/graphiql/commit/a0fe11aeb40861b586b4cfa5678b8ebe1bea4a19) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a `SegmentedControl` primitive for selecting one option from a small set inline, used by the response view toggle and several settings controls. It is built on native radio inputs, so keyboard navigation (arrow keys, Home / End) and screen-reader semantics come from the browser and the group is a single tab stop.
+
+- [#4411](https://github.com/graphql/graphiql/pull/4411) [`b6f8dc6`](https://github.com/graphql/graphiql/commit/b6f8dc6f247b63c19fe2b7962866508c5d0fb219) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a `SettingsDialog` with theme, density, font-size, and persist-headers controls, backed by a new `useGraphiQLSettings()` hook that persists preferences to `localStorage` and applies them to the GraphiQL container via `data-*` attributes. Density and font-size presets fill in concrete token values for the `[data-density]` and `[data-font-size]` blocks in `tokens.css`; Monaco editor font size, the status bar, and UI icon sizes follow the active font-size preset. The `forcedTheme` and `showPersistHeadersSettings` props continue to work, with `forcedTheme` hiding the theme control.
+
+- [#4333](https://github.com/graphql/graphiql/pull/4333) [`093cb10`](https://github.com/graphql/graphiql/commit/093cb100a4524b1005b82c1c064bb897416bfc82) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a structured `Transport` API alongside the existing `Fetcher`. `createTransport({...})` performs the GraphQL request and returns a `TransportResponse` carrying the real HTTP wire metadata (status, headers, timing, size) for queries, mutations, subscriptions, and incremental delivery, so the response pane can surface those values directly instead of fabricating them. `<GraphiQL>` accepts a new `transport` prop, mutually exclusive with `fetcher` at the type level.
+
+  Transports support GET, POST, and the [HTTP `QUERY`](https://datatracker.ietf.org/doc/draft-ietf-httpbis-safe-method-w-body/) method per the GraphQL over HTTP spec. Pass `method` / `supportedMethods` to choose; GET encodes the query into the URL with no body, `QUERY` sends a JSON body but is safe and idempotent, and mutations are always sent over POST (or blocked when POST is unavailable). `Transport` exposes `url`, `method`, `supportedMethods`, and an optional `setMethod`, and the top bar shows the active method and endpoint with an inline switcher that cycles through the supported methods. Subscriptions require an explicit `subscriptionClient` satisfying a small `SubscriptionClient` contract: a single `.subscribe(request, sink)` method that `graphql-ws` and `graphql-sse` clients meet directly. The low-level `simpleHttpTransport` and `multipartHttpTransport` primitives also accept an optional `method`.
+
+  Plugins can observe and transform traffic through `transport.onBeforeSend` and `transport.onResponse`, available via `useGraphiQLPluginContext()` (both return a cleanup function; the `transport` field is `undefined` under the legacy `fetcher` path, so guard with optional chaining).
+
+  `createGraphiQLFetcher`, the `Fetcher` type and its companions, and `<GraphiQL fetcher={...}>` are deprecated but continue to work unchanged. Consumers on the deprecated path see a one-time dismissible banner in the response pane pointing at `docs/migration/graphiql-6.0.0.md` rather than fabricated status/timing/size values. The CDN bundle exposes `GraphiQL.createTransport` and `GraphiQL.createWsClient` so script-tag consumers can adopt without a bundler.
+
+- [#4411](https://github.com/graphql/graphiql/pull/4411) [`b6f8dc6`](https://github.com/graphql/graphiql/commit/b6f8dc6f247b63c19fe2b7962866508c5d0fb219) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - A ground-up visual redesign for v6. A new OKLCH-based design-token system brings first-class light and dark themes, driven by a `data-theme` attribute on the GraphiQL container. The layout is rebuilt around a top bar (endpoint and Run action), a left activity rail for plugins, a resizable side panel, a slim status bar, a flattened editor workspace, and a Variables/Headers tab strip. Every built-in component and both Monaco editor themes are restyled to match, and the doc explorer and history panels are rebuilt on the new chrome.
+
+  GraphQL syntax coloring is unified across the doc explorer, history, and query builder, with type names colored by category. The mapping is public API for retheming: the `--type-scalar`, `--type-enum`, `--type-input`, and `--type-composite` CSS tokens, plus the `typeCategory` helper exported from `@graphiql/react`.
+
+  Custom CSS that overrides GraphiQL's internal class names may need updating; only the CSS custom properties (design tokens) are supported theming API. The build now targets the `defaults` browserslist preset, which covers the modern browsers the OKLCH color system requires. See the migration guide at `docs/migration/graphiql-6.0.0.md`. Refs graphql/graphiql#4219.
+
+### Patch Changes
+
+- [#4409](https://github.com/graphql/graphiql/pull/4409) [`0f96193`](https://github.com/graphql/graphiql/commit/0f9619393e65a406fad09b3c1260b8a58c4e74c3) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Tighten keyboard navigation: the settings dialog now restores focus to the gear button that opened it (Escape, the close button, and clicking outside all worked before but silently dropped focus to the page). History label edits can now be canceled with Escape and return focus to the row instead of the page.
+
+- [#4413](https://github.com/graphql/graphiql/pull/4413) [`1919f6a`](https://github.com/graphql/graphiql/commit/1919f6a85f697a251cad98a082ac397aca99e44a) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a global keyboard focus ring and fill in a few missing screen-reader labels. Every control now shows a clearly visible blue outline when focused with the keyboard, with enough contrast against the canvas in both light and dark themes. Decorative icons that sit next to a text label no longer announce a redundant name, the doc explorer search box shows a focus ring while typing, and the cancel button on a history label edit now has an accessible name.
+
+- [#4414](https://github.com/graphql/graphiql/pull/4414) [`df03c92`](https://github.com/graphql/graphiql/commit/df03c925ca99510f0435e0b98f284ca5159d2158) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Polish the response pane: the loading spinner is now a centered overlay, so the view picker and results no longer jump when a query runs; the JSON, Tree, and Table views share a consistent 16px inset; and Table view rows get their bottom divider back.
+
+- Updated dependencies [[`26ae143`](https://github.com/graphql/graphiql/commit/26ae143ba68004d4a50468ba1feb649ace673f3a), [`093cb10`](https://github.com/graphql/graphiql/commit/093cb100a4524b1005b82c1c064bb897416bfc82)]:
+  - @graphiql/toolkit@1.0.0-alpha.0
+
 ## 0.37.7
 
 ### Patch Changes
