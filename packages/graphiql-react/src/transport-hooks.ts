@@ -12,6 +12,14 @@ export type OnBeforeSendCallback = (
 /** A function invoked after a response is received. */
 export type OnResponseCallback = (res: TransportResponse) => void;
 
+/**
+ * A function invoked when `send()` rejects — a thrown `onBeforeSend` hook, a
+ * network failure, or anything else that keeps a `TransportResponse` from ever
+ * being produced. Observe-only, like `onResponse`; the error still propagates
+ * to the caller after every registered callback runs.
+ */
+export type OnErrorCallback = (error: unknown, req: TransportRequest) => void;
+
 /** Cleanup function returned by hook registration. Call it to remove the hook. */
 export type CleanupFn = () => void;
 
@@ -25,6 +33,8 @@ export class TransportHookRegistry {
   readonly _beforeSend: OnBeforeSendCallback[] = [];
   /** @internal */
   readonly _onResponse: OnResponseCallback[] = [];
+  /** @internal */
+  readonly _onError: OnErrorCallback[] = [];
 
   /**
    * Register a callback that runs before each request is sent.
@@ -56,6 +66,21 @@ export class TransportHookRegistry {
   }
 
   /**
+   * Register a callback that runs when `send()` rejects instead of resolving
+   * to a `TransportResponse` — a thrown `onBeforeSend` hook or a network
+   * failure, for example. Returns a cleanup function that removes the callback.
+   */
+  onError(cb: OnErrorCallback): CleanupFn {
+    this._onError.push(cb);
+    return () => {
+      const idx = this._onError.indexOf(cb);
+      if (idx !== -1) {
+        this._onError.splice(idx, 1);
+      }
+    };
+  }
+
+  /**
    * Wrap a `Transport` so all `onBeforeSend` and `onResponse` hooks are
    * invoked transparently on each call to `send()`.
    *
@@ -70,7 +95,7 @@ export class TransportHookRegistry {
    * after each response value is received.
    */
   wrap(transport: Transport): Transport {
-    const { _beforeSend, _onResponse } = this;
+    const { _beforeSend, _onResponse, _onError } = this;
 
     return {
       ...transport,
@@ -90,53 +115,61 @@ export class TransportHookRegistry {
                   };
                 }
 
-                // First call: run onBeforeSend hooks then delegate to transport
-                if (iter === null && singlePromise === null) {
-                  // Run all onBeforeSend hooks in order
-                  let req = request;
-                  for (const cb of _beforeSend) {
-                    req = await cb(req);
+                try {
+                  // First call: run onBeforeSend hooks then delegate to transport
+                  if (iter === null && singlePromise === null) {
+                    // Run all onBeforeSend hooks in order
+                    let req = request;
+                    for (const cb of _beforeSend) {
+                      req = await cb(req);
+                    }
+
+                    const result = transport.send(req);
+
+                    if (
+                      result !== null &&
+                      typeof result === 'object' &&
+                      Symbol.asyncIterator in result
+                    ) {
+                      // Iterable path: subscriptions / incremental delivery
+                      iter = (result as AsyncIterable<TransportResponse>)[
+                        Symbol.asyncIterator
+                      ]();
+                    } else {
+                      // Promise path: queries / mutations
+                      singlePromise = result as Promise<TransportResponse>;
+                    }
                   }
 
-                  const result = transport.send(req);
-
-                  if (
-                    result !== null &&
-                    typeof result === 'object' &&
-                    Symbol.asyncIterator in result
-                  ) {
-                    // Iterable path: subscriptions / incremental delivery
-                    iter = (result as AsyncIterable<TransportResponse>)[
-                      Symbol.asyncIterator
-                    ]();
-                  } else {
-                    // Promise path: queries / mutations
-                    singlePromise = result as Promise<TransportResponse>;
+                  if (singlePromise !== null) {
+                    const tr = await singlePromise;
+                    for (const cb of _onResponse) {
+                      cb(tr);
+                    }
+                    done = true;
+                    return { value: tr, done: false };
                   }
-                }
 
-                if (singlePromise !== null) {
-                  const tr = await singlePromise;
+                  // Iterable path
+                  const result = await iter!.next();
+                  if (result.done) {
+                    done = true;
+                    return {
+                      value: undefined as unknown as TransportResponse,
+                      done: true,
+                    };
+                  }
                   for (const cb of _onResponse) {
-                    cb(tr);
+                    cb(result.value);
                   }
+                  return result;
+                } catch (error) {
                   done = true;
-                  return { value: tr, done: false };
+                  for (const cb of _onError) {
+                    cb(error, request);
+                  }
+                  throw error;
                 }
-
-                // Iterable path
-                const result = await iter!.next();
-                if (result.done) {
-                  done = true;
-                  return {
-                    value: undefined as unknown as TransportResponse,
-                    done: true,
-                  };
-                }
-                for (const cb of _onResponse) {
-                  cb(result.value);
-                }
-                return result;
               },
 
               return(value?: unknown) {
