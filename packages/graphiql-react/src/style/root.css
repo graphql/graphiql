@@ -33,8 +33,6 @@
   --alpha-background-light: 0.07;
 
   /* Font */
-  --font-family: 'Roboto', sans-serif;
-  --font-family-mono: 'Fira Code', monospace;
   --font-size-inline-code: calc(13rem / 16);
   /* Renamed off the v6 preset name `--font-size-body` (tokens.css) so this frozen v5 value stops overriding it on `.graphiql-container` at equal specificity. Only the legacy code-exporter plugin consumes it. */
   --font-size-body-legacy: calc(15rem / 16);
