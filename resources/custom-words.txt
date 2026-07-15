@@ -43,8 +43,10 @@ borggreve
 bram
 browserslistrc
 calar
+calt
 chainable
 changesets
+clig
 clsx
 codebases
 codegen
@@ -119,6 +121,7 @@ leebyron
 Leko
 LekoArts
 lezer
+liga
 lightningcss
 linenumber
 linenumbers
@@ -137,6 +140,7 @@ middlewares
 minipass
 mockfs
 modulemap
+monospace
 multipass
 nauroze
 newhope
