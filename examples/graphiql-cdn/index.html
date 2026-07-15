@@ -34,12 +34,6 @@
       integrity="sha384-TFpQQKp325U5sd3PddH4cS0KOB3Gz/aqdEe12Mqkkq3wm2MGcDhRX5WhWf+o8akh"
       crossorigin="anonymous"
     />
-    <link
-      rel="stylesheet"
-      href="https://esm.sh/@graphiql/plugin-explorer@5.1.3/dist/style.css"
-      integrity="sha384-vTFGj0krVqwFXLB7kq/VHR0/j2+cCT/B63rge2mULaqnib2OX7DVLUVksTlqvMab"
-      crossorigin="anonymous"
-    />
     <!--
      * Note:
      * The ?standalone flag bundles the module along with all of its `dependencies`, excluding `peerDependencies`, into a single JavaScript file.
@@ -54,7 +48,6 @@
           "react-dom/": "https://esm.sh/react-dom@19.2.7/",
           "graphiql": "https://esm.sh/graphiql@5.2.4?standalone&external=react,react-dom,@graphiql/react,graphql",
           "graphiql/": "https://esm.sh/graphiql@5.2.4/",
-          "@graphiql/plugin-explorer": "https://esm.sh/@graphiql/plugin-explorer@5.1.3?standalone&external=react,@graphiql/react,graphql",
           "@graphiql/react": "https://esm.sh/@graphiql/react@0.37.7?standalone&external=react,react-dom,graphql,@graphiql/toolkit,@emotion/is-prop-valid",
           "@graphiql/toolkit": "https://esm.sh/@graphiql/toolkit@0.12.1?standalone&external=graphql",
           "graphql": "https://esm.sh/graphql@17.0.2",
@@ -65,7 +58,6 @@
           "https://esm.sh/react-dom@19.2.7": "sha384-upKKG1ShVOSXNAoNmdKSl8xWJl9L8fZ05Ki1rHXpPijT4hIS/FFh+88dxk72+jre",
           "https://esm.sh/graphiql@5.2.4": "sha384-3feoWeu5QZYyfhHQyP8i+VBW+tYf58tTwgBb8Fsrw2QlP/YRBR2tscNGcYyRDtHC",
           "https://esm.sh/graphiql@5.2.4?standalone&external=react,react-dom,@graphiql/react,graphql": "sha384-n1sWmquV8wXH/vbn5Q8BaQAw8iAFku5zAs2fPBrht0L/OP4/qgZWL/v/WhMLFPBH",
-          "https://esm.sh/@graphiql/plugin-explorer@5.1.3": "sha384-aDt72jaNBi2he5K4f47qh+xnS6Za54L6vuoNt6KtToLAJfebp23zCaAl3zXGl7dV",
           "https://esm.sh/@graphiql/react@0.37.7?standalone&external=react,react-dom,graphql,@graphiql/toolkit,@emotion/is-prop-valid": "sha384-U8awo9eG6M8scx4fjis/pNfYja4d5EtxOFYcmvDGG8K4Rt/bGB6Km1hxbQXZr9qH",
           "https://esm.sh/@graphiql/toolkit@0.12.1?standalone&external=graphql": "sha384-+cNTwZgIW33q7A4E+ZoCMqzcXdfVIc2VthQvJ0uDpRXERBWYuDKPVMzvdQU8x48o",
           "https://esm.sh/graphql@17.0.2": "sha384-IPvlcmnvWT91sKqwbg9MxPXJUuPmSdwXCp22x6hcbBkAEhlfSKkMLR3v19K9iRUp"
@@ -76,18 +68,17 @@
       import React from 'react';
       import ReactDOM from 'react-dom/client';
       import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
-      import { createGraphiQLFetcher } from '@graphiql/toolkit';
-      import { explorerPlugin } from '@graphiql/plugin-explorer';
+      import { createTransport } from '@graphiql/toolkit';
       import 'graphiql/setup-workers/esm.sh';
 
-      const fetcher = createGraphiQLFetcher({
+      const transport = createTransport({
         url: 'https://countries.trevorblades.com',
       });
-      const plugins = [HISTORY_PLUGIN, explorerPlugin()];
+      const plugins = [HISTORY_PLUGIN];
 
       function App() {
         return React.createElement(GraphiQL, {
-          fetcher,
+          transport,
           plugins,
           defaultEditorToolsVisibility: true,
         });

@@ -1,7 +1,6 @@
 import { DocumentNode, visit } from 'graphql';
 import { meros } from 'meros/browser';
 import type {
-  Client,
   ClientOptions,
   ExecutionResult,
   createClient as createClientType,
@@ -19,10 +18,67 @@ import type {
   ExecutionResultPayload,
   CreateFetcherOptions,
 } from './types';
+// Type-only import: erased at build time, so no runtime dependency cycle with
+// `create-transport`, which imports the helpers below at runtime.
+import type {
+  HttpMethod,
+  SubscriptionClient,
+  TransportResponse,
+} from '../create-transport/types';
 
 const errorHasCode = (err: unknown): err is { code: string } => {
   return typeof err === 'object' && err !== null && 'code' in err;
 };
+
+const byteLength = (value: string): number =>
+  typeof TextEncoder === 'undefined'
+    ? value.length
+    : new TextEncoder().encode(value).length;
+
+const headersToObject = (
+  headers: unknown,
+): Record<string, string> | undefined => {
+  const headersLike = headers as
+    | { forEach?: (cb: (value: string, key: string) => void) => void }
+    | undefined;
+  if (!headersLike || typeof headersLike.forEach !== 'function') {
+    return undefined;
+  }
+  const result: Record<string, string> = {};
+  headersLike.forEach((value, key) => {
+    result[key] = value;
+  });
+  return result;
+};
+
+/**
+ * Build a `TransportResponse` from a parsed body and the HTTP `Response` it came
+ * from. This is the single place wire metadata is read off the response, so the
+ * `Fetcher` projection and `createTransport` observe identical data.
+ */
+function toTransportResponse(
+  body: unknown,
+  response: Response,
+  startMs: number,
+  requestBody?: string,
+): TransportResponse {
+  const errors = (body as { errors?: unknown } | null)?.errors;
+  const contentLength = response.headers?.get?.('content-length');
+  return {
+    ok: !Array.isArray(errors) || errors.length === 0,
+    status: response.status,
+    statusText: response.statusText,
+    headers: headersToObject(response.headers),
+    body: body as TransportResponse['body'],
+    timing: { totalMs: performance.now() - startMs },
+    size: {
+      request: requestBody === undefined ? undefined : byteLength(requestBody),
+      response: contentLength
+        ? Number(contentLength)
+        : byteLength(JSON.stringify(body)),
+    },
+  };
+}
 
 /**
  * Returns true if the name matches a subscription in the AST
@@ -45,6 +101,76 @@ export const isSubscriptionWithName = (
   });
   return isSubscription;
 };
+
+/**
+ * Build a URL with GraphQL parameters encoded into the query string per the
+ * GraphQL over HTTP spec. `variables` and `extensions`, when present, are
+ * JSON-stringified. No request body is sent with GET requests.
+ */
+function buildGetUrl(baseUrl: string, graphQLParams: FetcherParams): string {
+  const params = new URLSearchParams();
+  params.set('query', graphQLParams.query);
+  if (graphQLParams.operationName != null) {
+    params.set('operationName', graphQLParams.operationName);
+  }
+  if (graphQLParams.variables != null) {
+    params.set('variables', JSON.stringify(graphQLParams.variables));
+  }
+  const sep = baseUrl.includes('?') ? '&' : '?';
+  return `${baseUrl}${sep}${params.toString()}`;
+}
+
+/**
+ * Perform a simple HTTP/S request and return the full `TransportResponse`
+ * (parsed body plus wire metadata). This is the primitive that
+ * `createSimpleFetcher` projects down to the body, and that `createTransport`
+ * exposes whole.
+ *
+ * Pass `method: 'GET'` to encode the GraphQL params into the URL and send no
+ * body. `'POST'` and `'QUERY'` both send a JSON body; they differ only in the
+ * HTTP method on the wire. The default is `'POST'`. Note that this primitive
+ * does not enforce the spec rule that mutations must not use a safe method
+ * (GET/QUERY) — that policy lives in `createTransport`, which composes this
+ * primitive in a spec-compliant way.
+ */
+export const simpleHttpTransport =
+  (
+    options: CreateFetcherOptions,
+    httpFetch: typeof fetch,
+    method: HttpMethod = 'POST',
+  ) =>
+  async (
+    graphQLParams: FetcherParams,
+    fetcherOpts?: FetcherOpts,
+  ): Promise<TransportResponse> => {
+    const startMs = performance.now();
+    if (method === 'GET') {
+      const url = buildGetUrl(options.url, graphQLParams);
+      const response = await httpFetch(url, {
+        method: 'GET',
+        headers: {
+          accept: 'application/graphql-response+json, application/json;q=0.9',
+          ...options.headers,
+          ...fetcherOpts?.headers,
+        },
+      });
+      const body = await response.json();
+      return toTransportResponse(body, response, startMs);
+    }
+    const requestBody = JSON.stringify(graphQLParams);
+    const response = await httpFetch(options.url, {
+      method,
+      body: requestBody,
+      headers: {
+        'content-type': 'application/json',
+        accept: 'application/graphql-response+json, application/json;q=0.9',
+        ...options.headers,
+        ...fetcherOpts?.headers,
+      },
+    });
+    const body = await response.json();
+    return toTransportResponse(body, response, startMs, requestBody);
+  };
 
 /**
  * create a simple HTTP/S fetcher using a fetch implementation where
@@ -96,10 +222,12 @@ export async function createWebsocketsFetcherFromUrl(
 }
 
 /**
- * Create ws/s fetcher using provided wsClient implementation
+ * Create a subscription fetcher from any client satisfying the
+ * {@link SubscriptionClient} contract (`graphql-ws`, `graphql-sse`, or a custom
+ * one — e.g. HTTP `multipart/mixed`).
  */
 export const createWebsocketsFetcherFromClient =
-  (wsClient: Client): Fetcher =>
+  (wsClient: SubscriptionClient): Fetcher =>
   (graphQLParams: FetcherParams) =>
     makeAsyncIterableIteratorFromSink<ExecutionResult>(sink =>
       wsClient.subscribe(graphQLParams, {
@@ -133,6 +261,86 @@ export const createLegacyWebsocketsFetcher =
       sink => observable.subscribe(sink).unsubscribe,
     );
   };
+/**
+ * Perform an `IncrementalDelivery` (`multipart/mixed`) request for `@stream` /
+ * `@defer`, yielding a `TransportResponse` per chunk. HTTP metadata is read once
+ * from the raw response and attached to every chunk (they share one response).
+ *
+ * Pass `method: 'GET'` to encode GraphQL params into the URL; `'POST'` and
+ * `'QUERY'` both send a JSON body. Same escape-hatch caveat as
+ * `simpleHttpTransport` — mutation enforcement lives in `createTransport`.
+ */
+export const multipartHttpTransport = (
+  options: CreateFetcherOptions,
+  httpFetch: typeof fetch,
+  method: HttpMethod = 'POST',
+) =>
+  async function* (
+    graphQLParams: FetcherParams,
+    fetcherOpts?: FetcherOpts,
+  ): AsyncGenerator<TransportResponse> {
+    const startMs = performance.now();
+    let rawResponse: Response;
+    let requestBody: string | undefined;
+
+    if (method === 'GET') {
+      const url = buildGetUrl(options.url, graphQLParams);
+      rawResponse = await httpFetch(url, {
+        method: 'GET',
+        headers: {
+          accept: 'application/json, multipart/mixed',
+          ...options.headers,
+          ...fetcherOpts?.headers,
+        },
+      });
+    } else {
+      requestBody = JSON.stringify(graphQLParams);
+      rawResponse = await httpFetch(options.url, {
+        method,
+        body: requestBody,
+        headers: {
+          'content-type': 'application/json',
+          accept: 'application/json, multipart/mixed',
+          ...options.headers,
+          // allow user-defined headers to override
+          // the static provided headers
+          ...fetcherOpts?.headers,
+        },
+      });
+    }
+    const response = await meros<
+      Extract<ExecutionResultPayload, { hasNext: boolean }>
+    >(rawResponse, { multiple: true });
+
+    // Single, non-multipart response: behaves like the simple transport.
+    if (!isAsyncIterable(response)) {
+      yield toTransportResponse(
+        await response.json(),
+        rawResponse,
+        startMs,
+        requestBody,
+      );
+      return;
+    }
+
+    for await (const chunk of response) {
+      if (chunk.some(part => !part.json)) {
+        const message = chunk.map(
+          part => `Headers::\n${part.headers}\n\nBody::\n${part.body}`,
+        );
+        throw new Error(
+          `Expected multipart chunks to be of json type. got:\n${message}`,
+        );
+      }
+      yield toTransportResponse(
+        chunk.map(part => part.body) as TransportResponse['body'],
+        rawResponse,
+        startMs,
+        requestBody,
+      );
+    }
+  };
+
 /**
  * Create a fetcher with the `IncrementalDelivery` HTTP/S spec for
  * `@stream` and `@defer` support using `fetch-multipart-graphql`
@@ -178,7 +386,7 @@ export const createMultipartFetcher = (
   };
 
 /**
- * If `wsClient` or `legacyClient` are provided, then `subscriptionUrl` is overridden.
+ * If `wsClient` or `legacyWsClient` are provided, then `subscriptionUrl` is overridden.
  */
 export async function getWsFetcher(
   options: CreateFetcherOptions,
@@ -193,8 +401,7 @@ export async function getWsFetcher(
       ...fetcherOpts?.headers,
     });
   }
-  const legacyWebsocketsClient = options.legacyClient || options.legacyWsClient;
-  if (legacyWebsocketsClient) {
-    return createLegacyWebsocketsFetcher(legacyWebsocketsClient);
+  if (options.legacyWsClient) {
+    return createLegacyWebsocketsFetcher(options.legacyWsClient);
   }
 }

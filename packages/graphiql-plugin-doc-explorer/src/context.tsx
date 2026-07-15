@@ -18,6 +18,7 @@ import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import {
   SchemaReference,
   useGraphiQL,
+  useGraphiQLActions,
   pick,
   createBoundedUseStore,
   GraphiQLPlugin,
@@ -96,7 +97,7 @@ export type DocExplorerStoreType = {
   };
 };
 
-const INITIAL_NAV_STACK: DocExplorerNavStack = [{ name: 'Docs' }];
+const INITIAL_NAV_STACK: DocExplorerNavStack = [{ name: 'Root' }];
 
 export const docExplorerStore = createStore<DocExplorerStoreType>(
   (set, get) => ({
@@ -268,12 +269,33 @@ export const docExplorerStore = createStore<DocExplorerStoreType>(
   }),
 );
 
+// The doc-explorer panel (and its search input) mounts asynchronously after
+// `setVisiblePlugin` commits, which isn't guaranteed to land within a single
+// animation frame, so poll across a few frames rather than assuming one is
+// enough.
+function focusSearchInputWhenMounted(framesLeft: number) {
+  if (framesLeft <= 0) {
+    return;
+  }
+  requestAnimationFrame(() => {
+    const el = document.querySelector<HTMLDivElement>(
+      '.graphiql-doc-explorer-search-row-input',
+    );
+    if (el) {
+      el.click();
+    } else {
+      focusSearchInputWhenMounted(framesLeft - 1);
+    }
+  });
+}
+
 export const DocExplorerStore: FC<{
   children: ReactNode;
 }> = ({ children }) => {
   const { schema, validationErrors, schemaReference } = useGraphiQL(
     pick('schema', 'validationErrors', 'schemaReference'),
   );
+  const { setVisiblePlugin } = useGraphiQLActions();
 
   useEffect(() => {
     const { resolveSchemaReferenceToNavItem } =
@@ -295,35 +317,31 @@ export const DocExplorerStore: FC<{
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      const shouldFocusInput =
-        // Use an additional `Alt` key instead of `Cmd/Ctrl+K` because monaco-editor has a built-in
-        // shortcut for `Cmd/Ctrl+K`
-        event.altKey &&
+      const shouldOpenSearch =
         event[isMacOs ? 'metaKey' : 'ctrlKey'] &&
         // Using `event.code` because `event.key` will trigger different character
         // in English `˚` and in French `È`
         event.code === 'KeyK';
-      if (!shouldFocusInput) {
+      if (!shouldOpenSearch) {
         return;
       }
-      const button = document.querySelector<HTMLButtonElement>(
-        '.graphiql-sidebar button[aria-label="Show Documentation Explorer"]',
-      );
-      button?.click();
-      // Execute on next tick when doc explorer is opened and input exists in DOM
-      requestAnimationFrame(() => {
-        const el = document.querySelector<HTMLDivElement>(
-          '.graphiql-doc-explorer-search-input',
-        );
-        el?.click();
-      });
+      // Take priority over monaco-editor's built-in `Cmd/Ctrl+K` binding even
+      // when an editor pane has focus.
+      event.preventDefault();
+      event.stopPropagation();
+
+      setVisiblePlugin(DOC_EXPLORER_PLUGIN);
+      // The panel (and its search input) mounts after this state update
+      // commits, which isn't guaranteed to land within a single animation
+      // frame, so poll across a few frames rather than assuming one is enough.
+      focusSearchInputWhenMounted(10);
     }
 
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown, true);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keydown', handleKeyDown, true);
     };
-  }, []);
+  }, [setVisiblePlugin]);
 
   return children as ReactElement;
 };

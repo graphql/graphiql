@@ -8,10 +8,15 @@ export {
 export { debounce } from './debounce';
 export { formatJSONC, parseJSONC, tryParseJSONC } from './jsonc';
 export { markdown } from './markdown';
-export { Uri, KeyMod, KeyCode, Range } from './monaco-ssr';
 export { pick } from './pick';
+export {
+  getRunBlockReason,
+  resolveActiveOperation,
+  MUTATION_REQUIRES_POST_REASON,
+} from './run-block';
 export { useDragResize } from './resize';
-export { clsx as cn } from 'clsx';
+export { typeCategory } from './type-category';
+export type { GraphQLTypeCategory } from './type-category';
 export {
   useOptimisticState,
   useEditorState,

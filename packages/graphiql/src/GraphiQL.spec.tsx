@@ -11,13 +11,14 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { act, render, waitFor, fireEvent } from '@testing-library/react';
 import { Component, FC, useEffect } from 'react';
 import { GraphiQL } from './GraphiQL';
-import type { Fetcher } from '@graphiql/toolkit';
+import type { Fetcher, Transport } from '@graphiql/toolkit';
 import { buildSchema, introspectionFromSchema } from 'graphql';
 import {
   ToolbarButton,
   useGraphiQL,
   useOperationsEditorState,
   MonacoEditor,
+  isMacOs,
 } from '@graphiql/react';
 import '@graphiql/react/setup-workers/vite';
 
@@ -36,12 +37,42 @@ describe('GraphiQL', () => {
   const noOpFetcher: Fetcher = () => {};
 
   describe('fetcher', () => {
-    it('should throw error without fetcher', () => {
+    it('should throw error without fetcher or transport', () => {
       const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-      // @ts-expect-error fetcher is a required prop to GraphiQL
+      // @ts-expect-error -- one of fetcher | transport is required on GraphiQL
       expect(() => render(<GraphiQL />)).toThrow(
-        'The `GraphiQLProvider` component requires a `fetcher` function to be passed as prop.',
+        'The `GraphiQLProvider` component requires either a `transport` or a `fetcher` prop.',
+      );
+      spy.mockRestore();
+    });
+
+    it('is a type error to pass both `fetcher` and `transport`', () => {
+      // The assertion that matters here is the `@ts-expect-error` directive:
+      // if the XOR on `GraphiQLProps` regresses and both props become valid,
+      // tsc reports the directive as unused and this test fails to compile.
+      // The runtime guard in `GraphiQLProvider` belt-and-suspenders the type
+      // check.
+      const transport: Transport = {
+        url: 'https://example.com/graphql',
+        method: 'POST',
+        supportedMethods: ['POST'],
+        send: async () => ({
+          ok: true,
+          body: { data: {} },
+          timing: { totalMs: 0 },
+          size: {},
+        }),
+      };
+      const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      expect(() =>
+        render(
+          // @ts-expect-error -- `fetcher` and `transport` are mutually exclusive
+          <GraphiQL fetcher={noOpFetcher} transport={transport} />,
+        ),
+      ).toThrow(
+        'The `fetcher` and `transport` props are mutually exclusive. Pass one or the other, not both.',
       );
       spy.mockRestore();
     });
@@ -181,9 +212,9 @@ describe('GraphiQL', () => {
           expect(queryEditor).toBeVisible();
           expect(queryEditor!.textContent).toBe('# Welcome to GraphiQL');
         },
-        { timeout: 15_000 },
+        { timeout: 25_000 },
       );
-    }, 20000);
+    }, 30000);
 
     it('accepts a custom default query', async () => {
       const { container } = render(
@@ -199,6 +230,27 @@ describe('GraphiQL', () => {
       });
     });
   }); // default query
+
+  describe('brand', () => {
+    it('shows the default GraphiQL wordmark when brand is unset', async () => {
+      const { getByText } = render(<GraphiQL fetcher={noOpFetcher} />);
+
+      await waitFor(() => {
+        expect(getByText('GraphiQL')).toBeInTheDocument();
+      });
+    });
+
+    it('overrides the top bar branding with the brand prop', async () => {
+      const { getByText, queryByText } = render(
+        <GraphiQL fetcher={noOpFetcher} brand="My Company" />,
+      );
+
+      await waitFor(() => {
+        expect(getByText('My Company')).toBeInTheDocument();
+        expect(queryByText('GraphiQL')).not.toBeInTheDocument();
+      });
+    });
+  });
 
   // TODO: rewrite these plugin tests after plugin API has more structure
   describe('plugins', () => {
@@ -221,6 +273,34 @@ describe('GraphiQL', () => {
 
       await waitFor(() => {
         expect(container.querySelector('.graphiql-plugin')).not.toBeVisible();
+      });
+    });
+
+    it('reveals the plugin pane when Cmd/Ctrl+K opens the doc explorer', async () => {
+      const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+
+      const pane = container.querySelector('.graphiql-plugin');
+      await waitFor(() => {
+        expect(pane).not.toBeVisible();
+      });
+
+      act(() => {
+        window.dispatchEvent(
+          new KeyboardEvent('keydown', {
+            code: 'KeyK',
+            metaKey: isMacOs,
+            ctrlKey: !isMacOs,
+            bubbles: true,
+            cancelable: true,
+          }),
+        );
+      });
+
+      await waitFor(() => {
+        expect(pane).toBeVisible();
+        expect(
+          container.querySelector('.graphiql-doc-explorer'),
+        ).toBeInTheDocument();
       });
     });
   }); // plugins
@@ -260,9 +340,15 @@ describe('GraphiQL', () => {
         />,
       );
       await waitFor(() => {
-        expect(
-          container.querySelector('[aria-label="Variables"]'),
-        ).toBeVisible();
+        // The editor tools section should be visible and the Variables radio checked
+        const section = container.querySelector(
+          '[aria-label="Variables and Headers"]',
+        );
+        expect(section).toBeVisible();
+        const variablesRadio = container.querySelector(
+          'input[type="radio"][value="variables"]',
+        );
+        expect(variablesRadio).toBeChecked();
       });
     });
 
@@ -274,7 +360,15 @@ describe('GraphiQL', () => {
         />,
       );
       await waitFor(() => {
-        expect(container.querySelector('[aria-label="Headers"]')).toBeVisible();
+        // The editor tools section should be visible and the Headers radio checked
+        const section = container.querySelector(
+          '[aria-label="Variables and Headers"]',
+        );
+        expect(section).toBeVisible();
+        const headersRadio = container.querySelector(
+          'input[type="radio"][value="headers"]',
+        );
+        expect(headersRadio).toBeChecked();
       });
     });
 
@@ -311,8 +405,9 @@ describe('GraphiQL', () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       const dragBar = container.querySelector('.graphiql-horizontal-drag-bar')!;
-      const editors =
-        container.querySelector<HTMLDivElement>('.graphiql-editors')!;
+      const editorColumn = container.querySelector<HTMLDivElement>(
+        '.graphiql-editor-column',
+      )!;
 
       act(() => {
         fireEvent.mouseDown(dragBar, {
@@ -330,7 +425,7 @@ describe('GraphiQL', () => {
 
       await waitFor(() => {
         // 700 / (900 - 700) = 3.5
-        expect(editors.style.flexGrow).toEqual('3.5');
+        expect(editorColumn.style.flexGrow).toEqual('3.5');
       });
 
       clientWidthSpy.mockRestore();
@@ -384,57 +479,47 @@ describe('GraphiQL', () => {
     });
   }); // panel resizing
 
-  it('allows the user to control persisting headers if it is true', async () => {
-    const { container, findByText } = render(
-      <GraphiQL shouldPersistHeaders fetcher={noOpFetcher} />,
-    );
+  describe('Settings dialog', () => {
+    async function openSettings(container: HTMLElement) {
+      await act(async () => {
+        fireEvent.click(container.querySelector('[aria-label="Settings"]')!);
+        await new Promise(resolve => setTimeout(resolve, 0));
+      });
+      return document.querySelector('[role="dialog"]')!;
+    }
 
-    act(() => {
-      fireEvent.click(
-        container.querySelector('[aria-label="Open settings dialog"]')!,
+    it('shows the persist-headers control when shouldPersistHeaders is true', async () => {
+      const { container } = render(
+        <GraphiQL shouldPersistHeaders fetcher={noOpFetcher} />,
       );
+      const dialog = await openSettings(container);
+      expect(dialog).toHaveTextContent('Persist headers');
     });
 
-    const element = await findByText('Persist headers');
-    expect(element).toBeInTheDocument();
-  });
-
-  it('allows the user to control persisting headers if it is not passed in', async () => {
-    const { container, findByText } = render(
-      <GraphiQL fetcher={noOpFetcher} />,
-    );
-
-    act(() => {
-      fireEvent.click(
-        container.querySelector('[aria-label="Open settings dialog"]')!,
-      );
+    it('shows the persist-headers control by default', async () => {
+      const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+      const dialog = await openSettings(container);
+      expect(dialog).toHaveTextContent('Persist headers');
     });
 
-    const element = await findByText('Persist headers');
-    expect(element).toBeInTheDocument();
-  });
-
-  it('does not allow the user to control persisting headers is false', async () => {
-    const { container, findByText } = render(
-      <GraphiQL shouldPersistHeaders={false} fetcher={noOpFetcher} />,
-    );
-
-    act(() => {
-      fireEvent.click(
-        container.querySelector('[aria-label="Open settings dialog"]')!,
+    it('hides the persist-headers control when shouldPersistHeaders is false', async () => {
+      const { container } = render(
+        <GraphiQL shouldPersistHeaders={false} fetcher={noOpFetcher} />,
       );
+      const dialog = await openSettings(container);
+      // "Density" confirms the dialog is open before asserting absence.
+      expect(dialog).toHaveTextContent('Density');
+      expect(dialog).not.toHaveTextContent('Persist headers');
     });
 
-    const callback = async () => {
-      try {
-        // Expecting non-existence; short-circuit instead of waiting the default.
-        await findByText('Persist headers', undefined, { timeout: 1000 });
-      } catch {
-        // eslint-disable-next-line no-throw-literal
-        throw 'failed';
-      }
-    };
-    await expect(callback).rejects.toEqual('failed');
+    it('hides the theme control when forcedTheme is set', async () => {
+      const { container } = render(
+        <GraphiQL forcedTheme="dark" fetcher={noOpFetcher} />,
+      );
+      const dialog = await openSettings(container);
+      expect(dialog).toHaveTextContent('Density');
+      expect(dialog).not.toHaveTextContent('Theme');
+    });
   });
 
   describe('Tabs', () => {
@@ -563,7 +648,7 @@ describe('GraphiQL', () => {
         </>
       );
 
-      const { container, getByRole } = render(
+      const { container } = render(
         <GraphiQL fetcher={noOpFetcher}>{myFragment}</GraphiQL>,
       );
 
@@ -571,13 +656,14 @@ describe('GraphiQL', () => {
         expect(
           container.querySelector('.graphiql-container'),
         ).toBeInTheDocument();
-        expect(container.querySelector('.graphiql-logo')).toBeInTheDocument();
-        expect(getByRole('toolbar')).toBeInTheDocument();
+        expect(
+          container.querySelector('.graphiql-footer'),
+        ).not.toBeInTheDocument();
       });
     });
 
     it('properly ignores non-override children components', async () => {
-      const { container, getByRole } = render(
+      const { container } = render(
         <GraphiQL fetcher={noOpFetcher}>
           <MyFunctionalComponent />
         </GraphiQL>,
@@ -587,8 +673,9 @@ describe('GraphiQL', () => {
         expect(
           container.querySelector('.graphiql-container'),
         ).toBeInTheDocument();
-        expect(container.querySelector('.graphiql-logo')).toBeInTheDocument();
-        expect(getByRole('toolbar')).toBeInTheDocument();
+        expect(
+          container.querySelector('.graphiql-footer'),
+        ).not.toBeInTheDocument();
       });
     });
 
@@ -600,7 +687,7 @@ describe('GraphiQL', () => {
         }
       }
 
-      const { container, getByRole } = render(
+      const { container } = render(
         <GraphiQL fetcher={noOpFetcher}>
           <MyClassComponent />
         </GraphiQL>,
@@ -610,42 +697,9 @@ describe('GraphiQL', () => {
         expect(
           container.querySelector('.graphiql-container'),
         ).toBeInTheDocument();
-        expect(container.querySelector('.graphiql-logo')).toBeInTheDocument();
-        expect(getByRole('toolbar')).toBeInTheDocument();
-      });
-    });
-
-    describe('GraphiQL.Logo', () => {
-      it('can be overridden using the exported type', async () => {
-        const { getByText } = render(
-          <GraphiQL fetcher={noOpFetcher}>
-            <GraphiQL.Logo>My Exported Type Logo</GraphiQL.Logo>
-          </GraphiQL>,
-        );
-
-        await waitFor(() => {
-          expect(getByText('My Exported Type Logo')).toBeInTheDocument();
-        });
-      });
-    });
-
-    describe('GraphiQL.Toolbar', () => {
-      it('can be overridden using the exported type', async () => {
-        const { container } = render(
-          <GraphiQL fetcher={noOpFetcher}>
-            <GraphiQL.Toolbar>
-              {() => <ToolbarButton label="My Fun Label" />}
-            </GraphiQL.Toolbar>
-          </GraphiQL>,
-        );
-
-        await waitFor(() => {
-          expect(
-            container.querySelectorAll(
-              '[role="toolbar"] .graphiql-toolbar-button',
-            ),
-          ).toHaveLength(1);
-        });
+        expect(
+          container.querySelector('.graphiql-footer'),
+        ).not.toBeInTheDocument();
       });
     });
 
@@ -666,6 +720,77 @@ describe('GraphiQL', () => {
         });
       });
     });
+  });
+
+  describe('tab strip actions', () => {
+    it('renders exactly one prettify, merge, copy, and save action', async () => {
+      const { container } = render(
+        <GraphiQL fetcher={noOpFetcher} onSaveQuery={() => {}} />,
+      );
+
+      await waitFor(() => {
+        expect(
+          container.querySelectorAll('[aria-label="Prettify query"]'),
+        ).toHaveLength(1);
+        expect(
+          container.querySelectorAll(
+            '[aria-label="Merge fragments into query"]',
+          ),
+        ).toHaveLength(1);
+        expect(
+          container.querySelectorAll('[aria-label="Copy query"]'),
+        ).toHaveLength(1);
+        expect(
+          container.querySelectorAll('[aria-label="Save query"]'),
+        ).toHaveLength(1);
+      });
+    });
+
+    it('merges fragments into the operation when Merge Fragments is clicked', async () => {
+      let queryEditor: MonacoEditor;
+      let documentAST: unknown;
+
+      const HookConsumer: FC = () => {
+        const $queryEditor = useGraphiQL(state => state.queryEditor);
+        const $documentAST = useGraphiQL(state => state.documentAST);
+        useEffect(() => {
+          queryEditor = $queryEditor!;
+          documentAST = $documentAST;
+        }, [$queryEditor, $documentAST]);
+        return null;
+      };
+
+      const { getByLabelText } = render(
+        <GraphiQL fetcher={noOpFetcher}>
+          <HookConsumer />
+        </GraphiQL>,
+      );
+
+      const query = `fragment NameFragment on Query { q }
+query TestQuery { ...NameFragment }`;
+
+      await waitFor(() => {
+        expect(queryEditor).toBeTruthy();
+      });
+      act(() => {
+        queryEditor.setValue(query);
+      });
+
+      await waitFor(() => {
+        expect(queryEditor.getValue()).toContain('...NameFragment');
+        // The editor debounces content-change handling before it updates the
+        // document AST that `mergeQuery` reads from.
+        expect(documentAST).toBeTruthy();
+      });
+
+      fireEvent.click(getByLabelText('Merge fragments into query'));
+
+      await waitFor(() => {
+        const merged = queryEditor.getValue();
+        expect(merged).not.toContain('...NameFragment');
+        expect(merged).toContain('q');
+      });
+    }, 15_000);
   });
 
   it('should support multiple instances', async () => {

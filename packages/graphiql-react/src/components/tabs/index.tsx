@@ -1,5 +1,5 @@
 import { ComponentPropsWithoutRef, forwardRef, ReactNode } from 'react';
-import { cn } from '../../utility';
+import { clsx } from 'clsx';
 import { Reorder } from 'framer-motion';
 import { CloseIcon } from '../../icons';
 import { UnStyledButton } from '../button';
@@ -7,10 +7,11 @@ import './index.css';
 
 interface TabProps extends ComponentPropsWithoutRef<typeof Reorder.Item> {
   isActive?: boolean;
+  isDirty?: boolean;
 }
 
 const TabRoot = forwardRef<HTMLLIElement, TabProps>(
-  ({ isActive, value, children, className, ...props }, ref) => (
+  ({ isActive, isDirty, value, children, className, ...props }, ref) => (
     <Reorder.Item
       {...props}
       ref={ref}
@@ -18,13 +19,20 @@ const TabRoot = forwardRef<HTMLLIElement, TabProps>(
       aria-selected={isActive}
       dragElastic={false} // Prevent over scrolling of container
       role="tab"
-      className={cn(
+      className={clsx(
         'graphiql-tab',
         isActive && 'graphiql-tab-active',
         className,
       )}
     >
       {children}
+      {isDirty && (
+        <span
+          className="graphiql-tab-dirty"
+          aria-label="Unsaved changes"
+          role="status"
+        />
+      )}
     </Reorder.Item>
   ),
 );
@@ -38,7 +46,7 @@ const TabButton = forwardRef<
     {...props}
     ref={ref}
     type="button"
-    className={cn('graphiql-tab-button', className)}
+    className={clsx('graphiql-tab-button', className)}
   >
     {children}
   </UnStyledButton>
@@ -54,7 +62,7 @@ const TabClose = forwardRef<
     {...props}
     ref={ref}
     type="button"
-    className={cn('graphiql-tab-close', props.className)}
+    className={clsx('graphiql-tab-close', props.className)}
   >
     <CloseIcon />
   </UnStyledButton>
@@ -82,7 +90,7 @@ export const Tabs = forwardRef<HTMLUListElement, TabsProps>(
       onReorder={onReorder}
       axis="x"
       role="tablist"
-      className={cn('graphiql-tabs', className)}
+      className={clsx('graphiql-tabs', className)}
     >
       {children}
     </Reorder.Group>

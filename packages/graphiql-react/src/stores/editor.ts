@@ -120,6 +120,26 @@ export interface EditorSlice extends TabsState {
   onCopyQuery?: (query: string) => void;
 
   /**
+   * Invoked when the current operation is saved, via the Save toolbar button or
+   * ⌘S. Receives the active tab (with the latest operation contents) so hosts
+   * can persist it — e.g. the collections plugin saves or updates a stored
+   * operation.
+   *
+   * Return `true` if the save was committed synchronously, so the dirty-state
+   * dot is cleared. Return `false`/nothing if the save was deferred (e.g. a
+   * dialog opened); the host should then call `markTabSaved` once it commits.
+   * @param tab - The active tab at the time of saving.
+   */
+  onSaveQuery?: (tab: TabState) => boolean | void;
+
+  /**
+   * Registered save handlers. Plugins call `registerSaveHandler` to add a
+   * handler here. The dirty-state dot and Save button appear only when at least
+   * one handler (or the `onSaveQuery` prop) is registered.
+   */
+  saveHandlers: Set<(tab: TabState) => boolean | void>;
+
+  /**
    * Invoked when the prettify callback is invoked.
    * @param query - The current value of the operation editor.
    * @default
@@ -214,6 +234,28 @@ export interface EditorActions {
   }): void;
 
   /**
+   * Save the current query. Triggered by the Save toolbar button or ⌘S.
+   * Delegates to all registered save handlers and the `onSaveQuery` prop.
+   * The dirty-state dot is cleared only when a handler returns `true`.
+   */
+  saveQuery(): void;
+
+  /**
+   * Mark a tab as saved, clearing its dirty-state dot. Hosts call this after a
+   * deferred save (e.g. a save dialog) commits.
+   * @param tabId - The id of the tab that was saved.
+   */
+  markTabSaved(tabId: string): void;
+
+  /**
+   * Registers a save handler. Plugins call this on mount to participate in
+   * ⌘S / Save. The dirty-state dot and Save button appear only when at least
+   * one handler (or the `onSaveQuery` prop) is registered.
+   * @returns An unregister function to call on unmount.
+   */
+  registerSaveHandler(handler: (tab: TabState) => boolean | void): () => void;
+
+  /**
    * Copy a query to clipboard.
    */
   copyQuery: () => Promise<void>;
@@ -236,6 +278,7 @@ export interface EditorProps extends Pick<
   | 'defaultHeaders'
   | 'defaultQuery'
   | 'onCopyQuery'
+  | 'onSaveQuery'
 > {
   /**
    * With this prop you can pass so-called "external" fragments that will be
@@ -291,6 +334,7 @@ type CreateEditorSlice = (
     | 'defaultHeaders'
     | 'onPrettifyQuery'
     | 'onCopyQuery'
+    | 'onSaveQuery'
     | 'uriInstanceId'
   >,
 ) => StateCreator<
@@ -459,6 +503,67 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         operations,
       });
     },
+    /**
+     * Save the current query. Delegates to all registered save handlers and
+     * the `onSaveQuery` prop. The dirty dot clears only when a handler commits
+     * synchronously (returns `true`).
+     */
+    saveQuery() {
+      const {
+        queryEditor,
+        onSaveQuery,
+        saveHandlers,
+        tabs,
+        activeTabIndex,
+        actions,
+      } = get();
+      const activeTab = tabs[activeTabIndex];
+      if (!activeTab) {
+        return;
+      }
+      const handlers = [...saveHandlers];
+      if (onSaveQuery) {
+        handlers.push(onSaveQuery);
+      }
+      if (handlers.length === 0) {
+        return;
+      }
+      const query = queryEditor?.getValue() ?? null;
+      const tabArg = { ...activeTab, query };
+      let committed = false;
+      for (const handler of handlers) {
+        if (handler(tabArg) === true) {
+          committed = true;
+        }
+      }
+      if (committed) {
+        actions.markTabSaved(activeTab.id);
+      }
+    },
+    markTabSaved(tabId) {
+      set(({ activeTabIndex, tabs, onTabChange, actions, queryEditor }) => {
+        const activeTabId = tabs[activeTabIndex]?.id;
+        const updated = {
+          tabs: tabs.map(tab =>
+            tab.id === tabId
+              ? {
+                  ...tab,
+                  // Use the live editor value for the active tab (the editors
+                  // only reflect the active tab); fall back to stored content.
+                  lastSavedQuery:
+                    tab.id === activeTabId
+                      ? (queryEditor?.getValue() ?? null)
+                      : tab.query,
+                }
+              : tab,
+          ),
+          activeTabIndex,
+        };
+        actions.storeTabs(updated);
+        onTabChange?.(updated);
+        return updated;
+      });
+    },
     async copyQuery() {
       const { queryEditor, onCopyQuery } = get();
       if (!queryEditor) {
@@ -532,9 +637,24 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       }
       queryEditor!.setValue(print(mergeAst(documentAST, schema)));
     },
+    registerSaveHandler(handler) {
+      set(s => {
+        const next = new Set(s.saveHandlers);
+        next.add(handler);
+        return { saveHandlers: next };
+      });
+      return () => {
+        set(s => {
+          const next = new Set(s.saveHandlers);
+          next.delete(handler);
+          return { saveHandlers: next };
+        });
+      };
+    },
   };
   return {
     ...initial,
+    saveHandlers: new Set(),
     actions: $actions,
   };
 };

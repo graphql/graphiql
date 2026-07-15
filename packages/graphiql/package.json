@@ -46,13 +46,17 @@
     "cypress-open": "cypress open --browser electron",
     "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' vite",
     "e2e": "yarn e2e-server 'cypress run'",
+    "test:a11y:update": "CYPRESS_A11Y_UPDATE_BASELINE=1 yarn e2e-server 'cypress run --spec cypress/e2e/a11y.cy.ts'",
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
     "test": "vitest run"
   },
   "dependencies": {
+    "@graphiql/plugin-collections": "^0.1.0-alpha.0",
     "@graphiql/plugin-doc-explorer": "^0.4.2",
     "@graphiql/plugin-history": "^0.4.2",
+    "@graphiql/plugin-query-builder": "^0.1.0-alpha.0",
     "@graphiql/react": "^0.37.7",
+    "clsx": "^1.2.1",
     "react-compiler-runtime": "19.1.0-rc.1"
   },
   "peerDependencies": {
@@ -67,11 +71,15 @@
     "@testing-library/react": "^16.3.0",
     "@vitejs/plugin-react": "^4.4.1",
     "@vitest/web-worker": "^4.1.6",
+    "axe-core": "^4",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
     "concurrently": "^7.0.0",
     "cross-env": "^7.0.2",
     "cypress": "^13.13.2",
+    "cypress-axe": "^1",
+    "cypress-real-events": "^1.15.0",
     "graphql": "^16.11.0",
+    "graphql-ws": "^5.5.5",
     "lightningcss": "^1.29.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

@@ -92,29 +92,29 @@ The package exports a bunch of React components:
 - The `GraphiQL` component is a combination of both the above components
 
 There is a single prop that is required for the `GraphiQL` component called
-fetcher. A fetcher is a function that performs a request to a GraphQL API. It
-may return a `Promise` for queries or mutations, but also an `Observable` or an
-`AsyncIterable` in order to handle subscriptions or multipart responses.
+`transport`. A transport is a function that performs a request to a GraphQL API.
+It may return a `Promise` for queries or mutations, but also an `Observable` or
+an `AsyncIterable` in order to handle subscriptions or multipart responses.
 
-An easy way to get create such a function is the
-[`createGraphiQLFetcher`](../graphiql-toolkit/src/create-fetcher/createFetcher.ts)
+An easy way to create such a function is the
+[`createTransport`](../graphiql-toolkit/src/create-fetcher/createFetcher.ts)
 method exported from the `@graphiql/toolkit` package. If you want to implement
-your own fetcher function, you can use the `Fetcher` type from
+your own transport function, you can use the `Transport` type from
 `@graphiql/toolkit` to make sure the signature matches what GraphiQL expects.
 
 The following is everything you need to render GraphiQL in your React
 application:
 
 ```jsx
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { createTransport } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
 import { createRoot } from 'react-dom/client';
 import 'graphiql/style.css';
 
-const fetcher = createGraphiQLFetcher({ url: 'https://my.backend/graphql' });
+const transport = createTransport({ url: 'https://my.backend/graphql' });
 
 const root = createRoot(document.getElementById('root'));
-root.render(<GraphiQL fetcher={fetcher} />);
+root.render(<GraphiQL transport={transport} />);
 ```
 
 ## Customize
@@ -132,14 +132,15 @@ For props documentation, see the
 Parts of the UI can be customized by passing children to the `GraphiQL` or the
 `GraphiQLInterface` component.
 
-- `<GraphiQL.Logo>`: Replace the GraphiQL logo with your own.
-
-- `<GraphiQL.Toolbar>`: Add a custom toolbar below the execution button. Pass
-  the empty `<GraphiQL.Toolbar />` if an empty toolbar is desired. Use the
-  components provided by `@graphiql/react` to create toolbar buttons with proper
-  styles.
-
 - `<GraphiQL.Footer>`: Add a custom footer shown below the response editor.
+
+Branding and toolbar customization moved off the children API in `graphiql@6`:
+
+- Replace the top bar's default hexagon icon + "GraphiQL" wordmark with the
+  `brand` prop, e.g. `<GraphiQL brand="My Company" />`.
+- Add custom toolbar buttons through a plugin's `sessionActions`, which renders
+  into the tab strip alongside prettify/merge/copy/save. See the
+  [v6 migration guide](../../docs/migration/graphiql-6.0.0.md) for details.
 
 ### Plugins
 
@@ -167,15 +168,15 @@ You can pass a list of plugin objects to the `GraphiQL` component using the
 the `onTogglePluginVisibility` prop.
 
 Inside the component you pass to `content` you can interact with the GraphiQL
-state using the hooks provided by `@graphiql/react`. For example, check out
-how you can integrate the OneGraph Explorer in GraphiQL using the plugin API in
-the [plugin package](../graphiql-plugin-explorer) in this repo.
+state using the hooks provided by `@graphiql/react`.
 
 ### Theming
 
 The GraphiQL interface uses CSS variables for theming, in particular for colors.
-Check out the [`root.css`](../graphiql-react/src/style/root.css) file for the
-available variables.
+As of v6 the supported set is the OKLCH design tokens in
+[`tokens.css`](../graphiql-react/src/style/tokens.css); the older `--color-*` HSL
+variables in [`root.css`](../graphiql-react/src/style/root.css) are deprecated
+(see the [v6 migration guide](../../docs/migration/graphiql-6.0.0.md#css-and-retheming)).
 
 Overriding these variables is the only officially supported way of customizing
 the appearance of GraphiQL. Starting from version 2, class names are no longer
@@ -215,9 +216,9 @@ namespace, isolating each instance’s state and avoiding collisions.
 ```tsx
 import type { FC } from 'react';
 import { GraphiQL } from 'graphiql';
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { createTransport } from '@graphiql/toolkit';
 
-const fetcher = createGraphiQLFetcher({ url: 'https://my.backend/graphql' });
+const transport = createTransport({ url: 'https://my.backend/graphql' });
 
 const NAMESPACE = 'my-namespace';
 
@@ -235,6 +236,6 @@ const storage: typeof localStorage = {
 };
 
 export const App: FC = () => {
-  return <GraphiQL fetcher={fetcher} storage={myStorage} />;
+  return <GraphiQL transport={transport} storage={myStorage} />;
 };
 ```

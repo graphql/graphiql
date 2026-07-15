@@ -1,0 +1,253 @@
+.graphiql-top-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--px-12);
+  height: var(--top-bar-height);
+  padding: 0 var(--px-12);
+  background: oklch(var(--bg-elevated));
+  border-bottom: 1px solid oklch(var(--border-default));
+  color: oklch(var(--fg-default));
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+}
+
+.graphiql-top-bar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--px-8);
+}
+
+.graphiql-top-bar-logo {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.graphiql-top-bar-wordmark {
+  color: oklch(var(--fg-strong));
+  font-weight: 600;
+  font-size: var(--font-size-body);
+  white-space: nowrap;
+}
+
+.graphiql-top-bar-version {
+  color: oklch(var(--fg-subtle));
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-small);
+  white-space: nowrap;
+}
+
+.graphiql-top-bar-divider {
+  width: 1px;
+  height: 18px;
+  background: oklch(var(--border-default));
+  flex-shrink: 0;
+}
+
+.graphiql-top-bar-endpoint {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-6);
+  padding: 0 var(--px-10);
+  height: 24px;
+  flex: 1;
+  min-width: 0;
+  background: oklch(var(--bg-canvas));
+  border: 1px solid oklch(var(--border-muted));
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-small);
+}
+
+.graphiql-top-bar-method-label {
+  color: oklch(var(--accent-green));
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* Click-to-cycle method chip — shown when the transport supports more than one method */
+.graphiql-top-bar-method-toggle {
+  padding: 0 var(--px-6);
+  height: 18px;
+  background: oklch(var(--bg-subtle));
+  border: 1px solid oklch(var(--border-strong));
+  border-radius: var(--radius-sm);
+  color: oklch(var(--accent-green));
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  cursor: pointer;
+  line-height: 1;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition:
+    background 0.1s,
+    color 0.1s;
+}
+
+.graphiql-top-bar-method-toggle:hover {
+  background: oklch(var(--bg-canvas));
+}
+
+.graphiql-top-bar-method-toggle--attention {
+  color: oklch(var(--accent-orange));
+  border-color: oklch(var(--accent-orange));
+  animation: graphiql-top-bar-method-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes graphiql-top-bar-method-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.graphiql-top-bar-endpoint-url {
+  color: oklch(var(--fg-subtle));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The split Run control: a primary run half and, when the document has more
+   than one operation, a caret half opening the operation picker. Both halves
+   render their own green fill so `:hover`/`:active` on either (which also
+   match this wrapper, per normal CSS bubbling) can brighten/darken the whole
+   pill as one piece. */
+.graphiql-top-bar-run {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-md);
+  color: #fff;
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.graphiql-top-bar-run:hover {
+  filter: brightness(1.1);
+}
+
+.graphiql-top-bar-run:active {
+  filter: brightness(0.92);
+}
+
+.graphiql-top-bar-run-primary,
+.graphiql-top-bar-run-caret {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  background: oklch(var(--btn-primary));
+  border: 1px solid oklch(var(--btn-primary-border));
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* The caret is an `UnStyledButton`, whose `all: unset` resets `box-sizing` to
+   `content-box` — its border would add to the 28px height and make it stand a
+   pixel taller than the primary half. Scope under `.graphiql-top-bar-run` so
+   this wins on specificity, not load order. */
+.graphiql-top-bar-run .graphiql-top-bar-run-caret {
+  box-sizing: border-box;
+}
+
+.graphiql-top-bar-run-primary {
+  gap: var(--px-8);
+  padding: 0 var(--px-10);
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+/* No caret to pair with (a single operation, or an override pinning it) —
+   the primary half is the whole pill. */
+.graphiql-top-bar-run-primary--solo {
+  border-radius: var(--radius-md);
+}
+
+.graphiql-top-bar-run-caret {
+  padding: 0 var(--px-8);
+  border-left: none;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.graphiql-top-bar-run-caret-icon {
+  width: 8px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+.graphiql-top-bar-run-icon {
+  width: auto;
+  height: 11px;
+  flex-shrink: 0;
+}
+
+.graphiql-top-bar-run-sep {
+  width: 1px;
+  height: 14px;
+  background: rgb(255 255 255 / 0.28);
+  flex-shrink: 0;
+}
+
+/* The shortcut keys sit on the green fill here, not the dark bar. Darken them
+   into subtle inset chips rather than the default dark boxes; a light (white)
+   overlay would lighten the green and drop the white glyphs below AA contrast. */
+.graphiql-top-bar-run .graphiql-keycap {
+  border-color: rgb(255 255 255 / 0.2);
+  background: rgb(0 0 0 / 0.18);
+  color: #fff;
+}
+
+.graphiql-top-bar-run-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  /* Let pointer events fall through to the tooltip-target wrapper so the
+     "switch to POST" tooltip can open over the disabled button. */
+  pointer-events: none;
+}
+
+.graphiql-top-bar-run-caret:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Scoped under `.graphiql-top-bar-run` so this outranks the global
+   `.graphiql-container :focus-visible` ring on specificity, not load order —
+   an inset ring (rather than the global's outward one) keeps the two halves'
+   rings from overlapping each other. */
+.graphiql-top-bar-run .graphiql-top-bar-run-primary:focus-visible,
+.graphiql-top-bar-run .graphiql-top-bar-run-caret:focus-visible {
+  outline: 2px solid oklch(var(--accent-blue));
+  outline-offset: -2px;
+}
+
+.graphiql-top-bar-run-tooltip-target {
+  display: inline-flex;
+  flex-shrink: 0;
+  cursor: not-allowed;
+}
+
+.graphiql-top-bar-run-menu-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-6);
+}
+
+/* Every item reserves the dot's gutter so names stay left-aligned whether or
+   not the item is active; only the active item paints its dot. */
+.graphiql-top-bar-run-menu-item::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.graphiql-top-bar-run-menu-item--active::before {
+  background: oklch(var(--accent-green));
+}

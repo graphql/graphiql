@@ -99,6 +99,25 @@ export function createSchema({
     },
   });
 
+  // An interface that itself implements another interface (TestInterface),
+  // exercising the "interfaces can implement interfaces" case.
+  const NodeInterface = new GraphQLInterfaceType({
+    name: 'Node',
+    description: 'A node with a stable id; also a TestInterface.',
+    fields: () => ({
+      id: {
+        type: GraphQLID,
+        description: 'Stable identifier.',
+      },
+      name: {
+        type: GraphQLString,
+        description: 'Common name string.',
+      },
+    }),
+    interfaces: [TestInterface],
+    resolveType: () => UnionFirst,
+  });
+
   const UnionFirst = new GraphQLObjectType({
     name: 'First',
     fields: () => ({
@@ -106,12 +125,16 @@ export function createSchema({
         type: GraphQLString,
         description: 'Common name string for UnionFirst.',
       },
+      id: {
+        type: GraphQLID,
+        description: 'Stable identifier (from the Node interface).',
+      },
       first: {
         type: new GraphQLList(TestInterface),
         resolve: () => true,
       },
     }),
-    interfaces: [TestInterface],
+    interfaces: [TestInterface, NodeInterface],
   });
 
   const UnionSecond = new GraphQLObjectType({
@@ -245,6 +268,40 @@ And external image:
 ![Cat](https://placecats.com/300/200)
 `.trim();
 
+  // A type with many fields, to exercise the query builder's long-list cap and
+  // filter. Reachable via the `wide` field on the query root. The list has more
+  // than 20 fields, so it caps with a "more fields" expander and shows a
+  // "Filter fields" input. `viewer` and `accountBalance` carry descriptions so
+  // the filter (which matches name, description, and type) can be tried by
+  // description, and `nested` repeats the type so the cap can be seen a level
+  // deeper. (Adding this shifts schema line numbers; the language-service
+  // server's MessageProcessor position assertions are kept in sync.)
+  const WideType = new GraphQLObjectType({
+    name: 'WideType',
+    description: 'A type with many fields, for testing long field lists',
+    fields: () => ({
+      viewer: {
+        type: GraphQLString,
+        description: 'The current user of the session',
+      },
+      accountBalance: {
+        type: GraphQLFloat,
+        description: 'Account balance, in cents',
+      },
+      nested: {
+        type: WideType,
+        description: 'Another WideType, to test the cap a level deeper',
+        resolve: () => ({}),
+      },
+      ...Object.fromEntries(
+        Array.from({ length: 30 }, (_, i) => [
+          `field${String(i + 1).padStart(2, '0')}`,
+          { type: i % 3 === 0 ? GraphQLInt : GraphQLString },
+        ]),
+      ),
+    }),
+  });
+
   const TestType = new GraphQLObjectType({
     name: 'Test',
     description: 'Test type for testing\n New line works',
@@ -356,6 +413,11 @@ And external image:
             description: 'Hello!',
           },
         },
+      },
+      wide: {
+        type: WideType,
+        description: 'A type with many fields, for testing long field lists',
+        resolve: () => ({}),
       },
     }),
   });

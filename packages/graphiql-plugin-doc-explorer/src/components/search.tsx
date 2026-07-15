@@ -17,6 +17,7 @@ import {
 import {
   formatShortcutForOS,
   useGraphiQL,
+  KeycapHint,
   MagnifyingGlassIcon,
   debounce,
   KEY_MAP,
@@ -55,6 +56,8 @@ export const Search: FC = () => {
         : { name: def.type.name, def: def.type },
     );
   };
+  const shortcutKeys = formatShortcutForOS(KEY_MAP.searchInDocs.key).split('-');
+
   const shouldSearchBoxAppear =
     explorerNavStack.length === 1 ||
     isObjectType(navItem.def) ||
@@ -78,19 +81,18 @@ export const Search: FC = () => {
           inputRef.current.focus();
         }}
       >
-        <MagnifyingGlassIcon />
+        <MagnifyingGlassIcon aria-hidden="true" />
         <ComboboxInput
           autoComplete="off"
           onChange={event => setSearchValue(event.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          placeholder={formatShortcutForOS(
-            formatShortcutForOS(KEY_MAP.searchInDocs.key).replaceAll('-', ' '),
-          )}
+          placeholder="Search Docs"
           ref={inputRef}
           value={searchValue}
           data-cy="doc-explorer-input"
         />
+        <KeycapHint keys={shortcutKeys} ariaLabel="Search docs shortcut" />
       </div>
       {isFocused && (
         <ComboboxOptions data-cy="doc-explorer-list">

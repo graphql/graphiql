@@ -1,0 +1,68 @@
+.graphiql-response-tree {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-mono);
+  line-height: 1.6;
+  color: oklch(var(--fg-default));
+  padding: var(--px-16);
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.graphiql-tree-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--px-4);
+  white-space: nowrap;
+}
+
+.graphiql-tree-key {
+  color: oklch(var(--fg-default));
+  flex-shrink: 0;
+}
+
+.graphiql-tree-colon {
+  color: oklch(var(--fg-muted));
+  flex-shrink: 0;
+}
+
+.graphiql-tree-summary {
+  color: oklch(var(--fg-muted));
+}
+
+/* Scalar value colors matching the editor tokenizer palette */
+.graphiql-tree-string {
+  color: oklch(var(--accent-blue));
+}
+
+.graphiql-tree-number {
+  color: oklch(var(--accent-orange));
+}
+
+.graphiql-tree-bool {
+  color: oklch(var(--accent-purple));
+}
+
+.graphiql-tree-null {
+  color: oklch(var(--fg-muted));
+  font-style: italic;
+}
+
+.graphiql-tree-toggle {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: oklch(var(--fg-muted));
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  flex-shrink: 0;
+  width: 14px;
+  text-align: center;
+  user-select: none;
+}
+
+.graphiql-tree-toggle:hover {
+  color: oklch(var(--fg-default));
+}
