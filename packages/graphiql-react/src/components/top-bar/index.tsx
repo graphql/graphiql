@@ -11,7 +11,10 @@ import { Tooltip } from '../tooltip';
 import { DropdownMenu } from '../dropdown-menu';
 import { GraphQLLogoIcon, PlayIcon, ChevronDownIcon } from '../../icons';
 import { clsx } from 'clsx';
-import { getRunBlockReason, resolveActiveOperation } from '../../utility';
+import {
+  getRunBlockReason,
+  resolveActiveOperation,
+} from '../../utility/run-block';
 import './index.css';
 
 export type TopBarProps = {
