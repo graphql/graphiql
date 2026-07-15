@@ -1,6 +1,6 @@
 > [!WARNING]
-> `createGraphiQLFetcher` is deprecated. Use [`createTransport`](./create-transport.md) instead.
-> See the [GraphiQL 6 migration guide](../../docs/migration/graphiql-6.0.0.md) for upgrade instructions.
+> `createGraphiQLFetcher` is deprecated. Use [`createTransport`](../src/create-transport/README.md) instead.
+> See the [GraphiQL 6 migration guide](../../../docs/migration/graphiql-6.0.0.md) for upgrade instructions.
 
 # `createGraphiQLFetcher`
 

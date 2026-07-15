@@ -177,7 +177,7 @@ import {
   useDocExplorerActions,
 } from '@graphiql/plugin-doc-explorer';
 
-const explorerNavStack = useDocExplorer(state => state.navStack);
+const explorerNavStack = useDocExplorer();
 const { push, pop } = useDocExplorerActions();
 ```
 
@@ -190,7 +190,7 @@ const { items, addToHistory } = useHistoryContext();
 ```tsx
 import { useHistory, useHistoryActions } from '@graphiql/plugin-history';
 
-const items = useHistory(state => state.items);
+const items = useHistory();
 const { addToHistory } = useHistoryActions();
 ```
 
@@ -616,6 +616,7 @@ Nothing below is happening in v6. These are informal signals about where the pro
 
 ## Other notes
 
-- **Browserslist.** v6 drops the project's custom `.browserslistrc` in favor of the single `defaults` browserslist preset (`> 0.5%, last 2 versions, Firefox ESR, not dead`). That range covers the modern browsers that support the OKLCH color functions the new token system relies on. If your previous bespoke config deliberately targeted very old browsers, they may fall outside the new range — check `defaults` against your support matrix if that matters to you.
+- **Browserslist.** v6 replaces the project's custom `.browserslistrc` contents with the single `defaults` browserslist preset (`> 0.5%, last 2 versions, Firefox ESR, not dead`). That range covers the modern browsers that support the OKLCH color functions the new token system relies on. If your previous bespoke config deliberately targeted very old browsers, they may fall outside the new range — check `defaults` against your support matrix if that matters to you.
 - **Monaco editor theme registration.** The built-in Monaco themes (`graphiql-DARK` and `graphiql-LIGHT`) were rewritten to use the v6 accent palette — every GraphQL token type (keywords, type names, field identifiers, variables, annotations, strings, numbers, comments) and the surrounding editor chrome (suggest widget, hover widget, quick input) now pull from the same tokens as the rest of the UI. The `editorTheme` prop on `<GraphiQL>` still takes the same `{ dark, light }` pair of Monaco theme names or definitions it always did, so a custom theme registered through that prop should continue to work unchanged. If you were depending on the specific color values baked into the previous built-in `graphiql-DARK` / `graphiql-LIGHT` themes (for a screenshot test, for example), expect those values to have shifted.
 - **`cn` removed from `@graphiql/react`.** The `cn` helper was just a re-export of `clsx`. It's gone now, so import `clsx` directly from the `clsx` package instead.
+- **`ExecuteButton` removed from `@graphiql/react`.** The Run button and its execution logic moved into the top bar; there's no longer a standalone `ExecuteButton` export to compose into a custom toolbar.
