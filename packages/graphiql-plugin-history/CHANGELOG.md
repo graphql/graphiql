@@ -1,5 +1,27 @@
 # @graphiql/plugin-history
 
+## 1.0.0-alpha.0
+
+### Major Changes
+
+- [#4393](https://github.com/graphql/graphiql/pull/4393) [`827da62`](https://github.com/graphql/graphiql/commit/827da6263685aa6e2f4df98ab7aaf032d2783605) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Remove deprecated hooks: `useEditorContext`, `useExecutionContext`, `usePluginContext`, `useSchemaContext`, `useTheme`, `useStorage`, `useStorageContext`, `usePrettifyEditors`, `useCopyQuery`, `useMergeQuery`, the `*Store` aliases (in `@graphiql/react`); `useExplorerContext` (in `@graphiql/plugin-doc-explorer`); and `useHistoryContext` (in `@graphiql/plugin-history`). Replacements were available since v5 — see the v6 migration guide for one-line replacements.
+
+### Patch Changes
+
+- [#4409](https://github.com/graphql/graphiql/pull/4409) [`0f96193`](https://github.com/graphql/graphiql/commit/0f9619393e65a406fad09b3c1260b8a58c4e74c3) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Tighten keyboard navigation: the settings dialog now restores focus to the gear button that opened it (Escape, the close button, and clicking outside all worked before but silently dropped focus to the page). History label edits can now be canceled with Escape and return focus to the row instead of the page.
+
+- [#4413](https://github.com/graphql/graphiql/pull/4413) [`1919f6a`](https://github.com/graphql/graphiql/commit/1919f6a85f697a251cad98a082ac397aca99e44a) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a global keyboard focus ring and fill in a few missing screen-reader labels. Every control now shows a clearly visible blue outline when focused with the keyboard, with enough contrast against the canvas in both light and dark themes. Decorative icons that sit next to a text label no longer announce a redundant name, the doc explorer search box shows a focus ring while typing, and the cancel button on a history label edit now has an accessible name.
+
+- [#4411](https://github.com/graphql/graphiql/pull/4411) [`b6f8dc6`](https://github.com/graphql/graphiql/commit/b6f8dc6f247b63c19fe2b7962866508c5d0fb219) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - A ground-up visual redesign for v6. A new OKLCH-based design-token system brings first-class light and dark themes, driven by a `data-theme` attribute on the GraphiQL container. The layout is rebuilt around a top bar (endpoint and Run action), a left activity rail for plugins, a resizable side panel, a slim status bar, a flattened editor workspace, and a Variables/Headers tab strip. Every built-in component and both Monaco editor themes are restyled to match, and the doc explorer and history panels are rebuilt on the new chrome.
+
+  GraphQL syntax coloring is unified across the doc explorer, history, and query builder, with type names colored by category. The mapping is public API for retheming: the `--type-scalar`, `--type-enum`, `--type-input`, and `--type-composite` CSS tokens, plus the `typeCategory` helper exported from `@graphiql/react`.
+
+  Custom CSS that overrides GraphiQL's internal class names may need updating; only the CSS custom properties (design tokens) are supported theming API. The build now targets the `defaults` browserslist preset, which covers the modern browsers the OKLCH color system requires. See the migration guide at `docs/migration/graphiql-6.0.0.md`. Refs graphql/graphiql#4219.
+
+- Updated dependencies [[`0f96193`](https://github.com/graphql/graphiql/commit/0f9619393e65a406fad09b3c1260b8a58c4e74c3), [`1919f6a`](https://github.com/graphql/graphiql/commit/1919f6a85f697a251cad98a082ac397aca99e44a), [`b6f8dc6`](https://github.com/graphql/graphiql/commit/b6f8dc6f247b63c19fe2b7962866508c5d0fb219), [`26ae143`](https://github.com/graphql/graphiql/commit/26ae143ba68004d4a50468ba1feb649ace673f3a), [`d4f0268`](https://github.com/graphql/graphiql/commit/d4f026853b89b9755f28d8f4059fcba419aa6d5a), [`c25bfd5`](https://github.com/graphql/graphiql/commit/c25bfd5b51ad98f36cbdb81a7486380f8dd1ab6a), [`f8a9445`](https://github.com/graphql/graphiql/commit/f8a944505a0fbb9245b4ea1a3ca67bd50d4b7991), [`1ce71e4`](https://github.com/graphql/graphiql/commit/1ce71e407dd3b457d6fecc9e7ad0b3ad246c693b), [`f45e26b`](https://github.com/graphql/graphiql/commit/f45e26b6eff736c2faddbafd82550ddfc3efa860), [`827da62`](https://github.com/graphql/graphiql/commit/827da6263685aa6e2f4df98ab7aaf032d2783605), [`df03c92`](https://github.com/graphql/graphiql/commit/df03c925ca99510f0435e0b98f284ca5159d2158), [`b6f8dc6`](https://github.com/graphql/graphiql/commit/b6f8dc6f247b63c19fe2b7962866508c5d0fb219), [`a0fe11a`](https://github.com/graphql/graphiql/commit/a0fe11aeb40861b586b4cfa5678b8ebe1bea4a19), [`b6f8dc6`](https://github.com/graphql/graphiql/commit/b6f8dc6f247b63c19fe2b7962866508c5d0fb219), [`093cb10`](https://github.com/graphql/graphiql/commit/093cb100a4524b1005b82c1c064bb897416bfc82), [`b6f8dc6`](https://github.com/graphql/graphiql/commit/b6f8dc6f247b63c19fe2b7962866508c5d0fb219)]:
+  - @graphiql/react@1.0.0-alpha.0
+  - @graphiql/toolkit@1.0.0-alpha.0
+
 ## 0.4.2
 
 ### Patch Changes

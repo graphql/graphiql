@@ -10,7 +10,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@graphiql/toolkit": "^0.12.1",
+    "@graphiql/toolkit": "^1.0.0-alpha.0",
     "graphql": "^16",
     "jsonc-parser": "^3",
     "monaco-editor": "^0.52",
