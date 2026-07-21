@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { debounce } from './debounce';
 import type * as monaco from 'monaco-editor';
-import { useGraphiQL, useGraphiQLActions } from '../components';
+import { useGraphiQL, useGraphiQLActions } from '../components/provider';
 
 export function useChangeHandler(
   callback: ((value: string) => void) | undefined,

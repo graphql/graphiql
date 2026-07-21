@@ -6,10 +6,7 @@
   "proseWrap": "never",
   "printWidth": 80,
   "sortPackageJson": false,
-  "ignorePatterns": [
-    "packages/codemirror-graphql/src/__tests__/schema-kitchen-sink.graphql",
-    "**/CHANGELOG.md"
-  ],
+  "ignorePatterns": ["**/CHANGELOG.md", "working-group/agendas/**"],
   "overrides": [
     {
       "files": ["*.md", "*.mdx"],

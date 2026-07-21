@@ -1,6 +1,6 @@
 {
   "name": "codemirror-graphql",
-  "version": "2.2.4",
+  "version": "2.2.7",
   "description": "GraphQL mode and helpers for CodeMirror.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -34,7 +34,7 @@
     "!babel.config.js"
   ],
   "scripts": {
-    "types:check": "tsc --noEmit",
+    "types:check": "tsgo --noEmit",
     "build": "node ../../scripts/renameFileExtensions.mts './esm/{**,!**/__tests__/}/*.js' . .esm.js",
     "test": "vitest run"
   },
@@ -46,7 +46,7 @@
   "// TEMPORARILY PINNED until we fix graphql 15 support": "",
   "dependencies": {
     "@types/codemirror": "^0.0.90",
-    "graphql-language-service": "5.5.0"
+    "graphql-language-service": "5.5.2"
   },
   "devDependencies": {
     "@codemirror/language": "^6.0.0",

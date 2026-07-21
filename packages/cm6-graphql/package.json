@@ -2,8 +2,13 @@
   "name": "cm6-graphql",
   "version": "0.2.1",
   "description": "GraphQL language support for CodeMirror 6",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/graphql/graphiql",
+    "directory": "packages/cm6-graphql"
+  },
   "scripts": {
-    "types:check": "tsc --noEmit",
+    "types:check": "tsgo --noEmit",
     "build": "cm-buildhelper src/index.ts",
     "prepare": "yarn build",
     "test": "vitest run"
@@ -23,7 +28,7 @@
     "@codemirror/autocomplete": "^6.0.0",
     "@codemirror/buildhelper": "^0.1.16",
     "@codemirror/language": "^6.0.0",
-    "@codemirror/lint": "^6.0.0",
+    "@codemirror/lint": "^6.9.7",
     "@codemirror/state": "^6.0.0",
     "@codemirror/view": "^6.0.0",
     "@lezer/common": "^1.0.0",
@@ -36,7 +41,7 @@
   "peerDependencies": {
     "@codemirror/autocomplete": "^6.0.0",
     "@codemirror/language": "^6.0.0",
-    "@codemirror/lint": "^6.0.0",
+    "@codemirror/lint": "^6.9.7",
     "@codemirror/state": "^6.0.0",
     "@codemirror/view": "^6.0.0",
     "@lezer/highlight": "^1.0.0",

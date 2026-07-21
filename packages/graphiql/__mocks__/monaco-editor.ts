@@ -25,12 +25,14 @@ if (!navigator.clipboard) {
  */
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 if (!window.ResizeObserver) {
+  class ResizeObserverMock {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
   Object.defineProperty(window, 'ResizeObserver', {
     writable: false,
-    value: vi.fn().mockReturnValue({
-      observe() {},
-      disconnect() {},
-    }),
+    value: ResizeObserverMock,
   });
 }
 

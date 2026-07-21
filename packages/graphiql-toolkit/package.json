@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/toolkit",
-  "version": "0.11.3",
+  "version": "0.12.1",
   "description": "Utility to build a fetcher for GraphiQL",
   "contributors": [
     "Rikki Schulte <rikki.schulte@gmail.com> (https://rikki.dev)"
@@ -19,7 +19,7 @@
   "module": "dist/esm/index.js",
   "typings": "dist/esm/index.d.mts",
   "scripts": {
-    "types:check": "tsc --noEmit",
+    "types:check": "tsgo --noEmit",
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest run"
@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "graphql": "^16.9.0",
-    "graphql-ws": "^5.5.5",
+    "graphql-ws": "^6.0.8",
     "isomorphic-fetch": "^3.0.0",
     "subscriptions-transport-ws": "0.11.0",
     "tsup": "^8.2.4"

@@ -53,7 +53,7 @@ yarn add monaco-graphql
 ```ts
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
-import { initializeMode } from 'monaco-graphql/initializeMode'; // `monaco-graphql/esm/initializeMode` still works
+import { initializeMode } from 'monaco-graphql/initializeMode'; // `monaco-graphql/esm/initializeMode` is deprecated but still works
 
 // you can also configure these using the webpack or vite plugins for `monaco-editor`
 import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
@@ -582,13 +582,19 @@ and
 
 For `monaco-graphql`, you need only 2 languages - `graphql` and `json`.
 In version `monaco-graphql@1.3.0` and later, you can replace all `monaco-editor`'s
-imports with `monaco-graphql/esm/monaco-editor` to improve performance, load
+imports with `monaco-graphql/monaco-editor` to improve performance, load
 only `graphql` and `json` languages, and skip loading unused languages.
 
 ```diff
 -import { ... } from 'monaco-editor'
-+import { ... } from 'monaco-graphql/esm/monaco-editor'
++import { ... } from 'monaco-graphql/monaco-editor'
 ```
+
+> The `monaco-graphql/esm/*` import pattern is deprecated. It is retained for
+> backwards compatibility but the wildcard export that enables it is planned
+> for removal in the next major version. New code should use the canonical
+> subpaths: `monaco-graphql/monaco-editor`, `monaco-graphql/initializeMode`,
+> `monaco-graphql/graphql.worker`, `monaco-graphql/lite`.
 
 ### Catch Future Import Mistakes with ESLint
 
@@ -604,7 +610,7 @@ To prevent mis-importing of `monaco-editor`, you can set up default
       'error',
       {
         name: 'monaco-editor',
-        message: '`monaco-editor` imports all languages; use `monaco-graphql/esm/monaco-editor` instead to import only `json` and `graphql` languages',
+        message: '`monaco-editor` imports all languages; use `monaco-graphql/monaco-editor` instead to import only `json` and `graphql` languages',
       },
     ],
   },

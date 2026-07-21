@@ -1,5 +1,27 @@
 # Change Log
 
+## 2.2.7
+
+### Patch Changes
+
+- Updated dependencies [[`a526a10`](https://github.com/graphql/graphiql/commit/a526a10ac186dd242fda152dddbef3072fc10ee8)]:
+  - graphql-language-service@5.5.2
+
+## 2.2.6
+
+### Patch Changes
+
+- [#4274](https://github.com/graphql/graphiql/pull/4274) [`d23f3b1`](https://github.com/graphql/graphiql/commit/d23f3b1a0b67cd3ae82d43b049b2651ef946c95e) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Bump TypeScript emit target from `es5` to `es6`.
+
+  The published JavaScript now uses ES6 syntax (`const`, arrow functions, native destructuring) instead of down-leveled ES5. In practice this is consumed via a bundler in every real-world setup (and paired with CodeMirror 5, which already requires an ES6 runtime), so this changes the intermediate emit but not what consumers end up shipping. Code that loads the published `.js` directly in a strictly ES5-only environment (e.g. IE11 without transpilation) is no longer supported. CodeMirror 5 itself does not support that configuration.
+
+## 2.2.5
+
+### Patch Changes
+
+- Updated dependencies [[`914a547`](https://github.com/graphql/graphiql/commit/914a547637366b4bea91c5b2e3cfdbf2438f38cb), [`10f66d5`](https://github.com/graphql/graphiql/commit/10f66d502927c5718ae1fa4d21a060d9a18f2870)]:
+  - graphql-language-service@5.5.1
+
 ## 2.2.4
 
 ### Patch Changes
@@ -76,7 +98,6 @@
 ### Patch Changes
 
 - [#3521](https://github.com/graphql/graphiql/pull/3521) [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d) Thanks [@acao](https://github.com/acao)! - Fixes several issues with Type System (SDL) completion across the ecosystem:
-
   - restores completion for object and input type fields when the document context is not detectable or parseable
   - correct top-level completions for either of the unknown, type system or executable definitions. this leads to mixed top level completions when the document is unparseable, but now you are not seemingly restricted to only executable top level definitions
   - `.graphqls` ad-hoc standard functionality remains, but is not required, as it is not part of the official spec, and the spec also allows mixed mode documents in theory, and this concept is required when the type is unknown

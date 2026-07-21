@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-server",
-  "version": "2.14.8",
+  "version": "2.14.10",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net)",
@@ -32,7 +32,7 @@
   ],
   "scripts": {
     "test": "vitest run",
-    "types:check": "tsc --noEmit"
+    "types:check": "tsgo --noEmit"
   },
   "main": "dist/index.js",
   "module": "esm/index.js",
@@ -47,17 +47,18 @@
     "@babel/types": "^7.23.5",
     "@graphql-tools/code-file-loader": "8.0.3",
     "cosmiconfig-toml-loader": "^1.0.0",
+    "debounce-promise": "^3.1.2",
     "dotenv": "10.0.0",
     "fast-glob": "^3.2.7",
     "glob": "^7.2.0",
     "graphql-config": "^5.1.6",
-    "graphql-language-service": "^5.3.1",
+    "graphql-language-service": "^5.5.2",
     "lru-cache": "^10.2.0",
     "mkdirp": "^1.0.4",
     "node-abort-controller": "^3.0.1",
     "nullthrows": "^1.0.0",
     "source-map-js": "1.0.2",
-    "svelte": "^4.2.19",
+    "svelte": "^5.55.7",
     "svelte2tsx": "^0.7.0",
     "typescript": "^5.8.0",
     "vscode-jsonrpc": "^8.0.1",
@@ -67,9 +68,9 @@
     "vue": "^3.2.0"
   },
   "devDependencies": {
+    "@types/debounce-promise": "^3.1.9",
     "@types/glob": "^8.1.0",
     "@types/mkdirp": "^1.0.1",
-    "debounce-promise": "^3.1.2",
     "graphql": "^16.9.0",
     "msw": "^2.13.4"
   }

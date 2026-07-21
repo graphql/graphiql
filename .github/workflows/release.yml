@@ -2,36 +2,52 @@ name: Release
 
 on:
   push:
-    branches: [main, graphiql-5]
+    branches:
+      - main
+      - release/*
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # Don't cancel a publish partway through!
+  cancel-in-progress: false
+
 permissions: {}
+
 jobs:
   release:
-    permissions:
-      contents: write # for changesets/action to git push
     environment: deploy
     name: Release
     runs-on: ubuntu-latest
+    permissions:
+      # To create a release, and to push branches:
+      contents: write
+
+      # To create/maintain the Changesets pull request
+      pull-requests: write
+
+      # PRs are backed by issues; this helps with stuff like reading labels/etc
+      issues: read
+
+      # To enable trusted publishing
+      id-token: write
+
+    outputs:
+      vscode-published: ${{ steps.vscode.outputs.published }}
+      published-packages: ${{ steps.changesets.outputs.publishedPackages }}
+
     steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.12.1
-        with:
-          access_token: ${{ github.token }}
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: yarn
-      - name: Cache node modules
-        uses: actions/cache@v4
-        id: cache-modules
-        with:
-          path: node_modules
-          key: node_modules-${{hashFiles('yarn.lock')}}
-          restore-keys: node_modules-
+
       - run: yarn install --immutable
+
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
@@ -39,11 +55,70 @@ jobs:
           version: yarn ci:version
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
           publish: yarn release
+
+      - name: Note VSCode extension release
+        id: vscode
+        if: ${{ steps.changesets.outputs.published == 'true' && contains(steps.changesets.outputs.publishedPackages, '"name":"vscode-graphql') }}
+        run: echo "published=true" >> "$GITHUB_OUTPUT"
+
+      - name: Build VSCode extension .vsix files
+        if: ${{ steps.vscode.outputs.published == 'true' }}
         env:
-          # only use GH token here, because GITHUB_TOKEN is no longer allowed to create PRs
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          # for vscode marketplace, see https://github.com/microsoft/vscode-vsce/blob/194d59b975523696362ead891dc0f3ddd277b3bd/README.md#linux
+          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
+        run: node scripts/release-vscode.mts build
+
+      - name: Attach VSCode .vsix files to GitHub Releases
+        if: ${{ steps.vscode.outputs.published == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
+        run: node scripts/release-vscode.mts attach
+
+      - name: Upload VSCode extension .vsix artifacts
+        if: ${{ steps.vscode.outputs.published == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: vscode-extensions
+          path: packages/vscode-graphql*/*.vsix
+          if-no-files-found: error
+
+  publish-vscode-extensions:
+    name: Publish to ${{ matrix.registry }}
+    needs: release
+    if: ${{ needs.release.outputs.vscode-published == 'true' }}
+    runs-on: ubuntu-latest
+    permissions: {}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - registry: VSCode Marketplace
+            command: publish-vsce
+          - registry: Open VSX Registry
+            command: publish-ovsx
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: yarn
+
+      - run: yarn install --immutable
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: vscode-extensions
+          # `upload-artifact` strips the path prefix up to the first wildcard
+          # segment, so the artifact contains `vscode-graphql*/*.vsix` rather
+          # than `packages/vscode-graphql*/*.vsix`. Restore the `packages/`
+          # prefix here so the layout lines up with `vsixPath('vsix', …)` in
+          # the script.
+          path: vsix/packages
+
+      - name: Publish
+        env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
-          # for ovsx, see https://github.com/eclipse/openvsx/blob/master/cli/README.md#publish-extensions
           OVSX_PAT: ${{ secrets.OPEN_VSX_TOKEN }}
+          PUBLISHED_PACKAGES: ${{ needs.release.outputs.published-packages }}
+        run: node scripts/release-vscode.mts ${{ matrix.command }}

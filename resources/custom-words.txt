@@ -111,6 +111,8 @@ jeong
 jiti
 jonathanawesome
 jsdelivr
+jsgl
+keymap
 kumar
 languageservice
 leebyron
@@ -132,11 +134,13 @@ medellín
 menlo
 meros
 middlewares
+minipass
 mockfs
 modulemap
 multipass
 nauroze
 newhope
+ngql
 nextjs
 nodenext
 nishchit
@@ -202,9 +206,12 @@ snyk
 socker
 sonarjs
 sorare
+spawndamnit
 squirrelly
 stonexer
 streamable
+subpath
+subpaths
 subword
 suchanek
 svgo
@@ -239,7 +246,9 @@ vizag
 vsix
 webp
 websockets
+webworker
 wgutils
+whatwg
 wincent
 wonka
 yoshiakis

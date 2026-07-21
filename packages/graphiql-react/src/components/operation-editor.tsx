@@ -8,16 +8,11 @@ import { FC, useEffect, useRef } from 'react';
 import { useMonaco } from '../stores';
 import { useGraphiQL, useGraphiQLActions } from './provider';
 import {
-  debounce,
   getOrCreateModel,
   createEditor,
   onEditorContainerKeyDown,
-  pick,
-  cleanupDisposables,
-  cn,
-  Uri,
-  Range,
-} from '../utility';
+} from '../utility/create-editor';
+import { debounce, pick, cleanupDisposables, cn, Uri, Range } from '../utility';
 import type { MonacoEditor, EditorProps, SchemaReference } from '../types';
 import {
   KEY_BINDINGS,

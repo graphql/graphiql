@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-code-exporter",
-  "version": "5.1.1",
+  "version": "5.1.2",
   "sideEffects": [
     "*.css"
   ],
@@ -29,7 +29,7 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "types:check": "tsc --noEmit",
+    "types:check": "tsgo --noEmit",
     "dev": "vite build --watch --emptyOutDir=false",
     "build": "vite build",
     "postbuild": "cp src/graphiql-code-exporter.d.ts dist/graphiql-code-exporter.d.ts"
@@ -44,13 +44,13 @@
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@graphiql/react": "^0.37.0",
+    "@graphiql/react": "^0.37.4",
     "@vitejs/plugin-react": "^4.4.1",
     "graphql": "^16.9.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "typescript": "^5.8.0",
-    "vite": "^6.3.4",
+    "vite": "^6.4.3",
     "vite-plugin-dts": "^4.0.1"
   }
 }

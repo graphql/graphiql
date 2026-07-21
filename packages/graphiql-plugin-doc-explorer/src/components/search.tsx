@@ -33,13 +33,10 @@ export const Search: FC = () => {
   const getSearchResults = useSearchResults();
   const [searchValue, setSearchValue] = useState('');
   const [results, setResults] = useState(() => getSearchResults(searchValue));
+  const [isFocused, setIsFocused] = useState(false);
   const debouncedGetSearchResults = debounce(200, (search: string) => {
     setResults(getSearchResults(search));
   });
-  // Workaround to fix React compiler error:
-  // Ref values (the `current` property) may not be accessed during render.
-  const [ref] = useState(inputRef);
-  const isFocused = ref.current === document.activeElement;
 
   useEffect(() => {
     debouncedGetSearchResults(searchValue);
@@ -85,6 +82,8 @@ export const Search: FC = () => {
         <ComboboxInput
           autoComplete="off"
           onChange={event => setSearchValue(event.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           placeholder={formatShortcutForOS(
             formatShortcutForOS(KEY_MAP.searchInDocs.key).replaceAll('-', ' '),
           )}

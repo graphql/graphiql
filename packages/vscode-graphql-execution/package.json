@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql-execution",
-  "version": "0.3.2",
+  "version": "0.3.7",
   "displayName": "GraphQL: Inline Operation Execution",
   "description": "Execute graphql operations from your code (revived!)",
   "publisher": "GraphQL",
@@ -82,14 +82,10 @@
   },
   "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-execution/README.md",
   "scripts": {
-    "types:check": "tsc --noEmit",
+    "types:check": "tsgo --noEmit",
     "compile": "node esbuild.js",
     "build-bundles": "yarn run compile",
-    "vsce:package": "yarn compile && vsce package --yarn --no-dependencies",
-    "vsce:prepublish": "yarn run vsce:package",
-    "vsce:publish": "vsce publish --yarn --no-dependencies",
-    "open-vsx:publish": "ovsx publish --no-dependencies --pat $OVSX_PAT",
-    "release": "yarn run compile && yarn run vsce:publish && yarn run open-vsx:publish"
+    "vsce:package": "yarn compile && vsce package --yarn --no-dependencies"
   },
   "devDependencies": {
     "@types/capitalize": "2.0.0",
@@ -99,24 +95,23 @@
     "@types/vscode": "1.62.0",
     "@types/ws": "8.2.2",
     "@vscode/vsce": "^2.22.1-2",
-    "esbuild": "0.18.10",
+    "esbuild": "0.28.1",
     "ovsx": "0.8.3"
   },
   "dependencies": {
     "@graphql-tools/code-file-loader": "8.0.3",
-    "@urql/core": "2.6.1",
+    "@urql/core": "^6.0.1",
     "@whatwg-node/fetch": "0.2.8",
     "capitalize": "2.0.4",
     "cosmiconfig": "8.2.0",
     "cosmiconfig-toml-loader": "^1.0.0",
     "dotenv": "10.0.0",
-    "graphql": "^16.9.0 || ^17.0.0-alpha.2",
+    "graphql": "^16.9.0 || ^17.0.0-rc.0",
     "graphql-config": "^5.1.6",
-    "graphql-tag": "2.12.6",
-    "graphql-ws": "5.10.0",
+    "graphql-ws": "6.0.8",
     "nullthrows": "1.1.1",
-    "svelte": "^4.2.19",
+    "svelte": "^5.55.7",
     "svelte2tsx": "^0.6.16",
-    "ws": "8.17.1"
+    "ws": "8.21.0"
   }
 }

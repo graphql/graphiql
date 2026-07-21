@@ -10,11 +10,7 @@ export default defineConfig({
     testTimeout: 5000,
     clearMocks: true,
     pool: 'threads',
-    poolOptions: {
-      threads: {
-        singleThread: true,
-      },
-    },
+    fileParallelism: false,
     include: ['src/**/*.{test,spec}.ts'],
     exclude: ['**/node_modules/**', '**/dist/**', '**/esm/**'],
     // Required for the source alias below; tells vite to bundle this
