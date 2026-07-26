@@ -1,8 +1,9 @@
-import { getNamedType } from 'graphql';
+import { getNamedType, isInputObjectType } from 'graphql';
 import type {
   GraphQLEnumType,
   GraphQLNamedType,
   GraphQLField,
+  GraphQLInputField,
   GraphQLArgument,
   GraphQLDirective,
   GraphQLSchema,
@@ -16,12 +17,17 @@ import type { Maybe } from 'graphql/jsutils/Maybe';
 /**
  * Copied from packages/codemirror-graphql/src/jump.ts
  */
-export function getSchemaReference(kind: string, typeInfo: any) {
+export function getSchemaReference(
+  kind: string,
+  typeInfo: any,
+  schema?: GraphQLSchema | null,
+) {
   if (
     (kind === 'Field' && typeInfo.fieldDef) ||
-    (kind === 'AliasedField' && typeInfo.fieldDef)
+    (kind === 'AliasedField' && typeInfo.fieldDef) ||
+    (kind === 'ObjectField' && typeInfo.fieldDef)
   ) {
-    return getFieldReference(typeInfo);
+    return getFieldReference(typeInfo, kind === 'ObjectField', schema);
   }
   if (kind === 'Directive' && typeInfo.directiveDef) {
     return getDirectiveReference(typeInfo);
@@ -62,13 +68,38 @@ function getDirectiveReference(typeInfo: any): DirectiveReference {
   };
 }
 
-function getFieldReference(typeInfo: any): FieldReference {
+function getFieldReference(
+  typeInfo: any,
+  isObjectField = false,
+  schema?: GraphQLSchema | null,
+): FieldReference {
+  const type = isObjectField
+    ? getInputObjectParentType(schema, typeInfo.fieldDef)
+    : typeInfo.parentType;
+
   return {
     kind: 'Field',
     schema: typeInfo.schema,
     field: typeInfo.fieldDef,
-    type: isMetaField(typeInfo.fieldDef) ? null : typeInfo.parentType,
+    type: isMetaField(typeInfo.fieldDef) ? null : type,
   };
+}
+
+function getInputObjectParentType(
+  schema: GraphQLSchema | null | undefined,
+  fieldDef: GraphQLInputField,
+) {
+  if (!schema) {
+    return null;
+  }
+
+  return (
+    Object.values(schema.getTypeMap()).find(
+      type =>
+        isInputObjectType(type) &&
+        Object.values(type.getFields()).includes(fieldDef),
+    ) ?? null
+  );
 }
 
 // Note: for reusability, getTypeReference can produce a reference to any type,
@@ -94,7 +125,9 @@ function getEnumValueReference(typeInfo: TypeInfo): EnumValueReference {
   };
 }
 
-function isMetaField(fieldDef: GraphQLField<unknown, unknown>) {
+function isMetaField(
+  fieldDef: GraphQLField<unknown, unknown> | GraphQLInputField,
+) {
   return fieldDef.name.slice(0, 2) === '__';
 }
 
@@ -122,7 +155,7 @@ type EnumValueReference = {
 
 type FieldReference = {
   kind: 'Field';
-  field: GraphQLField<unknown, unknown>;
+  field: GraphQLField<unknown, unknown> | GraphQLInputField;
   type: Maybe<GraphQLNamedType>;
   schema?: GraphQLSchema;
 };
@@ -139,7 +172,7 @@ interface TypeInfo {
   parentType?: Maybe<GraphQLType>;
   inputType?: Maybe<GraphQLInputType>;
   directiveDef?: Maybe<GraphQLDirective>;
-  fieldDef?: Maybe<GraphQLField<unknown, unknown>>;
+  fieldDef?: Maybe<GraphQLField<unknown, unknown> | GraphQLInputField>;
   argDef?: Maybe<GraphQLArgument>;
   argDefs?: Maybe<GraphQLArgument[]>;
   enumValue?: Maybe<GraphQLEnumValue>;
