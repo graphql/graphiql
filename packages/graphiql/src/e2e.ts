@@ -125,6 +125,9 @@ const props: ComponentProps<typeof GraphiQL> = {
   onTabChange,
   forcedTheme: parameters.forcedTheme,
   defaultTheme: parameters.defaultTheme,
+  customScalarSchemas: {
+    JSON: {},
+  },
 };
 
 function App() {
