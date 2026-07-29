@@ -151,6 +151,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   onCopyQuery,
   onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
 
+  customScalarSchemas,
   dangerouslyAssumeSchemaIsValid = false,
   fetcher,
   inputValueDeprecation = false,
@@ -269,6 +270,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
           referencePlugin,
         })(...args);
         const schemaSlice = createSchemaSlice({
+          customScalarSchemas,
           inputValueDeprecation,
           introspectionQueryName,
           onSchemaChange,
