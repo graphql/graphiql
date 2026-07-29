@@ -7,9 +7,9 @@ import { useEditorState } from '../../utility/hooks';
 import { tryParseJSONC } from '../../utility';
 import './index.css';
 
-export type VarTab = 'variables' | 'headers';
+export type VarHeadersTab = 'variables' | 'headers';
 
-const VAR_TAB_OPTIONS: { value: VarTab; label: string }[] = [
+const VAR_TAB_OPTIONS: { value: VarHeadersTab; label: string }[] = [
   { value: 'variables', label: 'Variables' },
   { value: 'headers', label: 'Headers' },
 ];
@@ -37,7 +37,7 @@ function useVariablesHint(): string | null {
 
 export type VarHeadersStripProps = {
   /** Which tab is shown initially. @default 'variables' */
-  defaultTab?: VarTab;
+  defaultTab?: VarHeadersTab;
   /**
    * Whether the headers tab and editor are available.
    * When `false`, only the variables editor is shown.
@@ -54,7 +54,7 @@ export const VarHeadersStrip: FC<VarHeadersStripProps> = ({
   onEditVariables,
   onEditHeaders,
 }) => {
-  const [varTab, setVarTab] = useState<VarTab>(
+  const [varTab, setVarTab] = useState<VarHeadersTab>(
     headersEditorEnabled ? defaultTab : 'variables',
   );
   const hint = useVariablesHint();
