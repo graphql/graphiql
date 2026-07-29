@@ -1,25 +1,25 @@
 import { formatError } from '@graphiql/toolkit';
 import { ComponentType, FC, useEffect, useRef } from 'react';
 import { createRoot, Root } from 'react-dom/client';
-import { useGraphiQL, useGraphiQLActions } from './provider';
-import { ImagePreview } from './image-preview';
+import { useGraphiQL, useGraphiQLActions } from '../provider';
+import { ImagePreview } from '../image-preview';
 import { ResponseHeader } from './response-header';
 import { ResponseTableView } from './response-table-view';
 import { ResponseTreeView } from './response-tree-view';
-import { Spinner } from './spinner';
+import { Spinner } from '../spinner';
 import {
   getOrCreateModel,
   createEditor,
   onEditorContainerKeyDown,
-} from '../utility/create-editor';
-import { Range } from '../utility/monaco-ssr';
+} from '../../utility/create-editor';
+import { Range } from '../../utility/monaco-ssr';
 import { clsx } from 'clsx';
-import { pick, cleanupDisposables } from '../utility';
-import { KEY_BINDINGS, URI_NAME } from '../constants';
-import type { EditorProps } from '../types';
+import { pick, cleanupDisposables } from '../../utility';
+import { KEY_BINDINGS, URI_NAME } from '../../constants';
+import type { EditorProps } from '../../types';
 import type * as monaco from 'monaco-editor';
-import { useMonaco } from '../stores';
-import type { ResponseView } from '../stores';
+import { useMonaco } from '../../stores';
+import type { ResponseView } from '../../stores';
 
 type ResponseTooltipType = ComponentType<{
   /**

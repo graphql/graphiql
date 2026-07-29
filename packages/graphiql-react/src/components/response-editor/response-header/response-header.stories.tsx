@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { Tooltip } from '../tooltip';
+import { Tooltip } from '../../tooltip';
 import { ResponseHeader } from './';
-import type { ResponseView } from '../../stores';
+import type { ResponseView } from '../../../stores';
 
 const meta: Meta<typeof ResponseHeader> = {
   title: 'Primitives/ResponseHeader',
