@@ -3919,14 +3919,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hapi/hoek@npm:^9.0.0":
-  version: 9.1.1
-  resolution: "@hapi/hoek@npm:9.1.1"
-  checksum: 10c0/3431992cb212afd97a39d16c1806ec9b1db8377b01b48e0ba9723f5aa9344533e0c4ba06b734a46f5781eb4138fb3b6bf869a56b94df8b048b93fbc53984d40d
-  languageName: node
-  linkType: hard
-
-"@hapi/hoek@npm:^9.3.0":
+"@hapi/hoek@npm:^9.0.0, @hapi/hoek@npm:^9.3.0":
   version: 9.3.0
   resolution: "@hapi/hoek@npm:9.3.0"
   checksum: 10c0/a096063805051fb8bba4c947e293c664b05a32b47e13bc654c0dd43813a1cec993bdd8f29ceb838020299e1d0f89f68dc0d62a603c13c9cc8541963f0beca055
