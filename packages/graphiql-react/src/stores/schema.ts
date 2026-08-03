@@ -12,6 +12,7 @@ import {
   GraphQLSchema,
   IntrospectionQuery,
 } from 'graphql';
+import type { JSONSchema6 } from 'graphql-language-service';
 import type { Dispatch } from 'react';
 import type { StateCreator } from 'zustand';
 import type { SlicesWithActions, SchemaReference } from '../types';
@@ -22,6 +23,7 @@ type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 type CreateSchemaSlice = (
   initial: Pick<
     SchemaSlice,
+    | 'customScalarSchemas'
     | 'inputValueDeprecation'
     | 'introspectionQueryName'
     | 'onSchemaChange'
@@ -167,6 +169,7 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
 
 export interface SchemaSlice extends Pick<
   SchemaProps,
+  | 'customScalarSchemas'
   | 'inputValueDeprecation'
   | 'introspectionQueryName'
   | 'schemaDescription'
@@ -289,4 +292,26 @@ export interface SchemaProps {
    * @see {@link https://github.com/graphql/graphql-js/blob/main/src/utilities/getIntrospectionQuery.ts|Utility for creating the introspection query}
    */
   schemaDescription?: boolean;
+
+  /**
+   * JSON Schema fragments used to validate custom scalars in the variable
+   * editor. Without this, the variable editor's live JSON Schema linter
+   * assumes every custom scalar only accepts primitives (string, number,
+   * boolean, integer), and will report an "Incorrect type" error
+   * for any custom scalar that legitimately accepts an object or array
+   * (e.g. a `JSON` or `GeoJSON` scalar).
+   *
+   * Pass an empty object (`{}`) for a scalar to accept any JSON value, or
+   * a more specific schema to constrain it further.
+   * @example
+   * ```ts
+   * {
+   *   customScalarSchemas: {
+   *     GeoJSON: {},
+   *     DateTime: { type: 'string', format: 'date-time' },
+   *   }
+   * }
+   * ```
+   */
+  customScalarSchemas?: Record<string, JSONSchema6>;
 }

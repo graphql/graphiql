@@ -22,11 +22,21 @@ export function createSchema({
   GraphQLString,
   GraphQLID,
   GraphQLList,
+  GraphQLScalarType,
   GraphQLDeferDirective,
   GraphQLStreamDirective,
   specifiedDirectives,
   version,
 }) {
+  const GraphQLJSON = new GraphQLScalarType({
+    name: 'JSON',
+    description: 'A scalar that accepts arbitrary JSON values.',
+    serialize: value => value,
+    parseValue: value => value,
+    parseLiteral() {
+      throw new TypeError('JSON literals are not supported, use variables.');
+    },
+  });
   const directives =
     parseInt(version, 10) > 16
       ? [...specifiedDirectives, GraphQLDeferDirective, GraphQLStreamDirective]
@@ -337,6 +347,10 @@ And external image:
           id: { type: GraphQLID },
           enum: { type: TestEnum },
           object: { type: TestInputObject },
+          json: {
+            type: GraphQLJSON,
+            description: 'A custom scalar that accepts any JSON value',
+          },
           defaultValue: {
             type: GraphQLString,
             defaultValue: 'test default value',
