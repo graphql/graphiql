@@ -436,7 +436,7 @@ describe('MessageProcessor with config', () => {
         character: 0,
       },
       end: {
-        line: 109 + offset,
+        line: 112 + offset,
         character: 1,
       },
     });
@@ -450,11 +450,11 @@ describe('MessageProcessor with config', () => {
     // this might break, please adjust if you see a failure here
     expect(serializeRange(schemaDefs[0].range)).toEqual({
       start: {
-        line: 111 + offset,
+        line: 114 + offset,
         character: 0,
       },
       end: {
-        line: 119 + offset,
+        line: 122 + offset,
         character: 1,
       },
     });
