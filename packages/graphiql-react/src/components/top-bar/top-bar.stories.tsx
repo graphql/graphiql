@@ -3,6 +3,7 @@ import type { HttpMethod } from '@graphiql/toolkit';
 import { parse, OperationDefinitionNode } from 'graphql';
 import { GraphiQLProvider } from '../provider';
 import { TopBar, TopBarView } from './';
+import { ExecuteButtonView } from '../execute-button';
 import { Tooltip } from '../tooltip';
 
 function opsOf(source: string): OperationDefinitionNode[] {
@@ -123,64 +124,21 @@ export const MutationBlockedOverGet: Story = {
     <Tooltip.Provider>
       <TopBarView
         version="v6.0.0-alpha.1"
-        isFetching={false}
         url="https://api.example.com/graphql"
         method="GET"
         supportedMethods={['GET', 'POST']}
         runDisabledReason="Mutations can only be sent via POST"
-        onRun={() => {}}
+        runButton={
+          <ExecuteButtonView
+            isFetching={false}
+            transportMethod="GET"
+            operations={opsOf('mutation CreateWidget { createWidget { id } }')}
+            runDisabledReason="Mutations can only be sent via POST"
+            onRun={() => {}}
+            onStop={() => {}}
+          />
+        }
         onSetMethod={() => {}}
-      />
-    </Tooltip.Provider>
-  ),
-};
-
-/**
- * A single operation: the Run button is a plain pill, no caret.
- */
-export const SingleOperationNoCaret: Story = {
-  render: () => (
-    <Tooltip.Provider>
-      <TopBarView
-        version="v6.0.0-alpha.1"
-        isFetching={false}
-        url="https://api.example.com/graphql"
-        method="POST"
-        supportedMethods={['POST']}
-        operations={opsOf('query GetWidget { widget { id } }')}
-        operationName={null}
-        onRun={() => {}}
-        onSetMethod={() => {}}
-      />
-    </Tooltip.Provider>
-  ),
-};
-
-/**
- * Several named operations: the Run button grows a caret opening the
- * operation picker. GET is selected, so the mutation's menu item is disabled.
- */
-export const MultipleOperationsWithPicker: Story = {
-  render: () => (
-    <Tooltip.Provider>
-      <TopBarView
-        version="v6.0.0-alpha.1"
-        isFetching={false}
-        url="https://api.example.com/graphql"
-        method="GET"
-        supportedMethods={['GET', 'POST']}
-        transportMethod="GET"
-        operations={opsOf(
-          [
-            'query Alpha { widget { id } }',
-            'query Beta { gadget { id } }',
-            'mutation CreateWidget { createWidget { id } }',
-          ].join('\n\n'),
-        )}
-        operationName="Beta"
-        onRun={() => {}}
-        onSetMethod={() => {}}
-        onSetOperationName={() => {}}
       />
     </Tooltip.Provider>
   ),
