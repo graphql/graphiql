@@ -50,8 +50,10 @@ browserslist
 browserslistrc
 cacheable
 calar
+calt
 chainable
 changesets
+clig
 clsx
 codebases
 codegen
@@ -135,6 +137,7 @@ leia
 Leko
 LekoArts
 lezer
+liga
 lightningcss
 linenumber
 linenumbers
@@ -154,6 +157,7 @@ middlewares
 minipass
 mockfs
 modulemap
+monospace
 multipass
 nauroze
 newhope
@@ -198,6 +202,7 @@ proto
 qlapi
 qlid
 qlide
+qljson
 quasis
 ractive
 randomthing

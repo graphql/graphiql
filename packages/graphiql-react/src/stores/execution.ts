@@ -17,11 +17,11 @@ import setValue from 'set-value';
 import getValue from 'get-value';
 
 import type { StateCreator } from 'zustand';
+import { tryParseJSONC } from '../utility';
 import {
-  tryParseJSONC,
   getRunBlockReason,
   resolveActiveOperation,
-} from '../utility';
+} from '../utility/run-block';
 import { Range } from '../utility/monaco-ssr';
 import { STORAGE_KEY } from '../constants';
 import type { SlicesWithActions, MonacoEditor } from '../types';

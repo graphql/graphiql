@@ -3,7 +3,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Tooltip } from '../tooltip';
+import { Tooltip } from '../../tooltip';
 import { ResponseHeader } from './';
 
 function renderWithTooltip(ui: React.ReactElement) {

@@ -97,6 +97,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
   const {
     initialQuery,
     schema,
+    customScalarSchemas,
     referencePlugin,
     operations,
     operationName,
@@ -108,6 +109,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     pick(
       'initialQuery',
       'schema',
+      'customScalarSchemas',
       'referencePlugin',
       'operations',
       'operationName',
@@ -349,7 +351,11 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       return;
     }
     monacoGraphQL.setSchemaConfig([
-      { uri: `${uriInstanceId}${URI_NAME.schema}`, schema },
+      {
+        uri: `${uriInstanceId}${URI_NAME.schema}`,
+        schema,
+        customScalarSchemas,
+      },
     ]);
     monacoGraphQL.setExternalFragmentDefinitions([
       ...externalFragments.values(),
@@ -414,6 +420,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     return cleanupDisposables(disposables);
   }, [
     schema,
+    customScalarSchemas,
     referencePlugin,
     setSchemaReference,
     setVisiblePlugin,

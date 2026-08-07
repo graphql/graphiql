@@ -9,11 +9,6 @@ export { debounce } from './debounce';
 export { formatJSONC, parseJSONC, tryParseJSONC } from './jsonc';
 export { markdown } from './markdown';
 export { pick } from './pick';
-export {
-  getRunBlockReason,
-  resolveActiveOperation,
-  MUTATION_REQUIRES_POST_REASON,
-} from './run-block';
 export { useDragResize } from './resize';
 export { typeCategory } from './type-category';
 export type { GraphQLTypeCategory } from './type-category';

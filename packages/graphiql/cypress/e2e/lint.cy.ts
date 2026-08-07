@@ -138,6 +138,22 @@ describe('Linting', () => {
     );
   });
 
+  it('Does not mark object variables for a custom scalar with a configured customScalarSchemas as error', () => {
+    cy.visitWithOp({
+      query: /* GraphQL */ `
+        query WithVariables($jsonArg: JSON) {
+          hasArgs(json: $jsonArg)
+        }
+      `,
+      variables: {
+        jsonArg: { foo: 'bar' },
+      },
+    })
+      .contains('foo')
+      .should('not.have.class', 'CodeMirror-lint-mark')
+      .and('not.have.class', 'CodeMirror-lint-mark-error');
+  });
+
   it('Marks GraphQL syntax errors as error', () => {
     cy.visitWithOp({
       query: /* GraphQL */ `

@@ -1,10 +1,10 @@
 'use no memo';
 
 import type { FC } from 'react';
-import { SegmentedControl } from '../segmented-control';
-import { ToolbarButton } from '../toolbar-button';
-import { CloseIcon, CopyIcon } from '../../icons';
-import type { ResponseView } from '../../stores';
+import { SegmentedControl } from '../../segmented-control';
+import { ToolbarButton } from '../../toolbar-button';
+import { CloseIcon, CopyIcon } from '../../../icons';
+import type { ResponseView } from '../../../stores';
 import './index.css';
 
 export type ResponseHeaderProps = {
