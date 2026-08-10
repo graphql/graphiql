@@ -25,6 +25,7 @@ import type {
   GraphQLEnumValue,
   GraphQLField,
   GraphQLInputFieldMap,
+  GraphQLInputObjectType,
   GraphQLInterfaceType,
   GraphQLObjectType,
   GraphQLType,
@@ -141,6 +142,7 @@ export type AllTypeInfo = {
   argDef: Maybe<GraphQLArgument>;
   argDefs: Maybe<GraphQLArgument[]>;
   objectFieldDefs: Maybe<GraphQLInputFieldMap>;
+  inputObjectType: Maybe<GraphQLInputObjectType>;
   interfaceDef: Maybe<GraphQLInterfaceType>;
   objectTypeDef: Maybe<GraphQLObjectType>;
 };

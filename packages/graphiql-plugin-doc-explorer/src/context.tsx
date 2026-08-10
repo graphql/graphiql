@@ -88,7 +88,6 @@ export type DocExplorerStoreType = {
     reset(): void;
     resolveSchemaReferenceToNavItem(
       schemaReference: SchemaReference | null,
-      schema?: GraphQLSchema | null,
     ): void;
     /**
      * Replace the nav stack with an updated version using the new schema.
@@ -131,12 +130,12 @@ export const docExplorerStore = createStore<DocExplorerStoreType>(
           return { explorerNavStack };
         });
       },
-      resolveSchemaReferenceToNavItem(schemaReference, schema) {
+      resolveSchemaReferenceToNavItem(schemaReference) {
         if (!schemaReference) {
           return;
         }
         const { kind, typeInfo } = schemaReference;
-        const ref = getSchemaReference(kind, typeInfo, schema);
+        const ref = getSchemaReference(kind, typeInfo);
         if (!ref) {
           return;
         }
@@ -279,8 +278,8 @@ export const DocExplorerStore: FC<{
   useEffect(() => {
     const { resolveSchemaReferenceToNavItem } =
       docExplorerStore.getState().actions;
-    resolveSchemaReferenceToNavItem(schemaReference, schema);
-  }, [schema, schemaReference]);
+    resolveSchemaReferenceToNavItem(schemaReference);
+  }, [schemaReference]);
 
   useEffect(() => {
     const { reset, rebuildNavStackWithSchema } =

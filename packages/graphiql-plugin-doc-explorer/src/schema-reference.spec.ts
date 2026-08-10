@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  GraphQLInputObjectType,
-  GraphQLObjectType,
-  GraphQLSchema,
-  GraphQLString,
-} from 'graphql';
+import { GraphQLInputObjectType, GraphQLString } from 'graphql';
 import { getSchemaReference } from './schema-reference';
 
 describe('getSchemaReference', () => {
@@ -15,34 +10,12 @@ describe('getSchemaReference', () => {
         quantity: { type: GraphQLString },
       },
     });
-    const orderInput = new GraphQLInputObjectType({
-      name: 'OrderInput',
-      fields: {
-        lineItem: { type: lineItemInput },
-      },
-    });
-    const mutationType = new GraphQLObjectType({
-      name: 'Mutation',
-      fields: {
-        submit: {
-          type: GraphQLString,
-          args: {
-            order: { type: orderInput },
-          },
-        },
-      },
-    });
-    const schema = new GraphQLSchema({ mutation: mutationType });
     const quantityField = lineItemInput.getFields().quantity;
 
-    const reference = getSchemaReference(
-      'ObjectField',
-      {
-        fieldDef: quantityField,
-        parentType: mutationType,
-      },
-      schema,
-    );
+    const reference = getSchemaReference('ObjectField', {
+      fieldDef: quantityField,
+      inputObjectType: lineItemInput,
+    });
 
     expect(reference).toMatchObject({
       kind: 'Field',
