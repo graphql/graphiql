@@ -233,5 +233,115 @@ describe('TransportHookRegistry', () => {
       expect(cb).toHaveBeenNthCalledWith(1, r1);
       expect(cb).toHaveBeenNthCalledWith(2, r2);
     });
+
+    it('return() on an iterator obtained from a single [Symbol.asyncIterator]() call disposes the underlying iterable', async () => {
+      // This is the pattern a consumer (e.g. the execution store) must follow:
+      // call `[Symbol.asyncIterator]()` exactly once, then drive and dispose
+      // that same iterator. `send()` returns a fresh iterable object whose
+      // `[Symbol.asyncIterator]()` mints new internal state on every call, so
+      // calling it a second time to dispose would tear down an iterator that
+      // never actually ran anything.
+      let disposed = false;
+      async function* underlying() {
+        try {
+          yield makeResponse();
+          yield makeResponse();
+        } finally {
+          disposed = true;
+        }
+      }
+
+      const registry = new TransportHookRegistry();
+      const transport = registry.wrap(makeTransport(() => underlying()));
+
+      const sendResult = transport.send(
+        makeRequest(),
+      ) as AsyncIterable<TransportResponse>;
+      const iterator = sendResult[Symbol.asyncIterator]();
+
+      const first = await iterator.next();
+      expect(first.done).toBe(false);
+
+      await iterator.return?.();
+
+      expect(disposed).toBe(true);
+    });
+
+    it('calling [Symbol.asyncIterator]() a second time yields an independent iterator', async () => {
+      // Documents the exact pitfall bug 2 is about: a second call does NOT return
+      // the same iterator that is actively being driven, so disposing it has
+      // no effect on the one actually running.
+      async function* underlying() {
+        yield makeResponse();
+        yield makeResponse();
+      }
+
+      const registry = new TransportHookRegistry();
+      const transport = registry.wrap(makeTransport(() => underlying()));
+
+      const sendResult = transport.send(
+        makeRequest(),
+      ) as AsyncIterable<TransportResponse>;
+      const driving = sendResult[Symbol.asyncIterator]();
+      const fresh = sendResult[Symbol.asyncIterator]();
+
+      expect(fresh).not.toBe(driving);
+    });
+  });
+
+  describe('disposal races', () => {
+    it('return() during an awaited onBeforeSend hook prevents the underlying send()', async () => {
+      const registry = new TransportHookRegistry();
+      let releaseHook!: () => void;
+      registry.onBeforeSend(
+        req =>
+          new Promise<TransportRequest>(resolve => {
+            releaseHook = () => resolve(req);
+          }),
+      );
+      const send = vi.fn(async () => makeResponse());
+      const transport = registry.wrap(makeTransport(send));
+
+      const iterator = (
+        transport.send(makeRequest()) as AsyncIterable<TransportResponse>
+      )[Symbol.asyncIterator]();
+      const pending = iterator.next();
+
+      await iterator.return?.();
+      releaseHook();
+
+      await expect(pending).resolves.toEqual(
+        expect.objectContaining({ done: true }),
+      );
+      expect(send).not.toHaveBeenCalled();
+    });
+
+    it('return() while the request is in flight drops the late value', async () => {
+      const registry = new TransportHookRegistry();
+      const onResponse = vi.fn();
+      registry.onResponse(onResponse);
+      let releaseSend!: () => void;
+      const transport = registry.wrap(
+        makeTransport(
+          () =>
+            new Promise<TransportResponse>(resolve => {
+              releaseSend = () => resolve(makeResponse());
+            }),
+        ),
+      );
+
+      const iterator = (
+        transport.send(makeRequest()) as AsyncIterable<TransportResponse>
+      )[Symbol.asyncIterator]();
+      const pending = iterator.next();
+
+      await iterator.return?.();
+      releaseSend();
+
+      await expect(pending).resolves.toEqual(
+        expect.objectContaining({ done: true }),
+      );
+      expect(onResponse).not.toHaveBeenCalled();
+    });
   });
 });

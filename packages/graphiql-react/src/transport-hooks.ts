@@ -15,6 +15,11 @@ export type OnResponseCallback = (res: TransportResponse) => void;
 /** Cleanup function returned by hook registration. Call it to remove the hook. */
 export type CleanupFn = () => void;
 
+const DONE_RESULT: IteratorResult<TransportResponse> = {
+  value: undefined as unknown as TransportResponse,
+  done: true,
+};
+
 /**
  * Registry of request/response hooks for the transport path.
  * Created once per `<GraphiQLProvider transport={...}>` mount.
@@ -68,6 +73,10 @@ export class TransportHookRegistry {
    * Hooks run in registration order: all `onBeforeSend` callbacks complete
    * before the underlying `send()` is called; all `onResponse` callbacks fire
    * after each response value is received.
+   *
+   * Disposing the iterator (`return()`) while `onBeforeSend` hooks are still
+   * awaited means the underlying `send()` is never invoked; disposing while a
+   * request is in flight drops its late result instead of delivering it.
    */
   wrap(transport: Transport): Transport {
     const { _beforeSend, _onResponse } = this;
@@ -84,10 +93,7 @@ export class TransportHookRegistry {
             return {
               async next(): Promise<IteratorResult<TransportResponse>> {
                 if (done) {
-                  return {
-                    value: undefined as unknown as TransportResponse,
-                    done: true,
-                  };
+                  return DONE_RESULT;
                 }
 
                 // First call: run onBeforeSend hooks then delegate to transport
@@ -96,6 +102,13 @@ export class TransportHookRegistry {
                   let req = request;
                   for (const cb of _beforeSend) {
                     req = await cb(req);
+                  }
+
+                  // The consumer may have disposed us (`return()`) while an
+                  // onBeforeSend hook was awaited — don't start a request
+                  // nobody is listening to.
+                  if (done) {
+                    return DONE_RESULT;
                   }
 
                   const result = transport.send(req);
@@ -117,6 +130,12 @@ export class TransportHookRegistry {
 
                 if (singlePromise !== null) {
                   const tr = await singlePromise;
+                  // Disposed while the request was in flight. The fetch
+                  // itself is governed by the caller's `signal`; here we
+                  // just drop the late value.
+                  if (done) {
+                    return DONE_RESULT;
+                  }
                   for (const cb of _onResponse) {
                     cb(tr);
                   }
@@ -126,12 +145,14 @@ export class TransportHookRegistry {
 
                 // Iterable path
                 const result = await iter!.next();
+                // Disposed while awaiting — `return()` already forwarded to
+                // the underlying iterator, so drop the late value.
+                if (done) {
+                  return DONE_RESULT;
+                }
                 if (result.done) {
                   done = true;
-                  return {
-                    value: undefined as unknown as TransportResponse,
-                    done: true,
-                  };
+                  return DONE_RESULT;
                 }
                 for (const cb of _onResponse) {
                   cb(result.value);
@@ -141,13 +162,7 @@ export class TransportHookRegistry {
 
               return(value?: unknown) {
                 done = true;
-                return (
-                  iter?.return?.(value) ??
-                  Promise.resolve({
-                    value: undefined as unknown as TransportResponse,
-                    done: true as const,
-                  })
-                );
+                return iter?.return?.(value) ?? Promise.resolve(DONE_RESULT);
               },
 
               throw(error?: unknown) {

@@ -485,12 +485,21 @@ export const createExecutionSlice: CreateExecutionSlice =
               });
 
               if (isAsyncIterable(result)) {
-                const iter = result as AsyncIterable<TransportResponse>;
+                // Capture the iterator once so `unsubscribe` disposes the
+                // iterator actually driving the loop —
+                // `result[Symbol.asyncIterator]()` mints a fresh, independent
+                // iterator on every call (see `transport-hooks.ts#wrap`). The
+                // one-shot iterable below feeds `for await` that same
+                // iterator while preserving the loop's automatic `.return()`
+                // on abrupt completion (e.g. a throwing response handler).
+                const it = (result as AsyncIterable<TransportResponse>)[
+                  Symbol.asyncIterator
+                ]();
                 const newSubscription = {
-                  unsubscribe: () => iter[Symbol.asyncIterator]().return?.(),
+                  unsubscribe: () => it.return?.(),
                 };
                 set({ subscription: newSubscription });
-                for await (const tr of iter) {
+                for await (const tr of { [Symbol.asyncIterator]: () => it }) {
                   handleResponse(tr.body as ExecutionResult, tr);
                 }
                 set({ isFetching: false, subscription: null });
@@ -528,11 +537,16 @@ export const createExecutionSlice: CreateExecutionSlice =
                 });
                 set({ subscription: newSubscription });
               } else if (isAsyncIterable(value)) {
+                // Same iterator capture + one-shot iterable as the
+                // `transport` path above.
+                const it = value[Symbol.asyncIterator]();
                 const newSubscription = {
-                  unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
+                  unsubscribe: () => it.return?.(),
                 };
                 set({ subscription: newSubscription });
-                for await (const result of value) {
+                for await (const result of {
+                  [Symbol.asyncIterator]: () => it,
+                }) {
                   handleResponse(result);
                 }
                 set({ isFetching: false, subscription: null });
