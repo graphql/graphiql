@@ -45,6 +45,7 @@ describe('useGraphiQLPluginContext', () => {
     expect(result.current.transport).toBeDefined();
     expect(typeof result.current.transport?.onBeforeSend).toBe('function');
     expect(typeof result.current.transport?.onResponse).toBe('function');
+    expect(typeof result.current.transport?.onError).toBe('function');
   });
 
   it('onBeforeSend from plugin context wires into the registry', async () => {
@@ -99,5 +100,30 @@ describe('useGraphiQLPluginContext', () => {
     }
 
     expect(cb).not.toHaveBeenCalled();
+  });
+
+  it('onError from plugin context wires into the registry', async () => {
+    const registry = new TransportHookRegistry();
+    const cb = vi.fn();
+
+    const { result } = renderHook(() => useGraphiQLPluginContext(), {
+      wrapper: wrapWith(registry),
+    });
+
+    result.current.transport!.onError(cb);
+
+    const transport = registry.wrap(
+      makeTransport(async () => {
+        throw new Error('network down');
+      }),
+    );
+    const iter = transport.send({ query: '{ test }' }) as AsyncIterable<any>;
+    await expect(async () => {
+      for await (const _ of iter) {
+        /* consume */
+      }
+    }).rejects.toThrow('network down');
+
+    expect(cb).toHaveBeenCalledOnce();
   });
 });

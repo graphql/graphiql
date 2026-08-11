@@ -289,6 +289,183 @@ describe('TransportHookRegistry', () => {
     });
   });
 
+  describe('onError', () => {
+    it('calls registered callbacks when send() rejects (promise path)', async () => {
+      const registry = new TransportHookRegistry();
+      const cb = vi.fn();
+      registry.onError(cb);
+      const error = new Error('network down');
+      const request = makeRequest();
+      const transport = registry.wrap(
+        makeTransport(async () => {
+          throw error;
+        }),
+      );
+
+      await expect(
+        collect(transport.send(request) as AsyncIterable<TransportResponse>),
+      ).rejects.toThrow('network down');
+
+      expect(cb).toHaveBeenCalledOnce();
+      expect(cb).toHaveBeenCalledWith(error, request);
+    });
+
+    it('calls registered callbacks when the iterable path rejects mid-stream', async () => {
+      const registry = new TransportHookRegistry();
+      const cb = vi.fn();
+      registry.onError(cb);
+      const error = new Error('socket closed');
+      async function* boom() {
+        yield makeResponse();
+        throw error;
+      }
+      const transport = registry.wrap(makeTransport(() => boom()));
+
+      await expect(
+        collect(
+          transport.send(makeRequest()) as AsyncIterable<TransportResponse>,
+        ),
+      ).rejects.toThrow('socket closed');
+
+      expect(cb).toHaveBeenCalledOnce();
+    });
+
+    it('fires when an onBeforeSend hook throws', async () => {
+      const registry = new TransportHookRegistry();
+      const hookError = new Error('bad header');
+      registry.onBeforeSend(() => {
+        throw hookError;
+      });
+      const cb = vi.fn();
+      registry.onError(cb);
+      const transport = registry.wrap(
+        makeTransport(async () => makeResponse()),
+      );
+
+      await expect(
+        collect(
+          transport.send(makeRequest()) as AsyncIterable<TransportResponse>,
+        ),
+      ).rejects.toThrow('bad header');
+
+      expect(cb).toHaveBeenCalledOnce();
+    });
+
+    it('does not fire on success', async () => {
+      const registry = new TransportHookRegistry();
+      const cb = vi.fn();
+      registry.onError(cb);
+      const transport = registry.wrap(
+        makeTransport(async () => makeResponse()),
+      );
+
+      await collect(
+        transport.send(makeRequest()) as AsyncIterable<TransportResponse>,
+      );
+
+      expect(cb).not.toHaveBeenCalled();
+    });
+
+    it('cleanup removes the callback', async () => {
+      const registry = new TransportHookRegistry();
+      const cb = vi.fn();
+      const remove = registry.onError(cb);
+      remove();
+      const transport = registry.wrap(
+        makeTransport(async () => {
+          throw new Error('boom');
+        }),
+      );
+
+      await expect(
+        collect(
+          transport.send(makeRequest()) as AsyncIterable<TransportResponse>,
+        ),
+      ).rejects.toThrow('boom');
+
+      expect(cb).not.toHaveBeenCalled();
+    });
+
+    it('receives the request as transformed by onBeforeSend hooks', async () => {
+      const registry = new TransportHookRegistry();
+      registry.onBeforeSend(req => ({
+        ...req,
+        headers: { ...req.headers, authorization: 'Bearer abc' },
+      }));
+      const cb = vi.fn();
+      registry.onError(cb);
+      const transport = registry.wrap(
+        makeTransport(async () => {
+          throw new Error('network down');
+        }),
+      );
+
+      await expect(
+        collect(
+          transport.send(makeRequest()) as AsyncIterable<TransportResponse>,
+        ),
+      ).rejects.toThrow('network down');
+
+      // The hook-transformed request — the closest thing to what would have
+      // gone on the wire — not the pre-transformation original.
+      expect(cb).toHaveBeenCalledWith(
+        expect.any(Error),
+        expect.objectContaining({
+          headers: expect.objectContaining({ authorization: 'Bearer abc' }),
+        }),
+      );
+    });
+  });
+
+  describe('observer isolation', () => {
+    it('a throwing onResponse callback is logged and does not break the stream', async () => {
+      const consoleError = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+      const registry = new TransportHookRegistry();
+      registry.onResponse(() => {
+        throw new Error('observer bug');
+      });
+      async function* two() {
+        yield makeResponse();
+        yield makeResponse();
+      }
+      const transport = registry.wrap(makeTransport(() => two()));
+
+      const results = await collect(
+        transport.send(makeRequest()) as AsyncIterable<TransportResponse>,
+      );
+
+      expect(results).toHaveLength(2);
+      expect(consoleError).toHaveBeenCalledTimes(2);
+      consoleError.mockRestore();
+    });
+
+    it('a throwing onError callback is logged, not allowed to mask the original error', async () => {
+      const consoleError = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+      const registry = new TransportHookRegistry();
+      registry.onError(() => {
+        throw new Error('observer bug');
+      });
+      const transport = registry.wrap(
+        makeTransport(async () => {
+          throw new Error('network down');
+        }),
+      );
+
+      await expect(
+        collect(
+          transport.send(makeRequest()) as AsyncIterable<TransportResponse>,
+        ),
+      ).rejects.toThrow('network down');
+
+      expect(consoleError).toHaveBeenCalledOnce();
+      consoleError.mockRestore();
+    });
+  });
+
   describe('disposal races', () => {
     it('return() during an awaited onBeforeSend hook prevents the underlying send()', async () => {
       const registry = new TransportHookRegistry();
@@ -342,6 +519,32 @@ describe('TransportHookRegistry', () => {
         expect.objectContaining({ done: true }),
       );
       expect(onResponse).not.toHaveBeenCalled();
+    });
+
+    it('an error after disposal is not reported to onError observers', async () => {
+      const registry = new TransportHookRegistry();
+      const onError = vi.fn();
+      registry.onError(onError);
+      let rejectSend!: (e: Error) => void;
+      const transport = registry.wrap(
+        makeTransport(
+          () =>
+            new Promise<TransportResponse>((_resolve, reject) => {
+              rejectSend = reject;
+            }),
+        ),
+      );
+
+      const iterator = (
+        transport.send(makeRequest()) as AsyncIterable<TransportResponse>
+      )[Symbol.asyncIterator]();
+      const pending = iterator.next();
+
+      await iterator.return?.();
+      rejectSend(new DOMException('The operation was aborted', 'AbortError'));
+
+      await expect(pending).rejects.toThrow('aborted');
+      expect(onError).not.toHaveBeenCalled();
     });
   });
 });
