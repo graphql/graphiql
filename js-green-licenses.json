@@ -9,6 +9,7 @@
     "glob",
     "minimatch",
     "minipass",
+    "minipass-flush",
     "path-scurry",
     "lru-cache",
     // CC BY-SA 4.0 — creative commons share-alike, used for cspell dictionary data

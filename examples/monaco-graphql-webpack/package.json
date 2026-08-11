@@ -19,13 +19,11 @@
     "prettier": "^3"
   },
   "devDependencies": {
-    "@babel/core": "^7",
-    "@babel/plugin-proposal-class-properties": "^7",
-    "@babel/plugin-syntax-dynamic-import": "^7",
-    "@babel/plugin-transform-class-static-block": "^7",
-    "@babel/preset-env": "^7",
-    "@babel/preset-react": "^7",
-    "@babel/preset-typescript": "^7",
+    "@babel/core": "^8",
+    "@babel/plugin-transform-class-static-block": "^8",
+    "@babel/preset-env": "^8",
+    "@babel/preset-react": "^8",
+    "@babel/preset-typescript": "^8",
     "@webpack-cli/serve": "^2",
     "babel-loader": "^9",
     "cross-env": "^7",

@@ -65,39 +65,21 @@ export type SupportedExtensionsEnum =
   (typeof DEFAULT_SUPPORTED_EXTENSIONS)[number];
 
 /**
- * default plugins to use with babel parser
+ * Extra syntax proposals to enable in the babel parser. Stable features
+ * (class properties, optional chaining, dynamic import, etc.) are always
+ * parsed and need no plugin; only not-yet-stable proposals are listed here.
  */
 export const BABEL_PLUGINS: ParserPlugin[] = [
   'asyncDoExpressions',
-  'asyncGenerators',
-  'bigInt',
-  'classProperties',
-  'classPrivateProperties',
-  'classPrivateMethods',
-  'classStaticBlock',
   'doExpressions',
-  'decimal',
   'decorators-legacy',
   'destructuringPrivate',
-  'dynamicImport',
   'exportDefaultFrom',
-  'exportNamespaceFrom',
   'functionBind',
   'functionSent',
   'importMeta',
-  'importAssertions',
   'jsx',
-  'logicalAssignment',
   'moduleBlocks',
-  'moduleStringNames',
-  'nullishCoalescingOperator',
-  'numericSeparator',
-  'objectRestSpread',
-  'optionalCatchBinding',
-  'optionalChaining',
   // ['pipelineOperator', { proposal: 'hack' }],
-  'privateIn',
-  'regexpUnicodeSets',
   'throwExpressions',
-  'topLevelAwait',
 ];
