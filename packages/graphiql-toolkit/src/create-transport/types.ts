@@ -5,10 +5,22 @@ export type TransportRequest = {
   operationName?: string | null;
   variables?: Record<string, unknown>;
   /**
+   * GraphQL-over-HTTP `extensions`, e.g. for automatic persisted queries.
+   * JSON-stringified into the URL for `GET`; included in the JSON request
+   * body for `POST` and `QUERY`.
+   */
+  extensions?: Record<string, unknown>;
+  /**
    * Per-request headers, merged with (and overriding) the static headers passed
    * to `createTransport`.
    */
   headers?: Record<string, string>;
+  /**
+   * Aborts the request. For subscriptions, prefer stopping the returned
+   * `AsyncIterable` (call `.return()` on its iterator) instead — an aborted
+   * signal only cancels the initial HTTP request, not an open socket.
+   */
+  signal?: AbortSignal;
 };
 
 /**
@@ -35,6 +47,12 @@ export type ResolverTrace = {
  * is honest, rather than a fabricated `200`.
  */
 export type TransportResponse = {
+  /**
+   * For an HTTP response, `response.ok && !hasGraphQLErrors` — a 401, 500, etc.
+   * is `ok: false` even if the body happens to parse as JSON with no `errors`.
+   * For transports with no HTTP envelope (a subscription event over a socket),
+   * this is purely `!hasGraphQLErrors`, since there is no status to consult.
+   */
   ok: boolean;
   status?: number;
   statusText?: string;
@@ -114,6 +132,7 @@ export type SubscriptionRequest = {
   query: string;
   operationName?: string | null;
   variables?: Record<string, unknown>;
+  extensions?: Record<string, unknown>;
 };
 
 /**

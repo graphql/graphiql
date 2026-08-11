@@ -149,6 +149,9 @@ function buildGetUrl(baseUrl: string, graphQLParams: FetcherParams): string {
   if (graphQLParams.variables != null) {
     params.set('variables', JSON.stringify(graphQLParams.variables));
   }
+  if (graphQLParams.extensions != null) {
+    params.set('extensions', JSON.stringify(graphQLParams.extensions));
+  }
   const sep = baseUrl.includes('?') ? '&' : '?';
   return `${baseUrl}${sep}${params.toString()}`;
 }
@@ -181,6 +184,7 @@ export const simpleHttpTransport =
       const url = buildGetUrl(options.url, graphQLParams);
       const response = await httpFetch(url, {
         method: 'GET',
+        signal: fetcherOpts?.signal,
         headers: {
           accept: 'application/graphql-response+json, application/json;q=0.9',
           ...options.headers,
@@ -196,6 +200,7 @@ export const simpleHttpTransport =
     const response = await httpFetch(options.url, {
       method,
       body: requestBody,
+      signal: fetcherOpts?.signal,
       headers: {
         'content-type': 'application/json',
         accept: 'application/graphql-response+json, application/json;q=0.9',
@@ -335,6 +340,7 @@ export const multipartHttpTransport = (
       const url = buildGetUrl(options.url, graphQLParams);
       rawResponse = await httpFetch(url, {
         method: 'GET',
+        signal: fetcherOpts?.signal,
         headers: {
           accept: MULTIPART_ACCEPT,
           ...options.headers,
@@ -346,6 +352,7 @@ export const multipartHttpTransport = (
       rawResponse = await httpFetch(options.url, {
         method,
         body: requestBody,
+        signal: fetcherOpts?.signal,
         headers: {
           'content-type': 'application/json',
           accept: MULTIPART_ACCEPT,

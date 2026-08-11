@@ -180,6 +180,44 @@ describe('createTransport — query / mutation', () => {
       errors: [{ message: '<html><body>Bad Gateway</body></html>' }],
     });
   });
+
+  it('encodes extensions in the request body for POST', async () => {
+    const mockFetch = vi
+      .fn()
+      .mockResolvedValue(mockResponse({ data: { __typename: 'Query' } }));
+    const transport = createTransport({
+      url: URL,
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as unknown as typeof fetch,
+    });
+
+    await transport.send({
+      query: QUERY,
+      extensions: { persistedQuery: { sha256Hash: 'abc' } },
+    });
+
+    const [, fetchInit] = mockFetch.mock.calls[0] as [string, RequestInit];
+    expect(JSON.parse(fetchInit.body as string)).toMatchObject({
+      extensions: { persistedQuery: { sha256Hash: 'abc' } },
+    });
+  });
+
+  it('threads an AbortSignal into the underlying fetch call', async () => {
+    const mockFetch = vi
+      .fn()
+      .mockResolvedValue(mockResponse({ data: {} })) as unknown as Mock;
+    const transport = createTransport({
+      url: URL,
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as unknown as typeof fetch,
+    });
+    const controller = new AbortController();
+
+    await transport.send({ query: QUERY, signal: controller.signal });
+
+    const [, fetchInit] = mockFetch.mock.calls[0] as [string, RequestInit];
+    expect(fetchInit.signal).toBe(controller.signal);
+  });
 });
 
 describe('createTransport — subscription', () => {
@@ -366,6 +404,25 @@ describe('createTransport — GET method', () => {
     const [fetchedUrl] = mockFetch.mock.calls[0] as [string];
     const parsed = new globalThis.URL(fetchedUrl);
     expect(parsed.searchParams.get('operationName')).toBe('Q');
+  });
+
+  it('GET query encodes extensions as a JSON string in the URL', async () => {
+    const extensions = { persistedQuery: { sha256Hash: 'abc' } };
+    const transport = createTransport({
+      url: URL,
+      method: 'GET',
+      supportedMethods: ['GET', 'POST'],
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as typeof fetch,
+    });
+
+    await transport.send({ query: QUERY_WITH_VARS, extensions });
+
+    const [fetchedUrl] = mockFetch.mock.calls[0] as [string];
+    const parsed = new globalThis.URL(fetchedUrl);
+    expect(parsed.searchParams.get('extensions')).toBe(
+      JSON.stringify(extensions),
+    );
   });
 
   it('GET query omits variables and operationName when absent', async () => {
@@ -567,6 +624,26 @@ describe('createTransport — QUERY method', () => {
     expect((fetchInit.headers as Record<string, string>)['content-type']).toBe(
       'application/json',
     );
+  });
+
+  it('QUERY sends extensions in the JSON body, not the URL', async () => {
+    const extensions = { persistedQuery: { sha256Hash: 'abc' } };
+    const transport = createTransport({
+      url: URL,
+      method: 'QUERY',
+      supportedMethods: ['POST', 'QUERY'],
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as typeof fetch,
+    });
+
+    await transport.send({ query: QUERY, extensions });
+
+    const [fetchedUrl, fetchInit] = mockFetch.mock.calls[0] as [
+      string,
+      RequestInit,
+    ];
+    expect(fetchedUrl).toBe(URL);
+    expect(JSON.parse(fetchInit.body as string)).toMatchObject({ extensions });
   });
 
   it('sends a mutation as POST even when QUERY is selected (both supported)', async () => {
