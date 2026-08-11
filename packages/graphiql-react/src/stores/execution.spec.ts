@@ -293,3 +293,133 @@ describe('run/stop — subscription teardown', () => {
     expect(store.getState().subscription).toBeNull();
   });
 });
+
+describe('run/stop — abort in-flight query/mutation', () => {
+  it('stop() aborts the request and no response is ever dispatched', async () => {
+    let capturedSignal: AbortSignal | undefined;
+    const transport: Transport = {
+      url: 'https://example.test/graphql',
+      method: 'POST',
+      supportedMethods: ['POST'],
+      send: req =>
+        new Promise((_resolve, reject) => {
+          capturedSignal = req.signal;
+          req.signal?.addEventListener('abort', () => {
+            reject(new DOMException('The operation was aborted', 'AbortError'));
+          });
+          // Deliberately never resolves on its own — only `stop()` ends it.
+        }),
+    };
+    const { store, responseEditor } = makeRunnableStore({ transport });
+
+    const runPromise = store.getState().actions.run();
+    await vi.waitFor(() => {
+      expect(store.getState().abortController).not.toBeNull();
+    });
+    expect(store.getState().isFetching).toBe(true);
+    expect(capturedSignal?.aborted).toBe(false);
+
+    store.getState().actions.stop();
+    await runPromise;
+
+    expect(capturedSignal?.aborted).toBe(true);
+    expect(store.getState().isFetching).toBe(false);
+    expect(store.getState().abortController).toBeNull();
+    // No response was ever dispatched: `lastResponse` stays at its initial
+    // `null`, and the response pane is never told to render an abort error.
+    expect(store.getState().lastResponse).toBeNull();
+    expect(responseEditor.setValue).not.toHaveBeenCalledWith(
+      expect.stringContaining('abort'),
+    );
+  });
+
+  it('stop() aborts an in-flight query through the wrapped transport (the production shape)', async () => {
+    // In production the store always receives `registry.wrap(transport)`,
+    // whose `send()` returns an AsyncIterable even for plain queries — so
+    // Stop-abort must work through the iterable code path, not just the
+    // promise one the raw transport above exercises.
+    let capturedSignal: AbortSignal | undefined;
+    const rawTransport: Transport = {
+      url: 'https://example.test/graphql',
+      method: 'POST',
+      supportedMethods: ['POST'],
+      send: req =>
+        new Promise((_resolve, reject) => {
+          capturedSignal = req.signal;
+          req.signal?.addEventListener('abort', () => {
+            reject(new DOMException('The operation was aborted', 'AbortError'));
+          });
+        }),
+    };
+    const registry = new TransportHookRegistry();
+    const { store, responseEditor } = makeRunnableStore({
+      transport: registry.wrap(rawTransport),
+    });
+
+    const runPromise = store.getState().actions.run();
+    await vi.waitFor(() => {
+      expect(capturedSignal).toBeDefined();
+    });
+    expect(capturedSignal?.aborted).toBe(false);
+
+    store.getState().actions.stop();
+    await runPromise;
+
+    expect(capturedSignal?.aborted).toBe(true);
+    expect(store.getState().isFetching).toBe(false);
+    expect(store.getState().abortController).toBeNull();
+    expect(store.getState().lastResponse).toBeNull();
+    expect(responseEditor.setValue).not.toHaveBeenCalledWith(
+      expect.stringContaining('abort'),
+    );
+  });
+
+  it('a transport that ignores the signal still cannot paint a response after stop()', async () => {
+    let resolveSend!: (tr: TransportResponse) => void;
+    const transport: Transport = {
+      url: 'https://example.test/graphql',
+      method: 'POST',
+      supportedMethods: ['POST'],
+      send: () =>
+        new Promise<TransportResponse>(resolve => {
+          resolveSend = resolve;
+        }),
+    };
+    const { store, responseEditor } = makeRunnableStore({ transport });
+
+    const runPromise = store.getState().actions.run();
+    await vi.waitFor(() => {
+      expect(store.getState().abortController).not.toBeNull();
+    });
+
+    store.getState().actions.stop();
+    resolveSend({
+      ok: true,
+      body: { data: { late: true } },
+      timing: { totalMs: 0 },
+      size: {},
+    });
+    await runPromise;
+
+    expect(store.getState().lastResponse).toBeNull();
+    expect(responseEditor.setValue).not.toHaveBeenCalledWith(
+      expect.stringContaining('late'),
+    );
+  });
+
+  it('a genuine request failure (not caused by stop()) still surfaces an error', async () => {
+    const transport: Transport = {
+      url: 'https://example.test/graphql',
+      method: 'POST',
+      supportedMethods: ['POST'],
+      send: () => Promise.reject(new Error('network down')),
+    };
+    const { store } = makeRunnableStore({ transport });
+
+    await store.getState().actions.run();
+
+    expect(store.getState().lastResponse).not.toBeNull();
+    expect(store.getState().lastResponse?.ok).toBe(false);
+    expect(store.getState().isFetching).toBe(false);
+  });
+});

@@ -122,6 +122,19 @@ export interface ExecutionSlice {
   subscription: Unsubscribable | null;
 
   /**
+   * Aborts the in-flight request sent through `transport`. For queries and
+   * mutations this cancels the HTTP request outright. For streams it stays
+   * armed for the whole lifetime as a backstop that kills the underlying HTTP
+   * connection (e.g. a `multipart/mixed` incremental response) even if a link
+   * in the iterator-disposal chain fails to forward `.return()`; primary
+   * teardown is still `subscription`. `null` when nothing is in flight or
+   * when using the deprecated `fetcher`, which has no cancellation mechanism.
+   *
+   * @default null
+   */
+  abortController: AbortController | null;
+
+  /**
    * The operation name that will be sent with all GraphQL requests.
    * @default null
    */
@@ -316,6 +329,7 @@ export const createExecutionSlice: CreateExecutionSlice =
       responseView: 'json' as ResponseView,
       transportUpgradeBannerDismissed: false,
       subscription: null,
+      abortController: null,
       queryId: 0,
       transportMethod: initial.transport?.method ?? null,
       actions: {
@@ -338,9 +352,18 @@ export const createExecutionSlice: CreateExecutionSlice =
           set({ transportMethod: method });
         },
         stop() {
-          set(({ subscription }) => {
+          set(({ subscription, abortController, queryId }) => {
             subscription?.unsubscribe();
-            return { isFetching: false, subscription: null };
+            abortController?.abort();
+            return {
+              isFetching: false,
+              subscription: null,
+              abortController: null,
+              // Invalidate any response still on its way from a transport
+              // that ignores the abort signal — `handleResponse` drops
+              // results whose queryId is stale.
+              queryId: queryId + 1,
+            };
           });
         },
         async run() {
@@ -428,6 +451,10 @@ export const createExecutionSlice: CreateExecutionSlice =
           setResponse('');
           set({ isFetching: true });
           const fetchStartMs = Date.now();
+          // Populated for the `transport` path; read from the `catch` block
+          // to tell a user-initiated `stop()` apart from a genuine request
+          // failure.
+          let controller: AbortController | undefined;
           try {
             const fullResponse: ExecutionResult = {};
             const handleResponse = (
@@ -477,11 +504,17 @@ export const createExecutionSlice: CreateExecutionSlice =
             const opName = overrideOperationName ?? operationName;
 
             if (transport) {
+              // Cancel any request a previous run left in flight — its catch
+              // sees the aborted signal and stays silent.
+              get().abortController?.abort();
+              controller = new AbortController();
+              set({ abortController: controller });
               const result = transport.send({
                 query,
                 variables,
                 operationName: opName,
                 headers: headers as Record<string, string> | undefined,
+                signal: controller.signal,
               });
 
               if (isAsyncIterable(result)) {
@@ -492,6 +525,8 @@ export const createExecutionSlice: CreateExecutionSlice =
                 // one-shot iterable below feeds `for await` that same
                 // iterator while preserving the loop's automatic `.return()`
                 // on abrupt completion (e.g. a throwing response handler).
+                // `abortController` stays armed as an HTTP-level backstop for
+                // the whole stream — see its field doc.
                 const it = (result as AsyncIterable<TransportResponse>)[
                   Symbol.asyncIterator
                 ]();
@@ -502,10 +537,19 @@ export const createExecutionSlice: CreateExecutionSlice =
                 for await (const tr of { [Symbol.asyncIterator]: () => it }) {
                   handleResponse(tr.body as ExecutionResult, tr);
                 }
-                set({ isFetching: false, subscription: null });
+                if (newQueryId === get().queryId) {
+                  set({
+                    isFetching: false,
+                    subscription: null,
+                    abortController: null,
+                  });
+                }
               } else {
                 const tr = await result;
                 handleResponse(tr.body as ExecutionResult, tr);
+                if (newQueryId === get().queryId) {
+                  set({ abortController: null });
+                }
               }
             } else if (fetcher) {
               const fetch = fetcher(
@@ -549,7 +593,9 @@ export const createExecutionSlice: CreateExecutionSlice =
                 }) {
                   handleResponse(result);
                 }
-                set({ isFetching: false, subscription: null });
+                if (newQueryId === get().queryId) {
+                  set({ isFetching: false, subscription: null });
+                }
               } else {
                 handleResponse(value);
               }
@@ -559,11 +605,19 @@ export const createExecutionSlice: CreateExecutionSlice =
               );
             }
           } catch (error) {
+            // Stay silent when this run no longer owns the UI state: a
+            // user-initiated `stop()` (which aborts `controller` and bumps
+            // `queryId`) or a newer run has taken over. Only a genuine
+            // failure of the current run may surface an error.
+            if (controller?.signal.aborted || newQueryId !== get().queryId) {
+              return;
+            }
             const errorText = formatError(error);
             set({
               isFetching: false,
               lastResponse: buildErrorResponse(errorText, fetchStartMs),
               subscription: null,
+              abortController: null,
             });
             setResponse(errorText);
           }
