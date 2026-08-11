@@ -24,20 +24,6 @@ export type TransportRequest = {
 };
 
 /**
- * Per-resolver trace, if the server returns timing data (e.g. Apollo tracing).
- * Not populated yet; reserved so the response shape is stable for a later
- * trace-extension parser.
- */
-export type ResolverTrace = {
-  path: (string | number)[];
-  parentType: string;
-  fieldName: string;
-  returnType: string;
-  startOffsetMs: number;
-  durationMs: number;
-};
-
-/**
  * A single execution result plus the wire-level metadata around it.
  *
  * `status`, `statusText` and `headers` are optional because not every
@@ -62,7 +48,7 @@ export type TransportResponse = {
    * `multipart/mixed` chunk (`@defer`/`@stream`).
    */
   body: ExecutionResult | ExecutionResult[];
-  timing: { totalMs: number; resolverTraces?: ResolverTrace[] };
+  timing: { totalMs: number };
   size: { request?: number; response?: number };
 };
 
