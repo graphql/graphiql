@@ -129,6 +129,17 @@ describe('getHoverInformation', () => {
     expect(actual).toEqual('Color.GREEN');
   });
 
+  it('provides fragment argument type information', () => {
+    const query =
+      'fragment Details($id: String!) on TestType { testField } query { thing { ...Details(id: "x") } }';
+    const actual = testHover(
+      query,
+      new Position(0, query.lastIndexOf('id:') + 1),
+    );
+
+    expect(actual).toEqual('(id: String!)');
+  });
+
   it('provides variable type information', () => {
     const actual = testHover(
       'query($who: String!) { parameterizedField(id: $who) { testField } }',

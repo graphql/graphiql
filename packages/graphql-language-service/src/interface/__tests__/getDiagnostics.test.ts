@@ -131,6 +131,53 @@ describe('getDiagnostics', () => {
     expect(errors.length).toEqual(0);
   });
 
+  it.runIf(Number.parseInt(version, 10) >= 17)(
+    'parses and validates fragment arguments with GraphQL 17',
+    () => {
+      const errors = getDiagnostics(
+        `
+          query Hero($showName: Boolean!) {
+            human(id: "1") {
+              ...HumanDetails(showName: $showName)
+            }
+          }
+          fragment HumanDetails($showName: Boolean!) on Human {
+            name @include(if: $showName)
+          }
+        `,
+        schema,
+      );
+
+      expect(errors).toEqual([]);
+    },
+  );
+
+  it.runIf(Number.parseInt(version, 10) >= 17)(
+    'reports validation errors for invalid fragment arguments',
+    () => {
+      const errors = getDiagnostics(
+        `
+          query Hero {
+            human(id: "1") {
+              ...HumanDetails(unknown: true)
+            }
+          }
+          fragment HumanDetails($showName: Boolean!) on Human {
+            name @include(if: $showName)
+          }
+        `,
+        schema,
+      );
+
+      expect(errors.map(error => error.message)).toEqual(
+        expect.arrayContaining([
+          expect.stringContaining('Unknown argument "unknown"'),
+          expect.stringContaining('showName'),
+        ]),
+      );
+    },
+  );
+
   it('catches a syntax error in the SDL', () => {
     const errors = getDiagnostics(
       `

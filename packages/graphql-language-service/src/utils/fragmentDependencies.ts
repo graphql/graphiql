@@ -5,8 +5,9 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { DocumentNode, FragmentDefinitionNode, parse, visit } from 'graphql';
+import { DocumentNode, FragmentDefinitionNode, visit } from 'graphql';
 import nullthrows from 'nullthrows';
+import { parseDocument } from '../parser';
 
 export const getFragmentDependencies = (
   operationString: string,
@@ -21,7 +22,7 @@ export const getFragmentDependencies = (
   // Return an empty array.
   let parsedOperation;
   try {
-    parsedOperation = parse(operationString);
+    parsedOperation = parseDocument(operationString);
   } catch {
     return [];
   }

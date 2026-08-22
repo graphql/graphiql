@@ -19,10 +19,9 @@ import {
   print,
   validate,
   NoDeprecatedCustomRule,
-  parse,
 } from 'graphql';
 
-import { CharacterStream, onlineParser } from '../parser';
+import { CharacterStream, onlineParser, parseDocument } from '../parser';
 
 import { Range, validateWithCustomRules, Position } from '../utils';
 
@@ -76,7 +75,7 @@ export function getDiagnostics(
   }
   const enhancedQuery = fragments ? `${query}\n\n${fragments}` : query;
   try {
-    ast = parse(enhancedQuery);
+    ast = parseDocument(enhancedQuery);
   } catch (error) {
     if (error instanceof GraphQLError) {
       const range = getRange(

@@ -32,7 +32,11 @@ by an IDE plugin, a browser application or desktop application.
 ## Parser
 
 A standalone online, immutable, dependency-free parser for
-[GraphQL](https://graphql.org), used by the LSP interface methods
+[GraphQL](https://graphql.org), used by the LSP interface methods.
+
+With GraphQL.js 17, executable documents are parsed with experimental fragment
+arguments enabled so diagnostics, outlines, operation facts, and autocomplete
+all understand fragment variable definitions and fragment spread arguments.
 
 ## Utils
 

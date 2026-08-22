@@ -17,7 +17,6 @@ import {
 
 import {
   Kind,
-  parse,
   visit,
   FieldNode,
   InlineFragmentNode,
@@ -37,6 +36,7 @@ import {
   EnumValueDefinitionNode,
 } from 'graphql';
 
+import { parseDocument } from '../parser';
 import { offsetToPosition } from '../utils';
 
 export type OutlineableKinds =
@@ -77,7 +77,7 @@ type OutlineTreeConverterType = Partial<{
 export function getOutline(documentText: string): Outline | null {
   let ast;
   try {
-    ast = parse(documentText);
+    ast = parseDocument(documentText);
   } catch {
     return null;
   }

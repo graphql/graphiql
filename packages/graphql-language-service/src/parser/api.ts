@@ -14,8 +14,15 @@ import {
   ContextToken,
   State,
   getTypeInfo,
+  parseDocument,
 } from '.';
-import { BREAK, GraphQLSchema, Kind, parse, visit } from 'graphql';
+import {
+  BREAK,
+  FragmentDefinitionNode,
+  GraphQLSchema,
+  Kind,
+  visit,
+} from 'graphql';
 
 export type ParserCallbackFn = (
   stream: CharacterStream,
@@ -101,7 +108,7 @@ const getParsedMode = (sdl: string | undefined): GraphQLDocumentMode => {
   let mode = GraphQLDocumentMode.UNKNOWN;
   if (sdl) {
     try {
-      visit(parse(sdl), {
+      visit(parseDocument(sdl), {
         enter(node) {
           if (node.kind === 'Document') {
             mode = GraphQLDocumentMode.EXECUTABLE;
@@ -175,7 +182,11 @@ export function getContextAtPosition(
   cursor: IPosition,
   schema: GraphQLSchema,
   contextToken?: ContextToken,
-  options?: { mode?: GraphQLDocumentMode; uri?: string },
+  options?: {
+    mode?: GraphQLDocumentMode;
+    uri?: string;
+    fragmentDefinitions?: ReadonlyArray<FragmentDefinitionNode>;
+  },
   offset = 0,
 ): {
   token: ContextToken;
@@ -197,7 +208,11 @@ export function getContextAtPosition(
 
   // relieve flow errors by checking if `state` exists
 
-  const typeInfo = getTypeInfo(schema, token.state);
+  const typeInfo = getTypeInfo(
+    schema,
+    token.state,
+    options?.fragmentDefinitions,
+  );
   const mode = options?.mode || getDocumentMode(queryText, options?.uri);
   return {
     token,
