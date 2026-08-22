@@ -22,8 +22,21 @@ export class GraphQLWorker {
   private _languageService: LanguageService;
   private _formattingOptions: FormattingOptions | undefined;
 
-  constructor(ctx: monaco.worker.IWorkerContext, createData: ICreateData) {
+  constructor(ctx: monaco.worker.IWorkerContext, createData?: ICreateData) {
     this._ctx = ctx;
+    this._languageService = new LanguageService(
+      createData?.languageConfig ?? {},
+    );
+    this._formattingOptions = createData?.formattingOptions;
+  }
+
+  /**
+   * monaco-editor >= 0.53 no longer delivers `createData` to
+   * `editor.createWebWorker()` (see microsoft/monaco-editor's worker loading
+   * rewrite). `WorkerManager` now constructs the worker directly and calls
+   * this once the worker is ready instead of relying on constructor args.
+   */
+  public initialize(createData: ICreateData) {
     this._languageService = new LanguageService(createData.languageConfig);
     this._formattingOptions = createData.formattingOptions;
   }

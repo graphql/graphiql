@@ -9,7 +9,8 @@ import { GraphQLWorker } from './GraphQLWorker';
 import type { MonacoGraphQLAPI } from './api';
 import type * as monaco from './monaco-editor';
 import { Uri, languages } from './monaco-editor';
-import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
+import { editor } from 'monaco-editor/editor/editor.api';
+import { jsonDefaults } from 'monaco-editor/languages/features/json/register';
 import { CompletionItemKind as lsCompletionItemKind } from 'graphql-language-service';
 import { getModelLanguageId, GraphQLWorkerCompletionItem } from './utils';
 
@@ -128,7 +129,7 @@ export class DiagnosticsAdapter {
 
     if (variablesUris) {
       // only import the JSON mode if users configure it
-      await import('monaco-editor/esm/vs/language/json/monaco.contribution.js');
+      await import('monaco-editor/language/json/monaco.contribution.js');
 
       if (!variablesUris.length) {
         throw new Error('No variables URI strings provided to validate');
@@ -149,12 +150,12 @@ export class DiagnosticsAdapter {
         fileMatch: variablesUris,
       };
       const currentSchemas =
-        languages.json.jsonDefaults.diagnosticsOptions.schemas?.filter(
-          s => s.uri !== schemaUri,
+        jsonDefaults.diagnosticsOptions.schemas?.filter(
+          (s: { uri: string }) => s.uri !== schemaUri,
         ) || [];
 
       // TODO: export from api somehow?
-      languages.json.jsonDefaults.setDiagnosticsOptions({
+      jsonDefaults.setDiagnosticsOptions({
         schemaValidation: 'error',
         validate: true,
         ...this.defaults.diagnosticSettings.jsonDiagnosticSettings,

@@ -7,7 +7,7 @@ const filePath = path.resolve(
 
 const newContent = fs
   .readFileSync(filePath, 'utf8')
-  .replace('/esm/vs/editor/edcore.main.js', '');
+  .replace('/editor/editor.main.js', '');
 
 fs.writeFileSync(filePath, newContent);
 
