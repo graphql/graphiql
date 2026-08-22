@@ -66,7 +66,6 @@ import {
   getDefinitionState,
   GraphQLDocumentMode,
   parseDocument,
-  getFragmentDefinitions,
 } from '../parser';
 import {
   hintList,
@@ -77,8 +76,9 @@ import {
 } from './autocompleteUtils';
 
 import { InsertTextMode } from 'vscode-languageserver-types';
+import { getFragmentDefinitions } from './getFragmentDefinitions';
 
-export { runOnlineParser, getTypeInfo, getFragmentDefinitions };
+export { runOnlineParser, getTypeInfo };
 
 export const SuggestionCommand = {
   command: 'editor.action.triggerSuggest',

@@ -26,8 +26,6 @@ export {
 
 export { getTypeInfo, getDefinitionState, getFieldDef } from './getTypeInfo';
 
-export { getFragmentDefinitions } from './getFragmentDefinitions';
-
 export { parseDocument } from './parseDocument';
 
 export * from './types';

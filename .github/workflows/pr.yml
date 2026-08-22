@@ -88,7 +88,8 @@ jobs:
           node-version-file: '.node-version'
           cache: yarn
       - run: yarn install --immutable
-      - run: yarn workspace graphql-language-service add --dev graphql@17.0.2
+      - run: yarn set resolution 'graphql@npm:^16.9.0' 'npm:17.0.2'
+      - run: yarn install
       - name: Build and typecheck graphql-language-service
         run: yarn workspace graphql-language-service exec tsc
       - name: Test fragment argument integration

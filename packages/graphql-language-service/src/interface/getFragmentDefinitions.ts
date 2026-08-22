@@ -1,8 +1,12 @@
 import { FragmentDefinitionNode, Kind, VariableDefinitionNode } from 'graphql';
-import { getDefinitionState } from './getTypeInfo';
-import { runOnlineParser } from './api';
-import { parseDocument } from './parseDocument';
-import { RuleKind, RuleKinds, State } from './types';
+import {
+  getDefinitionState,
+  parseDocument,
+  RuleKind,
+  RuleKinds,
+  runOnlineParser,
+  State,
+} from '../parser';
 
 type FragmentDefinitionWithVariables = FragmentDefinitionNode & {
   readonly variableDefinitions?: ReadonlyArray<VariableDefinitionNode>;

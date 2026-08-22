@@ -24,11 +24,8 @@ import type { ContextToken } from '../parser';
 import { AllTypeInfo, IPosition } from '../types';
 
 import { Hover } from 'vscode-languageserver-types';
-import {
-  getContextAtPosition,
-  getFragmentDefinitions,
-  RuleKinds,
-} from '../parser';
+import { getContextAtPosition, RuleKinds } from '../parser';
+import { getFragmentDefinitions } from './getFragmentDefinitions';
 
 export type HoverConfig = { useMarkdown?: boolean };
 
