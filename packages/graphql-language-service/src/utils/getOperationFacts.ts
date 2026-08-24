@@ -9,6 +9,7 @@ import { parseDocument } from '../parser';
 import { collectVariables } from './collectVariables';
 
 import type { VariableToType } from './collectVariables';
+import type { GraphQLLanguageServiceOptions } from '../types';
 import type {
   GraphQLSchema,
   DocumentNode,
@@ -80,13 +81,14 @@ export type QueryFacts = OperationFacts;
 export default function getOperationFacts(
   schema?: GraphQLSchema | null,
   documentString?: string | null,
+  options?: GraphQLLanguageServiceOptions,
 ): OperationFacts | undefined {
   if (!documentString) {
     return;
   }
 
   try {
-    const documentAST = parseDocument(documentString);
+    const documentAST = parseDocument(documentString, options);
     return {
       ...getOperationASTFacts(documentAST, schema),
       documentAST,

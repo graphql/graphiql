@@ -13,6 +13,7 @@ import {
   TokenKind,
   IPosition,
   OutlineTree,
+  GraphQLLanguageServiceOptions,
 } from '../types';
 
 import {
@@ -74,10 +75,13 @@ type OutlineTreeConverterType = Partial<{
   [key in OutlineableKinds]: (node: any) => OutlineTreeResult;
 }>;
 
-export function getOutline(documentText: string): Outline | null {
+export function getOutline(
+  documentText: string,
+  options?: GraphQLLanguageServiceOptions,
+): Outline | null {
   let ast;
   try {
-    ast = parseDocument(documentText);
+    ast = parseDocument(documentText, options);
   } catch {
     return null;
   }

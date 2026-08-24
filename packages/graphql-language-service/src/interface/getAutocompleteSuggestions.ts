@@ -49,6 +49,7 @@ import {
   AllTypeInfo,
   IPosition,
   CompletionItemKind,
+  GraphQLLanguageServiceOptions,
   InsertTextFormat,
 } from '../types';
 
@@ -85,11 +86,14 @@ export const SuggestionCommand = {
   title: 'Suggestions',
 };
 
-const collectFragmentDefs = (op: string | undefined) => {
+const collectFragmentDefs = (
+  op: string | undefined,
+  options?: GraphQLLanguageServiceOptions,
+) => {
   const externalFragments: FragmentDefinitionNode[] = [];
   if (op) {
     try {
-      visit(parseDocument(op), {
+      visit(parseDocument(op, options), {
         FragmentDefinition(def) {
           externalFragments.push(def);
         },
@@ -101,7 +105,7 @@ const collectFragmentDefs = (op: string | undefined) => {
   return externalFragments;
 };
 
-export type AutocompleteSuggestionOptions = {
+export type AutocompleteSuggestionOptions = GraphQLLanguageServiceOptions & {
   /**
    * EXPERIMENTAL: Automatically fill required leaf nodes recursively
    * upon triggering code completion events.
@@ -141,10 +145,10 @@ export function getAutocompleteSuggestions(
     ...options,
     schema,
   } as InternalAutocompleteOptions;
-  const fragmentDefinitions = getFragmentDefinitions(queryText);
+  const fragmentDefinitions = getFragmentDefinitions(queryText, options);
   const providedFragmentDefinitions = Array.isArray(fragmentDefs)
     ? fragmentDefs
-    : collectFragmentDefs(fragmentDefs);
+    : collectFragmentDefs(fragmentDefs, options);
   for (const definition of providedFragmentDefinitions) {
     if (
       !fragmentDefinitions.some(
@@ -366,6 +370,7 @@ export function getAutocompleteSuggestions(
       queryText,
       schema,
       token,
+      options,
     );
     return hintList(
       token,
@@ -875,6 +880,7 @@ export function getVariableCompletions(
   queryText: string,
   schema: GraphQLSchema,
   token: ContextToken,
+  options?: GraphQLLanguageServiceOptions,
 ): CompletionItem[] {
   let variableName: null | string = null;
   let variableScope: string | undefined;
@@ -883,73 +889,77 @@ export function getVariableCompletions(
   const fragmentSpreadsByScope = new Map<string, Set<string>>();
   const operationScopes = new Set<string>();
 
-  runOnlineParser(queryText, (_, state: State) => {
-    const scope = getDefinitionKey(state);
-    const definition = getDefinitionState(state);
-    if (!scope || !definition) {
-      return;
-    }
-
-    if (
-      definition.kind === RuleKinds.QUERY ||
-      definition.kind === RuleKinds.MUTATION ||
-      definition.kind === RuleKinds.SUBSCRIPTION ||
-      definition.kind === RuleKinds.SHORT_QUERY
-    ) {
-      operationScopes.add(scope);
-    }
-
-    if (state.kind === RuleKinds.FRAGMENT_SPREAD && state.name) {
-      const spreads = fragmentSpreadsByScope.get(scope) ?? new Set<string>();
-      spreads.add(state.name);
-      fragmentSpreadsByScope.set(scope, spreads);
-    }
-
-    if (
-      state.kind === RuleKinds.VARIABLE &&
-      state.name &&
-      stateContains(state, RuleKinds.VARIABLE_DEFINITION)
-    ) {
-      variableName = state.name;
-      variableScope = scope;
-    }
-    if (
-      state.kind === RuleKinds.NAMED_TYPE &&
-      variableName &&
-      variableScope === scope
-    ) {
-      const parentDefinition = getParentDefinition(state, RuleKinds.TYPE);
-      if (parentDefinition?.type) {
-        variableType = schema.getType(
-          parentDefinition.type,
-        ) as GraphQLInputObjectType;
-      }
-    }
-
-    if (variableName && variableType && variableScope === scope) {
-      const definitions =
-        definitionsByScope.get(scope) ?? new Map<string, CompletionItem>();
-      if (!definitions.has(variableName)) {
-        const replaceString =
-          token.string === '$' || token.state.kind === RuleKinds.VARIABLE
-            ? variableName
-            : '$' + variableName;
-        definitions.set(variableName, {
-          detail: variableType.toString(),
-          insertText: replaceString,
-          label: '$' + variableName,
-          rawInsert: replaceString,
-          type: variableType,
-          kind: CompletionItemKind.Variable,
-        } as CompletionItem);
-        definitionsByScope.set(scope, definitions);
+  runOnlineParser(
+    queryText,
+    (_, state: State) => {
+      const scope = getDefinitionKey(state);
+      const definition = getDefinitionState(state);
+      if (!scope || !definition) {
+        return;
       }
 
-      variableName = null;
-      variableScope = undefined;
-      variableType = null;
-    }
-  });
+      if (
+        definition.kind === RuleKinds.QUERY ||
+        definition.kind === RuleKinds.MUTATION ||
+        definition.kind === RuleKinds.SUBSCRIPTION ||
+        definition.kind === RuleKinds.SHORT_QUERY
+      ) {
+        operationScopes.add(scope);
+      }
+
+      if (state.kind === RuleKinds.FRAGMENT_SPREAD && state.name) {
+        const spreads = fragmentSpreadsByScope.get(scope) ?? new Set<string>();
+        spreads.add(state.name);
+        fragmentSpreadsByScope.set(scope, spreads);
+      }
+
+      if (
+        state.kind === RuleKinds.VARIABLE &&
+        state.name &&
+        stateContains(state, RuleKinds.VARIABLE_DEFINITION)
+      ) {
+        variableName = state.name;
+        variableScope = scope;
+      }
+      if (
+        state.kind === RuleKinds.NAMED_TYPE &&
+        variableName &&
+        variableScope === scope
+      ) {
+        const parentDefinition = getParentDefinition(state, RuleKinds.TYPE);
+        if (parentDefinition?.type) {
+          variableType = schema.getType(
+            parentDefinition.type,
+          ) as GraphQLInputObjectType;
+        }
+      }
+
+      if (variableName && variableType && variableScope === scope) {
+        const definitions =
+          definitionsByScope.get(scope) ?? new Map<string, CompletionItem>();
+        if (!definitions.has(variableName)) {
+          const replaceString =
+            token.string === '$' || token.state.kind === RuleKinds.VARIABLE
+              ? variableName
+              : '$' + variableName;
+          definitions.set(variableName, {
+            detail: variableType.toString(),
+            insertText: replaceString,
+            label: '$' + variableName,
+            rawInsert: replaceString,
+            type: variableType,
+            kind: CompletionItemKind.Variable,
+          } as CompletionItem);
+          definitionsByScope.set(scope, definitions);
+        }
+
+        variableName = null;
+        variableScope = undefined;
+        variableType = null;
+      }
+    },
+    options,
+  );
 
   const currentDefinition = getDefinitionState(token.state);
   const currentScope = getDefinitionKey(token.state);

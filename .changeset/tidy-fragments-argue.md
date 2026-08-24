@@ -1,5 +1,14 @@
 ---
 'graphql-language-service': minor
+'graphql-language-service-server': minor
+'monaco-graphql': minor
+'@graphiql/react': minor
+'graphiql': minor
+'codemirror-graphql': patch
+'cm6-graphql': patch
 ---
 
-Add GraphQL 17 fragment argument syntax support to parsing, validation, type information, and autocomplete.
+Add opt-in GraphQL 17 fragment argument syntax support to parsing, validation,
+type information, autocomplete, hover, and editor integrations. Enable it with
+`experimentalFragmentArguments: true`; it defaults to `false` until server
+capabilities can advertise support.

@@ -99,7 +99,7 @@ describe('getAutocompleteSuggestions', () => {
       point,
       undefined,
       externalFragments,
-      options,
+      { experimentalFragmentArguments: true, ...options },
     )
       .filter(field => !['__schema', '__type'].includes(field.label))
       .sort((a, b) => a.label.localeCompare(b.label))

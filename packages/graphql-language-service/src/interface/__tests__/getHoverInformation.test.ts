@@ -132,9 +132,12 @@ describe('getHoverInformation', () => {
   it('provides fragment argument type information', () => {
     const query =
       'fragment Details($id: String!) on TestType { testField } query { thing { ...Details(id: "x") } }';
-    const actual = testHover(
+    const actual = getHoverInformation(
+      schema,
       query,
       new Position(0, query.lastIndexOf('id:') + 1),
+      undefined,
+      { experimentalFragmentArguments: true },
     );
 
     expect(actual).toEqual('(id: String!)');

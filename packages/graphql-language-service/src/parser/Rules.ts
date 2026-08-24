@@ -143,14 +143,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
 
   Arguments: [p('('), list('Argument'), p(')')],
   Argument: [name('attribute'), p(':'), 'Value'],
-  FragmentArguments: [p('('), list('FragmentArgument'), p(')')],
-  FragmentArgument: [name('attribute'), p(':'), 'Value'],
-  FragmentSpread: [
-    p('...'),
-    name('def'),
-    opt('FragmentArguments'),
-    list('Directive'),
-  ],
+  FragmentSpread: [p('...'), name('def'), list('Directive')],
   InlineFragment: [
     p('...'),
     opt('TypeCondition'),
@@ -161,7 +154,6 @@ export const ParseRules: { [name: string]: ParseRule } = {
   FragmentDefinition: [
     word('fragment'),
     opt(butNot(name('def'), [word('on')])),
-    opt('VariableDefinitions'),
     'TypeCondition',
     list('Directive'),
     'SelectionSet',
@@ -339,6 +331,26 @@ export const ParseRules: { [name: string]: ParseRule } = {
   [Kind.UNION_TYPE_EXTENSION]: ['UnionDef'],
   [Kind.ENUM_TYPE_EXTENSION]: ['EnumDef'],
   [Kind.INPUT_OBJECT_TYPE_EXTENSION]: ['InputDef'],
+};
+
+export const ExperimentalFragmentArgumentParseRules: typeof ParseRules = {
+  ...ParseRules,
+  FragmentArguments: [p('('), list('FragmentArgument'), p(')')],
+  FragmentArgument: [name('attribute'), p(':'), 'Value'],
+  FragmentSpread: [
+    p('...'),
+    name('def'),
+    opt('FragmentArguments'),
+    list('Directive'),
+  ],
+  FragmentDefinition: [
+    word('fragment'),
+    opt(butNot(name('def'), [word('on')])),
+    opt('VariableDefinitions'),
+    'TypeCondition',
+    list('Directive'),
+    'SelectionSet',
+  ],
 };
 
 // A keyword Token.

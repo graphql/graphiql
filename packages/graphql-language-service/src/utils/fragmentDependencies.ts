@@ -8,10 +8,12 @@
 import { DocumentNode, FragmentDefinitionNode, visit } from 'graphql';
 import nullthrows from 'nullthrows';
 import { parseDocument } from '../parser';
+import type { GraphQLLanguageServiceOptions } from '../types';
 
 export const getFragmentDependencies = (
   operationString: string,
   fragmentDefinitions?: Map<string, FragmentDefinitionNode> | null,
+  options?: GraphQLLanguageServiceOptions,
 ): FragmentDefinitionNode[] => {
   // If there isn't context for fragment references,
   // return an empty array.
@@ -22,7 +24,7 @@ export const getFragmentDependencies = (
   // Return an empty array.
   let parsedOperation;
   try {
-    parsedOperation = parseDocument(operationString);
+    parsedOperation = parseDocument(operationString, options);
   } catch {
     return [];
   }

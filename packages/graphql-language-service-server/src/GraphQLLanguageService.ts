@@ -17,7 +17,6 @@ import {
   FieldNode,
   GraphQLError,
   Kind,
-  parse,
   print,
   isTypeDefinitionNode,
   ArgumentNode,
@@ -47,6 +46,7 @@ import {
   getTypeInfo,
   DefinitionQueryResponse,
   getDefinitionQueryResultForArgument,
+  parseDocument,
 } from 'graphql-language-service';
 
 import type { GraphQLCache } from './GraphQLCache';
@@ -88,6 +88,14 @@ function getKind(tree: OutlineTree) {
   return KIND_TO_SYMBOL_KIND[tree.kind];
 }
 
+function fragmentArgumentOptions(projectConfig: GraphQLProjectConfig) {
+  return {
+    experimentalFragmentArguments:
+      projectConfig.extensions?.languageService
+        ?.experimentalFragmentArguments === true,
+  };
+}
+
 export class GraphQLLanguageService {
   _graphQLCache: GraphQLCache;
   _graphQLConfig: GraphQLConfig;
@@ -121,9 +129,10 @@ export class GraphQLLanguageService {
       return [];
     }
     const { schema: schemaPath, name: projectName, extensions } = projectConfig;
+    const experimentalOptions = fragmentArgumentOptions(projectConfig);
 
     try {
-      const documentAST = parse(document);
+      const documentAST = parseDocument(document, experimentalOptions);
       if (!schemaPath || uri !== schemaPath) {
         documentHasExtensions = documentAST.definitions.some(definition => {
           switch (definition.kind) {
@@ -174,6 +183,7 @@ export class GraphQLLanguageService {
       await this._graphQLCache.getFragmentDependencies(
         document,
         fragmentDefinitions,
+        experimentalOptions.experimentalFragmentArguments,
       );
 
     const dependenciesSource = fragmentDependencies.reduce(
@@ -185,7 +195,7 @@ export class GraphQLLanguageService {
 
     let validationAst = null;
     try {
-      validationAst = parse(source);
+      validationAst = parseDocument(source, experimentalOptions);
     } catch {
       // the query string is already checked to be parsed properly - errors
       // from this parse must be from corrupted fragment dependencies.
@@ -244,6 +254,7 @@ export class GraphQLLanguageService {
       fragmentInfo,
       {
         uri: filePath,
+        ...fragmentArgumentOptions(projectConfig),
         fillLeafsOnComplete:
           projectConfig?.extensions?.languageService?.fillLeafsOnComplete ??
           false,
@@ -264,7 +275,10 @@ export class GraphQLLanguageService {
     const schema = await this._graphQLCache.getSchema(projectConfig.name);
 
     if (schema) {
-      return getHoverInformation(schema, query, position, undefined, options);
+      return getHoverInformation(schema, query, position, undefined, {
+        ...fragmentArgumentOptions(projectConfig),
+        ...options,
+      });
     }
     return '';
   }
@@ -286,7 +300,7 @@ export class GraphQLLanguageService {
     }
     let ast;
     try {
-      ast = parse(query);
+      ast = parseDocument(query, fragmentArgumentOptions(projectConfig));
     } catch {
       return null;
     }
@@ -360,7 +374,7 @@ export class GraphQLLanguageService {
     document: string,
     filePath: Uri,
   ): Promise<SymbolInformation[]> {
-    const outline = await this.getOutline(document);
+    const outline = await this.getOutline(document, filePath);
     if (!outline) {
       return [];
     }
@@ -539,7 +553,14 @@ export class GraphQLLanguageService {
     );
   }
 
-  async getOutline(documentText: string): Promise<Outline | null> {
-    return getOutline(documentText);
+  async getOutline(
+    documentText: string,
+    filePath?: Uri,
+  ): Promise<Outline | null> {
+    const projectConfig = filePath ? this.getConfigForURI(filePath) : undefined;
+    return getOutline(
+      documentText,
+      projectConfig ? fragmentArgumentOptions(projectConfig) : undefined,
+    );
   }
 }

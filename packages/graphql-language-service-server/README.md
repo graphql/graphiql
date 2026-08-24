@@ -167,6 +167,8 @@ module.exports = {
       enableValidation: true,
       // (experimental) enhanced auto expansion of graphql leaf fields and arguments
       fillLeafsOnComplete: true,
+      // enable GraphQL.js 17 experimental fragment arguments across language features
+      experimentalFragmentArguments: true,
       // instead of jumping directly to the SDL file, you can override definition peek/jump results to point to different files or locations
       // (for example, source files for your schema in any language!)
       // based on Relay vscode's pathToLocateCommand

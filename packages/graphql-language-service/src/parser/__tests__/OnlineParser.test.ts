@@ -412,13 +412,16 @@ describe('onlineParser', () => {
     });
 
     it('parses fragment arguments on a fragment spread', () => {
-      const { t } = getUtils(`
+      const { t } = getUtils(
+        `
         query SomeQuery {
           someField {
             ...SomeFragment(count: 6)
           }
         }
-      `);
+      `,
+        { experimentalFragmentArguments: true },
+      );
 
       t.keyword('query', { kind: 'Query' });
       t.def('SomeQuery');
@@ -438,11 +441,14 @@ describe('onlineParser', () => {
     });
 
     it('parses variable definitions on a fragment definition', () => {
-      const { t, stream } = getUtils(`
+      const { t, stream } = getUtils(
+        `
         fragment SomeFragment($count: Int) on SomeType {
           someField
         }
-      `);
+      `,
+        { experimentalFragmentArguments: true },
+      );
 
       t.keyword('fragment', { kind: 'FragmentDefinition' });
       t.def('SomeFragment');

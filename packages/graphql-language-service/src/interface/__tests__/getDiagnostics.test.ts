@@ -146,6 +146,10 @@ describe('getDiagnostics', () => {
           }
         `,
         schema,
+        undefined,
+        undefined,
+        undefined,
+        { experimentalFragmentArguments: true },
       );
 
       expect(errors).toEqual([]);
@@ -167,6 +171,10 @@ describe('getDiagnostics', () => {
           }
         `,
         schema,
+        undefined,
+        undefined,
+        undefined,
+        { experimentalFragmentArguments: true },
       );
 
       expect(errors.map(error => error.message)).toEqual(
@@ -175,6 +183,19 @@ describe('getDiagnostics', () => {
           expect.stringContaining('showName'),
         ]),
       );
+    },
+  );
+
+  it.runIf(Number.parseInt(version, 10) >= 17)(
+    'does not enable fragment arguments by default',
+    () => {
+      const errors = getDiagnostics(
+        'fragment Details($id: ID!) on Human { id }',
+        schema,
+      );
+
+      expect(errors).toHaveLength(1);
+      expect(errors[0].source).toBe('GraphQL: Syntax');
     },
   );
 

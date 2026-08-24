@@ -60,6 +60,8 @@ import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
 
 // instantiates the worker & language features with the schema!
 const MonacoGraphQLAPI = initializeMode({
+  // Opt in only when the connected server supports fragment arguments.
+  experimentalFragmentArguments: true,
   schemas: [
     {
       schema: myGraphqlSchema as GraphQLSchema,

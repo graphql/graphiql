@@ -1,16 +1,13 @@
 import { DocumentNode, ParseOptions, Source, parse } from 'graphql';
 
-type FragmentArgumentParseOptions = ParseOptions & {
+export type GraphQLParseOptions = ParseOptions & {
   experimentalFragmentArguments?: boolean;
 };
 
-/** Parse executable documents with GraphQL.js 17 fragment arguments enabled. */
+/** Parse GraphQL documents, including explicitly enabled experimental syntax. */
 export function parseDocument(
   source: string | Source,
-  options?: ParseOptions,
+  options?: GraphQLParseOptions,
 ): DocumentNode {
-  return parse(source, {
-    ...options,
-    experimentalFragmentArguments: true,
-  } as FragmentArgumentParseOptions);
+  return parse(source, options as ParseOptions);
 }

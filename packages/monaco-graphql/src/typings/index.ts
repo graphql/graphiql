@@ -90,6 +90,8 @@ export type SchemaLoader = (
  * in a custom webworker. see the readme.
  */
 export type GraphQLLanguageConfig = {
+  /** Enable experimental fragment arguments across language features. */
+  experimentalFragmentArguments?: boolean;
   /**
    * Provide a parser that matches `graphql` `parse()` signature
    * Used for internal document parsing operations
@@ -219,6 +221,8 @@ export interface MonacoGraphQLInitializeConfig extends Pick<
   GraphQLLanguageConfig,
   'schemas'
 > {
+  /** Enable experimental fragment arguments across language features. */
+  experimentalFragmentArguments?: boolean;
   /**
    * custom (experimental) settings for autocompletion behavior
    */

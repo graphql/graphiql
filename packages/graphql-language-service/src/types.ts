@@ -131,6 +131,11 @@ export type GraphQLFileInfo = {
   mtime: number;
 };
 
+/** Experimental GraphQL language features that must be explicitly enabled. */
+export type GraphQLLanguageServiceOptions = {
+  experimentalFragmentArguments?: boolean;
+};
+
 export type ArgumentInfo = Pick<
   GraphQLArgument,
   'name' | 'type' | 'description'

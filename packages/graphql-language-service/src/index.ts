@@ -61,6 +61,7 @@ export {
   getDefinitionState,
   getFieldDef,
   getContextAtPosition,
+  parseDocument,
 } from './parser';
 
 export type {
@@ -98,6 +99,7 @@ export type {
   OutlineTree,
   FragmentInfo,
   GraphQLFileInfo,
+  GraphQLLanguageServiceOptions,
   FileChangeType,
   GraphQLCache,
   GraphQLExtensionDeclaration,

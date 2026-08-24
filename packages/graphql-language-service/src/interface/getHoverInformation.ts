@@ -21,13 +21,19 @@ import {
   GraphQLFieldConfig,
 } from 'graphql';
 import type { ContextToken } from '../parser';
-import { AllTypeInfo, IPosition } from '../types';
+import {
+  AllTypeInfo,
+  GraphQLLanguageServiceOptions,
+  IPosition,
+} from '../types';
 
 import { Hover } from 'vscode-languageserver-types';
 import { getContextAtPosition, RuleKinds } from '../parser';
 import { getFragmentDefinitions } from './getFragmentDefinitions';
 
-export type HoverConfig = { useMarkdown?: boolean };
+export type HoverConfig = GraphQLLanguageServiceOptions & {
+  useMarkdown?: boolean;
+};
 
 export function getHoverInformation(
   schema: GraphQLSchema,
@@ -43,7 +49,8 @@ export function getHoverInformation(
     schema,
     contextToken,
     {
-      fragmentDefinitions: getFragmentDefinitions(queryText),
+      fragmentDefinitions: getFragmentDefinitions(queryText, config),
+      experimentalFragmentArguments: config?.experimentalFragmentArguments,
     },
   );
   if (!context) {
