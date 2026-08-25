@@ -15,6 +15,7 @@
     "electron:setup": "node ../../node_modules/electron/install.js",
     "build": "vite build && tsgo -p tsconfig.main.json",
     "start": "electron .",
+    "dist": "electron-builder --publish never",
     "test": "vitest run",
     "types:check": "tsgo --noEmit"
   },
@@ -22,6 +23,7 @@
     "@graphiql/toolkit": "^0.12.1",
     "@vitejs/plugin-react": "^4.4.1",
     "electron": "^43.4.1",
+    "electron-builder": "^26.15.7",
     "graphiql": "^5.2.4",
     "graphql": "^16.11.0",
     "react": "^19.1.0",
