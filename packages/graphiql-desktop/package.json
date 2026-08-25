@@ -13,10 +13,10 @@
   "main": "dist/main/main.js",
   "scripts": {
     "electron:setup": "node ../../node_modules/electron/install.js",
-    "build": "vite build && ../../node_modules/.bin/tsgo -p tsconfig.main.json",
+    "build": "vite build && tsgo -p tsconfig.main.json",
     "start": "electron .",
     "test": "vitest run",
-    "types:check": "../../node_modules/.bin/tsgo --noEmit"
+    "types:check": "tsgo --noEmit"
   },
   "devDependencies": {
     "@graphiql/toolkit": "^0.12.1",

@@ -140,6 +140,45 @@ describe('executeGraphQLRequest', () => {
     });
   });
 
+  it('lets a conventionally-cased Content-Type override the default cleanly', async () => {
+    const { server, url } = await listen((req, res) => {
+      // A case-sensitive merge would leave both `content-type` and
+      // `Content-Type` in the headers object, which `fetch`'s `Headers`
+      // comma-joins into a single garbled value instead of overriding.
+      expect(req.headers['content-type']).toBe(
+        'application/graphql-response+json',
+      );
+      res.writeHead(200, { 'content-type': 'application/json' });
+      res.end('{}');
+    });
+    activeServer = server;
+
+    const result = await executeGraphQLRequest({
+      url,
+      headers: { 'Content-Type': 'application/graphql-response+json' },
+      body: '{}',
+    });
+
+    expect(result.ok).toBe(true);
+  });
+
+  it('forwards a mixed-case custom header intact', async () => {
+    const { server, url } = await listen((req, res) => {
+      expect(req.headers['x-api-key']).toBe('secret-key');
+      res.writeHead(200, { 'content-type': 'application/json' });
+      res.end('{}');
+    });
+    activeServer = server;
+
+    const result = await executeGraphQLRequest({
+      url,
+      headers: { 'X-Api-Key': 'secret-key' },
+      body: '{}',
+    });
+
+    expect(result.ok).toBe(true);
+  });
+
   it('returns a structured error for a connection refused, without throwing', async () => {
     const { server, url } = await listen((_req, res) => res.end());
     await closeServer(server);

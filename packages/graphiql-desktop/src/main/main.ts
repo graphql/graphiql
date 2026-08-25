@@ -55,7 +55,15 @@ async function handleAppRequest(request: Request): Promise<Response> {
   const pathname =
     url.pathname === '/' || url.pathname === '' ? '/index.html' : url.pathname;
 
-  const filePath = resolve(join(RENDERER_DIR, decodeURIComponent(pathname)));
+  const decodedPathname = decodeURIComponent(pathname);
+  // `\` isn't a separator in a POSIX join/resolve, so a backslash can slip
+  // through to a Windows filesystem call untouched — reject it outright
+  // rather than trying to normalize it away.
+  if (decodedPathname.includes('\\')) {
+    return new Response('Not found', { status: 404 });
+  }
+
+  const filePath = resolve(join(RENDERER_DIR, decodedPathname));
   // Path-traversal guard: the resolved file must stay inside RENDERER_DIR.
   if (filePath !== RENDERER_DIR && !filePath.startsWith(RENDERER_DIR + '/')) {
     return new Response('Not found', { status: 404 });

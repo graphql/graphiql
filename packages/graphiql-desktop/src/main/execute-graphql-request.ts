@@ -72,7 +72,15 @@ export async function executeGraphQLRequest(
     };
   }
 
-  const headers = { ...DEFAULT_HEADERS, ...payload.headers };
+  // Header names are case-insensitive over HTTP, but a plain object merge
+  // isn't: a user-supplied `Content-Type` wouldn't override our lowercase
+  // `content-type` default, and `fetch`'s `Headers` would then see both and
+  // comma-join them into a single (wrong) value. Lowercase incoming keys
+  // first so the merge actually overrides.
+  const headers: Record<string, string> = { ...DEFAULT_HEADERS };
+  for (const [key, value] of Object.entries(payload.headers ?? {})) {
+    headers[key.toLowerCase()] = value;
+  }
 
   try {
     const response = await fetch(url, {
