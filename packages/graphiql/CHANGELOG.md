@@ -1,5 +1,18 @@
 # Change Log
 
+## 5.3.0
+
+### Minor Changes
+
+- [#4448](https://github.com/graphql/graphiql/pull/4448) [`e751f65`](https://github.com/graphql/graphiql/commit/e751f653f0864eca19d1a86b04d2afd24a9aecc6) Thanks [@dargmuesli](https://github.com/dargmuesli)! - Add `customScalarSchemas` prop to `GraphiQLProvider`/`GraphiQL`, forwarded to `monaco-graphql`'s per-schema `customScalarSchemas` config. Without it, the variable editor's live JSON Schema linter assumes every custom scalar only accepts primitives (string, number, boolean, integer) and reports a spurious "Incorrect type" error for scalars that legitimately accept objects or arrays (e.g. a `JSON` or `GeoJSON` scalar). `graphql-language-service` and `monaco-graphql` already supported this per-scalar override; `@graphiql/react` just never exposed it.
+
+### Patch Changes
+
+- Updated dependencies [[`0893da7`](https://github.com/graphql/graphiql/commit/0893da7cfbfa51c58ed2417e554811a9dbceb15a), [`6090495`](https://github.com/graphql/graphiql/commit/6090495deeddcda391b3131e02e431a0556c6a31), [`e751f65`](https://github.com/graphql/graphiql/commit/e751f653f0864eca19d1a86b04d2afd24a9aecc6)]:
+  - @graphiql/plugin-doc-explorer@0.4.3
+  - @graphiql/react@0.38.0
+  - @graphiql/plugin-history@0.4.3
+
 ## 5.2.4
 
 ### Patch Changes
