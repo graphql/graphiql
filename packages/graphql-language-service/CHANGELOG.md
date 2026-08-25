@@ -1,5 +1,11 @@
 # graphql-language-service
 
+## 5.6.0
+
+### Minor Changes
+
+- [#4442](https://github.com/graphql/graphiql/pull/4442) [`0893da7`](https://github.com/graphql/graphiql/commit/0893da7cfbfa51c58ed2417e554811a9dbceb15a) Thanks [@pur3miish](https://github.com/pur3miish)! - Expose the active input object type from the language service and use it to navigate the Documentation Explorer to fields inside nested input object literals.
+
 ## 5.5.2
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @graphiql/plugin-history
 
+## 0.4.3
+
+### Patch Changes
+
+- Updated dependencies [[`6090495`](https://github.com/graphql/graphiql/commit/6090495deeddcda391b3131e02e431a0556c6a31), [`e751f65`](https://github.com/graphql/graphiql/commit/e751f653f0864eca19d1a86b04d2afd24a9aecc6)]:
+  - @graphiql/react@0.38.0
+
 ## 0.4.2
 
 ### Patch Changes

@@ -3,6 +3,8 @@ import type {
   GraphQLEnumType,
   GraphQLNamedType,
   GraphQLField,
+  GraphQLInputField,
+  GraphQLInputObjectType,
   GraphQLArgument,
   GraphQLDirective,
   GraphQLSchema,
@@ -19,9 +21,10 @@ import type { Maybe } from 'graphql/jsutils/Maybe';
 export function getSchemaReference(kind: string, typeInfo: any) {
   if (
     (kind === 'Field' && typeInfo.fieldDef) ||
-    (kind === 'AliasedField' && typeInfo.fieldDef)
+    (kind === 'AliasedField' && typeInfo.fieldDef) ||
+    (kind === 'ObjectField' && typeInfo.fieldDef)
   ) {
-    return getFieldReference(typeInfo);
+    return getFieldReference(typeInfo, kind === 'ObjectField');
   }
   if (kind === 'Directive' && typeInfo.directiveDef) {
     return getDirectiveReference(typeInfo);
@@ -62,12 +65,17 @@ function getDirectiveReference(typeInfo: any): DirectiveReference {
   };
 }
 
-function getFieldReference(typeInfo: any): FieldReference {
+function getFieldReference(
+  typeInfo: any,
+  isObjectField = false,
+): FieldReference {
+  const type = isObjectField ? typeInfo.inputObjectType : typeInfo.parentType;
+
   return {
     kind: 'Field',
     schema: typeInfo.schema,
     field: typeInfo.fieldDef,
-    type: isMetaField(typeInfo.fieldDef) ? null : typeInfo.parentType,
+    type: isMetaField(typeInfo.fieldDef) ? null : type,
   };
 }
 
@@ -94,7 +102,9 @@ function getEnumValueReference(typeInfo: TypeInfo): EnumValueReference {
   };
 }
 
-function isMetaField(fieldDef: GraphQLField<unknown, unknown>) {
+function isMetaField(
+  fieldDef: GraphQLField<unknown, unknown> | GraphQLInputField,
+) {
   return fieldDef.name.slice(0, 2) === '__';
 }
 
@@ -122,7 +132,7 @@ type EnumValueReference = {
 
 type FieldReference = {
   kind: 'Field';
-  field: GraphQLField<unknown, unknown>;
+  field: GraphQLField<unknown, unknown> | GraphQLInputField;
   type: Maybe<GraphQLNamedType>;
   schema?: GraphQLSchema;
 };
@@ -138,8 +148,9 @@ interface TypeInfo {
   type?: Maybe<GraphQLType>;
   parentType?: Maybe<GraphQLType>;
   inputType?: Maybe<GraphQLInputType>;
+  inputObjectType?: Maybe<GraphQLInputObjectType>;
   directiveDef?: Maybe<GraphQLDirective>;
-  fieldDef?: Maybe<GraphQLField<unknown, unknown>>;
+  fieldDef?: Maybe<GraphQLField<unknown, unknown> | GraphQLInputField>;
   argDef?: Maybe<GraphQLArgument>;
   argDefs?: Maybe<GraphQLArgument[]>;
   enumValue?: Maybe<GraphQLEnumValue>;
