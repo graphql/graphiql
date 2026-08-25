@@ -57,9 +57,6 @@ codespaces
 codicon
 colmena
 combobox
-csecret
-cserver
-cshare
 cshaver
 dedenting
 delivr
@@ -79,14 +76,12 @@ esbuild
 estree
 execa
 exfiltrate
-fetc
 filesfor
 fira
 firecamp
 flowtests
 foldgutter
 foldmarker
-fpasswd
 gdezerno
 ghapi
 gillam
@@ -245,7 +240,6 @@ typedoc
 typeof
 uncurried
 unfocus
-unknownext
 unnormalized
 unparsable
 unsubscribable
