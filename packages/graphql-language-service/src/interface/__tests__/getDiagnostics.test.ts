@@ -79,6 +79,44 @@ describe('getDiagnostics', () => {
     ]);
   });
 
+  it('highlights the field name of an aliased field, not the alias', () => {
+    const errors = validateQuery(parse('{ heroName: title }'), schema);
+    expect(errors).toMatchObject([
+      {
+        message: 'Cannot query field "title" on type "Query".',
+        range: {
+          end: {
+            character: 18,
+            line: 0,
+          },
+          start: {
+            character: 12,
+            line: 0,
+          },
+        },
+      },
+    ]);
+  });
+
+  it('highlights the directive name, not the "@" that precedes it', () => {
+    const errors = validateQuery(parse('{ hero @nope { name } }'), schema);
+    expect(errors).toMatchObject([
+      {
+        message: 'Unknown directive "@nope".',
+        range: {
+          end: {
+            character: 13,
+            line: 0,
+          },
+          start: {
+            character: 8,
+            line: 0,
+          },
+        },
+      },
+    ]);
+  });
+
   it('catches multi root validation errors without breaking (with a custom validation function that always throws errors)', () => {
     const error = validateQuery(parse('{ hero { name } } { seq }'), schema, [
       validationContext => {
