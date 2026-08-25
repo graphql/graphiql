@@ -1,5 +1,4 @@
 ---
-'@graphiql/react': major
 '@graphiql/plugin-doc-explorer': patch
 'graphql-language-service': minor
 ---
