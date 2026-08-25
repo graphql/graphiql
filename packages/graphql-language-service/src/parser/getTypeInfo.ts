@@ -103,6 +103,7 @@ export function getTypeInfo(
   let enumValue: AllTypeInfo['enumValue'];
   let fieldDef: AllTypeInfo['fieldDef'];
   let inputType: AllTypeInfo['inputType'];
+  let inputObjectType: AllTypeInfo['inputObjectType'];
   let objectTypeDef: AllTypeInfo['objectTypeDef'];
   let objectFieldDefs: AllTypeInfo['objectFieldDefs'];
   let parentType: AllTypeInfo['parentType'];
@@ -237,10 +238,9 @@ export function getTypeInfo(
         break;
       case RuleKinds.OBJECT_VALUE:
         const objectType = getNamedType(inputType!);
-        objectFieldDefs =
-          objectType instanceof GraphQLInputObjectType
-            ? objectType.getFields()
-            : null;
+        inputObjectType =
+          objectType instanceof GraphQLInputObjectType ? objectType : null;
+        objectFieldDefs = inputObjectType?.getFields() ?? null;
         break;
       // TODO: needs tests
       case RuleKinds.OBJECT_FIELD:
@@ -269,6 +269,7 @@ export function getTypeInfo(
     directiveDef,
     enumValue,
     fieldDef,
+    inputObjectType,
     inputType,
     objectFieldDefs,
     parentType,
