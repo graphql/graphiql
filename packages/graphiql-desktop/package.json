@@ -17,15 +17,18 @@
     "start": "electron .",
     "dist": "electron-builder --publish never",
     "test": "vitest run",
+    "e2e": "playwright test",
     "types:check": "tsgo --noEmit"
   },
   "devDependencies": {
     "@graphiql/toolkit": "^0.12.1",
+    "@playwright/test": "^1.62.1",
     "@vitejs/plugin-react": "^4.4.1",
     "electron": "^43.4.1",
     "electron-builder": "^26.15.7",
     "graphiql": "^5.2.4",
     "graphql": "^16.11.0",
+    "playwright": "^1.62.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "typescript": "^5.8.0",

@@ -14,5 +14,11 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["src", "vite.config.mts", "vitest.config.mts"]
+  "include": [
+    "src",
+    "e2e",
+    "vite.config.mts",
+    "vitest.config.mts",
+    "playwright.config.mts"
+  ]
 }
