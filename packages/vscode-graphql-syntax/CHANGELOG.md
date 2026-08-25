@@ -1,5 +1,11 @@
 # vscode-graphql-syntax
 
+## 1.3.12
+
+### Patch Changes
+
+- [#4385](https://github.com/graphql/graphiql/pull/4385) [`bd73a95`](https://github.com/graphql/graphiql/commit/bd73a95154021981d40294a76b24e3266b3a7287) Thanks [@glen-84](https://github.com/glen-84)! - Highlight GraphQL string values — including single-line and block (triple-quoted) strings in directive and field arguments, list items, and default values — as strings instead of comments. Descriptions are now scoped as documentation (`comment.block.documentation` / `comment.line.documentation`) so themes can style them distinctly while still defaulting to comment colors.
+
 ## 1.3.11
 
 ### Patch Changes
