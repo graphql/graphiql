@@ -1,4 +1,4 @@
-import type * as monaco from '../monaco-editor';
+import type { DiagnosticsOptions as JSONDiagnosticsOptions } from 'monaco-editor/languages/features/json/register';
 import {
   IntrospectionQuery,
   DocumentNode,
@@ -202,7 +202,7 @@ export type DiagnosticSettings = {
    * - `validateSchema: 'warning'`
    * - `trailingComments` is `error` by default, and can be `warning` or `ignore`
    */
-  jsonDiagnosticSettings?: monaco.languages.json.DiagnosticsOptions;
+  jsonDiagnosticSettings?: JSONDiagnosticsOptions;
 };
 
 export type CompletionSettings = AutocompleteSuggestionOptions & {

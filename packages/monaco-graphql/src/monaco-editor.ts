@@ -16,7 +16,7 @@
  * Types for `monaco-editor/esm/vs/editor/edcore.main` are also left out;
  * we enhance them in `monaco.d.ts` 😎
  */
-import 'monaco-editor/esm/vs/basic-languages/graphql/graphql.contribution.js';
-import 'monaco-editor/esm/vs/language/json/monaco.contribution.js';
+import 'monaco-editor/languages/definitions/graphql/register.js';
+import 'monaco-editor/language/json/monaco.contribution.js';
 
-export * from 'monaco-editor/esm/vs/editor/edcore.main.js';
+export * from 'monaco-editor/editor/editor.main.js';
