@@ -1,5 +1,14 @@
 # @graphiql/plugin-doc-explorer
 
+## 0.4.3
+
+### Patch Changes
+
+- [#4442](https://github.com/graphql/graphiql/pull/4442) [`0893da7`](https://github.com/graphql/graphiql/commit/0893da7cfbfa51c58ed2417e554811a9dbceb15a) Thanks [@pur3miish](https://github.com/pur3miish)! - Expose the active input object type from the language service and use it to navigate the Documentation Explorer to fields inside nested input object literals.
+
+- Updated dependencies [[`6090495`](https://github.com/graphql/graphiql/commit/6090495deeddcda391b3131e02e431a0556c6a31), [`e751f65`](https://github.com/graphql/graphiql/commit/e751f653f0864eca19d1a86b04d2afd24a9aecc6)]:
+  - @graphiql/react@0.38.0
+
 ## 0.4.2
 
 ### Patch Changes
