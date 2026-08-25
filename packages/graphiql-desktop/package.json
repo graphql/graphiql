@@ -1,0 +1,33 @@
+{
+  "name": "graphiql-desktop",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Standalone GraphiQL desktop app — query any GraphQL API without CORS restrictions",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/graphql/graphiql",
+    "directory": "packages/graphiql-desktop"
+  },
+  "homepage": "https://github.com/graphql/graphiql/tree/main/packages/graphiql-desktop#readme",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "electron:setup": "node ../../node_modules/electron/install.js",
+    "build": "vite build && ../../node_modules/.bin/tsgo -p tsconfig.main.json",
+    "start": "electron .",
+    "test": "vitest run",
+    "types:check": "../../node_modules/.bin/tsgo --noEmit"
+  },
+  "devDependencies": {
+    "@graphiql/toolkit": "^0.12.1",
+    "@vitejs/plugin-react": "^4.4.1",
+    "electron": "^43.4.1",
+    "graphiql": "^5.2.4",
+    "graphql": "^16.11.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "typescript": "^5.8.0",
+    "vite": "^6.4.3",
+    "vitest": "^4.1.6"
+  }
+}

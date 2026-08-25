@@ -2652,6 +2652,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@electron-internal/extract-zip@npm:^1.0.1":
+  version: 1.0.5
+  resolution: "@electron-internal/extract-zip@npm:1.0.5"
+  checksum: 10c0/d3341937dcb37097fd4927b7e5dfb7cb6b1ba56a42b00d62a55a7a9bbd093545dd8c6711ab39b321b2696d968b2cc32c29ed9d60a1fa6aa1665588e03e60d4e1
+  languageName: node
+  linkType: hard
+
+"@electron/get@npm:^5.0.0":
+  version: 5.1.0
+  resolution: "@electron/get@npm:5.1.0"
+  dependencies:
+    debug: "npm:^4.1.1"
+    env-paths: "npm:^3.0.0"
+    graceful-fs: "npm:^4.2.11"
+    progress: "npm:^2.0.3"
+    semver: "npm:^7.6.3"
+    sumchecker: "npm:^3.0.1"
+    undici: "npm:^7.24.4"
+  dependenciesMeta:
+    undici:
+      optional: true
+  checksum: 10c0/50e037c7f64197a6efcd219a0796566422c3fec056134144530da4a15c8bfaa0c5e7233bcc0c9a56ccb1b4c5d86878da6911d237a527684d70619dfd7a3f9675
+  languageName: node
+  linkType: hard
+
 "@emnapi/runtime@npm:^1.7.0":
   version: 1.10.0
   resolution: "@emnapi/runtime@npm:1.10.0"
@@ -7032,6 +7057,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^24.9.0":
+  version: 24.13.3
+  resolution: "@types/node@npm:24.13.3"
+  dependencies:
+    undici-types: "npm:~7.18.0"
+  checksum: 10c0/a5bc08f49b9581dcdca90e02cd77197a3c799840807664942e5cd5161a553d4d2ae8064f7e3294410d748d7d098b5c1848be7fa50c06f29c4193ab16be4e59eb
+  languageName: node
+  linkType: hard
+
 "@types/normalize-package-data@npm:^2.4.0":
   version: 2.4.0
   resolution: "@types/normalize-package-data@npm:2.4.0"
@@ -11169,6 +11203,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"electron@npm:^43.4.1":
+  version: 43.4.1
+  resolution: "electron@npm:43.4.1"
+  dependencies:
+    "@electron-internal/extract-zip": "npm:^1.0.1"
+    "@electron/get": "npm:^5.0.0"
+    "@types/node": "npm:^24.9.0"
+  bin:
+    electron: cli.js
+    install-electron: install.js
+  checksum: 10c0/28e566ecd2dd37bda0a64eb9fecd12d23973952bcd15df993948fc7d4d434e4a068b674f486aea1cb39bfba1f9dbfdf51e94b45b2da31ad0861fbff8c2d3d7e7
+  languageName: node
+  linkType: hard
+
 "emoji-regex@npm:^7.0.1":
   version: 7.0.3
   resolution: "emoji-regex@npm:7.0.3"
@@ -11266,6 +11314,13 @@ __metadata:
   version: 2.2.1
   resolution: "env-paths@npm:2.2.1"
   checksum: 10c0/285325677bf00e30845e330eec32894f5105529db97496ee3f598478e50f008c5352a41a30e5e72ec9de8a542b5a570b85699cd63bd2bc646dbcb9f311d83bc4
+  languageName: node
+  linkType: hard
+
+"env-paths@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "env-paths@npm:3.0.0"
+  checksum: 10c0/76dec878cee47f841103bacd7fae03283af16f0702dad65102ef0a556f310b98a377885e0f32943831eb08b5ab37842a323d02529f3dfd5d0a40ca71b01b435f
   languageName: node
   linkType: hard
 
@@ -13520,6 +13575,23 @@ __metadata:
   checksum: 10c0/64e40890e0bf0a3bfee6a677342a6b5aee87a3b1d4b470f0b1d501d9c77a48031ab04d37c19c3f8ea707bb2d70b92c2505d4ed3ff446611d449ad999cb076d16
   languageName: node
   linkType: hard
+
+"graphiql-desktop@workspace:packages/graphiql-desktop":
+  version: 0.0.0-use.local
+  resolution: "graphiql-desktop@workspace:packages/graphiql-desktop"
+  dependencies:
+    "@graphiql/toolkit": "npm:^0.12.1"
+    "@vitejs/plugin-react": "npm:^4.4.1"
+    electron: "npm:^43.4.1"
+    graphiql: "npm:^5.2.4"
+    graphql: "npm:^16.11.0"
+    react: "npm:^19.1.0"
+    react-dom: "npm:^19.1.0"
+    typescript: "npm:^5.8.0"
+    vite: "npm:^6.4.3"
+    vitest: "npm:^4.1.6"
+  languageName: unknown
+  linkType: soft
 
 "graphiql-explorer@npm:^0.9.0":
   version: 0.9.0
@@ -18389,6 +18461,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"progress@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "progress@npm:2.0.3"
+  checksum: 10c0/1697e07cb1068055dbe9fe858d242368ff5d2073639e652b75a7eb1f2a1a8d4afd404d719de23c7b48481a6aa0040686310e2dac2f53d776daa2176d3f96369c
+  languageName: node
+  linkType: hard
+
 "promise-retry@npm:^2.0.1":
   version: 2.0.1
   resolution: "promise-retry@npm:2.0.1"
@@ -19542,7 +19621,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.5.2, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.7.3, semver@npm:^7.8.1":
+"semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.5.2, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.3, semver@npm:^7.7.3, semver@npm:^7.8.1":
   version: 7.8.5
   resolution: "semver@npm:7.8.5"
   bin:
@@ -20713,6 +20792,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sumchecker@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "sumchecker@npm:3.0.1"
+  dependencies:
+    debug: "npm:^4.1.0"
+  checksum: 10c0/43c387be9dfe22dbeaf39dfa4ffb279847aeb37a42a8988c0b066f548bbd209aa8c65e03da29f2b29be1a66b577801bf89fff0007df4183db2f286263a9569e5
+  languageName: node
+  linkType: hard
+
 "supports-color@npm:8.1.1, supports-color@npm:^8.0.0, supports-color@npm:^8.1.0, supports-color@npm:^8.1.1, supports-color@npm:~8.1.1":
   version: 8.1.1
   resolution: "supports-color@npm:8.1.1"
@@ -21640,12 +21728,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"undici-types@npm:~7.18.0":
+  version: 7.18.2
+  resolution: "undici-types@npm:7.18.2"
+  checksum: 10c0/85a79189113a238959d7a647368e4f7c5559c3a404ebdb8fc4488145ce9426fcd82252a844a302798dfc0e37e6fb178ff481ed03bc4caf634c5757d9ef43521d
+  languageName: node
+  linkType: hard
+
 "undici@npm:^5.8.0":
   version: 5.29.0
   resolution: "undici@npm:5.29.0"
   dependencies:
     "@fastify/busboy": "npm:^2.0.0"
   checksum: 10c0/e4e4d631ca54ee0ad82d2e90e7798fa00a106e27e6c880687e445cc2f13b4bc87c5eba2a88c266c3eecffb18f26e227b778412da74a23acc374fca7caccec49b
+  languageName: node
+  linkType: hard
+
+"undici@npm:^7.24.4":
+  version: 7.29.0
+  resolution: "undici@npm:7.29.0"
+  checksum: 10c0/85ea96e91e7f3de24de678cbbc54230fdd641a3b0643005f2aef044af1f1a2db8fbecb88b28e6fa78bb41ffeafda4479b57075b6b6ab92beac4b7b5ab53f9b10
   languageName: node
   linkType: hard
 
