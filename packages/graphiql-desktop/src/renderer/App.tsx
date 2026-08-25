@@ -46,7 +46,7 @@ export function App() {
         body: JSON.stringify(graphQLParams),
       });
 
-      if (!result.text) {
+      if (result.text === undefined) {
         return {
           errors: [
             {
@@ -93,6 +93,9 @@ export function App() {
       </form>
       <div id="graphiql">
         {endpoint ? (
+          // Remount on endpoint change so the schema refetches; in-progress
+          // editor state for the old endpoint isn't lost, since GraphiQL
+          // persists it to localStorage itself.
           <GraphiQL key={endpoint} fetcher={fetcher} />
         ) : (
           <div className="graphiql-desktop-empty-state">

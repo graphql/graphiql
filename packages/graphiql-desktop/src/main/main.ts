@@ -1,30 +1,15 @@
 import { readFile } from 'node:fs/promises';
-import { extname, join, resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import { app, BrowserWindow, ipcMain, protocol, shell } from 'electron';
 import {
   executeGraphQLRequest,
   isValidGraphQLRequestPayload,
 } from './execute-graphql-request';
+import { resolveRendererPath } from './resolve-renderer-path';
 
 const APP_SCHEME = 'graphiql-desktop';
 const APP_HOST = 'bundle';
 const RENDERER_DIR = resolve(__dirname, '..', 'renderer');
-
-const MIME_TYPES: Record<string, string> = {
-  '.html': 'text/html',
-  '.js': 'text/javascript',
-  '.mjs': 'text/javascript',
-  '.css': 'text/css',
-  '.json': 'application/json',
-  '.svg': 'image/svg+xml',
-  '.png': 'image/png',
-  '.ico': 'image/x-icon',
-  '.woff': 'font/woff',
-  '.woff2': 'font/woff2',
-  '.ttf': 'font/ttf',
-  '.wasm': 'application/wasm',
-  '.map': 'application/json',
-};
 
 // A real (non-file://) origin is required for `localStorage` persistence and
 // for monaco's module workers, both of which behave inconsistently or not at
@@ -52,30 +37,16 @@ function isInAppScheme(url: string): boolean {
 
 async function handleAppRequest(request: Request): Promise<Response> {
   const url = new URL(request.url);
-  const pathname =
-    url.pathname === '/' || url.pathname === '' ? '/index.html' : url.pathname;
-
-  const decodedPathname = decodeURIComponent(pathname);
-  // `\` isn't a separator in a POSIX join/resolve, so a backslash can slip
-  // through to a Windows filesystem call untouched — reject it outright
-  // rather than trying to normalize it away.
-  if (decodedPathname.includes('\\')) {
-    return new Response('Not found', { status: 404 });
-  }
-
-  const filePath = resolve(join(RENDERER_DIR, decodedPathname));
-  // Path-traversal guard: the resolved file must stay inside RENDERER_DIR.
-  if (filePath !== RENDERER_DIR && !filePath.startsWith(RENDERER_DIR + '/')) {
+  const resolved = resolveRendererPath(url.pathname, RENDERER_DIR);
+  if (!resolved) {
     return new Response('Not found', { status: 404 });
   }
 
   try {
-    const data = await readFile(filePath);
-    const contentType =
-      MIME_TYPES[extname(filePath)] ?? 'application/octet-stream';
+    const data = await readFile(resolved.filePath);
     return new Response(data, {
       status: 200,
-      headers: { 'content-type': contentType },
+      headers: { 'content-type': resolved.contentType },
     });
   } catch {
     return new Response('Not found', { status: 404 });
