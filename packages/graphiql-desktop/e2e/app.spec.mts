@@ -78,13 +78,19 @@ async function startMockGraphQLServer(): Promise<MockServer> {
 
 test('loads a schema from the endpoint bar and executes queries through the main process', async () => {
   const mockServer = await startMockGraphQLServer();
-
-  // The built app (`yarn build`) is what's launched here, exercising the
-  // real `graphiql-desktop://` scheme handler and IPC bridge rather than a
-  // dev server.
-  const app = await electron.launch({ args: ['.'] });
+  let app: Awaited<ReturnType<typeof electron.launch>> | undefined;
 
   try {
+    // The built app (`yarn build`) is what's launched here, exercising the
+    // real `graphiql-desktop://` scheme handler and IPC bridge rather than a
+    // dev server.
+    app = await electron.launch({
+      // Electron's SUID sandbox is a known first-run failure on GitHub's
+      // `ubuntu-latest` runners (AppArmor restricts unprivileged user
+      // namespaces); disabling it is fine for a test harness.
+      args: ['.', '--no-sandbox'],
+    });
+
     const window = await app.firstWindow();
     await expect(window).toHaveTitle('GraphiQL');
 
@@ -108,7 +114,8 @@ test('loads a schema from the endpoint bar and executes queries through the main
       })
       .toBeGreaterThan(0);
   } finally {
-    await app.close();
-    await mockServer.close();
+    // Independent of each other so a launch failure (`app` stays undefined)
+    // or a close() rejection on one still lets the other get cleaned up.
+    await Promise.allSettled([app?.close(), mockServer.close()]);
   }
 });

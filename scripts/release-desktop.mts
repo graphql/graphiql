@@ -37,12 +37,16 @@ async function readVersion(): Promise<string> {
   return (JSON.parse(json) as { version: string }).version;
 }
 
-async function findInstallers(): Promise<string[]> {
+async function findInstallers(version: string): Promise<string[]> {
   const entries = await readdir(RELEASE_DIR, { withFileTypes: true });
   return entries
     .filter(
       entry =>
-        entry.isFile() && INSTALLER_EXTENSIONS.has(path.extname(entry.name)),
+        entry.isFile() &&
+        INSTALLER_EXTENSIONS.has(path.extname(entry.name)) &&
+        // Guards against a stale artifact from a previous version left over
+        // in `release/` getting uploaded under the wrong release tag.
+        entry.name.includes(version),
     )
     .map(entry => path.join(RELEASE_DIR, entry.name))
     .sort();
@@ -53,10 +57,25 @@ async function sha256(filePath: string): Promise<string> {
   return createHash('sha256').update(data).digest('hex');
 }
 
+// electron-builder's own `${os}` artifact-name macro, which our
+// `artifactName` pattern in electron-builder.yml already uses (e.g.
+// `GraphiQL-<version>-mac-arm64.dmg`) — match it here so the checksums file
+// sits next to the installers it names using the same vocabulary, rather
+// than Node's `darwin`/`win32`.
+const OS_NAMES: Record<string, string> = {
+  darwin: 'mac',
+  linux: 'linux',
+  win32: 'win',
+};
+
+function currentOsName(): string {
+  return OS_NAMES[process.platform] ?? process.platform;
+}
+
 async function writeChecksums(installers: string[]): Promise<string> {
   const checksumsPath = path.join(
     RELEASE_DIR,
-    `SHA256SUMS-${process.platform}.txt`,
+    `SHA256SUMS-${currentOsName()}.txt`,
   );
   const lines = await Promise.all(
     installers.map(async installer => {
@@ -72,10 +91,10 @@ async function attach(): Promise<void> {
   const version = await readVersion();
   const tag = `${PACKAGE_NAME}@${version}`;
 
-  const installers = await findInstallers();
+  const installers = await findInstallers(version);
   if (installers.length === 0) {
     throw new Error(
-      `No installers found in ${RELEASE_DIR}; did "yarn workspace ${PACKAGE_NAME} dist" run first?`,
+      `No installers for version ${version} found in ${RELEASE_DIR}; did "yarn workspace ${PACKAGE_NAME} dist" run first?`,
     );
   }
 

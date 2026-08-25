@@ -172,7 +172,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: graphiql-desktop-playwright-report
+          name: graphiql-desktop-test-results
           path: packages/graphiql-desktop/test-results
           if-no-files-found: ignore
 
