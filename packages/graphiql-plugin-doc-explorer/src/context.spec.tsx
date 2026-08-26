@@ -6,8 +6,13 @@ import {
   useGraphiQL as $useGraphiQL,
   useGraphiQLActions as $useGraphiQLActions,
   isMacOs,
+  type SchemaReference,
 } from '@graphiql/react';
-import { DOC_EXPLORER_PLUGIN, DocExplorerStore } from './context';
+import {
+  DOC_EXPLORER_PLUGIN,
+  DocExplorerStore,
+  docExplorerStore,
+} from './context';
 
 const useGraphiQL = $useGraphiQL as Mock;
 const useGraphiQLActions = $useGraphiQLActions as Mock;
@@ -119,5 +124,46 @@ describe('DocExplorerStore keyboard shortcut', () => {
 
     expect(preventDefaultSpy).toHaveBeenCalled();
     expect(setVisiblePlugin).toHaveBeenCalledWith(DOC_EXPLORER_PLUGIN);
+  });
+});
+
+describe('resolveSchemaReferenceToNavItem', () => {
+  const queryType = schema.getQueryType()!;
+
+  function fieldReference(fieldName: string): SchemaReference {
+    return {
+      kind: 'Field',
+      typeInfo: {
+        schema,
+        fieldDef: queryType.getFields()[fieldName],
+        parentType: queryType,
+      },
+    } as unknown as SchemaReference;
+  }
+
+  beforeEach(() => {
+    docExplorerStore.setState({ explorerNavStack: [{ name: 'Root' }] });
+  });
+
+  it('resolving the same field reference twice does not duplicate path items (issue #4461)', () => {
+    const { resolveSchemaReferenceToNavItem } =
+      docExplorerStore.getState().actions;
+
+    resolveSchemaReferenceToNavItem(fieldReference('field'));
+    resolveSchemaReferenceToNavItem(fieldReference('field'));
+
+    const stack = docExplorerStore.getState().explorerNavStack;
+    expect(stack.map(item => item.name)).toEqual(['Root', 'Query', 'field']);
+  });
+
+  it('replaces the current path instead of appending to it', () => {
+    const { push, resolveSchemaReferenceToNavItem } =
+      docExplorerStore.getState().actions;
+    push({ name: 'String', def: schema.getType('String')! });
+
+    resolveSchemaReferenceToNavItem(fieldReference('field'));
+
+    const stack = docExplorerStore.getState().explorerNavStack;
+    expect(stack.map(item => item.name)).toEqual(['Root', 'Query', 'field']);
   });
 });
