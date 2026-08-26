@@ -32,6 +32,7 @@ export type FetcherParams = {
   query: string;
   operationName?: string | null;
   variables?: any;
+  extensions?: Record<string, unknown>;
 };
 
 /**
@@ -41,6 +42,12 @@ export type FetcherParams = {
 export type FetcherOpts = {
   headers?: { [key: string]: any };
   documentAST?: DocumentNode;
+  /**
+   * Aborts the underlying `fetch` call when triggered. Only consulted by the
+   * `Transport`-facing primitives (`simpleHttpTransport`,
+   * `multipartHttpTransport`); the deprecated `Fetcher` functions ignore it.
+   */
+  signal?: AbortSignal;
 };
 
 export type ExecutionResultPayload =
