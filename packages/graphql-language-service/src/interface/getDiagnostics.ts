@@ -154,15 +154,16 @@ function annotations(
       // https://github.com/microsoft/TypeScript/pull/32695
       const loc = error.locations[i];
       const highlightLoc = getLocation(highlightNode);
-      const end = loc.column + (highlightLoc.end - highlightLoc.start);
+      const start = new Position(loc.line - 1, loc.column - 1);
+      const end = new Position(
+        start.line,
+        start.character + highlightLoc.end - highlightLoc.start,
+      );
       highlightedNodes.push({
         source: `GraphQL: ${type}`,
         message: error.message,
         severity,
-        range: new Range(
-          new Position(loc.line - 1, loc.column - 1),
-          new Position(loc.line - 1, end),
-        ),
+        range: new Range(start, end),
       });
     }
   }

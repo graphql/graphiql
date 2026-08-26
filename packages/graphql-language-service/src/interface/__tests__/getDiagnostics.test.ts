@@ -44,6 +44,19 @@ describe('getDiagnostics', () => {
     );
     expect(error.severity).toEqual(DIAGNOSTIC_SEVERITY.Error);
     expect(error.source).toEqual('GraphQL: Validation');
+    expect(error.range).toMatchObject({
+      start: { line: 0, character: 18 },
+      end: { line: 0, character: 23 },
+    });
+  });
+
+  it('does not include trailing whitespace in validation highlights', () => {
+    const error = validateQuery(parse('query {\n  title \n}'), schema)[0];
+
+    expect(error.range).toMatchObject({
+      start: { line: 1, character: 2 },
+      end: { line: 1, character: 7 },
+    });
   });
 
   it('catches with multiple highlighted nodes', () => {
@@ -55,7 +68,7 @@ describe('getDiagnostics', () => {
       {
         range: {
           end: {
-            character: 20,
+            character: 19,
             line: 0,
           },
           start: {
@@ -67,7 +80,7 @@ describe('getDiagnostics', () => {
       {
         range: {
           end: {
-            character: 32,
+            character: 31,
             line: 0,
           },
           start: {
