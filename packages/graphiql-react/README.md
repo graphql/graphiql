@@ -22,9 +22,13 @@ All the state for your GraphQL IDE lives in multiple contexts. The easiest way
 to get started is by using the `GraphiQLProvider` component that renders all the
 individual providers.
 
-There is one required prop called `transport`. This is a function that performs
-GraphQL requests against a given endpoint. You can easily create a transport using
-the method `createTransport` from the `@graphiql/toolkit` package.
+`GraphiQLProvider` needs either a `transport` or a `fetcher` prop (the two are
+mutually exclusive) to know how to run GraphQL requests against a given
+endpoint. A `transport` is an object with a `send(request)` method; you can
+easily create one using the `createTransport` function from the
+`@graphiql/toolkit` package. `fetcher` is the older, deprecated-but-still-supported
+alternative: a plain function that returns an execution result directly, with
+no access to the underlying HTTP response.
 
 ```jsx
 import { GraphiQLProvider } from '@graphiql/react';
