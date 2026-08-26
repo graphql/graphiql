@@ -3783,7 +3783,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-query-builder@workspace:packages/graphiql-plugin-query-builder"
   dependencies:
-    "@graphiql/react": "npm:^0.37.4"
+    "@graphiql/react": "npm:^0.38.0"
     "@storybook/addon-a11y": "npm:^10.3.6"
     "@storybook/addon-vitest": "npm:^10.3.6"
     "@storybook/react-vite": "npm:^10.3.6"
@@ -3801,41 +3801,12 @@ __metadata:
     vite: "npm:^6.3.4"
     vite-plugin-dts: "npm:^4.5.3"
   peerDependencies:
-    "@graphiql/react": ^0.37.0
+    "@graphiql/react": ^0.38.0
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown
   linkType: soft
-
-"@graphiql/react@npm:^0.37.4":
-  version: 0.37.7
-  resolution: "@graphiql/react@npm:0.37.7"
-  dependencies:
-    "@graphiql/toolkit": "npm:^0.12.1"
-    "@radix-ui/react-dialog": "npm:^1.1"
-    "@radix-ui/react-dropdown-menu": "npm:^2.1"
-    "@radix-ui/react-tooltip": "npm:^1.2"
-    "@radix-ui/react-visually-hidden": "npm:^1.2"
-    clsx: "npm:^1.2.1"
-    framer-motion: "npm:^12.12"
-    get-value: "npm:^3.0.1"
-    graphql-language-service: "npm:^5.5.2"
-    jsonc-parser: "npm:^3.3.1"
-    markdown-it: "npm:^14.1.0"
-    monaco-editor: "npm:0.52.2"
-    monaco-graphql: "npm:^1.8.0"
-    prettier: "npm:^3.5.3"
-    react-compiler-runtime: "npm:19.1.0-rc.1"
-    set-value: "npm:^4.1.0"
-    zustand: "npm:^5"
-  peerDependencies:
-    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
-    react: ^18 || ^19
-    react-dom: ^18 || ^19
-  checksum: 10c0/6b5e542967362e6ac42a2a05f5db2352659096027a608b101ea60ab397a593030a74f42ec7873a4bdc74ad11ba30c03328faf084c7831fd6f2f765647039ce5e
-  languageName: node
-  linkType: hard
 
 "@graphiql/react@npm:^0.38.0, @graphiql/react@workspace:packages/graphiql-react":
   version: 0.0.0-use.local
