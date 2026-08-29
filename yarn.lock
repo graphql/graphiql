@@ -3701,7 +3701,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graphiql/plugin-collections@npm:^0.1.0-alpha.0, @graphiql/plugin-collections@workspace:packages/graphiql-plugin-collections":
+"@graphiql/plugin-collections@npm:^0.1.0-beta.0, @graphiql/plugin-collections@workspace:packages/graphiql-plugin-collections":
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-collections@workspace:packages/graphiql-plugin-collections"
   dependencies:
@@ -3779,7 +3779,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graphiql/plugin-query-builder@npm:^0.1.0-alpha.0, @graphiql/plugin-query-builder@workspace:packages/graphiql-plugin-query-builder":
+"@graphiql/plugin-query-builder@npm:^0.1.0-beta.0, @graphiql/plugin-query-builder@workspace:packages/graphiql-plugin-query-builder":
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-query-builder@workspace:packages/graphiql-plugin-query-builder"
   dependencies:
@@ -12996,9 +12996,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-graphiql-vite-react-router@workspace:examples/graphiql-vite-react-router"
   dependencies:
-    "@graphiql/plugin-collections": "npm:^0.1.0-alpha.0"
+    "@graphiql/plugin-collections": "npm:^0.1.0-beta.0"
     "@graphiql/plugin-history": "npm:^0.4.3"
-    "@graphiql/plugin-query-builder": "npm:^0.1.0-alpha.0"
+    "@graphiql/plugin-query-builder": "npm:^0.1.0-beta.0"
     "@graphiql/react": "npm:^0.38.0"
     "@react-router/dev": "npm:^7"
     "@react-router/fs-routes": "npm:^7"
@@ -14634,10 +14634,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "graphiql@workspace:packages/graphiql"
   dependencies:
-    "@graphiql/plugin-collections": "npm:^0.1.0-alpha.0"
+    "@graphiql/plugin-collections": "npm:^0.1.0-beta.0"
     "@graphiql/plugin-doc-explorer": "npm:^0.4.3"
     "@graphiql/plugin-history": "npm:^0.4.3"
-    "@graphiql/plugin-query-builder": "npm:^0.1.0-alpha.0"
+    "@graphiql/plugin-query-builder": "npm:^0.1.0-beta.0"
     "@graphiql/react": "npm:^0.38.0"
     "@graphiql/toolkit": "npm:^0.12.1"
     "@testing-library/dom": "npm:^10.4.0"

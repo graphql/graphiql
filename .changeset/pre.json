@@ -1,6 +1,6 @@
 {
   "mode": "pre",
-  "tag": "alpha",
+  "tag": "beta",
   "initialVersions": {
     "example-graphiql-vite": "0.0.0",
     "example-graphiql-vite-react-router": "1.0.0",
@@ -9,20 +9,22 @@
     "example-monaco-graphql-react-vite": "0.0.0",
     "example-monaco-graphql-webpack": "0.0.0",
     "cm6-graphql": "0.2.1",
-    "codemirror-graphql": "2.2.4",
-    "graphiql": "5.2.2",
-    "@graphiql/plugin-code-exporter": "5.1.1",
-    "@graphiql/plugin-doc-explorer": "0.4.1",
-    "@graphiql/plugin-history": "0.4.1",
-    "@graphiql/react": "0.37.3",
-    "@graphiql/toolkit": "0.11.3",
-    "graphql-language-service": "5.5.0",
+    "codemirror-graphql": "2.2.8",
+    "graphiql": "5.3.0",
+    "@graphiql/plugin-code-exporter": "5.1.3",
+    "@graphiql/plugin-collections": "0.1.0-beta.0",
+    "@graphiql/plugin-doc-explorer": "0.4.3",
+    "@graphiql/plugin-history": "0.4.3",
+    "@graphiql/plugin-query-builder": "0.1.0-beta.0",
+    "@graphiql/react": "0.38.0",
+    "@graphiql/toolkit": "0.12.1",
+    "graphql-language-service": "5.6.0",
     "graphql-language-service-cli": "3.5.0",
-    "graphql-language-service-server": "2.14.8",
-    "monaco-graphql": "1.7.3",
-    "vscode-graphql": "0.13.2",
-    "vscode-graphql-execution": "0.3.2",
-    "vscode-graphql-syntax": "1.3.8"
+    "graphql-language-service-server": "2.14.10",
+    "monaco-graphql": "1.8.0",
+    "vscode-graphql": "0.13.5",
+    "vscode-graphql-execution": "0.3.7",
+    "vscode-graphql-syntax": "1.3.12"
   },
   "changesets": []
 }
