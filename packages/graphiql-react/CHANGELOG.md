@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 1.0.0-beta.1
+
+### Patch Changes
+
+- [#4471](https://github.com/graphql/graphiql/pull/4471) [`cb2ac2a`](https://github.com/graphql/graphiql/commit/cb2ac2a70fc6cd434cf58af44e20c8f9475153c2) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Pin internal `@graphiql/react` and `@graphiql/toolkit` dependency ranges to exact beta versions, so caret prerelease ranges can no longer resolve to the `1.0.0-next.*` builds published in 2022.
+
 ## 1.0.0-beta.0
 
 ### Major Changes

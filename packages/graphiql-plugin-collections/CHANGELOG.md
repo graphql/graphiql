@@ -1,5 +1,12 @@
 # @graphiql/plugin-collections
 
+## 1.0.0-beta.1
+
+### Patch Changes
+
+- Updated dependencies [[`cb2ac2a`](https://github.com/graphql/graphiql/commit/cb2ac2a70fc6cd434cf58af44e20c8f9475153c2)]:
+  - @graphiql/react@1.0.0-beta.1
+
 ## 1.0.0-beta.0
 
 ### Major Changes
