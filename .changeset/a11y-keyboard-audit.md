@@ -4,4 +4,4 @@
 'graphiql': patch
 ---
 
-Tighten keyboard navigation: the settings dialog now restores focus to the gear button that opened it (Escape, the close button, and clicking outside all worked before but silently dropped focus to the page). History label edits can now be canceled with Escape and return focus to the row instead of the page.
+History label edits can now be canceled with Escape, and focus returns to the row's edit button instead of dropping to the page. `Dialog` gains an optional `restoreFocusRef` prop for returning focus to a specific element on close.
