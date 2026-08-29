@@ -7,6 +7,7 @@
  *
  */
 
+import * as path from 'node:path';
 import {
   DocumentNode,
   FragmentSpreadNode,
@@ -22,6 +23,7 @@ import {
   isTypeDefinitionNode,
   ArgumentNode,
   typeFromAST,
+  Source as GraphQLSource,
 } from 'graphql';
 
 import {
@@ -47,6 +49,7 @@ import {
   getTypeInfo,
   DefinitionQueryResponse,
   getDefinitionQueryResultForArgument,
+  IRange,
 } from 'graphql-language-service';
 
 import type { GraphQLCache } from './GraphQLCache';
@@ -359,8 +362,13 @@ export class GraphQLLanguageService {
   public async getDocumentSymbols(
     document: string,
     filePath: Uri,
+    fileDocumentRange?: IRange | null,
   ): Promise<SymbolInformation[]> {
-    const outline = await this.getOutline(document);
+    const outline = await this.getOutline(
+      document,
+      path.basename(filePath),
+      fileDocumentRange?.start,
+    );
     if (!outline) {
       return [];
     }
@@ -379,14 +387,12 @@ export class GraphQLLanguageService {
       }
 
       output.push({
-        // @ts-ignore
         name: tree.representativeName ?? 'Anonymous',
         kind: getKind(tree),
         location: {
           uri: filePath,
           range: {
             start: tree.startPosition,
-            // @ts-ignore
             end: tree.endPosition,
           },
         },
@@ -539,7 +545,20 @@ export class GraphQLLanguageService {
     );
   }
 
-  async getOutline(documentText: string): Promise<Outline | null> {
-    return getOutline(documentText);
+  async getOutline(
+    documentText: string,
+    documentName: string,
+    documentOffset?: IPosition,
+  ): Promise<Outline | null> {
+    return getOutline(
+      new GraphQLSource(
+        documentText,
+        documentName,
+        documentOffset && {
+          column: documentOffset.character + 1,
+          line: documentOffset.line + 1,
+        },
+      ),
+    );
   }
 }

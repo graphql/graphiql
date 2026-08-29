@@ -34,10 +34,12 @@ export async function parseDocument(
     return [];
   }
 
+  // If it's a .js file, parse the contents to see if GraphQL queries exist.
   if (fileExtensions.includes(ext)) {
     const templates = await findGraphQLTags(text, ext, uri, logger);
     return templates.map(({ template, range }) => ({ query: template, range }));
   }
+  // If it's a .graphql file, use the entire file
   if (graphQLFileExtensions.includes(ext)) {
     const query = text;
     const lines = query.split('\n');

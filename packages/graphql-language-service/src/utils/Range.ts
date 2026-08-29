@@ -66,8 +66,37 @@ export function offsetToPosition(text: string, loc: number): Position {
   return new Position(lines, loc - lastLineIndex - 1);
 }
 
+export function locStartToPosition(text: string, loc: Location) {
+  return loc.startToken?.start === loc.start
+    ? new Position(loc.startToken.line - 1, loc.startToken.column - 1)
+    : offsetToPosition(text, loc.start);
+}
+
+function locEndToPosition(text: string, loc: Location) {
+  if (loc.startToken?.start !== loc.start) {
+    return offsetToPosition(text, loc.end);
+  }
+  const EOL = '\n';
+  const buf = text.slice(loc.endToken.start, loc.endToken.end);
+  const lastLineIndex = buf.lastIndexOf(EOL);
+  if (lastLineIndex === -1) {
+    return new Position(
+      loc.endToken.line - 1,
+      loc.endToken.column + buf.length - 1,
+    );
+  }
+  const lines = buf.split(EOL).length - 1;
+  return new Position(
+    loc.endToken.line - 1 + lines,
+    loc.endToken.end - loc.endToken.start - lastLineIndex - 1,
+  );
+}
+
 export function locToRange(text: string, loc: Location): Range {
-  const start = offsetToPosition(text, loc.start);
-  const end = offsetToPosition(text, loc.end);
+  const start = locStartToPosition(text, loc);
+  const end =
+    loc.endToken?.end === loc.end
+      ? locEndToPosition(text, loc)
+      : offsetToPosition(text, loc.end);
   return new Range(start, end);
 }
