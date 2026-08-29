@@ -4,6 +4,8 @@
 'graphiql': minor
 ---
 
+pr: 4359
+
 New `@graphiql/plugin-collections` plugin for saving named operations into folder collections and reusing them later, default-installed in the `graphiql` meta-package so a Collections rail icon appears out of the box (passing the `plugins` prop opts out of the default set as before).
 
 - Collapsible tree UI with inline rename, hover-revealed row actions, and QRY/MUT/SUB pills (a `MIX` pill when a saved document holds more than one operation).

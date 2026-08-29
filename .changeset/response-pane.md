@@ -3,6 +3,8 @@
 'graphiql': minor
 ---
 
+pr: 4321
+
 Add a response pane header with real status, elapsed time, and response size from the active transport, a copy button, and a JSON / Tree / Table view toggle (the selection is persisted and restored on reload).
 
 - **Tree** renders the response JSON as a collapsible tree with type-colored values; top-level nodes expand by default and deeper levels start collapsed.
