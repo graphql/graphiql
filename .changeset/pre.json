@@ -36,6 +36,7 @@
     "method-pill",
     "operation-name-follows-cursor",
     "panel-header",
+    "pin-internal-beta-deps",
     "query-builder",
     "remove-cn-reexport",
     "remove-deprecated-hooks",
