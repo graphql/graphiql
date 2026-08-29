@@ -1,5 +1,5 @@
 ---
-'@graphiql/plugin-collections': minor
+'@graphiql/plugin-collections': major
 '@graphiql/react': minor
 'graphiql': minor
 ---
