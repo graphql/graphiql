@@ -3684,7 +3684,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-code-exporter@workspace:packages/graphiql-plugin-code-exporter"
   dependencies:
-    "@graphiql/react": "npm:^1.0.0-beta.0"
+    "@graphiql/react": "npm:1.0.0-beta.0"
     "@vitejs/plugin-react": "npm:^4.4.1"
     graphiql-code-exporter: "npm:^3.0.3"
     graphql: "npm:^16.9.0"
@@ -3694,7 +3694,7 @@ __metadata:
     vite: "npm:^6.4.3"
     vite-plugin-dts: "npm:^4.0.1"
   peerDependencies:
-    "@graphiql/react": ^1.0.0-beta.0
+    "@graphiql/react": 1.0.0-beta.0
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2
     react: ^18 || ^19
     react-dom: ^18 || ^19
@@ -3705,7 +3705,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-collections@workspace:packages/graphiql-plugin-collections"
   dependencies:
-    "@graphiql/react": "npm:^1.0.0-beta.0"
+    "@graphiql/react": "npm:1.0.0-beta.0"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
     "@testing-library/react": "npm:^16.3.0"
@@ -3719,7 +3719,7 @@ __metadata:
     zod: "npm:^4.0.0"
     zustand: "npm:^5"
   peerDependencies:
-    "@graphiql/react": ^1.0.0-beta.0
+    "@graphiql/react": 1.0.0-beta.0
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
@@ -3730,7 +3730,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-doc-explorer@workspace:packages/graphiql-plugin-doc-explorer"
   dependencies:
-    "@graphiql/react": "npm:^1.0.0-beta.0"
+    "@graphiql/react": "npm:1.0.0-beta.0"
     "@headlessui/react": "npm:^2.2"
     "@storybook/addon-a11y": "npm:^10.3.6"
     "@storybook/addon-vitest": "npm:^10.3.6"
@@ -3749,7 +3749,7 @@ __metadata:
     vite-plugin-dts: "npm:^4.5.3"
     zustand: "npm:^5"
   peerDependencies:
-    "@graphiql/react": ^1.0.0-beta.0
+    "@graphiql/react": 1.0.0-beta.0
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
@@ -3760,8 +3760,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-history@workspace:packages/graphiql-plugin-history"
   dependencies:
-    "@graphiql/react": "npm:^1.0.0-beta.0"
-    "@graphiql/toolkit": "npm:^1.0.0-beta.0"
+    "@graphiql/react": "npm:1.0.0-beta.0"
+    "@graphiql/toolkit": "npm:1.0.0-beta.0"
     "@testing-library/react": "npm:^16.1.0"
     "@vitejs/plugin-react": "npm:^4.4.1"
     babel-plugin-react-compiler: "npm:19.1.0-rc.3"
@@ -3773,7 +3773,7 @@ __metadata:
     vite-plugin-dts: "npm:^4.5.3"
     zustand: "npm:^5"
   peerDependencies:
-    "@graphiql/react": ^1.0.0-beta.0
+    "@graphiql/react": 1.0.0-beta.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown
@@ -3783,7 +3783,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-query-builder@workspace:packages/graphiql-plugin-query-builder"
   dependencies:
-    "@graphiql/react": "npm:^1.0.0-beta.0"
+    "@graphiql/react": "npm:1.0.0-beta.0"
     "@storybook/addon-a11y": "npm:^10.3.6"
     "@storybook/addon-vitest": "npm:^10.3.6"
     "@storybook/react-vite": "npm:^10.3.6"
@@ -3801,19 +3801,19 @@ __metadata:
     vite: "npm:^6.3.4"
     vite-plugin-dts: "npm:^4.5.3"
   peerDependencies:
-    "@graphiql/react": ^1.0.0-beta.0
+    "@graphiql/react": 1.0.0-beta.0
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown
   linkType: soft
 
-"@graphiql/react@npm:^1.0.0-beta.0, @graphiql/react@workspace:packages/graphiql-react":
+"@graphiql/react@npm:1.0.0-beta.0, @graphiql/react@npm:^1.0.0-beta.0, @graphiql/react@workspace:packages/graphiql-react":
   version: 0.0.0-use.local
   resolution: "@graphiql/react@workspace:packages/graphiql-react"
   dependencies:
     "@babel/helper-string-parser": "npm:^7.19.4"
-    "@graphiql/toolkit": "npm:^1.0.0-beta.0"
+    "@graphiql/toolkit": "npm:1.0.0-beta.0"
     "@radix-ui/react-dialog": "npm:^1.1"
     "@radix-ui/react-dropdown-menu": "npm:^2.1"
     "@radix-ui/react-tooltip": "npm:^1.2"
@@ -3858,7 +3858,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@graphiql/toolkit@npm:^1.0.0-beta.0, @graphiql/toolkit@workspace:packages/graphiql-toolkit":
+"@graphiql/toolkit@npm:1.0.0-beta.0, @graphiql/toolkit@npm:^1.0.0-beta.0, @graphiql/toolkit@workspace:packages/graphiql-toolkit":
   version: 0.0.0-use.local
   resolution: "@graphiql/toolkit@workspace:packages/graphiql-toolkit"
   dependencies:
@@ -14638,8 +14638,8 @@ __metadata:
     "@graphiql/plugin-doc-explorer": "npm:^1.0.0-beta.0"
     "@graphiql/plugin-history": "npm:^1.0.0-beta.0"
     "@graphiql/plugin-query-builder": "npm:^1.0.0-beta.0"
-    "@graphiql/react": "npm:^1.0.0-beta.0"
-    "@graphiql/toolkit": "npm:^1.0.0-beta.0"
+    "@graphiql/react": "npm:1.0.0-beta.0"
+    "@graphiql/toolkit": "npm:1.0.0-beta.0"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
     "@testing-library/react": "npm:^16.3.0"
