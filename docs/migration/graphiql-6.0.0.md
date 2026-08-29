@@ -14,8 +14,9 @@ If something in your integration breaks that isn't covered here, please open an 
 6. [New first-party plugins](#new-first-party-plugins)
 7. [`@graphiql/plugin-explorer` removal](#graphiqlplugin-explorer-removal)
 8. [Theme, density, and font-size settings](#theme-density-and-font-size-settings)
-9. [Considering for removal in v7](#considering-for-removal-in-v7)
-10. [Other notes](#other-notes)
+9. [Monaco worker setup](#monaco-worker-setup)
+10. [Considering for removal in v7](#considering-for-removal-in-v7)
+11. [Other notes](#other-notes)
 
 ## Overview
 
@@ -605,6 +606,27 @@ If you embed GraphiQL in a product with its own theme system and don't want user
 ```
 
 `forcedTheme` accepts `'light'`, `'dark'`, or `'system'`, and hides the theme control in the settings dialog entirely (density and font size remain user-adjustable). There isn't an equivalent forced prop for density or font size today — if you need to pin those too, set the `data-density` / `data-font-size` attribute on your container yourself after mount and it'll take precedence over whatever the settings dialog last wrote, until the user changes it again from the dialog.
+
+## Monaco worker setup
+
+Nothing changed here since v5 — Monaco's web workers still have to be wired up
+per bundler, exactly as described in the
+[5.0.0 migration guide](./graphiql-5.0.0.md). This section exists because the
+`graphiql/setup-workers/*` exports make it easy to guess wrong for Vite:
+
+- **Vite**: use
+  [`vite-plugin-monaco-editor`](https://www.npmjs.com/package/vite-plugin-monaco-editor)
+  as shown in the [Vite example](../../examples/graphiql-vite/vite.config.mjs).
+  Do **not** import `graphiql/setup-workers/vite` from a Vite app — despite the
+  name, it cannot work there: Vite pre-bundles dependencies with esbuild, which
+  can't process the `?worker` imports inside the published file, and the dev
+  server fails to start. (The export exists for toolchains that process
+  dependency sources with Vite's own transform pipeline, e.g. building a
+  bundled artifact from source.)
+- **Webpack / Turbopack (Next.js)**: `import 'graphiql/setup-workers/webpack'`.
+- **ESM CDN (esm.sh)**: `import 'graphiql/setup-workers/esm.sh'`, or wire
+  `globalThis.MonacoEnvironment` yourself with `?worker` URLs as shown in the
+  [CDN example](../../examples/graphiql-cdn/index.html).
 
 ## Considering for removal in v7
 
