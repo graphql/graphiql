@@ -527,6 +527,54 @@ describe('GraphiQL', () => {
       });
     });
 
+    it('keeps the active tab active when a tab to its right is closed', async () => {
+      const { container } = render(
+        <GraphiQL
+          fetcher={noOpFetcher}
+          defaultTabs={[
+            { query: 'query First { first }' },
+            { query: 'query Second { second }' },
+            { query: 'query Third { third }' },
+          ]}
+        />,
+      );
+
+      await waitFor(() => {
+        expect(
+          container.querySelectorAll('.graphiql-tabs .graphiql-tab'),
+        ).toHaveLength(3);
+      });
+
+      act(() => {
+        fireEvent.click(container.querySelectorAll('.graphiql-tab-button')[1]!);
+      });
+
+      await waitFor(() => {
+        expect(
+          container.querySelectorAll('.graphiql-tabs .graphiql-tab')[1],
+        ).toHaveClass('graphiql-tab-active');
+      });
+
+      act(() => {
+        fireEvent.click(
+          container.querySelectorAll('.graphiql-tab .graphiql-tab-close')[2]!,
+        );
+      });
+
+      await waitFor(() => {
+        expect(
+          container.querySelectorAll('.graphiql-tabs .graphiql-tab'),
+        ).toHaveLength(2);
+      });
+
+      expect(
+        container.querySelectorAll('.graphiql-tabs .graphiql-tab')[1],
+      ).toHaveClass('graphiql-tab-active');
+      expect(
+        container.querySelectorAll('.graphiql-tab-button')[1],
+      ).toHaveTextContent('Second');
+    });
+
     it('shows default tabs', async () => {
       const { container } = render(
         <GraphiQL
