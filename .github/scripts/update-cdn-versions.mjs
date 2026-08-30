@@ -12,7 +12,6 @@ const PACKAGES = [
   'react',
   'react-dom',
   'graphiql',
-  '@graphiql/plugin-explorer',
   '@graphiql/react',
   '@graphiql/toolkit',
   'graphql',
@@ -69,7 +68,6 @@ async function main() {
     'react-dom/': `${cdnUrl('react-dom')}/`,
     graphiql: `${cdnUrl('graphiql')}?standalone&external=react,react-dom,@graphiql/react,graphql`,
     'graphiql/': `${cdnUrl('graphiql')}/`,
-    '@graphiql/plugin-explorer': `${cdnUrl('@graphiql/plugin-explorer')}?standalone&external=react,@graphiql/react,graphql`,
     '@graphiql/react': `${cdnUrl('@graphiql/react')}?standalone&external=react,react-dom,graphql,@graphiql/toolkit,@emotion/is-prop-valid`,
     '@graphiql/toolkit': `${cdnUrl('@graphiql/toolkit')}?standalone&external=graphql`,
     graphql: cdnUrl('graphql'),
@@ -83,7 +81,6 @@ async function main() {
         cdnUrl('react-dom'),
         cdnUrl('graphiql'),
         `${cdnUrl('graphiql')}?standalone&external=react,react-dom,@graphiql/react,graphql`,
-        cdnUrl('@graphiql/plugin-explorer'),
         `${cdnUrl('@graphiql/react')}?standalone&external=react,react-dom,graphql,@graphiql/toolkit,@emotion/is-prop-valid`,
         `${cdnUrl('@graphiql/toolkit')}?standalone&external=graphql`,
         cdnUrl('graphql'),
@@ -96,10 +93,6 @@ async function main() {
   // CSS
   const graphiqlCss = `${cdnUrl('graphiql')}/dist/style.css`;
   const graphiqlCssHash = (await fetchIntegrityHash(graphiqlCss))[1];
-  const graphiqlPluginExplorer = `${cdnUrl('@graphiql/plugin-explorer')}/dist/style.css`;
-  const graphiqlPluginExplorerHash = (
-    await fetchIntegrityHash(graphiqlPluginExplorer)
-  )[1];
 
   // Generate index.html
   const templatePath = path.join(
@@ -119,9 +112,7 @@ async function main() {
   const output = template
     .replace('{{IMPORTMAP}}', importMap)
     .replace('{{GRAPHIQL_CSS_URL}}', graphiqlCss)
-    .replace('{{GRAPHIQL_CSS_INTEGRITY}}', graphiqlCssHash)
-    .replace('{{PLUGIN_EXPLORER_CSS_URL}}', graphiqlPluginExplorer)
-    .replace('{{PLUGIN_EXPLORER_CSS_INTEGRITY}}', graphiqlPluginExplorerHash);
+    .replace('{{GRAPHIQL_CSS_INTEGRITY}}', graphiqlCssHash);
 
   console.log(output);
 }

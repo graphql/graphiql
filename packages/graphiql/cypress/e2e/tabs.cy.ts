@@ -5,7 +5,7 @@ describe('Tabs', () => {
     // Assert that tab visible when there's only one session
     cy.get('.graphiql-tab-button').eq(0).should('exist');
     // Enter a query without operation name
-    cy.get('.graphiql-query-editor textarea').type('{id', { force: true });
+    cy.typeInEditor('{id');
 
     // Run the query
     cy.clickExecuteQuery();
@@ -16,21 +16,14 @@ describe('Tabs', () => {
     cy.get('.graphiql-tab-add').click();
 
     // Enter a query
-    cy.get('.graphiql-query-editor textarea').type('query Foo {image', {
-      force: true,
-    });
+    cy.typeInEditor('query Foo {image');
     cy.get('.graphiql-tab-button').eq(1).should('have.text', 'Foo');
 
     // Enter variables
-    cy.get('.graphiql-editor-tool textarea')
-      .eq(0)
-      .type('{"someVar":42', { force: true });
+    cy.typeInEditor('{"someVar":42', { editor: 'variables' });
 
     // Enter headers
-    cy.contains('Headers').click();
-    cy.get('.graphiql-editor-tool textarea')
-      .eq(1)
-      .type('{"someHeader":"someValue"', { force: true });
+    cy.typeInEditor('{"someHeader":"someValue"', { editor: 'headers' });
 
     // Run the query
     cy.clickExecuteQuery();

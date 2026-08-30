@@ -4,7 +4,9 @@
     "lib": ["es2021", "dom"],
     "types": ["cypress", "node"],
     "strictNullChecks": true,
-    "strict": true
+    "strict": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   },
   "include": ["**/*.ts"]
 }

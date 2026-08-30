@@ -53,3 +53,5 @@ packages/graphiql/typedoc/
 packages/graphiql/webpack/
 
 .react-router/
+
+storybook-static/

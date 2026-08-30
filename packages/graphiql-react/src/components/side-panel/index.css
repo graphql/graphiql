@@ -1,0 +1,13 @@
+/*
+ * SidePanel fills its resize-controlled parent. The parent div (`.graphiql-plugin`)
+ * owns the flex/width; SidePanel just stretches to fill it and adds its own chrome.
+ */
+.graphiql-side-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: oklch(var(--bg-canvas));
+  border-right: 1px solid oklch(var(--border-default));
+  overflow: auto;
+}

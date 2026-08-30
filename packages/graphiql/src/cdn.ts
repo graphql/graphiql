@@ -6,7 +6,12 @@
  */
 import { version } from 'react';
 import * as GraphiQLReact from '@graphiql/react';
-import { createGraphiQLFetcher, createLocalStorage } from '@graphiql/toolkit';
+import {
+  createGraphiQLFetcher,
+  createTransport,
+  createLocalStorage,
+} from '@graphiql/toolkit';
+import { createClient as createWsClient } from 'graphql-ws';
 import * as GraphQL from 'graphql';
 import { GraphiQL } from './GraphiQL';
 import './setup-workers/vite';
@@ -29,7 +34,18 @@ if (majorVersion < 16) {
  */
 export default Object.assign(GraphiQL, {
   /**
-   * This function is needed in order to easily create a fetcher function.
+   * This function is needed in order to easily create a transport function.
+   */
+  createTransport,
+  /**
+   * `graphql-ws`'s `createClient`, exposed on the CDN bundle so consumers can
+   * construct a `subscriptionClient` to pass to `GraphiQL.createTransport`
+   * without needing a separate bundler step. For SSE, load `graphql-sse`
+   * separately; its `createClient` is signature-compatible.
+   */
+  createWsClient,
+  /**
+   * @deprecated Use `GraphiQL.createTransport` instead.
    */
   createFetcher: createGraphiQLFetcher,
   /**

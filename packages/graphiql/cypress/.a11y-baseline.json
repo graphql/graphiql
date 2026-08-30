@@ -1,0 +1,55 @@
+{
+  "initial": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "nodeCount": 1
+    },
+    {
+      "id": "nested-interactive",
+      "impact": "serious",
+      "nodeCount": 1
+    }
+  ],
+  "post-run": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "nodeCount": 2
+    },
+    {
+      "id": "nested-interactive",
+      "impact": "serious",
+      "nodeCount": 1
+    }
+  ],
+  "docs-open": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "nodeCount": 21
+    },
+    {
+      "id": "link-in-text-block",
+      "impact": "serious",
+      "nodeCount": 1
+    },
+    {
+      "id": "nested-interactive",
+      "impact": "serious",
+      "nodeCount": 1
+    }
+  ],
+  "history-open": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "nodeCount": 1
+    },
+    {
+      "id": "nested-interactive",
+      "impact": "serious",
+      "nodeCount": 1
+    }
+  ]
+}

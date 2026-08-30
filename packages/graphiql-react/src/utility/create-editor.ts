@@ -2,7 +2,7 @@ import type { KeyboardEventHandler, RefObject } from 'react';
 import type * as monaco from 'monaco-editor';
 import type { MonacoEditor } from '../types';
 import { monacoStore } from '../stores';
-import { Uri } from '../utility';
+import { Uri } from './monaco-ssr';
 
 export const onEditorContainerKeyDown: KeyboardEventHandler<
   HTMLDivElement

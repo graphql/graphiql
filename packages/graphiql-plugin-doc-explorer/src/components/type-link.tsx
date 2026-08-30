@@ -1,5 +1,6 @@
 import type { FC } from 'react';
 import type { GraphQLType } from 'graphql';
+import { typeCategory } from '@graphiql/react';
 import { useDocExplorerActions } from '../context';
 import { renderType } from './utils';
 import './type-link.css';
@@ -17,6 +18,7 @@ export const TypeLink: FC<TypeLinkProps> = ({ type }) => {
   return renderType(type, def => (
     <a
       className="graphiql-doc-explorer-type-name"
+      data-type-kind={typeCategory(def)}
       onClick={event => {
         event.preventDefault();
         push({ name: def.name, def });

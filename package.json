@@ -27,6 +27,8 @@
     "dev:graphiql": "turbo run dev --filter=graphiql...",
     "dev:example-nextjs": "turbo run dev --filter=example-graphiql-nextjs...",
     "dev:example-vite": "turbo run dev --filter=example-graphiql-vite...",
+    "storybook": "yarn workspace @graphiql/react storybook",
+    "build-storybook": "yarn workspace @graphiql/react build-storybook",
     "build:graphiql": "turbo run build --filter=graphiql...",
     "build": "yarn build-clean && yarn build:tsc && yarn build:nontsc",
     "build-bundles": "yarn prebuild-bundles && yarn wsrun:noexamples --stages build-bundles",

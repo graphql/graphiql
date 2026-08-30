@@ -8,7 +8,7 @@ import 'monaco-editor/esm/vs/editor/contrib/peekView/browser/peekView';
 import 'monaco-editor/esm/vs/editor/contrib/parameterHints/browser/parameterHints';
 import 'monaco-editor/esm/vs/language/typescript/monaco.contribution';
 
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { createTransport, type TransportResponse } from '@graphiql/toolkit';
 import * as JSONC from 'jsonc-parser';
 import {
   DEFAULT_EDITOR_OPTIONS,
@@ -24,15 +24,23 @@ import {
   getOrCreateModel,
 } from './constants';
 
-const fetcher = createGraphiQLFetcher({ url: GRAPHQL_URL });
+// This demo only handles single-response query/mutation, so disable incremental
+// delivery to keep `transport.send()` resolving a single `TransportResponse`.
+const transport = createTransport({
+  url: GRAPHQL_URL,
+  enableIncrementalDelivery: false,
+});
 
 async function getSchema(): Promise<IntrospectionQuery> {
-  const data = await fetcher({
+  const response = (await transport.send({
     query: getIntrospectionQuery(),
     operationName: 'IntrospectionQuery',
-  });
+  })) as TransportResponse;
+  const body = response.body;
   const introspectionJSON =
-    'data' in data && (data.data as unknown as IntrospectionQuery);
+    !Array.isArray(body) && 'data' in body
+      ? (body.data as unknown as IntrospectionQuery)
+      : undefined;
 
   if (!introspectionJSON) {
     throw new Error(
@@ -116,15 +124,11 @@ export default function Editor(): ReactElement {
       // eslint-disable-next-line no-bitwise
       keybindings: [KeyMod.CtrlCmd | KeyCode.Enter],
       async run() {
-        const result = await fetcher({
+        const response = (await transport.send({
           query: MODEL.operations.getValue(),
           variables: JSONC.parse(MODEL.variables.getValue()),
-        });
-        // TODO: this demo only supports a single iteration for http GET/POST,
-        // no multipart or subscriptions yet.
-        // @ts-expect-error
-        const data = await result.next();
-        MODEL.response.setValue(JSON.stringify(data.value, null, 2));
+        })) as TransportResponse;
+        MODEL.response.setValue(JSON.stringify(response.body, null, 2));
       },
     };
 

@@ -77,10 +77,10 @@ describe('getWsFetcher', () => {
     await getWsFetcher({ url: '', wsClient: true });
     expect(createClient.mock.calls).toHaveLength(0);
   });
-  it('creates a subscriptions-transports-ws observable when custom legacyClient option is provided', async () => {
+  it('creates a subscriptions-transports-ws observable when custom legacyWsClient option is provided', async () => {
     // @ts-expect-error
     createClient.mockReturnValue(true);
-    await getWsFetcher({ url: '', legacyClient: true });
+    await getWsFetcher({ url: '', legacyWsClient: true });
     expect(createClient.mock.calls).toHaveLength(0);
     expect(SubscriptionClient.mock.calls).toHaveLength(0);
   });

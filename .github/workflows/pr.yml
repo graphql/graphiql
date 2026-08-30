@@ -76,6 +76,7 @@ jobs:
         with:
           key: build-${{ github.sha }}
           path: ${{ env.BUILD-CACHE-LIST }}
+      - run: npx playwright install --with-deps chromium
       - run: yarn test
 
   lint:

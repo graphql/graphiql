@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "5.3.0",
+  "version": "6.0.0-beta.1",
   "sideEffects": [
     "dist/setup-workers/*",
     "*.css"
@@ -46,13 +46,17 @@
     "cypress-open": "cypress open --browser electron",
     "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' vite",
     "e2e": "yarn e2e-server 'cypress run'",
+    "test:a11y:update": "CYPRESS_A11Y_UPDATE_BASELINE=1 yarn e2e-server 'cypress run --spec cypress/e2e/a11y.cy.ts'",
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
     "test": "vitest run"
   },
   "dependencies": {
-    "@graphiql/plugin-doc-explorer": "^0.4.3",
-    "@graphiql/plugin-history": "^0.4.3",
-    "@graphiql/react": "^0.38.0",
+    "@graphiql/plugin-collections": "^1.0.0-beta.1",
+    "@graphiql/plugin-doc-explorer": "^1.0.0-beta.1",
+    "@graphiql/plugin-history": "^1.0.0-beta.1",
+    "@graphiql/plugin-query-builder": "^1.0.0-beta.1",
+    "@graphiql/react": "1.0.0-beta.1",
+    "clsx": "^1.2.1",
     "react-compiler-runtime": "19.1.0-rc.1"
   },
   "peerDependencies": {
@@ -61,17 +65,21 @@
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@graphiql/toolkit": "^0.12.1",
+    "@graphiql/toolkit": "1.0.0-beta.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@vitejs/plugin-react": "^4.4.1",
     "@vitest/web-worker": "^4.1.6",
+    "axe-core": "^4",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
     "concurrently": "^7.0.0",
     "cross-env": "^7.0.2",
     "cypress": "^13.13.2",
+    "cypress-axe": "^1",
+    "cypress-real-events": "^1.15.0",
     "graphql": "^16.11.0",
+    "graphql-ws": "^5.5.5",
     "lightningcss": "^1.29.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

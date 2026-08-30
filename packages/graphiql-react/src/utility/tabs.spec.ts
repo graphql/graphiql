@@ -29,6 +29,24 @@ describe('createTab', () => {
       }),
     );
   });
+
+  it('initializes lastSavedQuery to null', () => {
+    expect(createTab({ query: 'query Foo {}' })).toEqual(
+      expect.objectContaining({ lastSavedQuery: null }),
+    );
+  });
+});
+
+describe('serializeTabState', () => {
+  it('persists lastSavedQuery so dirty state survives a reload', () => {
+    const tab = {
+      ...createTab({ query: 'query Foo {}' }),
+      lastSavedQuery: 'query Foo {}',
+    };
+    const state = { tabs: [tab], activeTabIndex: 0 };
+    const parsed = JSON.parse(serializeTabState(state));
+    expect(parsed.tabs[0].lastSavedQuery).toBe('query Foo {}');
+  });
 });
 
 describe('fuzzyExtractionOperationTitle', () => {

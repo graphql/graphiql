@@ -1,41 +1,69 @@
 import { describe, it, expect } from 'vitest';
-import { $ } from 'execa';
+import { build, type UserConfig } from 'vite';
+import path from 'node:path';
 
-// eslint-disable-next-line no-control-regex
-const ANSI_COLOR_REGEX = /\u001b\[\d+m/g;
-
-const VOLATILE_LINE =
-  /modules transformed|rendering chunks|computing gzip size|transforming|built in|building for production/;
+const FIXTURE_ROOT = path.resolve(
+  import.meta.dirname,
+  '../__fixtures__/bundle-test',
+);
 
 describe('monaco-editor', () => {
-  it('should include in bundle only graphql/json languages', async () => {
-    const { stdout } =
-      await $`yarn workspace example-monaco-graphql-react-vite build`;
-    // When process.env.CI is set, stdout contains ANSI color codes, and vite doesn't have
-    // `--no-colors` flag
-    const files = stdout
-      .replaceAll(ANSI_COLOR_REGEX, '')
-      .split('\n')
-      .map(line => line.replaceAll(/\s{2,}.*/gm, '').trim())
-      .filter(line => line && !VOLATILE_LINE.test(line));
+  it('should not bundle Monaco language modules beyond graphql and json', async () => {
+    const result = await build({
+      root: FIXTURE_ROOT,
+      logLevel: 'warn',
+      build: {
+        write: false,
+        minify: false,
+        target: 'esnext',
+        reportCompressedSize: false,
+        rollupOptions: {
+          treeshake: false,
+          output: {
+            entryFileNames: '[name].js',
+            chunkFileNames: 'assets/[name].js',
+            assetFileNames: 'assets/[name].[ext]',
+          },
+        },
+      },
+      worker: {
+        format: 'es',
+        rollupOptions: {
+          treeshake: false,
+          output: {
+            entryFileNames: 'workers/[name].js',
+            chunkFileNames: 'workers/[name].js',
+          },
+        },
+      },
+    } satisfies UserConfig);
+
+    const mainOutput = Array.isArray(result) ? result[0] : result;
+    const files = mainOutput.output.map(chunk => chunk.fileName).sort();
+
+    // Explicit negative assertion: importing monaco-graphql must not pull in
+    // TypeScript, CSS, or HTML language services. A consumer who only wants
+    // GraphQL + JSON should not be forced to ship them.
+    for (const file of files) {
+      expect(file).not.toMatch(
+        /typescript|tsMode|tsWorker|ts\.worker|cssMode|css\.worker|htmlMode|html\.worker/i,
+      );
+    }
+
     expect(files).toMatchInlineSnapshot(`
       [
-        "dist/index.html",
-        "dist/workers/graphql.js",
-        "dist/assets/codicon.ttf",
-        "dist/workers/standalone.js",
-        "dist/workers/editor.worker.js",
-        "dist/workers/json.worker.js",
-        "dist/workers/graphql.worker.js",
-        "dist/workers/ts.worker.js",
-        "dist/assets/index.css",
-        "dist/assets/graphql.js",
-        "dist/assets/typescript.js",
-        "dist/assets/index.js",
-        "dist/assets/tsMode.js",
-        "dist/assets/jsonMode.js",
-        "dist/assets/graphqlMode.js",
-        "dist/index.js",
+        "assets/codicon.ttf",
+        "assets/graphql.js",
+        "assets/graphqlMode.js",
+        "assets/index.css",
+        "assets/jsonMode.js",
+        "index.html",
+        "index.js",
+        "workers/editor.worker.js",
+        "workers/graphql.js",
+        "workers/graphql.worker.js",
+        "workers/json.worker.js",
+        "workers/standalone.js",
       ]
     `);
   }, 60_000);

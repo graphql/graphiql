@@ -2,10 +2,9 @@ import 'regenerator-runtime/runtime.js';
 import React, { useState, useEffect, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GraphiQL } from 'graphiql';
-import { explorerPlugin } from '@graphiql/plugin-explorer';
 import { getSnippets } from './snippets';
 import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { createTransport } from '@graphiql/toolkit';
 import { useGraphiQL } from '@graphiql/react';
 import { serverSelectPlugin, LAST_URL_KEY } from './select-server-plugin';
 import 'graphiql/setup-workers/webpack';
@@ -48,12 +47,6 @@ if ('serviceWorker' in navigator) {
 // };
 
 const style = { height: '100vh' };
-/**
- * instantiate outside of the component lifecycle
- * unless you need to pass it dynamic values from your React app,
- * then use the `useMemo` hook
- */
-const explorer = explorerPlugin();
 
 function App() {
   const [currentUrl, setUrl] = useState('');
@@ -65,8 +58,8 @@ function App() {
       codeExporterPlugin({ snippets: getSnippets({ serverUrl: currentUrl }) }),
     [currentUrl],
   );
-  const fetcher = useMemo(
-    () => createGraphiQLFetcher({ url: currentUrl }),
+  const transport = useMemo(
+    () => createTransport({ url: currentUrl }),
     [currentUrl],
   );
   const serverSelect = useMemo(
@@ -77,8 +70,8 @@ function App() {
   return (
     <GraphiQL
       style={style}
-      plugins={[serverSelect, explorer, exporter]}
-      fetcher={fetcher}
+      plugins={[serverSelect, exporter]}
+      transport={transport}
       shouldPersistHeaders
     >
       <GraphiQLContextBound setUrl={setUrl} />

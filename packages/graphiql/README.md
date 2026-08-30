@@ -57,6 +57,7 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
 - [Migration guide to GraphiQL 2](../../docs/migration/graphiql-2.0.0.md)
 - [Migration guide to GraphiQL 4](../../docs/migration/graphiql-4.0.0.md)
 - [Migration guide to GraphiQL 5](../../docs/migration/graphiql-5.0.0.md)
+- [Migration guide to GraphiQL 6](../../docs/migration/graphiql-6.0.0.md)
 
 ### CDN usage
 
@@ -91,30 +92,37 @@ The package exports a bunch of React components:
 - The `GraphiQLInterface` component renders the UI that makes up GraphiQL
 - The `GraphiQL` component is a combination of both the above components
 
-There is a single prop that is required for the `GraphiQL` component called
-fetcher. A fetcher is a function that performs a request to a GraphQL API. It
-may return a `Promise` for queries or mutations, but also an `Observable` or an
-`AsyncIterable` in order to handle subscriptions or multipart responses.
+The `GraphiQL` component needs to know how to run operations against a GraphQL
+API, which it gets from either a `transport` or a `fetcher` prop (the two are
+mutually exclusive). A `transport` is an object with a `send(request)` method
+that performs the request. `send` may return a `Promise` for queries or
+mutations, or an `AsyncIterable` for subscriptions and multipart responses.
 
-An easy way to get create such a function is the
-[`createGraphiQLFetcher`](../graphiql-toolkit/src/create-fetcher/createFetcher.ts)
-method exported from the `@graphiql/toolkit` package. If you want to implement
-your own fetcher function, you can use the `Fetcher` type from
-`@graphiql/toolkit` to make sure the signature matches what GraphiQL expects.
+An easy way to create one is the
+[`createTransport`](../graphiql-toolkit/src/create-transport/createTransport.ts)
+function exported from the `@graphiql/toolkit` package. If you want to
+implement your own transport, you can use the `Transport` type from
+`@graphiql/toolkit` to make sure the shape matches what GraphiQL expects.
+
+`fetcher` is still supported — it's deprecated but not removed, and predates
+`transport`. Unlike a `transport`, a `fetcher` is a plain function that returns
+an execution result directly, with no access to the underlying HTTP response.
+See the [v6 migration guide](../../docs/migration/graphiql-6.0.0.md#new-transport-prop)
+if you're moving from `fetcher` to `transport`.
 
 The following is everything you need to render GraphiQL in your React
 application:
 
 ```jsx
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { createTransport } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
 import { createRoot } from 'react-dom/client';
 import 'graphiql/style.css';
 
-const fetcher = createGraphiQLFetcher({ url: 'https://my.backend/graphql' });
+const transport = createTransport({ url: 'https://my.backend/graphql' });
 
 const root = createRoot(document.getElementById('root'));
-root.render(<GraphiQL fetcher={fetcher} />);
+root.render(<GraphiQL transport={transport} />);
 ```
 
 ## Customize
@@ -132,14 +140,15 @@ For props documentation, see the
 Parts of the UI can be customized by passing children to the `GraphiQL` or the
 `GraphiQLInterface` component.
 
-- `<GraphiQL.Logo>`: Replace the GraphiQL logo with your own.
-
-- `<GraphiQL.Toolbar>`: Add a custom toolbar below the execution button. Pass
-  the empty `<GraphiQL.Toolbar />` if an empty toolbar is desired. Use the
-  components provided by `@graphiql/react` to create toolbar buttons with proper
-  styles.
-
 - `<GraphiQL.Footer>`: Add a custom footer shown below the response editor.
+
+Branding and toolbar customization moved off the children API in `graphiql@6`:
+
+- Replace the top bar's default hexagon icon + "GraphiQL" wordmark with the
+  `brand` prop, e.g. `<GraphiQL brand="My Company" />`.
+- Add custom toolbar buttons through a plugin's `sessionActions`, which renders
+  into the tab strip alongside prettify/merge/copy/save. See the
+  [v6 migration guide](../../docs/migration/graphiql-6.0.0.md) for details.
 
 ### Plugins
 
@@ -167,15 +176,15 @@ You can pass a list of plugin objects to the `GraphiQL` component using the
 the `onTogglePluginVisibility` prop.
 
 Inside the component you pass to `content` you can interact with the GraphiQL
-state using the hooks provided by `@graphiql/react`. For example, check out
-how you can integrate the OneGraph Explorer in GraphiQL using the plugin API in
-the [plugin package](../graphiql-plugin-explorer) in this repo.
+state using the hooks provided by `@graphiql/react`.
 
 ### Theming
 
 The GraphiQL interface uses CSS variables for theming, in particular for colors.
-Check out the [`root.css`](../graphiql-react/src/style/root.css) file for the
-available variables.
+As of v6 the supported set is the OKLCH design tokens in
+[`tokens.css`](../graphiql-react/src/style/tokens.css); the older `--color-*` HSL
+variables in [`root.css`](../graphiql-react/src/style/root.css) are deprecated
+(see the [v6 migration guide](../../docs/migration/graphiql-6.0.0.md#css-and-retheming)).
 
 Overriding these variables is the only officially supported way of customizing
 the appearance of GraphiQL. Starting from version 2, class names are no longer
@@ -183,27 +192,33 @@ be considered stable and might change between minor or patch version updates.
 
 ### Editor Theme
 
-The colors inside the editor can also be altered using
-[CodeMirror editor themes](https://codemirror.net/demo/theme.html). You can use
-the `editorTheme` prop to pass in the name of the theme. The CSS for the theme
-has to be loaded for the theme prop to work.
+The query, variables, headers, and response editors are built on
+[Monaco](https://microsoft.github.io/monaco-editor/), so editor theming goes
+through Monaco's theme system, not CSS. The `editorTheme` prop takes a
+`{ dark, light }` pair of Monaco theme names, one for each GraphiQL theme:
 
 ```jsx
-// In your document head:
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.23.0/theme/solarized.css"
-/>
+<GraphiQL editorTheme={{ dark: 'graphiql-DARK', light: 'graphiql-LIGHT' }} />
 ```
 
+`graphiql-DARK` and `graphiql-LIGHT` are the built-in themes and also the
+default value, so you only need to pass `editorTheme` if you want something
+else. To use your own colors, register a theme with Monaco's `editor.defineTheme`
+API before rendering `GraphiQL`, then reference it by name:
+
 ```jsx
+import * as monaco from 'monaco-editor';
+
+monaco.editor.defineTheme('my-dark-theme', {
+  base: 'vs-dark',
+  inherit: true,
+  rules: [],
+  colors: {},
+});
+
 // When rendering GraphiQL:
-<GraphiQL editorTheme="solarized light" />
+<GraphiQL editorTheme={{ dark: 'my-dark-theme', light: 'graphiql-LIGHT' }} />;
 ```
-
-You can also create your own theme in CSS. As a reference, the default
-`graphiql` theme definition can be found
-[here](../graphiql-react/src/style/codemirror.css).
 
 ## Usage with a Custom Storage Namespace
 
@@ -215,9 +230,9 @@ namespace, isolating each instance’s state and avoiding collisions.
 ```tsx
 import type { FC } from 'react';
 import { GraphiQL } from 'graphiql';
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { createTransport } from '@graphiql/toolkit';
 
-const fetcher = createGraphiQLFetcher({ url: 'https://my.backend/graphql' });
+const transport = createTransport({ url: 'https://my.backend/graphql' });
 
 const NAMESPACE = 'my-namespace';
 
@@ -235,6 +250,6 @@ const storage: typeof localStorage = {
 };
 
 export const App: FC = () => {
-  return <GraphiQL fetcher={fetcher} storage={myStorage} />;
+  return <GraphiQL transport={transport} storage={myStorage} />;
 };
 ```

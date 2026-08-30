@@ -82,7 +82,7 @@ describe('history', () => {
     cy.get('ul.graphiql-history-items li').should('have.length', 2);
 
     cy.get(
-      '.graphiql-history-item:nth-child(2) > button[aria-label="Delete from history"]',
+      '.graphiql-history-item:nth-child(2) button[aria-label="Delete from history"]',
     ).click();
     cy.get('.graphiql-history-item').should('have.length', 1);
   });
@@ -95,7 +95,7 @@ describe('history', () => {
     cy.get('button[aria-label="Show History"]').click();
     cy.get('ul.graphiql-history-items li').should('have.length', 2);
 
-    cy.get('.graphiql-history-header > button:last-child').click();
+    cy.get('.graphiql-panel-header-actions button:last-child').click();
     cy.get('.graphiql-history-item').should('have.length', 0);
   });
 
@@ -113,7 +113,7 @@ describe('history', () => {
     const items = '.graphiql-history ul:last-of-type .graphiql-history-item';
 
     cy.get(
-      '.graphiql-history-item:nth-child(2) > button[aria-label="Add favorite"]',
+      '.graphiql-history-item:nth-child(2) button[aria-label="Add favorite"]',
     ).click();
     cy.get('.graphiql-history ul').should('have.length', 2); // favorites and items
     cy.get(favorites).should('have.length', 1);
@@ -121,7 +121,7 @@ describe('history', () => {
     cy.get('.graphiql-history-item-label').eq(0).should('have.text', 'Test'); // favorite so now at top of a list
 
     cy.get(
-      '.graphiql-history-item:nth-child(1) > button[aria-label="Remove favorite"]',
+      '.graphiql-history-item:nth-child(1) button[aria-label="Remove favorite"]',
     ).click();
     cy.get('.graphiql-history ul').should('have.length', 1); // just items
     cy.get(items).should('have.length', 2);

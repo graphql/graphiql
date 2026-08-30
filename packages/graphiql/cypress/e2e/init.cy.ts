@@ -32,7 +32,9 @@ describe('GraphiQL On Initialization', () => {
       '#graphiql',
       '.graphiql-container',
       '.graphiql-sessions',
+      '.graphiql-editor-column',
       '.graphiql-editors',
+      '.graphiql-response-column',
       '.graphiql-response',
       '.graphiql-editor-tool',
     ];
@@ -41,6 +43,18 @@ describe('GraphiQL On Initialization', () => {
     for (const cSelector of containers) {
       cy.get(cSelector).should('be.visible');
     }
+  });
+
+  it('Places the action buttons on the editor side of the split', () => {
+    cy.visit('/');
+    // The prettify/merge/copy/save buttons belong to the query editor, so they
+    // live in the editor column rather than floating over the response pane.
+    cy.get('.graphiql-editor-column .graphiql-tab-strip-actions')
+      .find('.graphiql-tab-strip-action')
+      .should('have.length.at.least', 3);
+    cy.get('.graphiql-response-column .graphiql-tab-strip-actions').should(
+      'not.exist',
+    );
   });
 
   it('Executes a GraphQL query over HTTP that has the expected result', () => {

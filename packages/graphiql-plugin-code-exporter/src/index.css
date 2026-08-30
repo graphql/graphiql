@@ -24,7 +24,7 @@
   & > div {
     font-family: var(--font-family) !important;
     padding: 0 !important;
-    font-size: var(--font-size-body) !important;
+    font-size: var(--font-size-body-legacy) !important;
   }
   & > div:first-of-type {
     display: flex;
@@ -40,7 +40,7 @@
     }
     & > div:last-of-type {
       & > div:first-of-type {
-        color: hsla(var(--color-neutral), var(--alpha-secondary)) !important;
+        color: oklch(var(--fg-muted)) !important;
         font-variant: unset !important;
         text-transform: unset !important;
         font-weight: unset !important;
@@ -63,7 +63,7 @@
     align-items: center;
     background-color: unset !important;
     & svg {
-      fill: hsla(var(--color-neutral), var(--alpha-tertiary));
+      fill: oklch(var(--fg-subtle));
     }
   }
   & > div:last-of-type {
@@ -82,17 +82,14 @@
     cursor: pointer;
     text-decoration: none;
     padding: var(--px-8) var(--px-12);
-    color: hsl(var(--color-neutral)) !important;
+    color: oklch(var(--fg-default)) !important;
     border-radius: var(--border-radius-4) !important;
     &:hover {
-      background-color: hsla(
-        var(--color-neutral),
-        var(--alpha-background-light)
-      ) !important;
+      background-color: oklch(var(--bg-overlay)) !important;
     }
   }
   & .toolbar-menu-items {
-    background-color: hsl(var(--color-base)) !important;
+    background-color: oklch(var(--bg-elevated)) !important;
     border: var(--popover-border);
     border-radius: var(--border-radius-8);
     box-shadow: var(--popover-box-shadow) !important;
@@ -124,10 +121,7 @@
       white-space: nowrap;
       &:hover {
         color: inherit;
-        background-color: hsla(
-          var(--color-neutral),
-          var(--alpha-background-light)
-        );
+        background-color: oklch(var(--bg-overlay));
       }
     }
   }

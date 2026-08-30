@@ -24,16 +24,25 @@ type TypeDocumentationProps = {
    * The type that should be rendered.
    */
   type: GraphQLNamedType;
+  /**
+   * When true, the description, implements-interfaces, and fields sections
+   * are omitted. Used when TypeCard + FieldsList are already rendering those
+   * above the type documentation.
+   */
+  hideHeader?: boolean;
 };
 
-export const TypeDocumentation: FC<TypeDocumentationProps> = ({ type }) => {
+export const TypeDocumentation: FC<TypeDocumentationProps> = ({
+  type,
+  hideHeader,
+}) => {
   return isNamedType(type) ? (
     <>
-      {type.description ? (
+      {!hideHeader && type.description ? (
         <MarkdownContent type="description">{type.description}</MarkdownContent>
       ) : null}
-      <ImplementsInterfaces type={type} />
-      <Fields type={type} />
+      {!hideHeader && <ImplementsInterfaces type={type} />}
+      {!hideHeader && <Fields type={type} />}
       <EnumValues type={type} />
       <PossibleTypes type={type} />
     </>

@@ -1,0 +1,113 @@
+.graphiql-top-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--px-12);
+  height: var(--top-bar-height);
+  padding: 0 var(--px-12);
+  background: oklch(var(--bg-elevated));
+  border-bottom: 1px solid oklch(var(--border-default));
+  color: oklch(var(--fg-default));
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+}
+
+.graphiql-top-bar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--px-8);
+}
+
+.graphiql-top-bar-logo {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.graphiql-top-bar-wordmark {
+  color: oklch(var(--fg-strong));
+  font-weight: 600;
+  font-size: var(--font-size-body);
+  white-space: nowrap;
+}
+
+.graphiql-top-bar-version {
+  color: oklch(var(--fg-subtle));
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-small);
+  white-space: nowrap;
+}
+
+.graphiql-top-bar-divider {
+  width: 1px;
+  height: 18px;
+  background: oklch(var(--border-default));
+  flex-shrink: 0;
+}
+
+.graphiql-top-bar-endpoint {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-6);
+  padding: 0 var(--px-10);
+  height: 24px;
+  flex: 1;
+  min-width: 0;
+  background: oklch(var(--bg-canvas));
+  border: 1px solid oklch(var(--border-muted));
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-small);
+}
+
+.graphiql-top-bar-method-label {
+  color: oklch(var(--accent-green));
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* Click-to-cycle method chip — shown when the transport supports more than one method */
+.graphiql-top-bar-method-toggle {
+  padding: 0 var(--px-6);
+  height: 18px;
+  background: oklch(var(--bg-subtle));
+  border: 1px solid oklch(var(--border-strong));
+  border-radius: var(--radius-sm);
+  color: oklch(var(--accent-green));
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  cursor: pointer;
+  line-height: 1;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition:
+    background 0.1s,
+    color 0.1s;
+}
+
+.graphiql-top-bar-method-toggle:hover {
+  background: oklch(var(--bg-canvas));
+}
+
+.graphiql-top-bar-method-toggle--attention {
+  color: oklch(var(--accent-orange));
+  border-color: oklch(var(--accent-orange));
+  animation: graphiql-top-bar-method-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes graphiql-top-bar-method-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.graphiql-top-bar-endpoint-url {
+  color: oklch(var(--fg-subtle));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

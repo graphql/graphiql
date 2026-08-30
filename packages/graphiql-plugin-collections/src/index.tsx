@@ -1,0 +1,64 @@
+import type { GraphiQLPlugin } from '@graphiql/react';
+import { CollectionsPanel } from './components/collections-panel';
+import { CollectionsSessionActions } from './components/session-actions';
+import CollectionsIcon from './icons/collections.svg?react';
+import type { CollectionsStorage } from './types';
+import './index.css';
+
+export type {
+  CollectionsStorage,
+  CollectionsConfig,
+  Collection,
+  CollectionItem,
+} from './types';
+export {
+  collectionsStore,
+  useCollectionsStore,
+  type ActiveOperation,
+} from './store';
+export {
+  createLocalStorageAdapter,
+  localStorageAdapter,
+} from './storage/local-storage';
+export { SaveDialog as CollectionsSaveDialog } from './components/save-dialog';
+
+export type CollectionsPluginOptions = {
+  /** Custom storage adapter. Defaults to localStorage with key 'graphiql:collections'. */
+  storage?: CollectionsStorage;
+  /** Disable all write operations (export & copy still allowed). Default false. */
+  readOnly?: boolean;
+  /** Master switch for the import/export feature. Default true. */
+  allowImportExport?: boolean;
+  /** Allow the destructive "Replace" import option. Default true. */
+  allowReplace?: boolean;
+};
+
+export const collectionsPlugin = (
+  options?: CollectionsPluginOptions,
+): GraphiQLPlugin => {
+  function CollectionsPanelWithOptions() {
+    return (
+      <CollectionsPanel
+        readOnly={options?.readOnly}
+        allowImportExport={options?.allowImportExport}
+        allowReplace={options?.allowReplace}
+      />
+    );
+  }
+  function CollectionsSessionActionsWithOptions() {
+    return (
+      <CollectionsSessionActions
+        storage={options?.storage}
+        readOnly={options?.readOnly}
+        allowImportExport={options?.allowImportExport}
+        allowReplace={options?.allowReplace}
+      />
+    );
+  }
+  return {
+    title: 'Collections',
+    icon: CollectionsIcon,
+    content: CollectionsPanelWithOptions,
+    sessionActions: CollectionsSessionActionsWithOptions,
+  };
+};
