@@ -82,6 +82,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     ),
   );
   const ref = useRef<HTMLDivElement>(null!);
+  const { monacoGraphQL, monaco } = useMonaco();
   const onClickReferenceRef = useRef<OperationEditorProps['onClickReference']>(
     null!,
   );
@@ -158,7 +159,14 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     */
 
   function getAndUpdateOperationFacts(editorInstance: MonacoEditor) {
-    const operationFacts = getOperationFacts(schema, editorInstance.getValue());
+    const operationFacts = getOperationFacts(
+      schema,
+      editorInstance.getValue(),
+      {
+        experimentalFragmentArguments:
+          monacoGraphQL?.experimentalFragmentArguments,
+      },
+    );
     // Update the operation name should any query names change.
     const newOperationName = getSelectedOperationName(
       operations,
@@ -205,8 +213,6 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       run();
     };
   }, [operationName, operations, run, setOperationName]);
-
-  const { monacoGraphQL, monaco } = useMonaco();
 
   useEffect(() => {
     if (!monaco || !monacoGraphQL) {
