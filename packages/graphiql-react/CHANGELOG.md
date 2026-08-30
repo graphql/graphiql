@@ -1,5 +1,29 @@
 # @graphiql/react
 
+## 0.39.0
+
+### Minor Changes
+
+- [#4462](https://github.com/graphql/graphiql/pull/4462) [`1cb7eba`](https://github.com/graphql/graphiql/commit/1cb7ebad08da7b58dc5120d84cdf009fe1fe6a63) Thanks [@JoviDeCroock](https://github.com/JoviDeCroock)! - Add opt-in GraphQL 17 fragment argument syntax support to parsing, validation,
+  type information, autocomplete, hover, and editor integrations. Enable it with
+  `experimentalFragmentArguments: true`; it defaults to `false` until server
+  capabilities can advertise support.
+
+  Also fix variable autocomplete to respect operation and fragment scope while
+  including variables from operations that spread the current fragment.
+
+### Patch Changes
+
+- [#4468](https://github.com/graphql/graphiql/pull/4468) [`65867b5`](https://github.com/graphql/graphiql/commit/65867b5901f69203310ca568dc9b13d4fa41d479) Thanks [@therealyo](https://github.com/therealyo)! - Keep the active tab selected when a tab to its right is closed. `closeTab` decremented `activeTabIndex` unconditionally, without comparing it to the index of the closed tab.
+  Closing a tab positioned after the active one does not shift the active tab
+  Closing the active tab, or a tab before it, is unchanged.
+
+- [#4476](https://github.com/graphql/graphiql/pull/4476) [`6d57aad`](https://github.com/graphql/graphiql/commit/6d57aad2fc67078bfa96b5edce5c3efdd4172591) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Fix an extra empty tab being created on reload. The `query`/`variables`/`headers` storage keys are only written on edit, so reloading a session that never touched the editors found no stored editor state matching any tab and pushed a new empty one.
+
+- Updated dependencies [[`d0a34f4`](https://github.com/graphql/graphiql/commit/d0a34f4270883b383367734724db01b4b0426b21), [`1cb7eba`](https://github.com/graphql/graphiql/commit/1cb7ebad08da7b58dc5120d84cdf009fe1fe6a63), [`296214d`](https://github.com/graphql/graphiql/commit/296214da85f18520772bd45fc2830631e2a2a847)]:
+  - graphql-language-service@5.7.0
+  - monaco-graphql@1.9.0
+
 ## 0.38.0
 
 ### Minor Changes
