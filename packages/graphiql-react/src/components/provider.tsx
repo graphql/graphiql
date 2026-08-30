@@ -57,6 +57,8 @@ interface GraphiQLProviderProps
     ThemeProps,
     StorageProps {
   children: ReactNode;
+  /** Enable experimental fragment arguments in the operation editor. */
+  experimentalFragmentArguments?: boolean;
 }
 
 type GraphiQLStore = UseBoundStore<StoreApi<SlicesWithActions>>;
@@ -128,7 +130,9 @@ useEffect(() => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    void actions.initialize();
+    void actions.initialize({
+      experimentalFragmentArguments: props.experimentalFragmentArguments,
+    });
     setMounted(true);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

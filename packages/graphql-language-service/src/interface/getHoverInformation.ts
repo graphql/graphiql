@@ -21,12 +21,19 @@ import {
   GraphQLFieldConfig,
 } from 'graphql';
 import type { ContextToken } from '../parser';
-import { AllTypeInfo, IPosition } from '../types';
+import {
+  AllTypeInfo,
+  GraphQLLanguageServiceOptions,
+  IPosition,
+} from '../types';
 
 import { Hover } from 'vscode-languageserver-types';
-import { getContextAtPosition } from '../parser';
+import { getContextAtPosition, RuleKinds } from '../parser';
+import { getFragmentDefinitions } from './getFragmentDefinitions';
 
-export type HoverConfig = { useMarkdown?: boolean };
+export type HoverConfig = GraphQLLanguageServiceOptions & {
+  useMarkdown?: boolean;
+};
 
 export function getHoverInformation(
   schema: GraphQLSchema,
@@ -36,7 +43,16 @@ export function getHoverInformation(
   config?: HoverConfig,
 ): Hover['contents'] {
   const options = { ...config, schema };
-  const context = getContextAtPosition(queryText, cursor, schema, contextToken);
+  const context = getContextAtPosition(
+    queryText,
+    cursor,
+    schema,
+    contextToken,
+    {
+      fragmentDefinitions: getFragmentDefinitions(queryText, config),
+      experimentalFragmentArguments: config?.experimentalFragmentArguments,
+    },
+  );
   if (!context) {
     return '';
   }
@@ -74,10 +90,14 @@ export function getHoverInformation(
     renderDescription(into, options, typeInfo.type);
     return into.join('').trim();
   }
-  if (kind === 'Argument' && step === 0 && typeInfo.argDef) {
+  if (
+    (kind === RuleKinds.ARGUMENT || kind === RuleKinds.FRAGMENT_ARGUMENT) &&
+    step === 0 &&
+    typeInfo.argDef
+  ) {
     const into: string[] = [];
     renderMdCodeStart(into, options);
-    renderArg(into, typeInfo, options);
+    renderArg(into, typeInfo, options, kind === RuleKinds.ARGUMENT);
     renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.argDef);
     return into.join('').trim();
@@ -157,10 +177,11 @@ export function renderArg(
   into: string[],
   typeInfo: AllTypeInfo,
   options: HoverConfig,
+  qualify = true,
 ) {
-  if (typeInfo.directiveDef) {
+  if (qualify && typeInfo.directiveDef) {
     renderDirective(into, typeInfo, options);
-  } else if (typeInfo.fieldDef) {
+  } else if (qualify && typeInfo.fieldDef) {
     renderQualifiedField(into, typeInfo, options);
   }
 

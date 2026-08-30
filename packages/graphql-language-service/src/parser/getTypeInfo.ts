@@ -24,6 +24,10 @@ import {
   TypeMetaFieldDef,
   TypeNameMetaFieldDef,
   isCompositeType,
+  FragmentDefinitionNode,
+  VariableDefinitionNode,
+  typeFromAST,
+  GraphQLInputType,
 } from 'graphql';
 
 import { AllTypeInfo } from '../types';
@@ -93,9 +97,42 @@ export function getDefinitionState(
 
 // Utility for collecting rich type information given any token's state
 // from the graphql-mode parser.
+type FragmentDefinitionWithVariables = FragmentDefinitionNode & {
+  readonly variableDefinitions?: ReadonlyArray<VariableDefinitionNode>;
+};
+
+function getFragmentArguments(
+  schema: GraphQLSchema,
+  fragmentDefinitions: ReadonlyArray<FragmentDefinitionNode>,
+  fragmentName: string | null | undefined,
+): NonNullable<AllTypeInfo['argDefs']> | null {
+  if (!fragmentName) {
+    return null;
+  }
+  const fragment = fragmentDefinitions.find(
+    definition => definition.name.value === fragmentName,
+  ) as FragmentDefinitionWithVariables | undefined;
+
+  return (
+    fragment?.variableDefinitions?.flatMap(definition => {
+      const argumentType = typeFromAST(schema, definition.type);
+      return argumentType
+        ? [
+            {
+              name: definition.variable.name.value,
+              type: argumentType as GraphQLInputType,
+              description: undefined,
+            },
+          ]
+        : [];
+    }) ?? null
+  );
+}
+
 export function getTypeInfo(
   schema: GraphQLSchema,
   tokenState: State,
+  fragmentDefinitions: ReadonlyArray<FragmentDefinitionNode> = [],
 ): AllTypeInfo {
   let argDef: AllTypeInfo['argDef'];
   let argDefs: AllTypeInfo['argDefs'];
@@ -169,7 +206,8 @@ export function getTypeInfo(
         }
 
         break;
-      case RuleKinds.ARGUMENTS: {
+      case RuleKinds.ARGUMENTS:
+      case RuleKinds.FRAGMENT_ARGUMENTS: {
         if (state.prevState) {
           switch (state.prevState.kind) {
             case RuleKinds.FIELD:
@@ -178,6 +216,13 @@ export function getTypeInfo(
             case RuleKinds.DIRECTIVE:
               argDefs =
                 directiveDef && (directiveDef.args as GraphQLArgument[]);
+              break;
+            case RuleKinds.FRAGMENT_SPREAD:
+              argDefs = getFragmentArguments(
+                schema,
+                fragmentDefinitions,
+                state.prevState.name,
+              );
               break;
             // TODO: needs more tests
             case RuleKinds.ALIASED_FIELD: {
@@ -206,6 +251,7 @@ export function getTypeInfo(
         break;
       }
       case RuleKinds.ARGUMENT:
+      case RuleKinds.FRAGMENT_ARGUMENT:
         if (argDefs) {
           for (let i = 0; i < argDefs.length; i++) {
             if (argDefs[i].name === state.name) {

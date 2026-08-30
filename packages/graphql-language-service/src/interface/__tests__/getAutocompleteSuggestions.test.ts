@@ -99,7 +99,7 @@ describe('getAutocompleteSuggestions', () => {
       point,
       undefined,
       externalFragments,
-      options,
+      { experimentalFragmentArguments: true, ...options },
     )
       .filter(field => !['__schema', '__type'].includes(field.label))
       .sort((a, b) => a.label.localeCompare(b.label))
@@ -428,6 +428,55 @@ describe('getAutocompleteSuggestions', () => {
       ]);
     });
 
+    it('provides input type suggestions for fragment variables', () => {
+      const result = testSuggestions(
+        'fragment SomeFragment($exampleVariable: ) on Human { name }',
+        new Position(0, 40),
+      );
+      expect(result).toEqual([
+        ...metaArgs,
+        { label: 'Boolean', documentation: GraphQLBoolean.description },
+        { label: 'Episode' },
+        { label: 'InputType' },
+        { label: 'Int', documentation: GraphQLInt.description },
+        { label: 'String', documentation: GraphQLString.description },
+      ]);
+    });
+
+    it('provides argument suggestions for fragment spreads', () => {
+      const query =
+        'fragment CharacterDetails($episode: Episode!, $id: String) on Human { name } query { human(id: "1") { ...CharacterDetails(';
+
+      expect(testSuggestions(query, new Position(0, query.length))).toEqual([
+        {
+          label: 'episode',
+          insertText: 'episode: ',
+          command: suggestionCommand,
+          insertTextFormat: 2,
+          labelDetails: { detail: ' Episode!' },
+        },
+        {
+          label: 'id',
+          insertText: 'id: ',
+          command: suggestionCommand,
+          insertTextFormat: 2,
+          labelDetails: { detail: ' String' },
+        },
+      ]);
+    });
+
+    it('uses fragment variable types for argument value suggestions', () => {
+      const query =
+        'fragment CharacterDetails($episode: Episode!) on Human { name } query { human(id: "1") { ...CharacterDetails(episode: ) } }';
+      const cursor = query.indexOf('episode: )') + 'episode: '.length;
+
+      expect(testSuggestions(query, new Position(0, cursor))).toEqual([
+        { label: 'EMPIRE', detail: 'Episode' },
+        { label: 'JEDI', detail: 'Episode' },
+        { label: 'NEWHOPE', detail: 'Episode' },
+      ]);
+    });
+
     it('provides filtered input type suggestions', () => {
       const result = testSuggestions(
         'query($exampleVariable: In) { ',
@@ -504,6 +553,52 @@ describe('getAutocompleteSuggestions', () => {
       );
       expect(result).toEqual([
         { label: '$ep', insertText: 'ep', detail: 'Episode' },
+      ]);
+    });
+
+    it('does not suggest fragment variables in operation scope', () => {
+      const query =
+        'fragment Frag($fragmentEpisode: Episode!) on Human { name } query($operationEpisode: Episode!){ hero(episode: $ }';
+
+      expect(
+        testSuggestions(query, new Position(0, query.lastIndexOf('$ }') + 1)),
+      ).toEqual([
+        {
+          label: '$operationEpisode',
+          insertText: 'operationEpisode',
+          detail: 'Episode',
+        },
+      ]);
+    });
+
+    it('does not let fragment variables shadow operation variables', () => {
+      const query =
+        'fragment Frag($episode: String!) on Human { name } query($episode: Episode!){ hero(episode: $ }';
+
+      expect(
+        testSuggestions(query, new Position(0, query.lastIndexOf('$ }') + 1)),
+      ).toEqual([
+        { label: '$episode', insertText: 'episode', detail: 'Episode' },
+      ]);
+    });
+
+    it('suggests local and reachable operation variables in fragment scope', () => {
+      const query =
+        'query($operationValue: Boolean!){ human(id: "1") { ...Frag(localValue: $operationValue) } } fragment Frag($localValue: Boolean!) on Human { name @include(if: $ }';
+
+      expect(
+        testSuggestions(query, new Position(0, query.lastIndexOf('$ }') + 1)),
+      ).toEqual([
+        {
+          label: '$localValue',
+          insertText: 'localValue',
+          detail: 'Boolean',
+        },
+        {
+          label: '$operationValue',
+          insertText: 'operationValue',
+          detail: 'Boolean',
+        },
       ]);
     });
 
@@ -601,6 +696,33 @@ describe('getAutocompleteSuggestions', () => {
       ]);
     });
 
+    it.runIf(Number.parseInt(graphQLVersion, 10) >= 17)(
+      'provides argument suggestions for external fragments',
+      () => {
+        const externalFragments = parse(
+          'fragment CharacterDetails($episode: Episode!) on Human { name }',
+          { experimentalFragmentArguments: true },
+        ).definitions as FragmentDefinitionNode[];
+        const query = 'query { human(id: "1") { ...CharacterDetails(';
+
+        expect(
+          testSuggestions(
+            query,
+            new Position(0, query.length),
+            externalFragments,
+          ),
+        ).toEqual([
+          {
+            label: 'episode',
+            insertText: 'episode: ',
+            command: suggestionCommand,
+            insertTextFormat: 2,
+            labelDetails: { detail: ' Episode!' },
+          },
+        ]);
+      },
+    );
+
     it('provides correct directive suggestions', () => {
       expect(testSuggestions('{ test @ }', new Position(0, 8))).toEqual(
         expectedDirectiveSuggestions,
@@ -628,7 +750,7 @@ describe('getAutocompleteSuggestions', () => {
           insertText: 'reason: ',
           documentation: GraphQLDeprecatedDirective.args[0].description,
           labelDetails: {
-            detail: ' String',
+            detail: ` ${GraphQLDeprecatedDirective.args[0].type}`,
           },
         },
       ]);

@@ -66,6 +66,7 @@ export class WorkerManager {
           schemas,
           externalFragmentDefinitions,
           completionSettings,
+          experimentalFragmentArguments,
         } = this._defaults;
         this._worker = editor.createWebWorker<GraphQLWorker>({
           // module that exports the create() method and returns a `GraphQLWorker` instance
@@ -80,6 +81,7 @@ export class WorkerManager {
             languageConfig: {
               schemas: schemas?.map(getStringSchema),
               externalFragmentDefinitions,
+              experimentalFragmentArguments,
               // TODO: make this overridable
               // MonacoAPI possibly another configuration object for this I think?
               // all of this could be organized better

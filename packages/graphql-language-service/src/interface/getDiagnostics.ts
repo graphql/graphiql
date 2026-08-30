@@ -19,16 +19,15 @@ import {
   print,
   validate,
   NoDeprecatedCustomRule,
-  parse,
 } from 'graphql';
 
-import { CharacterStream, onlineParser } from '../parser';
+import { CharacterStream, onlineParser, parseDocument } from '../parser';
 
 import { Range, validateWithCustomRules, Position } from '../utils';
 
 import { DiagnosticSeverity, Diagnostic } from 'vscode-languageserver-types';
 
-import { IRange } from '../types';
+import { GraphQLLanguageServiceOptions, IRange } from '../types';
 
 // this doesn't work without the 'as', kinda goofy
 
@@ -62,6 +61,7 @@ export function getDiagnostics(
   customRules?: Array<ValidationRule>,
   isRelayCompatMode?: boolean,
   externalFragments?: FragmentDefinitionNode[] | string,
+  options?: GraphQLLanguageServiceOptions,
 ): Array<Diagnostic> {
   let ast = null;
   let fragments = '';
@@ -76,7 +76,7 @@ export function getDiagnostics(
   }
   const enhancedQuery = fragments ? `${query}\n\n${fragments}` : query;
   try {
-    ast = parse(enhancedQuery);
+    ast = parseDocument(enhancedQuery, options);
   } catch (error) {
     if (error instanceof GraphQLError) {
       const range = getRange(
