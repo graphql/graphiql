@@ -137,7 +137,7 @@ function annotations(
     return [];
   }
   const highlightedNodes: Diagnostic[] = [];
-  for (const [i, node] of error.nodes.entries()) {
+  for (const node of error.nodes) {
     const highlightNode =
       node.kind !== 'Variable' && 'name' in node && node.name !== undefined
         ? node.name
@@ -145,23 +145,19 @@ function annotations(
           ? node.variable
           : node;
     if (highlightNode) {
-      invariant(
-        error.locations,
-        'GraphQL validation error requires locations.',
-      );
-
-      // @ts-ignore
-      // https://github.com/microsoft/TypeScript/pull/32695
-      const loc = error.locations[i];
       const highlightLoc = getLocation(highlightNode);
-      const end = loc.column + (highlightLoc.end - highlightLoc.start);
+      // Anchor the range at the highlighted node's own start token. The
+      // enclosing node can begin earlier than its name, e.g. at an alias or
+      // at a directive's `@`.
+      const { line, column } = highlightLoc.startToken;
+      const end = column + (highlightLoc.end - highlightLoc.start);
       highlightedNodes.push({
         source: `GraphQL: ${type}`,
         message: error.message,
         severity,
         range: new Range(
-          new Position(loc.line - 1, loc.column - 1),
-          new Position(loc.line - 1, end),
+          new Position(line - 1, column - 1),
+          new Position(line - 1, end),
         ),
       });
     }
