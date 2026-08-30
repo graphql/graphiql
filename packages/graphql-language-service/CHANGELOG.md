@@ -1,5 +1,25 @@
 # graphql-language-service
 
+## 5.7.0
+
+### Minor Changes
+
+- [#4462](https://github.com/graphql/graphiql/pull/4462) [`1cb7eba`](https://github.com/graphql/graphiql/commit/1cb7ebad08da7b58dc5120d84cdf009fe1fe6a63) Thanks [@JoviDeCroock](https://github.com/JoviDeCroock)! - Add opt-in GraphQL 17 fragment argument syntax support to parsing, validation,
+  type information, autocomplete, hover, and editor integrations. Enable it with
+  `experimentalFragmentArguments: true`; it defaults to `false` until server
+  capabilities can advertise support.
+
+  Also fix variable autocomplete to respect operation and fragment scope while
+  including variables from operations that spread the current fragment.
+
+### Patch Changes
+
+- [#4466](https://github.com/graphql/graphiql/pull/4466) [`d0a34f4`](https://github.com/graphql/graphiql/commit/d0a34f4270883b383367734724db01b4b0426b21) Thanks [@glen-84](https://github.com/glen-84)! - Anchor validation diagnostics at the highlighted node's own position, so the range for an unknown aliased field covers the field name rather than the alias, and the range for an unknown directive covers its name rather than starting at the `@`.
+
+- [#4356](https://github.com/graphql/graphiql/pull/4356) [`296214d`](https://github.com/graphql/graphiql/commit/296214da85f18520772bd45fc2830631e2a2a847) Thanks [@DukeDeSouth](https://github.com/DukeDeSouth)! - Wrap autocompleted list input values in square brackets
+
+  When you complete an enum or boolean value for a list-typed argument or input field (e.g. `[Episode]`), the suggestion now inserts `[JEDI]` instead of a bare `JEDI`, which produced an invalid query. Values completed inside an existing list literal, and non-list values, are left as they were.
+
 ## 5.6.0
 
 ### Minor Changes

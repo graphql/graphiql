@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/react",
-  "version": "0.38.0",
+  "version": "0.39.0",
   "sideEffects": [
     "dist/setup-workers/*",
     "*.css"
@@ -58,11 +58,11 @@
     "clsx": "^1.2.1",
     "framer-motion": "^12.12",
     "get-value": "^3.0.1",
-    "graphql-language-service": "^5.6.0",
+    "graphql-language-service": "^5.7.0",
     "jsonc-parser": "^3.3.1",
     "markdown-it": "^14.2.0",
     "monaco-editor": "0.52.2",
-    "monaco-graphql": "^1.8.0",
+    "monaco-graphql": "^1.9.0",
     "prettier": "^3.5.3",
     "react-compiler-runtime": "19.1.0-rc.1",
     "set-value": "^4.1.0",
