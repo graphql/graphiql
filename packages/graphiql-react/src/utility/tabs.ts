@@ -119,8 +119,21 @@ export function getDefaultTabState({
         }
       }
 
+      // The individual query/variables/headers storage keys are only written
+      // on edit. When all of them are empty there is no editor state to
+      // restore into a tab — pushing one anyway would add an empty tab on
+      // every reload of a session that never touched the editors.
+      const hasStoredEditorState =
+        query != null || variables != null || headersForHash != null;
+
       if (matchingTabIndex >= 0) {
         parsed.activeTabIndex = matchingTabIndex;
+      } else if (!hasStoredEditorState && parsed.tabs.length > 0) {
+        // Keep the stored active tab, but make sure the index is in range.
+        parsed.activeTabIndex = Math.min(
+          Math.max(parsed.activeTabIndex, 0),
+          parsed.tabs.length - 1,
+        );
       } else {
         const operationName = query ? fuzzyExtractOperationName(query) : null;
         parsed.tabs.push({
