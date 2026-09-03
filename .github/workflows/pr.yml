@@ -138,6 +138,10 @@ jobs:
         with:
           install: false
           command: yarn e2e
+        env:
+          # GitHub runners have no usable GPU; Electron's GPU process can
+          # crash (dawn/Vulkan) and wedge the browser mid-run
+          ELECTRON_EXTRA_LAUNCH_ARGS: --disable-gpu
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
