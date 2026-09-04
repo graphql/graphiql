@@ -26,9 +26,9 @@ jobs:
           # test against the latest 16.x version, which might be newer than what we have
           - '^16'
           # test against the oldest version we support
-          - '^16.0.0'
-          # test against the latest alpha
-          - '^17.0.0-alpha'
+          - '16.11.0'
+          # test against the latest 17.x version
+          - '^17'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
@@ -43,13 +43,26 @@ jobs:
           path: node_modules
           key: node_modules-${{hashFiles('yarn.lock')}}
           restore-keys: node_modules-
+      - name: Install dependencies
+        run: yarn install --immutable
+
       - name: Force GraphQL ${{ matrix.release }} solution
         run: yarn repo:resolve graphql@${{ matrix.release }}
 
-      - run: yarn install --immutable
+      - run: yarn install --no-immutable
+
+      - name: Build
+        run: yarn build
 
       - name: Unit Tests
         run: yarn test
 
-      - name: Cypress
+      - name: Cypress (GraphQL 16)
+        if: matrix.release != '^17'
+        env:
+          CYPRESS_excludeSpecPattern: cypress/e2e/incremental-delivery.cy.ts
+        run: yarn e2e
+
+      - name: Cypress (GraphQL 17)
+        if: matrix.release == '^17'
         run: yarn e2e

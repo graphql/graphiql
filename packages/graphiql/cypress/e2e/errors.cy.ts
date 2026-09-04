@@ -1,4 +1,4 @@
-import { GraphQLError, version } from 'graphql';
+import { GraphQLError } from 'graphql';
 
 describe('Errors', () => {
   it('Should show an error when the HTTP request fails', () => {
@@ -33,9 +33,8 @@ describe('Errors', () => {
      * We can't use `cy.assertQueryResult` here because the stack contains line
      * and column numbers of the `index.umd.js` bundle which are not stable.
      */
-    const expected = version.startsWith('15')
-      ? 'Names must match /^[_a-zA-Z][_a-zA-Z0-9]*$/ but \\"<img src=x onerror=alert(document.'
-      : 'Names must only contain [_a-zA-Z0-9] but \\"<img src=x onerror=alert(document.';
+    const expected =
+      'Names must only contain [_a-zA-Z0-9] but \\"<img src=x onerror=alert(document.';
     cy.containQueryResult(expected);
   });
 

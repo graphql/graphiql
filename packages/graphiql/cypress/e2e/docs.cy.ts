@@ -1,5 +1,3 @@
-import { version } from 'graphql';
-
 beforeEach(() => {
   cy.visit('/');
 });
@@ -105,13 +103,7 @@ describe('GraphQL DocExplorer - deprecated fields', () => {
   });
 });
 
-let describeOrSkip = describe.skip;
-
-if (!version.includes('15.5')) {
-  describeOrSkip = describe;
-}
-
-describeOrSkip('GraphQL DocExplorer - deprecated arguments', () => {
+describe('GraphQL DocExplorer - deprecated arguments', () => {
   it('should show deprecated arguments category title', () => {
     // Open doc explorer
     cy.get('.graphiql-activity-rail-item').eq(0).click();

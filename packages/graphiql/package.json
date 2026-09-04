@@ -60,7 +60,7 @@
     "react-compiler-runtime": "19.1.0-rc.1"
   },
   "peerDependencies": {
-    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
+    "graphql": "^16.11.0 || ^17.0.0",
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   },
@@ -78,7 +78,7 @@
     "cypress": "^13.13.2",
     "cypress-axe": "^1",
     "cypress-real-events": "^1.15.0",
-    "graphql": "^16.11.0",
+    "graphql": "^16.14.2",
     "graphql-ws": "^5.5.5",
     "lightningcss": "^1.29.3",
     "react": "^19.1.0",
