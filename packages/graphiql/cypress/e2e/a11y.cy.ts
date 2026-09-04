@@ -32,18 +32,12 @@ function toSummary(v: {
 }
 
 function checkOrCapture(checkpoint: string) {
-  cy.checkA11y(
+  return cy.checkA11y(
     undefined,
     RULESET,
     violations => {
       if (UPDATE_BASELINE) {
         accumulated[checkpoint] = violations.map(toSummary);
-        // Task runs in Node; path is relative to the package root.
-        // cypress.config.ts wires up the writeBaseline task.
-        cy.task('writeBaseline', {
-          filePath: 'cypress/.a11y-baseline.json',
-          data: { ...(baseline as Baseline), ...accumulated },
-        });
       } else {
         const baselineEntries: ViolationSummary[] =
           (baseline as Baseline)[checkpoint] ?? [];
@@ -70,6 +64,17 @@ function checkOrCapture(checkpoint: string) {
 }
 
 describe('a11y baseline', () => {
+  after(() => {
+    if (UPDATE_BASELINE) {
+      // Task runs in Node; path is relative to the package root.
+      // cypress.config.ts wires up the writeBaseline task.
+      cy.task('writeBaseline', {
+        filePath: 'cypress/.a11y-baseline.json',
+        data: { ...(baseline as Baseline), ...accumulated },
+      });
+    }
+  });
+
   beforeEach(() => {
     cy.clearAllLocalStorage();
     cy.visit('/');
@@ -77,7 +82,7 @@ describe('a11y baseline', () => {
   });
 
   it('initial render has no new violations', () => {
-    checkOrCapture('initial');
+    return checkOrCapture('initial');
   });
 
   it('after running a query has no new violations', () => {
@@ -89,7 +94,7 @@ describe('a11y baseline', () => {
     // Wait for the response panel to populate before scanning
     cy.get('section.result-window').should('not.have.text', '');
     cy.injectAxe();
-    checkOrCapture('post-run');
+    return checkOrCapture('post-run');
   });
 
   it('with docs panel open has no new violations', () => {
@@ -97,7 +102,7 @@ describe('a11y baseline', () => {
     cy.get('.graphiql-activity-rail-item').eq(0).click();
     cy.get('.graphiql-doc-explorer').should('be.visible');
     cy.injectAxe();
-    checkOrCapture('docs-open');
+    return checkOrCapture('docs-open');
   });
 
   it('with history panel open has no new violations', () => {
@@ -105,6 +110,6 @@ describe('a11y baseline', () => {
     cy.get('button[aria-label="Show History"]').click();
     cy.get('.graphiql-history').should('be.visible');
     cy.injectAxe();
-    checkOrCapture('history-open');
+    return checkOrCapture('history-open');
   });
 });
