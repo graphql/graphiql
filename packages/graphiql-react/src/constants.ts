@@ -273,7 +273,11 @@ const getTokenRules = (
     { token: 'operator.gql', foreground: t.fgMuted },
     { token: 'delimiter.gql', foreground: t.fgMuted },
     // comments
-    { token: 'comment.gql', foreground: t.fgDisabled, fontStyle: 'italic' },
+    {
+      token: 'comment.gql',
+      foreground: theme === 'light' ? t.fgMuted : t.fgDisabled,
+      fontStyle: 'italic',
+    },
     // definition names (identifiers following 'fragment'/'query'/etc.)
     // are caught by key.identifier.gql above, but named fragments benefit
     // from the green-light accent to mirror the design's "name" slot.
