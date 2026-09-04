@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-history",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "sideEffects": [
     "*.css"
   ],
@@ -37,18 +37,18 @@
     "test": "vitest run"
   },
   "peerDependencies": {
-    "@graphiql/react": "1.0.0-beta.1",
+    "@graphiql/react": "1.0.0-beta.2",
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   },
   "dependencies": {
-    "@graphiql/toolkit": "1.0.0-beta.0",
+    "@graphiql/toolkit": "1.0.0-beta.1",
     "clsx": "^1.2.1",
     "react-compiler-runtime": "19.1.0-rc.1",
     "zustand": "^5"
   },
   "devDependencies": {
-    "@graphiql/react": "1.0.0-beta.1",
+    "@graphiql/react": "1.0.0-beta.2",
     "@testing-library/react": "^16.1.0",
     "@vitejs/plugin-react": "^4.4.1",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
