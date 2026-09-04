@@ -21,6 +21,7 @@ const RULESET = {
 };
 
 const accumulated: Baseline = {};
+const POST_RUN_QUERY = '{ __typename }';
 
 function toSummary(v: {
   id: string;
@@ -70,6 +71,7 @@ function checkOrCapture(checkpoint: string) {
 
 describe('a11y baseline', () => {
   beforeEach(() => {
+    cy.clearAllLocalStorage();
     cy.visit('/');
     cy.injectAxe();
   });
@@ -79,6 +81,10 @@ describe('a11y baseline', () => {
   });
 
   it('after running a query has no new violations', () => {
+    cy.visitWithOp({ query: POST_RUN_QUERY });
+    cy.contains('.graphiql-query-editor .view-line', '__typename').should(
+      'be.visible',
+    );
     cy.clickExecuteQuery();
     // Wait for the response panel to populate before scanning
     cy.get('section.result-window').should('not.have.text', '');
