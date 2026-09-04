@@ -79,6 +79,11 @@ describe('MONACO_THEME_DATA light', () => {
     const rule = light.rules.find(r => r.token === 'comment.gql');
     expect(rule?.fontStyle).toBe('italic');
   });
+
+  it('uses readable foreground for comments', () => {
+    const rule = light.rules.find(r => r.token === 'comment.gql');
+    expect(rule?.foreground).toBe('636E7B');
+  });
 });
 
 describe('MONACO_THEME_DATA symmetry', () => {
