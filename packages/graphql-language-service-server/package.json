@@ -38,7 +38,7 @@
   "module": "esm/index.js",
   "typings": "esm/index.d.ts",
   "peerDependencies": {
-    "graphql": "^16.0.0"
+    "graphql": "^16.11.0 || ^17.0.0"
   },
   "COMMENT": "please do not remove dependencies without thorough testing. many dependencies are not imported directly, as they are peer dependencies",
   "dependencies": {
@@ -71,7 +71,7 @@
     "@types/debounce-promise": "^3.1.9",
     "@types/glob": "^8.1.0",
     "@types/mkdirp": "^1.0.1",
-    "graphql": "^16.9.0",
+    "graphql": "^16.14.2",
     "msw": "^2.13.4"
   }
 }

@@ -41,9 +41,8 @@
   "peerDependencies": {
     "@codemirror/language": "6.0.0",
     "codemirror": "^5.65.3",
-    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0"
+    "graphql": "^16.11.0 || ^17.0.0"
   },
-  "// TEMPORARILY PINNED until we fix graphql 15 support": "",
   "dependencies": {
     "@types/codemirror": "^0.0.90",
     "graphql-language-service": "5.6.0"
@@ -52,7 +51,7 @@
     "@codemirror/language": "^6.0.0",
     "codemirror": "^5.65.3",
     "cross-env": "^7.0.2",
-    "graphql": "^16.9.0",
+    "graphql": "^16.14.2",
     "rimraf": "^3.0.2",
     "sane": "2.0.0"
   }

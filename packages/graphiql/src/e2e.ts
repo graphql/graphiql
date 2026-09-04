@@ -96,7 +96,6 @@ function getSchemaUrl(): string {
 // how you can customize GraphiQL by providing different values or
 // additional child elements.
 const root = ReactDOM.createRoot(document.getElementById('graphiql')!);
-const graphqlVersion = GraphiQL.GraphQL.version;
 
 const props: ComponentProps<typeof GraphiQL> = {
   transport: GraphiQL.createTransport({
@@ -120,7 +119,7 @@ const props: ComponentProps<typeof GraphiQL> = {
   defaultEditorToolsVisibility: true,
   isHeadersEditorEnabled: true,
   shouldPersistHeaders: true,
-  inputValueDeprecation: !graphqlVersion.includes('15.5'),
+  inputValueDeprecation: true,
   confirmCloseTab:
     parameters.confirmCloseTab === 'true' ? confirmCloseTab : undefined,
   onPrettifyQuery:

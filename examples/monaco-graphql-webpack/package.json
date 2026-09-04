@@ -10,7 +10,7 @@
     "build-demo": "yarn build && mkdirp ../../packages/graphiql/monaco && cp -r dist/* ../../packages/graphiql/monaco/"
   },
   "dependencies": {
-    "graphql": "^16",
+    "graphql": "^16.14.2",
     "graphql-language-service": "^5.6.0",
     "json-schema": "^0.4",
     "jsonc-parser": "^3",

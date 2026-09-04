@@ -1,6 +1,6 @@
 # Upgrading `graphiql` to `6.0.0`
 
-GraphiQL 6 is a visual redesign built on a new OKLCH color system, plus a handful of mostly additive API changes: a `Transport` API that sits alongside the existing `Fetcher`, a settings dialog for theme/density/font-size, and two new first-party plugins (a visual query builder and operation collections) installed by default. The breaking changes are the removal of the hooks deprecated in v5 and the removal of the `GraphiQL.Toolbar` / `GraphiQL.Logo` composable slots, each with a drop-in replacement. See [discussion #4219](https://github.com/graphql/graphiql/discussions/4219) for the design background and to leave feedback.
+GraphiQL 6 is a visual redesign built on a new OKLCH color system, plus a handful of mostly additive API changes: a `Transport` API that sits alongside the existing `Fetcher`, a settings dialog for theme/density/font-size, and two new first-party plugins (a visual query builder and operation collections) installed by default. The breaking changes are the removal of the hooks deprecated in v5, the removal of the `GraphiQL.Toolbar` / `GraphiQL.Logo` composable slots, and the `graphql` peer dependency floor moving to `^16.11.0 || ^17.0.0`. The hook and slot removals each have a drop-in replacement. See [discussion #4219](https://github.com/graphql/graphiql/discussions/4219) for the design background and to leave feedback.
 
 If something in your integration breaks that isn't covered here, please open an issue and we'll add it.
 
@@ -13,9 +13,10 @@ If something in your integration breaks that isn't covered here, please open an 
 5. [New `transport` prop](#new-transport-prop)
 6. [New first-party plugins](#new-first-party-plugins)
 7. [`@graphiql/plugin-explorer` removal](#graphiqlplugin-explorer-removal)
-8. [Theme, density, and font-size settings](#theme-density-and-font-size-settings)
-9. [Considering for removal in v7](#considering-for-removal-in-v7)
-10. [Other notes](#other-notes)
+8. [GraphQL.js minimum version](#graphqljs-minimum-version)
+9. [Theme, density, and font-size settings](#theme-density-and-font-size-settings)
+10. [Considering for removal in v7](#considering-for-removal-in-v7)
+11. [Other notes](#other-notes)
 
 ## Overview
 
@@ -567,6 +568,12 @@ Check the [known limitations](../../packages/graphiql-plugin-query-builder/READM
 
 If you can't migrate before upgrading to v6, pin `@graphiql/plugin-explorer` to its last `5.x` release from npm and track the v5 LTS branch, where it stays maintained.
 
+## GraphQL.js minimum version
+
+GraphiQL 6 requires `graphql` `^16.11.0 || ^17.0.0`. GraphQL.js 16.11 fixes OneOf input validation for nullable variables and rejects arrays during input-object coercion, so earlier 16.x releases do not provide the behavior v6 expects. Upgrade `graphql` first.
+
+If you must remain on GraphQL.js 15 or 16.0–16.10, stay on `graphiql` 5.x and the matching previous majors of the other packages.
+
 ## Theme, density, and font-size settings
 
 v6 adds a settings dialog (the gear icon in the activity rail) with controls for theme, density, and font size, backed by a new `useGraphiQLSettings()` hook in `@graphiql/react`. Settings persist to `localStorage` and apply live via `data-*` attributes, so custom CSS can key off them the same way component internals do.
@@ -611,7 +618,6 @@ If you embed GraphiQL in a product with its own theme system and don't want user
 Nothing below is happening in v6. These are informal signals about where the project is headed, not commitments — flagging them now so a v7 major version isn't the first time you hear about them.
 
 - **React 18 support.** v6 still supports React 18 and 19 as peer dependencies. A future major version may drop React 18 once the React 19 adoption curve looks similar to where 18 was when 17 support was dropped.
-- **GraphQL.js 15 support.** Similarly, `graphql` `^15.5.0` remains a supported peer range in v6 alongside `^16` and `^17`. Expect the floor to move up in a future major version.
 - **The v5 HSL variable set.** The old `--color-*` variables are **deprecated in v6**. They're still defined — frozen at their v5 values — for backward compatibility, but no v6 component reads them: internal usage was migrated to the OKLCH tokens in `tokens.css` (see [CSS and retheming](#css-and-retheming)). A transparent compatibility shim isn't feasible, because the two systems use different color formats — `h, s%, l%` for `hsl()` versus `L% C H` for `oklch()` — so an old variable can't simply alias a new one. Expect the frozen definitions to be removed in v7. If your integration reads or sets the v5 variable names, migrate to the new tokens now (see [Migrating `--color-*` overrides](#migrating---color--overrides)) and weigh in on [discussion #4219](https://github.com/graphql/graphiql/discussions/4219).
 
 ## Other notes

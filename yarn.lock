@@ -3687,7 +3687,7 @@ __metadata:
     "@graphiql/react": "npm:1.0.0-beta.1"
     "@vitejs/plugin-react": "npm:^4.4.1"
     graphiql-code-exporter: "npm:^3.0.3"
-    graphql: "npm:^16.9.0"
+    graphql: "npm:^16.14.2"
     react: "npm:^19.1.0"
     react-dom: "npm:^19.1.0"
     typescript: "npm:^5.8.0"
@@ -3695,7 +3695,7 @@ __metadata:
     vite-plugin-dts: "npm:^4.0.1"
   peerDependencies:
     "@graphiql/react": 1.0.0-beta.1
-    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2
+    graphql: ^16.11.0 || ^17.0.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown
@@ -3710,7 +3710,7 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.6.3"
     "@testing-library/react": "npm:^16.3.0"
     "@vitejs/plugin-react": "npm:^4.4.1"
-    graphql: "npm:^16.9.0"
+    graphql: "npm:^16.14.2"
     react: "npm:^19.1.0"
     react-dom: "npm:^19.1.0"
     vite: "npm:^6.3.4"
@@ -3720,7 +3720,7 @@ __metadata:
     zustand: "npm:^5"
   peerDependencies:
     "@graphiql/react": 1.0.0-beta.1
-    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
+    graphql: ^16.11.0 || ^17.0.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown
@@ -3740,7 +3740,7 @@ __metadata:
     "@testing-library/react": "npm:^16.3.0"
     "@vitejs/plugin-react": "npm:^4.4.1"
     babel-plugin-react-compiler: "npm:19.1.0-rc.3"
-    graphql: "npm:^16.9.0"
+    graphql: "npm:^16.14.2"
     react: "npm:^19.1.0"
     react-compiler-runtime: "npm:19.1.0-rc.1"
     react-dom: "npm:^19.1.0"
@@ -3750,7 +3750,7 @@ __metadata:
     zustand: "npm:^5"
   peerDependencies:
     "@graphiql/react": 1.0.0-beta.1
-    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
+    graphql: ^16.11.0 || ^17.0.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown
@@ -3793,7 +3793,7 @@ __metadata:
     "@testing-library/user-event": "npm:^14.6.1"
     "@vitejs/plugin-react": "npm:^4.4.1"
     babel-plugin-react-compiler: "npm:19.1.0-rc.3"
-    graphql: "npm:^16.9.0"
+    graphql: "npm:^16.14.2"
     react: "npm:^19.1.0"
     react-compiler-runtime: "npm:19.1.0-rc.1"
     react-dom: "npm:^19.1.0"
@@ -3802,7 +3802,7 @@ __metadata:
     vite-plugin-dts: "npm:^4.5.3"
   peerDependencies:
     "@graphiql/react": 1.0.0-beta.1
-    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
+    graphql: ^16.11.0 || ^17.0.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown
@@ -3833,7 +3833,7 @@ __metadata:
     clsx: "npm:^1.2.1"
     framer-motion: "npm:^12.12"
     get-value: "npm:^3.0.1"
-    graphql: "npm:^16.9.0"
+    graphql: "npm:^16.14.2"
     graphql-language-service: "npm:^5.6.0"
     jsonc-parser: "npm:^3.3.1"
     markdown-it: "npm:^14.2.0"
@@ -3852,7 +3852,7 @@ __metadata:
     vite-plugin-svgr: "npm:^4.3.0"
     zustand: "npm:^5"
   peerDependencies:
-    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
+    graphql: ^16.11.0 || ^17.0.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown
@@ -3863,14 +3863,14 @@ __metadata:
   resolution: "@graphiql/toolkit@workspace:packages/graphiql-toolkit"
   dependencies:
     "@n1ru4l/push-pull-async-iterable-iterator": "npm:^3.1.0"
-    graphql: "npm:^16.9.0"
+    graphql: "npm:^16.14.2"
     graphql-ws: "npm:^6.0.8"
     isomorphic-fetch: "npm:^3.0.0"
     meros: "npm:^1.1.4"
     subscriptions-transport-ws: "npm:0.11.0"
     tsup: "npm:^8.2.4"
   peerDependencies:
-    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
+    graphql: ^16.11.0 || ^17.0.0
     graphql-ws: ">= 4.5.0"
   peerDependenciesMeta:
     graphql-ws:
@@ -10602,7 +10602,7 @@ __metadata:
     "@lezer/generator": "npm:^1.1.0"
     "@lezer/highlight": "npm:^1.0.0"
     "@lezer/lr": "npm:^1.0.0"
-    graphql: "npm:^16.9.0"
+    graphql: "npm:^16.14.2"
     graphql-language-service: "npm:^5.3.0"
     typescript: "npm:^5.8.0"
   peerDependencies:
@@ -10612,7 +10612,7 @@ __metadata:
     "@codemirror/state": ^6.0.0
     "@codemirror/view": ^6.0.0
     "@lezer/highlight": ^1.0.0
-    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
+    graphql: ^16.11.0 || ^17.0.0
   languageName: unknown
   linkType: soft
 
@@ -10638,14 +10638,14 @@ __metadata:
     "@types/codemirror": "npm:^0.0.90"
     codemirror: "npm:^5.65.3"
     cross-env: "npm:^7.0.2"
-    graphql: "npm:^16.9.0"
+    graphql: "npm:^16.14.2"
     graphql-language-service: "npm:5.6.0"
     rimraf: "npm:^3.0.2"
     sane: "npm:2.0.0"
   peerDependencies:
     "@codemirror/language": 6.0.0
     codemirror: ^5.65.3
-    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
+    graphql: ^16.11.0 || ^17.0.0
   languageName: unknown
   linkType: soft
 
@@ -13022,7 +13022,7 @@ __metadata:
   dependencies:
     "@vitejs/plugin-react": "npm:^4"
     graphiql: "npm:^6.0.0-beta.1"
-    graphql: "npm:^16"
+    graphql: "npm:^16.14.2"
     react: "npm:^19"
     react-dom: "npm:^19"
     vite: "npm:^6"
@@ -13048,7 +13048,7 @@ __metadata:
     css-loader: "npm:^6"
     file-loader: "npm:^6"
     graphiql: "npm:^6.0.0-beta.1"
-    graphql: "npm:^16"
+    graphql: "npm:^16.14.2"
     graphql-ws: "npm:^6"
     html-webpack-plugin: "npm:^5"
     react: "npm:^19"
@@ -13072,7 +13072,7 @@ __metadata:
     "@graphiql/toolkit": "npm:^1.0.0-beta.0"
     "@types/node": "npm:^24"
     "@types/react": "npm:^19"
-    graphql: "npm:^16"
+    graphql: "npm:^16.14.2"
     jsonc-parser: "npm:^3"
     monaco-editor: "npm:^0.52"
     monaco-graphql: "npm:^1.8.0"
@@ -13089,7 +13089,7 @@ __metadata:
   dependencies:
     "@graphiql/toolkit": "npm:^1.0.0-beta.0"
     "@vitejs/plugin-react": "npm:^4"
-    graphql: "npm:^16"
+    graphql: "npm:^16.14.2"
     graphql-language-service: "npm:^5.6.0"
     jsonc-parser: "npm:^3"
     monaco-editor: "npm:^0.52"
@@ -13117,7 +13117,7 @@ __metadata:
     css-loader: "npm:^6"
     file-loader: "npm:^6"
     fork-ts-checker-webpack-plugin: "npm:^7"
-    graphql: "npm:^16"
+    graphql: "npm:^16.14.2"
     graphql-language-service: "npm:^5.6.0"
     html-webpack-plugin: "npm:^5"
     json-schema: "npm:^0.4"
@@ -14653,7 +14653,7 @@ __metadata:
     cypress: "npm:^13.13.2"
     cypress-axe: "npm:^1"
     cypress-real-events: "npm:^1.15.0"
-    graphql: "npm:^16.11.0"
+    graphql: "npm:^16.14.2"
     graphql-ws: "npm:^5.5.5"
     lightningcss: "npm:^1.29.3"
     react: "npm:^19.1.0"
@@ -14665,7 +14665,7 @@ __metadata:
     vite-plugin-dts: "npm:^4.5.3"
     vitest-canvas-mock: "npm:^1.1.4"
   peerDependencies:
-    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
+    graphql: ^16.11.0 || ^17.0.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown
@@ -14711,12 +14711,12 @@ __metadata:
   dependencies:
     "@babel/polyfill": "npm:^7.12.1"
     "@types/yargs": "npm:16.0.5"
-    graphql: "npm:^16.9.0"
+    graphql: "npm:^16.14.2"
     graphql-language-service: "npm:^5.3.0"
     graphql-language-service-server: "npm:^2.14.0"
     yargs: "npm:^16.2.0"
   peerDependencies:
-    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
+    graphql: ^16.11.0 || ^17.0.0
   bin:
     graphql-lsp: ./bin/graphql.js
   languageName: unknown
@@ -14738,7 +14738,7 @@ __metadata:
     dotenv: "npm:10.0.0"
     fast-glob: "npm:^3.2.7"
     glob: "npm:^7.2.0"
-    graphql: "npm:^16.9.0"
+    graphql: "npm:^16.14.2"
     graphql-config: "npm:^5.1.6"
     graphql-language-service: "npm:^5.5.2"
     lru-cache: "npm:^10.2.0"
@@ -14756,7 +14756,7 @@ __metadata:
     vscode-uri: "npm:^3.0.2"
     vue: "npm:^3.2.0"
   peerDependencies:
-    graphql: ^16.0.0
+    graphql: ^16.11.0 || ^17.0.0
   languageName: unknown
   linkType: soft
 
@@ -14770,7 +14770,7 @@ __metadata:
     "@types/picomatch": "npm:^2.3.0"
     benchmark: "npm:^2.1.4"
     debounce-promise: "npm:^3.1.2"
-    graphql: "npm:^16.9.0"
+    graphql: "npm:^16.14.2"
     graphql-config: "npm:^5.1.6"
     lodash: "npm:^4.18.1"
     nullthrows: "npm:^1.0.0"
@@ -14779,7 +14779,7 @@ __metadata:
     typescript: "npm:^5.8.0"
     vscode-languageserver-types: "npm:^3.17.1"
   peerDependencies:
-    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
+    graphql: ^16.11.0 || ^17.0.0
   bin:
     graphql: ./dist/temp-bin.js
   languageName: unknown
@@ -14813,17 +14813,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:^16, graphql@npm:^16.11.0, graphql@npm:^16.13.2, graphql@npm:^16.9.0":
-  version: 16.13.2
-  resolution: "graphql@npm:16.13.2"
-  checksum: 10c0/64e822a0a0e4398781e4bc9765b88d370c08261498b517add4b878038ef7be2005b6b394a79a5102b9379d57052f60bc7f23fec8f39808d101984a74772ebd9d
+"graphql@npm:^16.13.2, graphql@npm:^16.14.2":
+  version: 16.14.2
+  resolution: "graphql@npm:16.14.2"
+  checksum: 10c0/a95a96961eaff55cc9fe9d31fae6f33499ac988b972d07ea5085024cb1333f515b902f376e7393a5489aa82200a8aff3eb96580e4d1b69d702ed19b6eb1ce97a
   languageName: node
   linkType: hard
 
-"graphql@npm:^16.9.0 || ^17.0.0-rc.0, graphql@npm:^17.0.0-rc.0":
-  version: 17.0.0-rc.0
-  resolution: "graphql@npm:17.0.0-rc.0"
-  checksum: 10c0/06139f3df45496226d013d4f1a43a2aedb1e20b6a20c4a5b3cf099e5f5708275218ccf6ffdc47be9e35dda2c1ab70b6110aedb87900e3ddf47930acca54517b3
+"graphql@npm:^17.0.2":
+  version: 17.0.2
+  resolution: "graphql@npm:17.0.2"
+  checksum: 10c0/766546216b891439ed09fd8584963df2013e26f2f79f096036eaaa2788c38964e049c8a142d68e3afdabdd8bbe70042639e83f0f4b82edbc7c6850421f072bb6
   languageName: node
   linkType: hard
 
@@ -17760,14 +17760,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "monaco-graphql@workspace:packages/monaco-graphql"
   dependencies:
-    graphql: "npm:^16.9.0"
+    graphql: "npm:^16.14.2"
     graphql-language-service: "npm:^5.5.1"
     monaco-editor: "npm:0.52.2"
     picomatch-browser: "npm:^2.2.6"
     prettier: "npm:3.3.2"
     vscode-languageserver-types: "npm:^3.17.1"
   peerDependencies:
-    graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
+    graphql: ^16.11.0 || ^17.0.0
     monaco-editor: ">= 0.20.0 < 0.53"
     prettier: ^2.8.0 || ^3.0.0
   languageName: unknown
@@ -17989,7 +17989,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "netlify-function@workspace:functions"
   dependencies:
-    graphql: "npm:^17.0.0-rc.0"
+    graphql: "npm:^16.14.2"
     graphql-helix: "npm:^1.13.0"
   languageName: unknown
   linkType: soft
@@ -22330,7 +22330,7 @@ __metadata:
   resolution: "test-server@workspace:packages/graphiql/test"
   dependencies:
     express: "npm:^4.20.0"
-    graphql: "npm:^17.0.0-rc.0"
+    graphql: "npm:^17.0.2"
     graphql-helix: "npm:^1.13.0"
     graphql-ws: "npm:^6.0.8"
     ws: "npm:8.21.0"
@@ -23587,7 +23587,7 @@ __metadata:
     cosmiconfig-toml-loader: "npm:^1.0.0"
     dotenv: "npm:10.0.0"
     esbuild: "npm:0.28.1"
-    graphql: "npm:^16.9.0 || ^17.0.0-rc.0"
+    graphql: "npm:^16.14.2"
     graphql-config: "npm:^5.1.6"
     graphql-ws: "npm:6.0.8"
     nullthrows: "npm:1.1.1"
@@ -23617,7 +23617,7 @@ __metadata:
     "@types/vscode": "npm:1.62.0"
     "@vscode/vsce": "npm:^2.22.1-2"
     esbuild: "npm:0.18.10"
-    graphql: "npm:^16.9.0 || ^17.0.0-rc.0"
+    graphql: "npm:^16.14.2"
     graphql-language-service-server: "npm:^2.14.9"
     ovsx: "npm:0.8.3"
     typescript: "npm:^5.8.0"

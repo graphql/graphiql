@@ -1,6 +1,8 @@
 import { writeFile } from 'node:fs/promises';
 import pkgJson from '../package.json' with { type: 'json' };
 
+const packageJsonPath = new URL('../package.json', import.meta.url);
+
 async function setResolution(): Promise<void> {
   const tag = process.argv[2];
   if (!tag) {
@@ -13,7 +15,7 @@ async function setResolution(): Promise<void> {
   }
 
   await writeFile(
-    '../package.json',
+    packageJsonPath,
     JSON.stringify(
       {
         ...pkgJson,
