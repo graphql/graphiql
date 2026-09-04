@@ -1,24 +1,6 @@
 {
-  "initial": [
-    {
-      "id": "color-contrast",
-      "impact": "serious",
-      "nodeCount": 21
-    }
-  ],
+  "initial": [],
   "post-run": [],
-  "docs-open": [
-    {
-      "id": "color-contrast",
-      "impact": "serious",
-      "nodeCount": 19
-    }
-  ],
-  "history-open": [
-    {
-      "id": "color-contrast",
-      "impact": "serious",
-      "nodeCount": 19
-    }
-  ]
+  "docs-open": [],
+  "history-open": []
 }
