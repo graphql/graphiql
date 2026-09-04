@@ -1,0 +1,50 @@
+{
+  "scopeName": "inline.graphql.dart",
+  "injectionSelector": "L:(meta.embedded.block.dart | source.dart -string -comment)",
+  "patterns": [
+    {
+      "begin": "(''')(#graphql)",
+      "beginCaptures": {
+        "1": {
+          "name": "string.interpolated.triple.single.dart"
+        },
+        "2": {
+          "name": "comment.line.graphql.js"
+        }
+      },
+      "end": "(''')",
+      "endCaptures": {
+        "1": {
+          "name": "string.interpolated.triple.single.dart"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.graphql"
+        }
+      ]
+    },
+    {
+      "begin": "(\"\"\")(#graphql)",
+      "beginCaptures": {
+        "1": {
+          "name": "string.interpolated.triple.double.dart"
+        },
+        "2": {
+          "name": "comment.line.graphql.js"
+        }
+      },
+      "end": "(\"\"\")",
+      "endCaptures": {
+        "1": {
+          "name": "string.interpolated.triple.double.dart"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.graphql"
+        }
+      ]
+    }
+  ]
+}
