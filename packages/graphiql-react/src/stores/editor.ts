@@ -393,7 +393,10 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         }
         const updated = {
           tabs: tabs.filter((_tab, i) => index !== i),
-          activeTabIndex: Math.max(activeTabIndex - 1, 0),
+          activeTabIndex:
+            index > activeTabIndex
+              ? activeTabIndex
+              : Math.max(activeTabIndex - 1, 0),
         };
         actions.storeTabs(updated);
         setEditorValues(updated.tabs[updated.activeTabIndex]!);

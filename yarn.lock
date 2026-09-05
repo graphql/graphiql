@@ -3595,11 +3595,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphiql/plugin-code-exporter@npm:^5.1.3, @graphiql/plugin-code-exporter@workspace:packages/graphiql-plugin-code-exporter":
+"@graphiql/plugin-code-exporter@npm:^5.1.4, @graphiql/plugin-code-exporter@workspace:packages/graphiql-plugin-code-exporter":
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-code-exporter@workspace:packages/graphiql-plugin-code-exporter"
   dependencies:
-    "@graphiql/react": "npm:^0.38.0"
+    "@graphiql/react": "npm:^0.39.0"
     "@vitejs/plugin-react": "npm:^4.4.1"
     graphiql-code-exporter: "npm:^3.0.3"
     graphql: "npm:^16.9.0"
@@ -3609,18 +3609,18 @@ __metadata:
     vite: "npm:^6.4.3"
     vite-plugin-dts: "npm:^4.0.1"
   peerDependencies:
-    "@graphiql/react": ^0.38.0
+    "@graphiql/react": ^0.39.0
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown
   linkType: soft
 
-"@graphiql/plugin-doc-explorer@npm:^0.4.3, @graphiql/plugin-doc-explorer@workspace:packages/graphiql-plugin-doc-explorer":
+"@graphiql/plugin-doc-explorer@npm:^0.4.4, @graphiql/plugin-doc-explorer@workspace:packages/graphiql-plugin-doc-explorer":
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-doc-explorer@workspace:packages/graphiql-plugin-doc-explorer"
   dependencies:
-    "@graphiql/react": "npm:^0.38.0"
+    "@graphiql/react": "npm:^0.39.0"
     "@headlessui/react": "npm:^2.2"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
@@ -3635,18 +3635,18 @@ __metadata:
     vite-plugin-dts: "npm:^4.5.3"
     zustand: "npm:^5"
   peerDependencies:
-    "@graphiql/react": ^0.38.0
+    "@graphiql/react": ^0.39.0
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown
   linkType: soft
 
-"@graphiql/plugin-explorer@npm:^5.1.4, @graphiql/plugin-explorer@workspace:packages/graphiql-plugin-explorer":
+"@graphiql/plugin-explorer@npm:^5.1.5, @graphiql/plugin-explorer@workspace:packages/graphiql-plugin-explorer":
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-explorer@workspace:packages/graphiql-plugin-explorer"
   dependencies:
-    "@graphiql/react": "npm:^0.38.0"
+    "@graphiql/react": "npm:^0.39.0"
     "@vitejs/plugin-react": "npm:^4.4.1"
     graphiql-explorer: "npm:^0.9.0"
     graphql: "npm:^16.9.0"
@@ -3657,18 +3657,18 @@ __metadata:
     vite-plugin-dts: "npm:^4.0.1"
     vite-plugin-svgr: "npm:^4.3.0"
   peerDependencies:
-    "@graphiql/react": ^0.38.0
+    "@graphiql/react": ^0.39.0
     graphql: ^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown
   linkType: soft
 
-"@graphiql/plugin-history@npm:^0.4.3, @graphiql/plugin-history@workspace:packages/graphiql-plugin-history":
+"@graphiql/plugin-history@npm:^0.4.4, @graphiql/plugin-history@workspace:packages/graphiql-plugin-history":
   version: 0.0.0-use.local
   resolution: "@graphiql/plugin-history@workspace:packages/graphiql-plugin-history"
   dependencies:
-    "@graphiql/react": "npm:^0.38.0"
+    "@graphiql/react": "npm:^0.39.0"
     "@graphiql/toolkit": "npm:^0.12.0"
     "@testing-library/react": "npm:^16.1.0"
     "@vitejs/plugin-react": "npm:^4.4.1"
@@ -3680,13 +3680,13 @@ __metadata:
     vite-plugin-dts: "npm:^4.5.3"
     zustand: "npm:^5"
   peerDependencies:
-    "@graphiql/react": ^0.38.0
+    "@graphiql/react": ^0.39.0
     react: ^18 || ^19
     react-dom: ^18 || ^19
   languageName: unknown
   linkType: soft
 
-"@graphiql/react@npm:^0.38.0, @graphiql/react@workspace:packages/graphiql-react":
+"@graphiql/react@npm:^0.39.0, @graphiql/react@workspace:packages/graphiql-react":
   version: 0.0.0-use.local
   resolution: "@graphiql/react@workspace:packages/graphiql-react"
   dependencies:
@@ -3706,11 +3706,11 @@ __metadata:
     framer-motion: "npm:^12.12"
     get-value: "npm:^3.0.1"
     graphql: "npm:^16.9.0"
-    graphql-language-service: "npm:^5.6.0"
+    graphql-language-service: "npm:^5.7.0"
     jsonc-parser: "npm:^3.3.1"
     markdown-it: "npm:^14.2.0"
     monaco-editor: "npm:0.52.2"
-    monaco-graphql: "npm:^1.8.0"
+    monaco-graphql: "npm:^1.9.0"
     prettier: "npm:^3.5.3"
     react: "npm:^19.1.0"
     react-compiler-runtime: "npm:19.1.0-rc.1"
@@ -9185,12 +9185,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"baseline-browser-mapping@npm:^2.10.12":
-  version: 2.10.21
-  resolution: "baseline-browser-mapping@npm:2.10.21"
+"baseline-browser-mapping@npm:^2.11.12":
+  version: 2.11.20
+  resolution: "baseline-browser-mapping@npm:2.11.20"
   bin:
     baseline-browser-mapping: dist/cli.cjs
-  checksum: 10c0/065d90f98099dd0d7b6e1c284f7133d0eaebf571a7ee3e9e0740862dbd64cf040f4447404269bc8b1fd4015dead68c3a026e541a214050375df6bde20706ec8b
+  checksum: 10c0/67588b7edafa4e6c52996ec4b96b6e007312961cefc5a179cb49232f6681a38ba68d4d43990081e9d0e1dcadcbd28f13105ee7dc3e43b267385d0beb14824ecc
   languageName: node
   linkType: hard
 
@@ -9407,17 +9407,17 @@ __metadata:
   linkType: hard
 
 "browserslist@npm:^4.24.0, browserslist@npm:^4.28.1":
-  version: 4.28.2
-  resolution: "browserslist@npm:4.28.2"
+  version: 4.28.8
+  resolution: "browserslist@npm:4.28.8"
   dependencies:
-    baseline-browser-mapping: "npm:^2.10.12"
-    caniuse-lite: "npm:^1.0.30001782"
-    electron-to-chromium: "npm:^1.5.328"
-    node-releases: "npm:^2.0.36"
-    update-browserslist-db: "npm:^1.2.3"
+    baseline-browser-mapping: "npm:^2.11.12"
+    caniuse-lite: "npm:^1.0.30001809"
+    electron-to-chromium: "npm:^1.5.402"
+    node-releases: "npm:^2.0.53"
+    update-browserslist-db: "npm:^1.3.0"
   bin:
     browserslist: cli.js
-  checksum: 10c0/c0228b6330f785b7fa59d2d360124ec6d9322f96ed9f3ee1f873e33ecc9503a6f0ffc3b71191a28c4ff6e930b753b30043da1c33844a9548f3018d491f09ce60
+  checksum: 10c0/047dd517c8d1f1f56a253d752c3127b8ad01c58e4cbb7e21cb5cd07ebd13e083a2237c3afb13eb60674282c9132bd4534aea2c3ff7c6f7d29be0687a00cbd537
   languageName: node
   linkType: hard
 
@@ -9673,10 +9673,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.30001579, caniuse-lite@npm:^1.0.30001782":
-  version: 1.0.30001790
-  resolution: "caniuse-lite@npm:1.0.30001790"
-  checksum: 10c0/eec0adc1dcb35d51e57bcfa0657493cb57ef43f0ceb03c1edcfee34d43e7a938e6beed2781118c7a5ee99d4f71d443977f08ca5a549005cf89260733af9ad3f8
+"caniuse-lite@npm:^1.0.30001579, caniuse-lite@npm:^1.0.30001809":
+  version: 1.0.30001810
+  resolution: "caniuse-lite@npm:1.0.30001810"
+  checksum: 10c0/d29bc73f33c888025d54c7ff2984372d3b350b15a6a9e174884fb40976175e9177f202e2a72c2d428dddfc032784bc8ba635a31d168fcab9fac65756d7b3d6b4
   languageName: node
   linkType: hard
 
@@ -10060,7 +10060,7 @@ __metadata:
     "@lezer/highlight": "npm:^1.0.0"
     "@lezer/lr": "npm:^1.0.0"
     graphql: "npm:^16.9.0"
-    graphql-language-service: "npm:^5.3.0"
+    graphql-language-service: "npm:^5.7.0"
     typescript: "npm:^5.8.0"
   peerDependencies:
     "@codemirror/autocomplete": ^6.0.0
@@ -10096,7 +10096,7 @@ __metadata:
     codemirror: "npm:^5.65.3"
     cross-env: "npm:^7.0.2"
     graphql: "npm:^16.9.0"
-    graphql-language-service: "npm:5.6.0"
+    graphql-language-service: "npm:5.7.0"
     rimraf: "npm:^3.0.2"
     sane: "npm:2.0.0"
   peerDependencies:
@@ -11599,10 +11599,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-to-chromium@npm:^1.5.328":
-  version: 1.5.344
-  resolution: "electron-to-chromium@npm:1.5.344"
-  checksum: 10c0/36624a59b2da4cb2bdee3085f5fc814bc0ba5830162a26f45c4b189177455869fd9d9c2e05fa28e69a45fb95c04d3e995962ff0e1658f552dcbe147a731c4f1d
+"electron-to-chromium@npm:^1.5.402":
+  version: 1.5.420
+  resolution: "electron-to-chromium@npm:1.5.420"
+  checksum: 10c0/0c4a4932991cefc9aa655cbb00b3b693680709df9e4eb2fc1a51cab851b735a2be9510c345b5ed6cad571e58e6d27867731607741df82de9535a7eb041fceda2
   languageName: node
   linkType: hard
 
@@ -12442,14 +12442,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "example-graphiql-vite-react-router@workspace:examples/graphiql-vite-react-router"
   dependencies:
-    "@graphiql/react": "npm:^0.38.0"
+    "@graphiql/react": "npm:^0.39.0"
     "@react-router/dev": "npm:^7"
     "@react-router/fs-routes": "npm:^7"
     "@react-router/node": "npm:^7"
     "@react-router/serve": "npm:^7"
     "@types/node": "npm:^24"
     "@types/react": "npm:^19"
-    graphiql: "npm:^5.3.0"
+    graphiql: "npm:^5.4.0"
     isbot: "npm:^5"
     react: "npm:^19"
     react-dom: "npm:^19"
@@ -12464,7 +12464,7 @@ __metadata:
   resolution: "example-graphiql-vite@workspace:examples/graphiql-vite"
   dependencies:
     "@vitejs/plugin-react": "npm:^4"
-    graphiql: "npm:^5.3.0"
+    graphiql: "npm:^5.4.0"
     graphql: "npm:^16"
     react: "npm:^19"
     react-dom: "npm:^19"
@@ -12481,9 +12481,9 @@ __metadata:
     "@babel/plugin-syntax-dynamic-import": "npm:^7"
     "@babel/preset-env": "npm:^7"
     "@babel/preset-react": "npm:^7"
-    "@graphiql/plugin-code-exporter": "npm:^5.1.3"
-    "@graphiql/plugin-explorer": "npm:^5.1.4"
-    "@graphiql/react": "npm:^0.38.0"
+    "@graphiql/plugin-code-exporter": "npm:^5.1.4"
+    "@graphiql/plugin-explorer": "npm:^5.1.5"
+    "@graphiql/react": "npm:^0.39.0"
     "@graphiql/toolkit": "npm:^0.12.1"
     ajv-formats: "npm:^3"
     babel-loader: "npm:^9"
@@ -12491,7 +12491,7 @@ __metadata:
     cross-env: "npm:^7"
     css-loader: "npm:^6"
     file-loader: "npm:^6"
-    graphiql: "npm:^5.3.0"
+    graphiql: "npm:^5.4.0"
     graphql: "npm:^16"
     graphql-ws: "npm:^6"
     html-webpack-plugin: "npm:^5"
@@ -12519,7 +12519,7 @@ __metadata:
     graphql: "npm:^16"
     jsonc-parser: "npm:^3"
     monaco-editor: "npm:^0.52"
-    monaco-graphql: "npm:^1.8.0"
+    monaco-graphql: "npm:^1.9.0"
     next: "npm:^15"
     react: "npm:^19"
     react-dom: "npm:^19"
@@ -12534,10 +12534,10 @@ __metadata:
     "@graphiql/toolkit": "npm:^0.12.1"
     "@vitejs/plugin-react": "npm:^4"
     graphql: "npm:^16"
-    graphql-language-service: "npm:^5.6.0"
+    graphql-language-service: "npm:^5.7.0"
     jsonc-parser: "npm:^3"
     monaco-editor: "npm:^0.52"
-    monaco-graphql: "npm:^1.8.0"
+    monaco-graphql: "npm:^1.9.0"
     react: "npm:^19"
     react-dom: "npm:^19"
     vite: "npm:^6"
@@ -12562,13 +12562,13 @@ __metadata:
     file-loader: "npm:^6"
     fork-ts-checker-webpack-plugin: "npm:^7"
     graphql: "npm:^16"
-    graphql-language-service: "npm:^5.6.0"
+    graphql-language-service: "npm:^5.7.0"
     html-webpack-plugin: "npm:^5"
     json-schema: "npm:^0.4"
     jsonc-parser: "npm:^3"
     monaco-editor: "npm:^0.52"
     monaco-editor-webpack-plugin: "npm:^7"
-    monaco-graphql: "npm:^1.8.0"
+    monaco-graphql: "npm:^1.9.0"
     prettier: "npm:^3"
     style-loader: "npm:^3"
     typescript: "npm:^5"
@@ -12914,9 +12914,9 @@ __metadata:
   linkType: hard
 
 "fast-uri@npm:^3.0.1":
-  version: 3.1.5
-  resolution: "fast-uri@npm:3.1.5"
-  checksum: 10c0/2bf60eb800dd610c65e17be436425dcb21c92aff3a87d442a8bccab0b7b071e88cf1a5d7d1ea946370b937e6fc0375c405c0296c10587e57de4f78be4646d1d0
+  version: 3.1.6
+  resolution: "fast-uri@npm:3.1.6"
+  checksum: 10c0/77fa4f966f7d2cf83c34af2d3eb88882872fe90634f27a6bd309551db65377d3ca55616467c7cb4dcc57e33523d149e2fec1952d51cc2f00bfce68a66c3711ea
   languageName: node
   linkType: hard
 
@@ -14121,13 +14121,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"graphiql@npm:^5.2.4, graphiql@npm:^5.3.0, graphiql@workspace:packages/graphiql":
+"graphiql@npm:^5.2.4, graphiql@npm:^5.4.0, graphiql@workspace:packages/graphiql":
   version: 0.0.0-use.local
   resolution: "graphiql@workspace:packages/graphiql"
   dependencies:
-    "@graphiql/plugin-doc-explorer": "npm:^0.4.3"
-    "@graphiql/plugin-history": "npm:^0.4.3"
-    "@graphiql/react": "npm:^0.38.0"
+    "@graphiql/plugin-doc-explorer": "npm:^0.4.4"
+    "@graphiql/plugin-history": "npm:^0.4.4"
+    "@graphiql/react": "npm:^0.39.0"
     "@graphiql/toolkit": "npm:^0.12.1"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
@@ -14224,7 +14224,7 @@ __metadata:
     glob: "npm:^7.2.0"
     graphql: "npm:^16.9.0"
     graphql-config: "npm:^5.1.6"
-    graphql-language-service: "npm:^5.5.2"
+    graphql-language-service: "npm:^5.7.0"
     lru-cache: "npm:^10.2.0"
     mkdirp: "npm:^1.0.4"
     msw: "npm:^2.13.4"
@@ -14244,7 +14244,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"graphql-language-service@npm:5.6.0, graphql-language-service@npm:^5.3.0, graphql-language-service@npm:^5.5.1, graphql-language-service@npm:^5.5.2, graphql-language-service@npm:^5.6.0, graphql-language-service@workspace:packages/graphql-language-service":
+"graphql-language-service@npm:5.7.0, graphql-language-service@npm:^5.3.0, graphql-language-service@npm:^5.7.0, graphql-language-service@workspace:packages/graphql-language-service":
   version: 0.0.0-use.local
   resolution: "graphql-language-service@workspace:packages/graphql-language-service"
   dependencies:
@@ -17261,13 +17261,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-graphql@npm:^1.8.0, monaco-graphql@workspace:packages/monaco-graphql":
+"monaco-graphql@npm:^1.9.0, monaco-graphql@workspace:packages/monaco-graphql":
   version: 0.0.0-use.local
   resolution: "monaco-graphql@workspace:packages/monaco-graphql"
   dependencies:
     execa: "npm:^7.1.1"
     graphql: "npm:^16.9.0"
-    graphql-language-service: "npm:^5.5.1"
+    graphql-language-service: "npm:^5.7.0"
     monaco-editor: "npm:0.52.2"
     picomatch-browser: "npm:^2.2.6"
     prettier: "npm:3.3.2"
@@ -17691,10 +17691,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-releases@npm:^2.0.36":
-  version: 2.0.38
-  resolution: "node-releases@npm:2.0.38"
-  checksum: 10c0/db9909234ed750c5b9d0075f83214cd16b76370b54eab50e3554f3ba939ba7ac39f3aca2ddf93471ae8553dbde2ea9354b0ae380c9cff1f8e53b55e414903413
+"node-releases@npm:^2.0.53":
+  version: 2.0.54
+  resolution: "node-releases@npm:2.0.54"
+  checksum: 10c0/196b54ab06fd03b742816b6ca8185c69af42735b283083036e2579682c430b8f9ff89046891fe8c625557e5885793a2032d28070100bb2e57e6d6586b2f483c1
   languageName: node
   linkType: hard
 
@@ -18905,12 +18905,12 @@ __metadata:
   linkType: hard
 
 "postcss-selector-parser@npm:^7.0.0":
-  version: 7.1.1
-  resolution: "postcss-selector-parser@npm:7.1.1"
+  version: 7.1.5
+  resolution: "postcss-selector-parser@npm:7.1.5"
   dependencies:
     cssesc: "npm:^3.0.0"
     util-deprecate: "npm:^1.0.2"
-  checksum: 10c0/02d3b1589ddcddceed4b583b098b95a7266dacd5135f041e5d913ebb48e874fd333a36e564cc9a2ec426a464cb18db11cb192ac76247aced5eba8c951bf59507
+  checksum: 10c0/e277a136ef87ae2abbc77d38e0773bf6245975889ada3d7d785f515df4d2ab543322f9189e851d6a6bcd2d8e512a1164d1dfd5af2f5bbb2d177c687faf945038
   languageName: node
   linkType: hard
 
@@ -22640,9 +22640,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"update-browserslist-db@npm:^1.2.3":
-  version: 1.2.3
-  resolution: "update-browserslist-db@npm:1.2.3"
+"update-browserslist-db@npm:^1.3.0":
+  version: 1.3.2
+  resolution: "update-browserslist-db@npm:1.3.2"
   dependencies:
     escalade: "npm:^3.2.0"
     picocolors: "npm:^1.1.1"
@@ -22650,7 +22650,7 @@ __metadata:
     browserslist: ">= 4.21.0"
   bin:
     update-browserslist-db: cli.js
-  checksum: 10c0/13a00355ea822388f68af57410ce3255941d5fb9b7c49342c4709a07c9f230bbef7f7499ae0ca7e0de532e79a82cc0c4edbd125f1a323a1845bf914efddf8bec
+  checksum: 10c0/837b4ea8c4934228c5c2a922ea747a54b0ec9d1c408d2fbc9220a9b98327c04109776e6ea1206fa056ea61ed8534863af472d9f2cfce569d35f04e98c95db739
   languageName: node
   linkType: hard
 

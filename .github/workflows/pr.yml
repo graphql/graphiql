@@ -78,6 +78,24 @@ jobs:
           path: ${{ env.BUILD-CACHE-LIST }}
       - run: yarn test
 
+  graphql-17-fragment-arguments:
+    name: GraphQL 17 Fragment Arguments
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: yarn
+      - run: yarn install --immutable
+      - run: yarn workspace graphql-language-service add --dev graphql@17.0.2
+      - name: Build and typecheck graphql-language-service
+        run: yarn workspace graphql-language-service exec tsc
+      - name: Test fragment argument integration
+        run: >-
+          yarn vitest run packages/graphql-language-service/src/parser/__tests__/OnlineParser.test.ts packages/graphql-language-service/src/interface/__tests__/getAutocompleteSuggestions.test.ts packages/graphql-language-service/src/interface/__tests__/getDiagnostics.test.ts packages/graphql-language-service/src/interface/__tests__/getHoverInformation.test.ts
+
+
   lint:
     name: Lint
     runs-on: ubuntu-latest

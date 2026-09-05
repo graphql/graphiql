@@ -411,6 +411,62 @@ describe('onlineParser', () => {
       t.eol();
     });
 
+    it('parses fragment arguments on a fragment spread', () => {
+      const { t } = getUtils(
+        `
+        query SomeQuery {
+          someField {
+            ...SomeFragment(count: 6)
+          }
+        }
+      `,
+        { experimentalFragmentArguments: true },
+      );
+
+      t.keyword('query', { kind: 'Query' });
+      t.def('SomeQuery');
+      t.punctuation('{', { kind: 'SelectionSet' });
+      t.property('someField', { kind: 'Field' });
+      t.punctuation('{', { kind: 'SelectionSet' });
+      t.punctuation('...', { kind: 'FragmentSpread' });
+      t.def('SomeFragment');
+      t.punctuation(/\(/, { kind: 'FragmentArguments' });
+      t.attribute('count', { kind: 'FragmentArgument' });
+      t.punctuation(':');
+      t.value('Number', '6', { kind: 'NumberValue' });
+      t.punctuation(/\)/, { kind: 'FragmentSpread' });
+      t.punctuation('}', { kind: 'SelectionSet' });
+      t.punctuation('}', { kind: 'Document' });
+      t.eol();
+    });
+
+    it('parses variable definitions on a fragment definition', () => {
+      const { t, stream } = getUtils(
+        `
+        fragment SomeFragment($count: Int) on SomeType {
+          someField
+        }
+      `,
+        { experimentalFragmentArguments: true },
+      );
+
+      t.keyword('fragment', { kind: 'FragmentDefinition' });
+      t.def('SomeFragment');
+      expectVarsDef(
+        { t, stream },
+        {
+          onKind: 'FragmentDefinition',
+          vars: [{ name: 'count', type: 'Int' }],
+        },
+      );
+      t.keyword('on', { kind: 'TypeCondition' });
+      t.name('SomeType', { kind: 'NamedType' });
+      t.punctuation('{', { kind: 'SelectionSet' });
+      t.property('someField', { kind: 'Field' });
+      t.punctuation('}', { kind: 'Document' });
+      t.eol();
+    });
+
     it('parses mutation', () => {
       const { t } = getUtils(`
         mutation SomeMutation {

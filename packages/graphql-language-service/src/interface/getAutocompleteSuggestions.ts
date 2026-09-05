@@ -22,7 +22,6 @@ import {
   GraphQLObjectType,
   Kind,
   DirectiveLocation,
-  GraphQLArgument,
   // isNonNullType,
   isScalarType,
   isObjectType,
@@ -39,11 +38,12 @@ import {
   assertAbstractType,
   doTypesOverlap,
   getNamedType,
+  getNullableType,
+  isListType,
   isAbstractType,
   isCompositeType,
   isInputType,
   visit,
-  parse,
 } from 'graphql';
 
 import {
@@ -51,6 +51,7 @@ import {
   AllTypeInfo,
   IPosition,
   CompletionItemKind,
+  GraphQLLanguageServiceOptions,
   InsertTextFormat,
 } from '../types';
 
@@ -67,6 +68,7 @@ import {
   getContextAtPosition,
   getDefinitionState,
   GraphQLDocumentMode,
+  parseDocument,
 } from '../parser';
 import {
   hintList,
@@ -77,6 +79,7 @@ import {
 } from './autocompleteUtils';
 
 import { InsertTextMode } from 'vscode-languageserver-types';
+import { getFragmentDefinitions } from './getFragmentDefinitions';
 
 export { runOnlineParser, getTypeInfo };
 
@@ -85,11 +88,14 @@ export const SuggestionCommand = {
   title: 'Suggestions',
 };
 
-const collectFragmentDefs = (op: string | undefined) => {
+const collectFragmentDefs = (
+  op: string | undefined,
+  options?: GraphQLLanguageServiceOptions,
+) => {
   const externalFragments: FragmentDefinitionNode[] = [];
   if (op) {
     try {
-      visit(parse(op), {
+      visit(parseDocument(op, options), {
         FragmentDefinition(def) {
           externalFragments.push(def);
         },
@@ -101,7 +107,7 @@ const collectFragmentDefs = (op: string | undefined) => {
   return externalFragments;
 };
 
-export type AutocompleteSuggestionOptions = {
+export type AutocompleteSuggestionOptions = GraphQLLanguageServiceOptions & {
   /**
    * EXPERIMENTAL: Automatically fill required leaf nodes recursively
    * upon triggering code completion events.
@@ -141,13 +147,26 @@ export function getAutocompleteSuggestions(
     ...options,
     schema,
   } as InternalAutocompleteOptions;
+  const fragmentDefinitions = getFragmentDefinitions(queryText, options);
+  const providedFragmentDefinitions = Array.isArray(fragmentDefs)
+    ? fragmentDefs
+    : collectFragmentDefs(fragmentDefs, options);
+  for (const definition of providedFragmentDefinitions) {
+    if (
+      !fragmentDefinitions.some(
+        existing => existing.name.value === definition.name.value,
+      )
+    ) {
+      fragmentDefinitions.push(definition);
+    }
+  }
 
   const context = getContextAtPosition(
     queryText,
     cursor,
     schema,
     contextToken,
-    options,
+    { ...options, fragmentDefinitions },
     1,
   );
   if (!context) {
@@ -282,14 +301,16 @@ export function getAutocompleteSuggestions(
   // Argument names
   if (
     kind === RuleKinds.ARGUMENTS ||
-    (kind === RuleKinds.ARGUMENT && step === 0)
+    kind === RuleKinds.FRAGMENT_ARGUMENTS ||
+    ((kind === RuleKinds.ARGUMENT || kind === RuleKinds.FRAGMENT_ARGUMENT) &&
+      step === 0)
   ) {
     const { argDefs } = typeInfo;
     if (argDefs) {
       return hintList(
         token,
         argDefs.map(
-          (argDef: GraphQLArgument): CompletionItem => ({
+          (argDef): CompletionItem => ({
             label: argDef.name,
             insertText: getInputInsertText(argDef.name + ': ', argDef.type),
             insertTextMode: InsertTextMode.adjustIndentation,
@@ -339,7 +360,8 @@ export function getAutocompleteSuggestions(
     kind === RuleKinds.ENUM_VALUE ||
     (kind === RuleKinds.LIST_VALUE && step === 1) ||
     (kind === RuleKinds.OBJECT_FIELD && step === 2) ||
-    (kind === RuleKinds.ARGUMENT && step === 2)
+    ((kind === RuleKinds.ARGUMENT || kind === RuleKinds.FRAGMENT_ARGUMENT) &&
+      step === 2)
   ) {
     return getSuggestionsForInputValues(token, typeInfo, queryText, schema);
   }
@@ -350,6 +372,7 @@ export function getAutocompleteSuggestions(
       queryText,
       schema,
       token,
+      options,
     );
     return hintList(
       token,
@@ -378,10 +401,7 @@ export function getAutocompleteSuggestions(
       token,
       typeInfo,
       schema,
-      queryText,
-      Array.isArray(fragmentDefs)
-        ? fragmentDefs
-        : collectFragmentDefs(fragmentDefs),
+      fragmentDefinitions,
     );
   }
 
@@ -575,6 +595,25 @@ function getSuggestionsForInputValues(
 ): Array<CompletionItem> {
   const namedInputType = getNamedType(typeInfo.inputType!);
 
+  // When the value position expects a list (e.g. `[Episode]`), a bare literal
+  // like `JEDI` is invalid — it must be wrapped as `[JEDI]`. The online parser
+  // unwraps one list level each time the cursor moves inside a list literal
+  // (`[ | ]`), so the number of list wrappers still present here is exactly how
+  // many brackets we need to add (handles nested lists like `[[Episode]]` too).
+  // Variable completions ($var) reference the whole list and must not be wrapped.
+  let listDepth = 0;
+  let unwrapped: GraphQLType | null | undefined = getNullableType(
+    typeInfo.inputType,
+  );
+  while (unwrapped && isListType(unwrapped)) {
+    listDepth++;
+    unwrapped = getNullableType(unwrapped.ofType);
+  }
+  const wrap = (literal: string): string | undefined =>
+    listDepth > 0
+      ? '['.repeat(listDepth) + literal + ']'.repeat(listDepth)
+      : undefined;
+
   const queryVariables: CompletionItem[] = getVariableCompletions(
     queryText,
     schema,
@@ -588,6 +627,7 @@ function getSuggestionsForInputValues(
       values
         .map<CompletionItem>((value: GraphQLEnumValue) => ({
           label: value.name,
+          insertText: wrap(value.name),
           detail: String(namedInputType),
           documentation: value.description ?? undefined,
           deprecated: Boolean(value.deprecationReason),
@@ -605,6 +645,7 @@ function getSuggestionsForInputValues(
       queryVariables.concat([
         {
           label: 'true',
+          insertText: wrap('true'),
           detail: String(GraphQLBoolean),
           documentation: 'Not false.',
           kind: CompletionItemKind.Variable,
@@ -612,6 +653,7 @@ function getSuggestionsForInputValues(
         },
         {
           label: 'false',
+          insertText: wrap('false'),
           detail: String(GraphQLBoolean),
           documentation: 'Not true.',
           kind: CompletionItemKind.Variable,
@@ -783,22 +825,13 @@ function getSuggestionsForFragmentSpread(
   token: ContextToken,
   typeInfo: AllTypeInfo,
   schema: GraphQLSchema,
-  queryText: string,
-  fragmentDefs?: FragmentDefinitionNode[],
+  fragmentDefinitions: ReadonlyArray<FragmentDefinitionNode>,
 ): Array<CompletionItem> {
-  if (!queryText) {
-    return [];
-  }
   const typeMap = schema.getTypeMap();
   const defState = getDefinitionState(token.state);
-  const fragments = getFragmentDefinitions(queryText);
-
-  if (fragmentDefs && fragmentDefs.length > 0) {
-    fragments.push(...fragmentDefs);
-  }
 
   // Filter down to only the fragments which may exist here.
-  const relevantFrags = fragments.filter(
+  const relevantFrags = fragmentDefinitions.filter(
     frag =>
       // Only include fragments with known types.
       typeMap[frag.typeCondition.name.value] &&
@@ -849,87 +882,159 @@ const getParentDefinition = (state: State, kind: RuleKind) => {
   }
 };
 
+function getDefinitionKey(state: State): string | undefined {
+  const definition = getDefinitionState(state);
+  return definition?.kind
+    ? `${definition.kind}:${definition.name ?? ''}`
+    : undefined;
+}
+
+function stateContains(state: State, kind: RuleKind): boolean {
+  let current: State | null | undefined = state;
+  while (current?.kind) {
+    if (current.kind === kind) {
+      return true;
+    }
+    current = current.prevState;
+  }
+  return false;
+}
+
 export function getVariableCompletions(
   queryText: string,
   schema: GraphQLSchema,
   token: ContextToken,
+  options?: GraphQLLanguageServiceOptions,
 ): CompletionItem[] {
   let variableName: null | string = null;
+  let variableScope: string | undefined;
   let variableType: GraphQLInputObjectType | undefined | null;
-  const definitions: Record<string, any> = Object.create({});
+  const definitionsByScope = new Map<string, Map<string, CompletionItem>>();
+  const fragmentSpreadsByScope = new Map<string, Set<string>>();
+  const operationScopes = new Set<string>();
 
-  runOnlineParser(queryText, (_, state: State) => {
-    // TODO: gather this as part of `AllTypeInfo`, as I don't think it's optimal to re-run the parser like this
-    if (state?.kind === RuleKinds.VARIABLE && state.name) {
-      variableName = state.name;
-    }
-    if (state?.kind === RuleKinds.NAMED_TYPE && variableName) {
-      const parentDefinition = getParentDefinition(state, RuleKinds.TYPE);
-      if (parentDefinition?.type) {
-        variableType = schema.getType(
-          parentDefinition?.type,
-        ) as GraphQLInputObjectType;
+  runOnlineParser(
+    queryText,
+    (_, state: State) => {
+      const scope = getDefinitionKey(state);
+      const definition = getDefinitionState(state);
+      if (!scope || !definition) {
+        return;
+      }
+
+      if (
+        definition.kind === RuleKinds.QUERY ||
+        definition.kind === RuleKinds.MUTATION ||
+        definition.kind === RuleKinds.SUBSCRIPTION ||
+        definition.kind === RuleKinds.SHORT_QUERY
+      ) {
+        operationScopes.add(scope);
+      }
+
+      if (state.kind === RuleKinds.FRAGMENT_SPREAD && state.name) {
+        const spreads = fragmentSpreadsByScope.get(scope) ?? new Set<string>();
+        spreads.add(state.name);
+        fragmentSpreadsByScope.set(scope, spreads);
+      }
+
+      if (
+        state.kind === RuleKinds.VARIABLE &&
+        state.name &&
+        stateContains(state, RuleKinds.VARIABLE_DEFINITION)
+      ) {
+        variableName = state.name;
+        variableScope = scope;
+      }
+      if (
+        state.kind === RuleKinds.NAMED_TYPE &&
+        variableName &&
+        variableScope === scope
+      ) {
+        const parentDefinition = getParentDefinition(state, RuleKinds.TYPE);
+        if (parentDefinition?.type) {
+          variableType = schema.getType(
+            parentDefinition.type,
+          ) as GraphQLInputObjectType;
+        }
+      }
+
+      if (variableName && variableType && variableScope === scope) {
+        const definitions =
+          definitionsByScope.get(scope) ?? new Map<string, CompletionItem>();
+        if (!definitions.has(variableName)) {
+          const replaceString =
+            token.string === '$' || token.state.kind === RuleKinds.VARIABLE
+              ? variableName
+              : '$' + variableName;
+          definitions.set(variableName, {
+            detail: variableType.toString(),
+            insertText: replaceString,
+            label: '$' + variableName,
+            rawInsert: replaceString,
+            type: variableType,
+            kind: CompletionItemKind.Variable,
+          } as CompletionItem);
+          definitionsByScope.set(scope, definitions);
+        }
+
+        variableName = null;
+        variableScope = undefined;
+        variableType = null;
+      }
+    },
+    options,
+  );
+
+  const currentDefinition = getDefinitionState(token.state);
+  const currentScope = getDefinitionKey(token.state);
+  if (!currentDefinition || !currentScope) {
+    return [];
+  }
+
+  const visibleDefinitions = new Map(
+    definitionsByScope.get(currentScope) ?? [],
+  );
+  if (currentDefinition.kind === RuleKinds.FRAGMENT_DEFINITION) {
+    const reachesFragment = (
+      scope: string,
+      fragmentName: string,
+      visited = new Set<string>(),
+    ): boolean => {
+      if (visited.has(scope)) {
+        return false;
+      }
+      visited.add(scope);
+      const spreads = fragmentSpreadsByScope.get(scope);
+      if (spreads?.has(fragmentName)) {
+        return true;
+      }
+      return [...(spreads ?? [])].some(spreadName =>
+        reachesFragment(
+          `${RuleKinds.FRAGMENT_DEFINITION}:${spreadName}`,
+          fragmentName,
+          visited,
+        ),
+      );
+    };
+
+    for (const operationScope of operationScopes) {
+      if (
+        currentDefinition.name &&
+        reachesFragment(operationScope, currentDefinition.name)
+      ) {
+        for (const [name, definition] of definitionsByScope.get(
+          operationScope,
+        ) ?? []) {
+          // Fragment variables shadow operation variables with the same name.
+          if (!visibleDefinitions.has(name)) {
+            visibleDefinitions.set(name, definition);
+          }
+        }
       }
     }
+  }
 
-    if (variableName && variableType && !definitions[variableName]) {
-      // append `$` if the `token.string` is not already `$`, or describing a variable
-      // this appears to take care of it everywhere
-      const replaceString =
-        token.string === '$' || token?.state?.kind === 'Variable'
-          ? variableName
-          : '$' + variableName;
-      definitions[variableName] = {
-        detail: variableType.toString(),
-        insertText: replaceString,
-        label: '$' + variableName,
-        rawInsert: replaceString,
-        type: variableType,
-        kind: CompletionItemKind.Variable,
-      } as CompletionItem;
-
-      variableName = null;
-      variableType = null;
-    }
-  });
-
-  return objectValues(definitions);
-}
-
-export function getFragmentDefinitions(
-  queryText: string,
-): Array<FragmentDefinitionNode> {
-  const fragmentDefs: FragmentDefinitionNode[] = [];
-  runOnlineParser(queryText, (_, state: State) => {
-    if (
-      state.kind === RuleKinds.FRAGMENT_DEFINITION &&
-      state.name &&
-      state.type
-    ) {
-      fragmentDefs.push({
-        kind: RuleKinds.FRAGMENT_DEFINITION,
-        name: {
-          kind: Kind.NAME,
-          value: state.name,
-        },
-
-        selectionSet: {
-          kind: RuleKinds.SELECTION_SET,
-          selections: [],
-        },
-
-        typeCondition: {
-          kind: RuleKinds.NAMED_TYPE,
-          name: {
-            kind: Kind.NAME,
-            value: state.type,
-          },
-        },
-      });
-    }
-  });
-
-  return fragmentDefs;
+  return [...visibleDefinitions.values()];
 }
 
 function getSuggestionsForVariableDefinition(

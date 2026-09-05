@@ -18,6 +18,7 @@ import {
   parse,
   visit,
 } from 'graphql';
+import type { ParseOptions } from 'graphql';
 import type {
   CachedContent,
   GraphQLFileMetadata,
@@ -162,6 +163,17 @@ export class GraphQLCache {
 
   getGraphQLConfig = (): GraphQLConfig => this._graphQLConfig;
 
+  _parseGraphQL = (query: string, filePath?: Uri): DocumentNode => {
+    const projectConfig = filePath
+      ? this.getProjectForFile(filePath)
+      : undefined;
+    return parse(query, {
+      experimentalFragmentArguments:
+        projectConfig?.extensions?.languageService
+          ?.experimentalFragmentArguments === true,
+    } as ParseOptions);
+  };
+
   getProjectForFile = (uri: string): GraphQLProjectConfig | void => {
     try {
       const project = this._graphQLConfig.getProjectForFile(
@@ -184,6 +196,7 @@ export class GraphQLCache {
   getFragmentDependencies = async (
     query: string,
     fragmentDefinitions?: Map<string, FragmentInfo> | null,
+    experimentalFragmentArguments = false,
   ): Promise<FragmentInfo[]> => {
     // If there isn't context for fragment references,
     // return an empty array.
@@ -194,7 +207,9 @@ export class GraphQLCache {
     // Return an empty array.
     let parsedQuery;
     try {
-      parsedQuery = parse(query);
+      parsedQuery = parse(query, {
+        experimentalFragmentArguments,
+      } as ParseOptions);
     } catch {
       return [];
     }
@@ -452,7 +467,7 @@ export class GraphQLCache {
     const asts = contents.map(({ query }) => {
       try {
         return {
-          ast: parse(query),
+          ast: this._parseGraphQL(query, filePath),
           query,
         };
       } catch {
@@ -507,7 +522,7 @@ export class GraphQLCache {
     const asts = contents.map(({ query }) => {
       try {
         return {
-          ast: parse(query),
+          ast: this._parseGraphQL(query, filePath),
           query,
         };
       } catch {
@@ -821,7 +836,7 @@ export class GraphQLCache {
         }
 
         for (const { query } of queries) {
-          asts.push(parse(query));
+          asts.push(this._parseGraphQL(query, filePath));
         }
         return {
           filePath,

@@ -26,4 +26,6 @@ export {
 
 export { getTypeInfo, getDefinitionState, getFieldDef } from './getTypeInfo';
 
+export { parseDocument } from './parseDocument';
+
 export * from './types';
