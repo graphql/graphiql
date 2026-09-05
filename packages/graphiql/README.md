@@ -61,17 +61,8 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
 
 ### CDN usage
 
-#### ESM-based (recommended)
-
-Use the modern, ESM-based CDN approach.
-See the [ESM-based example](../../examples/graphiql-cdn) for setup details.
-
-#### UMD (deprecated)
-
-> [!WARNING]
->
-> The UMD CDN build is **deprecated** and will be removed in a future major release of GraphiQL.
-> Please migrate to the [ESM-based example](../../examples/graphiql-cdn).
+GraphiQL doesn't publish a UMD bundle. To use GraphiQL without a bundler, follow
+the [ESM import-map example](../../examples/graphiql-cdn).
 
 ## Usage
 
