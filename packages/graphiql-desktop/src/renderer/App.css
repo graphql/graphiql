@@ -1,0 +1,34 @@
+.graphiql-container.graphiql-desktop-shell {
+  flex-direction: column;
+}
+
+.graphiql-desktop-endpoint-bar {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: var(--px-8);
+  padding: var(--px-8) var(--px-12);
+  background: hsl(var(--color-base));
+  border-bottom: 1px solid
+    hsla(var(--color-neutral), var(--alpha-background-heavy));
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  color: hsl(var(--color-neutral));
+}
+
+.graphiql-desktop-endpoint-bar label {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.graphiql-desktop-endpoint-bar input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--px-6) var(--px-8);
+  border: 1px solid hsla(var(--color-neutral), var(--alpha-background-heavy));
+  border-radius: var(--border-radius-4);
+  background: hsl(var(--color-base));
+  color: hsl(var(--color-neutral));
+  font-family: inherit;
+  font-size: inherit;
+}

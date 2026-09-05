@@ -23,6 +23,7 @@ jobs:
         with:
           key: build-${{ github.sha }}
           path: ${{ env.BUILD-CACHE-LIST }}
+          enableCrossOsArchive: true
 
   cspell:
     name: CSpell
@@ -167,6 +168,89 @@ jobs:
           name: cypress-videos
           path: packages/graphiql/cypress/videos
           if-no-files-found: ignore
+
+  desktop-e2e:
+    name: GraphiQL Desktop E2E
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: yarn
+      - run: yarn install --immutable
+      - uses: actions/cache@v5
+        with:
+          key: build-${{ github.sha }}
+          path: ${{ env.BUILD-CACHE-LIST }}
+      - run: npx turbo run build --filter=graphiql-desktop
+      - run: yarn workspace graphiql-desktop electron:setup
+      - name: Playwright run
+        run: xvfb-run --auto-servernum yarn workspace graphiql-desktop e2e
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: graphiql-desktop-test-results
+          path: packages/graphiql-desktop/test-results
+          if-no-files-found: ignore
+
+  desktop-preview:
+    name: GraphiQL Desktop Preview (${{ matrix.platform }})
+    needs: [desktop-e2e]
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macOS
+            os: macos-latest
+            artifact_path: |
+              packages/graphiql-desktop/release/*.dmg
+              packages/graphiql-desktop/release/*.zip
+          - platform: Linux
+            os: ubuntu-latest
+            artifact_path: |
+              packages/graphiql-desktop/release/*.AppImage
+              packages/graphiql-desktop/release/*.deb
+          - platform: Windows
+            os: windows-latest
+            artifact_path: packages/graphiql-desktop/release/*.exe
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: yarn
+
+      - run: yarn install --immutable
+
+      - uses: actions/cache@v5
+        with:
+          key: build-${{ github.sha }}
+          path: ${{ env.BUILD-CACHE-LIST }}
+          enableCrossOsArchive: true
+          fail-on-cache-miss: true
+
+      - run: npx turbo run build --filter=graphiql-desktop
+
+      - run: yarn workspace graphiql-desktop electron:setup
+
+      - run: yarn workspace graphiql-desktop dist
+
+      - name: Upload installers
+        uses: actions/upload-artifact@v7
+        with:
+          name: graphiql-desktop-pr-${{ github.event.pull_request.number }}-${{ matrix.platform }}
+          path: ${{ matrix.artifact_path }}
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
 
   pkg-pr-new:
     name: Canary Builds

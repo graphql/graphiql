@@ -19,6 +19,7 @@
     "**/esbuild.js",
     ".oxlintrc.json",
     ".vscode/extensions.json",
+    "packages/graphiql-desktop/src/main/resolve-renderer-path.test.ts",
     "packages/monaco-graphql/test/monaco-editor.test.ts",
     "working-group"
   ],

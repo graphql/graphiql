@@ -33,6 +33,7 @@ jobs:
 
     outputs:
       vscode-published: ${{ steps.vscode.outputs.published }}
+      desktop-published: ${{ steps.desktop.outputs.published }}
       published-packages: ${{ steps.changesets.outputs.publishedPackages }}
 
     steps:
@@ -59,6 +60,11 @@ jobs:
       - name: Note VSCode extension release
         id: vscode
         if: ${{ steps.changesets.outputs.published == 'true' && contains(steps.changesets.outputs.publishedPackages, '"name":"vscode-graphql') }}
+        run: echo "published=true" >> "$GITHUB_OUTPUT"
+
+      - name: Note GraphiQL Desktop release
+        id: desktop
+        if: ${{ steps.changesets.outputs.published == 'true' && contains(steps.changesets.outputs.publishedPackages, '"name":"graphiql-desktop"') }}
         run: echo "published=true" >> "$GITHUB_OUTPUT"
 
       - name: Build VSCode extension .vsix files
@@ -122,3 +128,44 @@ jobs:
           OVSX_PAT: ${{ secrets.OPEN_VSX_TOKEN }}
           PUBLISHED_PACKAGES: ${{ needs.release.outputs.published-packages }}
         run: node scripts/release-vscode.mts ${{ matrix.command }}
+
+  attach-desktop-artifacts:
+    name: Build & Attach Desktop Artifacts (${{ matrix.os }})
+    needs: release
+    if: ${{ needs.release.outputs.desktop-published == 'true' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    permissions:
+      # Needed for `gh release upload` — this job doesn't inherit the
+      # `release` job's `contents: write`, since job-level `permissions:`
+      # don't propagate across jobs.
+      contents: write
+    env:
+      # Builds are unsigned (see the package README); this stops
+      # electron-builder from searching for a macOS signing identity that
+      # doesn't exist.
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: yarn
+
+      - run: yarn install --immutable
+
+      - run: npx turbo run build --filter=graphiql-desktop
+
+      - run: yarn workspace graphiql-desktop electron:setup
+
+      - run: yarn workspace graphiql-desktop dist
+
+      - name: Attach installers to GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISHED_PACKAGES: ${{ needs.release.outputs.published-packages }}
+        run: node scripts/release-desktop.mts attach

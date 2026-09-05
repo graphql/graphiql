@@ -1,0 +1,57 @@
+appId: org.graphql.graphiql
+productName: GraphiQL
+
+# electron-builder needs an exact Electron version to download matching
+# platform binaries, but `electron` is a semver range in package.json (kept
+# that way so the app stays on the same auto-updated range as the rest of
+# the repo's tooling). Keep this in sync with the range's resolved version
+# (`node -p "require('electron/package.json').version"`).
+electronVersion: 43.4.1
+
+directories:
+  output: release
+  buildResources: build
+
+# The packaged app only needs the built main/preload/renderer output plus a
+# package.json for Electron to read `main` from — no source, config, or
+# devDependencies.
+files:
+  - dist/**
+  - package.json
+
+artifactName: ${productName}-${version}-${os}-${arch}.${ext}
+
+mac:
+  target:
+    - target: dmg
+      arch:
+        - arm64
+        - x64
+    - target: zip
+      arch:
+        - arm64
+        - x64
+  category: public.app-category.developer-tools
+  # Unsigned builds are intentional for now (see README) — do not add
+  # signing/notarization config here without also updating the README.
+  identity: null
+
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+        - arm64
+    - target: deb
+      arch:
+        - x64
+  category: Development
+  # The .deb target refuses to build without a maintainer (it maps to
+  # `package.json`'s `author`, which this workspace doesn't set).
+  maintainer: GraphQL Contributors <graphiql@graphql.org>
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64

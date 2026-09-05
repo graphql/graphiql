@@ -33,6 +33,7 @@ asiandrummer
 astro
 astrojs
 aumy
+authenticode
 Autopurge
 behaviour
 benjie
@@ -155,6 +156,7 @@ nonmatchingbracket
 novvum
 nowdoc
 nrtbf
+nsis
 nullthrows
 nulltype
 nvim
@@ -187,6 +189,7 @@ quasis
 ractive
 randomthing
 ravikoti
+refetches
 resi
 resizer
 rikki
@@ -256,6 +259,7 @@ wgutils
 whatwg
 wincent
 wonka
+xattr
 yoshiakis
 zdravo
 zustand
