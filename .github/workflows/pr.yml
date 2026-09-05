@@ -23,6 +23,7 @@ jobs:
         with:
           key: build-${{ github.sha }}
           path: ${{ env.BUILD-CACHE-LIST }}
+          enableCrossOsArchive: true
 
   cspell:
     name: CSpell
@@ -228,6 +229,13 @@ jobs:
           cache: yarn
 
       - run: yarn install --immutable
+
+      - uses: actions/cache@v5
+        with:
+          key: build-${{ github.sha }}
+          path: ${{ env.BUILD-CACHE-LIST }}
+          enableCrossOsArchive: true
+          fail-on-cache-miss: true
 
       - run: npx turbo run build --filter=graphiql-desktop
 
