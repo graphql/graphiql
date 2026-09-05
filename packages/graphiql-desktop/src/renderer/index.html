@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; img-src 'self' data:; font-src 'self' data:;"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GraphiQL</title>
+    <style>
+      body {
+        margin: 0;
+      }
+
+      #root {
+        display: flex;
+        flex-direction: column;
+        height: 100dvh;
+      }
+
+      #graphiql {
+        flex: 1;
+        min-height: 0;
+      }
+
+      .loading {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root">
+      <div id="graphiql">
+        <div class="loading">Loading…</div>
+      </div>
+    </div>
+    <script type="module" src="./main.tsx"></script>
+  </body>
+</html>

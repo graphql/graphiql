@@ -1,0 +1,77 @@
+/*
+ * GraphiQL's own theme tokens (--color-base, --color-neutral, etc.) are
+ * scoped to `.graphiql-container`, which lives inside <GraphiQL>'s own DOM
+ * subtree, so the endpoint bar (a sibling) can't read them directly. Mirror
+ * the light/dark values here instead, keyed off the same `body.graphiql-dark`
+ * / `body.graphiql-light` classes GraphiQL's theme switcher toggles (see
+ * `@graphiql/react`'s theme store), so the bar tracks the active theme.
+ */
+.graphiql-desktop-endpoint-bar {
+  --color-neutral: 219, 28%, 32%;
+  --color-base: 219, 28%, 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  body:not(.graphiql-light) .graphiql-desktop-endpoint-bar {
+    --color-neutral: 219, 29%, 78%;
+    --color-base: 219, 29%, 18%;
+  }
+}
+
+body.graphiql-dark .graphiql-desktop-endpoint-bar {
+  --color-neutral: 219, 29%, 78%;
+  --color-base: 219, 29%, 18%;
+}
+
+.graphiql-desktop-endpoint-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: hsl(var(--color-base));
+  border-bottom: 1px solid hsla(var(--color-neutral), 0.2);
+  font-family: 'Roboto', sans-serif;
+  font-size: calc(14rem / 16);
+  color: hsl(var(--color-neutral));
+}
+
+.graphiql-desktop-endpoint-bar label {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.graphiql-desktop-endpoint-bar input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid hsla(var(--color-neutral), 0.3);
+  border-radius: 4px;
+  background: hsl(var(--color-base));
+  color: hsl(var(--color-neutral));
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.graphiql-desktop-endpoint-bar button {
+  padding: 6px 12px;
+  border: 1px solid hsla(var(--color-neutral), 0.3);
+  border-radius: 4px;
+  background: hsla(var(--color-neutral), 0.08);
+  color: hsl(var(--color-neutral));
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.graphiql-desktop-endpoint-bar button:hover {
+  background: hsla(var(--color-neutral), 0.15);
+}
+
+.graphiql-desktop-empty-state {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: hsla(var(--color-neutral, 219, 28%, 32%), 0.76);
+  font-family: 'Roboto', sans-serif;
+}
