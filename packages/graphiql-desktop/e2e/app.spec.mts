@@ -96,17 +96,16 @@ test('loads a schema from the endpoint bar and executes queries through the main
 
     const endpointInput = window.locator('#graphiql-desktop-endpoint-input');
     await expect(endpointInput).toBeVisible();
+    await expect(endpointInput).toHaveValue('');
+    await expect(
+      window.locator('#graphiql > .graphiql-container'),
+    ).toBeVisible();
 
     await endpointInput.fill(mockServer.url);
     await window
       .locator('.graphiql-desktop-endpoint-bar')
       .getByRole('button', { name: 'Connect' })
       .click();
-
-    // A loaded `.graphiql-container` proves the renderer mounted `<GraphiQL>`
-    // with a working fetcher; the introspection-request assertion below
-    // proves that fetcher actually round-tripped through the main process.
-    await expect(window.locator('.graphiql-container')).toBeVisible();
 
     await expect
       .poll(() => mockServer.introspectionRequestCount(), {

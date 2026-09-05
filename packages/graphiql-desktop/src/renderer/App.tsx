@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
+import { Button } from '@graphiql/react';
 import { GraphiQL } from 'graphiql';
 import type { Fetcher, FetcherParams, FetcherOpts } from '@graphiql/toolkit';
 import 'graphiql/setup-workers/vite';
@@ -75,7 +76,7 @@ export function App() {
   );
 
   return (
-    <>
+    <div className="graphiql-container graphiql-desktop-shell">
       <form className="graphiql-desktop-endpoint-bar" onSubmit={handleSubmit}>
         <label htmlFor="graphiql-desktop-endpoint-input">Endpoint</label>
         <input
@@ -89,20 +90,16 @@ export function App() {
           onChange={event => setDraftEndpoint(event.target.value)}
           placeholder="https://api.example.com/graphql"
         />
-        <button type="submit">Connect</button>
+        <Button type="submit">Connect</Button>
       </form>
       <div id="graphiql">
-        {endpoint ? (
-          // Remount on endpoint change so the schema refetches; in-progress
-          // editor state for the old endpoint isn't lost, since GraphiQL
-          // persists it to localStorage itself.
-          <GraphiQL key={endpoint} fetcher={fetcher} />
-        ) : (
-          <div className="graphiql-desktop-empty-state">
-            Enter a GraphQL endpoint above to get started.
-          </div>
-        )}
+        <GraphiQL
+          // Remount when the endpoint changes so GraphiQL refetches its schema.
+          key={endpoint || 'empty'}
+          fetcher={fetcher}
+          schema={endpoint ? undefined : null}
+        />
       </div>
-    </>
+    </div>
   );
 }

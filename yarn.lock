@@ -14036,6 +14036,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "graphiql-desktop@workspace:packages/graphiql-desktop"
   dependencies:
+    "@graphiql/react": "npm:^0.39.0"
     "@graphiql/toolkit": "npm:^0.12.1"
     "@playwright/test": "npm:^1.62.1"
     "@vitejs/plugin-react": "npm:^4.4.1"
