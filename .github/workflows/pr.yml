@@ -176,6 +176,56 @@ jobs:
           path: packages/graphiql-desktop/test-results
           if-no-files-found: ignore
 
+  desktop-preview:
+    name: GraphiQL Desktop Preview (${{ matrix.platform }})
+    needs: [desktop-e2e]
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macOS
+            os: macos-latest
+            artifact_path: |
+              packages/graphiql-desktop/release/*.dmg
+              packages/graphiql-desktop/release/*.zip
+          - platform: Linux
+            os: ubuntu-latest
+            artifact_path: |
+              packages/graphiql-desktop/release/*.AppImage
+              packages/graphiql-desktop/release/*.deb
+          - platform: Windows
+            os: windows-latest
+            artifact_path: packages/graphiql-desktop/release/*.exe
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: yarn
+
+      - run: yarn install --immutable
+
+      - run: npx turbo run build --filter=graphiql-desktop
+
+      - run: yarn workspace graphiql-desktop electron:setup
+
+      - run: yarn workspace graphiql-desktop dist
+
+      - name: Upload installers
+        uses: actions/upload-artifact@v7
+        with:
+          name: graphiql-desktop-pr-${{ github.event.pull_request.number }}-${{ matrix.platform }}
+          path: ${{ matrix.artifact_path }}
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+
   pkg-pr-new:
     name: Canary Builds
     runs-on: ubuntu-latest
