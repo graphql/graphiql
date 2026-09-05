@@ -55,7 +55,7 @@ app.use(express.json());
 app.post('/graphql', handler);
 app.get('/graphql', handler);
 
-// On CI we test the UMD build
+// On CI we test the built ESM package
 if (process.env.CI === 'true') {
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
   // const __dirname = import.meta.dirname; // can be converted to, after Node.js upgrade to v20

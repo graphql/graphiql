@@ -1,5 +1,5 @@
 /**
- * The CDN demo in `packages/graphiql/src/e2e.ts` uses `createTransport` and the
+ * The E2E app in `packages/graphiql/src/e2e.ts` uses `createTransport` and the
  * `<GraphiQL transport={...}>` prop. These tests confirm that the response pane
  * header shows real wire metadata from the actual HTTP response (status code,
  * timing, response size) and that the upgrade banner is NOT shown because
@@ -13,6 +13,15 @@ const testQuery = `{
 }`;
 
 describe('Transport API + response pane header', () => {
+  it('Loads the ESM test app in production', function () {
+    if (Cypress.config('baseUrl') !== 'http://localhost:8080') {
+      this.skip();
+    }
+    cy.intercept('GET', '/dist/e2e/index.js').as('e2eApp');
+    cy.visit('/');
+    cy.wait('@e2eApp').its('response.statusCode').should('equal', 200);
+  });
+
   it('Shows the real HTTP status code badge after a successful query', () => {
     cy.visitWithOp({ query: testQuery });
     cy.clickExecuteQuery();

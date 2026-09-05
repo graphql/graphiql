@@ -143,16 +143,24 @@ Cypress.Commands.add('activateOperation', (operationName: string) => {
 });
 
 Cypress.Commands.add('clickExecuteQuery', () => {
+  waitForGraphiQL();
   cy.get('[aria-label="Run query"]').click();
 });
 
 Cypress.Commands.add('clickPrettify', () => {
+  waitForGraphiQL();
   cy.get('[aria-label="Prettify query"]').click();
 });
 
 Cypress.Commands.add('clickMergeFragments', () => {
+  waitForGraphiQL();
+  cy.get('.graphiql-status-bar-conn-connected');
   cy.get('[aria-label="Merge fragments into query"]').click();
 });
+
+function waitForGraphiQL() {
+  cy.get('html').should('have.attr', 'data-graphiql-ready', 'true');
+}
 
 Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
   let url = `?query=${encodeURIComponent(query)}`;

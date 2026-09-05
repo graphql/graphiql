@@ -2,16 +2,16 @@
 
 import React, { ComponentProps } from 'react';
 import ReactDOM from 'react-dom/client';
-import GraphiQL from './cdn';
-import type { TabsState, Theme } from '@graphiql/react';
-import './style.css';
+import { createTransport } from '@graphiql/toolkit';
+import { useGraphiQL, type TabsState, type Theme } from '@graphiql/react';
+import { createClient } from 'graphql-ws';
+import { GraphiQL } from 'graphiql';
+import 'graphiql/setup-workers/vite';
 
 /**
- * CDN GraphiQL Example
+ * GraphiQL Example
  *
  * This is a simple example that provides a primitive query string parser on top of GraphiQL props
- * It assumes a global umd GraphiQL, which would be provided by an index.html in the default example
- *
  * It is used by:
  * - the netlify demo
  * - end-to-end tests
@@ -98,10 +98,10 @@ function getSchemaUrl(): string {
 const root = ReactDOM.createRoot(document.getElementById('graphiql')!);
 
 const props: ComponentProps<typeof GraphiQL> = {
-  transport: GraphiQL.createTransport({
+  transport: createTransport({
     url: getSchemaUrl(),
     supportedMethods: ['GET', 'POST', 'QUERY'],
-    subscriptionClient: GraphiQL.createWsClient({
+    subscriptionClient: createClient({
       url: 'ws://localhost:8081/subscriptions',
     }),
   }),
@@ -136,8 +136,18 @@ function App() {
   return React.createElement(
     React.StrictMode,
     null,
-    React.createElement(GraphiQL, props),
+    React.createElement(GraphiQL, props, React.createElement(ReadyIndicator)),
   );
+}
+
+function ReadyIndicator() {
+  const isReady = useGraphiQL(state => Boolean(state.queryEditor));
+
+  React.useEffect(() => {
+    document.documentElement.dataset.graphiqlReady = String(isReady);
+  }, [isReady]);
+
+  return null;
 }
 
 root.render(React.createElement(App));
