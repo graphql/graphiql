@@ -24,7 +24,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "!dist/e2e/**"
   ],
   "exports": {
     "./package.json": "./package.json",
