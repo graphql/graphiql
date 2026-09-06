@@ -1,6 +1,6 @@
 describe('GraphiQL keyboard interactions', () => {
   it('Does not prevent the escape key from being handled outside the editor', () => {
-    cy.visit('/');
+    cy.visitGraphiQL();
     const mockFn = cy.stub().as('escapeHandler');
     cy.document().then(doc => {
       doc.addEventListener('keydown', event => {
@@ -16,7 +16,7 @@ describe('GraphiQL keyboard interactions', () => {
   });
 
   it('Does prevent the escape key from being handled outside the editor if closing the autocomplete dialog', () => {
-    cy.visit('/');
+    cy.visitGraphiQL();
     const mockFn = cy.stub().as('escapeHandler');
     cy.document().then(doc => {
       doc.addEventListener('keydown', event => {
@@ -36,11 +36,11 @@ describe('GraphiQL keyboard interactions', () => {
 // `cy.realPress` dispatches trusted key events, unlike `.type()`/`.trigger()`,
 // so it's the only way to exercise actual Tab-order and focus-trap behavior
 // here. It needs the Electron window to have real OS-level focus first, which
-// a `cy.visit()` alone doesn't guarantee — each test below clicks a neutral,
+// a `cy.visitGraphiQL()` alone doesn't guarantee — each test below clicks a neutral,
 // non-interactive area before the first `realPress` to establish it.
 describe('keyboard navigation', () => {
   beforeEach(() => {
-    cy.visit('/');
+    cy.visitGraphiQL();
     cy.get('.graphiql-query-editor .view-lines').should('exist');
   });
 
@@ -196,7 +196,7 @@ describe('keyboard navigation', () => {
   });
 
   it('Escape cancels an in-progress history label edit and returns focus to the row', () => {
-    cy.visitWithOp({ query: '{ __typename }' });
+    cy.visitGraphiQL({ query: '{ __typename }' });
     cy.get('.graphiql-query-editor .view-lines').should('exist');
     cy.clickExecuteQuery();
     cy.get('.result-window').should('not.have.text', '');
@@ -217,7 +217,7 @@ describe('keyboard navigation', () => {
   // since that modifier is OS-dependent and this test only needs to prove
   // the cursor-driven selection feeds the run.
   it('Keyboard-driven operation selection runs the operation under the cursor', () => {
-    cy.visitWithOp({
+    cy.visitGraphiQL({
       query: 'query A { __typename }\nquery B { __typename }\n',
     });
     cy.get('.graphiql-query-editor .view-lines').should('exist');
@@ -236,7 +236,7 @@ describe('keyboard navigation', () => {
   });
 
   it('The Run button caret opens a keyboard-operable operation picker', () => {
-    cy.visitWithOp({
+    cy.visitGraphiQL({
       query: 'query A { __typename }\nquery B { __typename }\n',
     });
     cy.get('.graphiql-query-editor .view-lines').should('exist');

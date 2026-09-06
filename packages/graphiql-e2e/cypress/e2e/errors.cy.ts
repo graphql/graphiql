@@ -6,7 +6,7 @@ describe('Errors', () => {
       statusCode: 502,
       body: 'Bad Gateway',
     });
-    cy.visit('/');
+    cy.visitGraphiQL();
     cy.assertQueryResult({
       errors: [
         {
@@ -20,7 +20,7 @@ describe('Errors', () => {
     cy.intercept('/graphql', {
       body: { errors: [new GraphQLError('Something unexpected happened...')] },
     });
-    cy.visit('/');
+    cy.visitGraphiQL();
     cy.assertQueryResult({
       errors: [{ message: 'Something unexpected happened...' }],
     });
@@ -28,7 +28,7 @@ describe('Errors', () => {
 
   it('Should show an error when the schema is invalid', () => {
     cy.intercept('/graphql', { fixture: 'bad-schema.json' });
-    cy.visit('/');
+    cy.visitGraphiQL();
     cy.assertQueryResult({
       errors: [
         {
@@ -41,7 +41,7 @@ describe('Errors', () => {
   });
 
   it('Should show an error when sending an invalid query', () => {
-    cy.visitWithOp({ query: '{thisDoesNotExist}' });
+    cy.visitGraphiQL({ query: '{thisDoesNotExist}' });
     cy.clickExecuteQuery();
     cy.assertQueryResult({
       errors: [
@@ -54,7 +54,7 @@ describe('Errors', () => {
   });
 
   it('Should show an error when sending an invalid subscription', () => {
-    cy.visitWithOp({ query: 'subscription {thisDoesNotExist}' });
+    cy.visitGraphiQL({ query: 'subscription {thisDoesNotExist}' });
     cy.clickExecuteQuery();
     cy.assertQueryResult({
       errors: [

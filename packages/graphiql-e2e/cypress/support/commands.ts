@@ -8,6 +8,8 @@
 
 /// <reference types="cypress" />
 
+import type { Params } from '../../src/params.js';
+
 interface Op {
   query: string;
   variables?: Record<string, any>;
@@ -16,76 +18,83 @@ interface Op {
   response?: Record<string, any>;
 }
 
-declare namespace Cypress {
-  type MockResult =
-    | { data: any }
-    | { data: any; hasNext?: boolean }
-    | { error: any[] }
-    | { errors: any[] };
+type VisitParams = Params<string | Record<string, unknown>>;
 
-  type EditorName = 'query' | 'variables' | 'headers';
+declare global {
+  namespace Cypress {
+    type MockResult =
+      | { data: any }
+      | { data: any; hasNext?: boolean }
+      | { error: any[] }
+      | { errors: any[] };
 
-  interface Chainable {
-    /**
-     * Custom command to select a DOM element by `data-cy` attribute.
-     * @example cy.dataCy('greeting')
-     */
-    dataCy(value: string): Chainable<Element>;
+    type EditorName = 'query' | 'variables' | 'headers';
 
-    /**
-     * Type into one of GraphiQL's Monaco editors. The golden path for editor
-     * input: Monaco's real `<textarea>` is offscreen, so a plain `.type()`
-     * fails Cypress' actionability check; this forces the event and targets the
-     * right editor (revealing the Variables/Headers pane first when needed).
-     * @example cy.typeInEditor('query Foo { id }')
-     * @example cy.typeInEditor('{"id":1', { editor: 'variables' })
-     */
-    typeInEditor(
-      text: string,
-      options?: { editor?: EditorName } & Partial<Cypress.TypeOptions>,
-    ): Chainable<Element>;
+    interface Chainable {
+      /**
+       * Custom command to select a DOM element by `data-cy` attribute.
+       * @example cy.dataCy('greeting')
+       */
+      dataCy(value: string): Chainable<Element>;
 
-    /**
-     * Move the query editor's cursor to a 1-indexed line via the keyboard. See
-     * {@link activateOperation} for why keyboard navigation rather than clicking
-     * a `.view-line` is the golden path.
-     */
-    setCursorToLine(line: number): Chainable<Element>;
+      /**
+       * Type into one of GraphiQL's Monaco editors. The golden path for editor
+       * input: Monaco's real `<textarea>` is offscreen, so a plain `.type()`
+       * fails Cypress' actionability check; this forces the event and targets the
+       * right editor (revealing the Variables/Headers pane first when needed).
+       * @example cy.typeInEditor('query Foo { id }')
+       * @example cy.typeInEditor('{"id":1', { editor: 'variables' })
+       */
+      typeInEditor(
+        text: string,
+        options?: { editor?: EditorName } & Partial<Cypress.TypeOptions>,
+      ): Chainable<Element>;
 
-    /**
-     * Place the cursor inside a named operation so the active operation follows
-     * it (Run button, operation dropdown, operation-aware plugins). The golden
-     * path for cursor positioning: it finds the operation's line from the
-     * `?query=` URL (deterministic) and navigates there by keyboard. Clicking a
-     * `.view-line` instead races Monaco's layout repaints and flakes in headless
-     * runs, and a programmatic `setPosition` is ignored because tracking only
-     * follows `Explicit` (user-driven) cursor changes.
-     * @example cy.activateOperation('MyMutation')
-     */
-    activateOperation(operationName: string): Chainable<Element>;
+      /**
+       * Move the query editor's cursor to a 1-indexed line via the keyboard. See
+       * {@link activateOperation} for why keyboard navigation rather than clicking
+       * a `.view-line` is the golden path.
+       */
+      setCursorToLine(line: number): Chainable<Element>;
 
-    clickExecuteQuery(): Chainable<Element>;
+      /**
+       * Place the cursor inside a named operation so the active operation follows
+       * it (Run button, operation dropdown, operation-aware plugins). The golden
+       * path for cursor positioning: it finds the operation's line from the
+       * `?query=` URL (deterministic) and navigates there by keyboard. Clicking a
+       * `.view-line` instead races Monaco's layout repaints and flakes in headless
+       * runs, and a programmatic `setPosition` is ignored because tracking only
+       * follows `Explicit` (user-driven) cursor changes.
+       * @example cy.activateOperation('MyMutation')
+       */
+      activateOperation(operationName: string): Chainable<Element>;
 
-    visitWithOp(op: Op): Chainable<Element>;
+      clickExecuteQuery(): Chainable<Element>;
 
-    clickPrettify(): Chainable<Element>;
+      visitGraphiQL(
+        params?: VisitParams,
+        visitOptions?: Partial<VisitOptions>,
+      ): Chainable<JQuery<HTMLHtmlElement>>;
 
-    clickMergeFragments(): Chainable<Element>;
+      clickPrettify(): Chainable<Element>;
 
-    waitForQueryEditor(): Chainable<AUTWindow>;
+      clickMergeFragments(): Chainable<Element>;
 
-    assertHasValues(op: Op): Chainable<Element>;
+      waitForQueryEditor(): Chainable<AUTWindow>;
 
-    assertQueryResult(expectedResult: MockResult): Chainable<Element>;
+      assertHasValues(op: Op): Chainable<Element>;
 
-    containQueryResult(expectedResult: string): Chainable<Element>;
+      assertQueryResult(expectedResult: MockResult): Chainable<Element>;
 
-    assertLinterMarkWithMessage(
-      text: string,
-      severity: 'error' | 'warning',
-      message: string,
-      uri?: 'operation.graphql' | 'variables.json',
-    ): Chainable<Element>;
+      containQueryResult(expectedResult: string): Chainable<Element>;
+
+      assertLinterMarkWithMessage(
+        text: string,
+        severity: 'error' | 'warning',
+        message: string,
+        uri?: 'operation.graphql' | 'variables.json',
+      ): Chainable<Element>;
+    }
   }
 }
 
@@ -156,6 +165,7 @@ Cypress.Commands.add('clickPrettify', () => {
 
 Cypress.Commands.add('clickMergeFragments', () => {
   cy.waitForQueryEditor();
+  waitForSchema();
   cy.get('[aria-label="Merge fragments into query"]').click();
 });
 
@@ -168,14 +178,24 @@ Cypress.Commands.add('waitForQueryEditor', () =>
   }),
 );
 
-Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
-  let url = `?query=${encodeURIComponent(query)}`;
-  if (variables || variablesString) {
-    url += `&variables=${encodeURIComponent(
-      JSON.stringify(variables, null, 2) || variablesString,
-    )}`;
+function waitForSchema() {
+  return cy.get('.graphiql-status-bar-conn-connected');
+}
+
+Cypress.Commands.add('visitGraphiQL', (params = {}, visitOptions) => {
+  const queryParts: string[] = [];
+  for (const [key, value] of Object.entries(params)) {
+    if (value === undefined) {
+      continue;
+    }
+    const serializedValue =
+      typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+    queryParts.push(
+      `${encodeURIComponent(key)}=${encodeURIComponent(serializedValue)}`,
+    );
   }
-  cy.visit(url);
+  const url = queryParts.length === 0 ? '/' : `?${queryParts.join('&')}`;
+  return cy.visit(url, visitOptions);
 });
 
 Cypress.Commands.add(

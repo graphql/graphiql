@@ -8,7 +8,7 @@ query TestQuery {
   ...IdFragment
 }`;
 
-    cy.visitWithOp({ query });
+    cy.visitGraphiQL({ query });
     cy.clickMergeFragments();
 
     cy.get(

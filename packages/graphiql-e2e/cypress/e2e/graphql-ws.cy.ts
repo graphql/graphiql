@@ -10,24 +10,25 @@ describe('IncrementalDelivery support via fetcher', () => {
 
     it('Uses the page origin for subscriptions', () => {
       let socketUrl: string | undefined;
-      const query = encodeURIComponent(testSubscription);
-      const variables = encodeURIComponent(JSON.stringify({ delay: 0 }));
 
-      cy.visit(`?query=${query}&variables=${variables}`, {
-        onBeforeLoad(win) {
-          const NativeWebSocket = win.WebSocket;
-          const ObservedWebSocket = new Proxy(NativeWebSocket, {
-            construct(Target, args) {
-              socketUrl = String(args[0]);
-              return Reflect.construct(Target, args);
-            },
-          });
-          Object.defineProperty(win, 'WebSocket', {
-            configurable: true,
-            value: ObservedWebSocket,
-          });
+      cy.visitGraphiQL(
+        { query: testSubscription, variables: { delay: 0 } },
+        {
+          onBeforeLoad(win) {
+            const NativeWebSocket = win.WebSocket;
+            const ObservedWebSocket = new Proxy(NativeWebSocket, {
+              construct(Target, args) {
+                socketUrl = String(args[0]);
+                return Reflect.construct(Target, args);
+              },
+            });
+            Object.defineProperty(win, 'WebSocket', {
+              configurable: true,
+              value: ObservedWebSocket,
+            });
+          },
         },
-      });
+      );
       cy.get('.monaco-editor').should('have.length', 4);
       cy.clickExecuteQuery();
       cy.location().then(({ protocol, host }) => {

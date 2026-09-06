@@ -1,11 +1,11 @@
 describe('Theme', () => {
   describe('`defaultTheme`', () => {
     it('should have light theme', () => {
-      cy.visit('?defaultTheme=light');
+      cy.visitGraphiQL({ defaultTheme: 'light' });
       cy.get('body').should('have.class', 'graphiql-light');
     });
     it('should have dark theme', () => {
-      cy.visit('?defaultTheme=dark');
+      cy.visitGraphiQL({ defaultTheme: 'dark' });
       cy.get('body').should('have.class', 'graphiql-dark');
     });
   });
@@ -38,12 +38,15 @@ describe('Theme', () => {
       // from an explicit, deterministic Dark baseline instead of inheriting
       // whatever the previous test (or the test runner's OS) prefers.
       cy.clearLocalStorage();
-      cy.visit('/', {
-        onBeforeLoad(win) {
-          win.localStorage.setItem(
-            'graphiql:settings',
-            JSON.stringify({ theme: 'dark' }),
-          );
+      cy.visitGraphiQL(
+        {},
+        {
+          onBeforeLoad(win) {
+            win.localStorage.setItem(
+              'graphiql:settings',
+              JSON.stringify({ theme: 'dark' }),
+            );
+          },
         },
       });
       cy.waitForQueryEditor();

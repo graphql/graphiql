@@ -3,11 +3,12 @@
 import React, { ComponentProps } from 'react';
 import ReactDOM from 'react-dom/client';
 import { createTransport } from '@graphiql/toolkit';
-import type { TabsState, Theme } from '@graphiql/react';
+import type { TabsState } from '@graphiql/react';
 import { createClient } from 'graphql-ws';
 import { GraphiQL } from 'graphiql';
 import 'graphiql/style.css';
 import 'graphiql/setup-workers/vite';
+import type { Params } from './params.js';
 
 /**
  * GraphiQL Example
@@ -18,20 +19,6 @@ import 'graphiql/setup-workers/vite';
  * - end-to-end tests
  * - vite dev server
  */
-
-interface Params {
-  query?: string;
-  variables?: string;
-  headers?: string;
-
-  defaultQuery?: string;
-  defaultHeaders?: string;
-
-  confirmCloseTab?: 'true';
-  onPrettifyQuery?: 'true';
-  forcedTheme?: 'light' | 'dark' | 'system';
-  defaultTheme?: Theme;
-}
 
 // Parse the search string to get url parameters.
 const parameters: Params = Object.fromEntries(

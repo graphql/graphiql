@@ -1,6 +1,6 @@
 describe('Linting', () => {
   it('Does not mark valid fields', () => {
-    cy.visitWithOp({
+    cy.visitGraphiQL({
       query: /* GraphQL */ `
         {
           myAlias: id
@@ -16,7 +16,7 @@ describe('Linting', () => {
   });
 
   it('Marks invalid fields as error', () => {
-    cy.visitWithOp({
+    cy.visitGraphiQL({
       query: /* GraphQL */ `
         {
           doesNotExist
@@ -33,7 +33,7 @@ describe('Linting', () => {
   });
 
   it('Marks deprecated fields as warning', () => {
-    cy.visitWithOp({
+    cy.visitGraphiQL({
       query: /* GraphQL */ `
         {
           id
@@ -50,12 +50,9 @@ describe('Linting', () => {
   });
 
   it('Marks syntax errors in variables JSON as error', () => {
-    cy.visitWithOp({
+    cy.visitGraphiQL({
       query: '',
-      variablesString: JSON.stringify({ stringArg: '42' }, null, 2).slice(
-        0,
-        -1,
-      ),
+      variables: JSON.stringify({ stringArg: '42' }, null, 2).slice(0, -1),
     }).assertLinterMarkWithMessage(
       '"42"',
       'error',
@@ -65,7 +62,7 @@ describe('Linting', () => {
   });
 
   it('Marks unused variables as error', () => {
-    cy.visitWithOp({
+    cy.visitGraphiQL({
       query: /* GraphQL */ `
         query WithVariables($stringArg: String) {
           hasArgs(string: $stringArg)
@@ -83,7 +80,7 @@ describe('Linting', () => {
   });
 
   it('Marks invalid variable type as error', () => {
-    cy.visitWithOp({
+    cy.visitGraphiQL({
       query: /* GraphQL */ `
         query WithVariables($stringArg: String) {
           hasArgs(string: $stringArg)
@@ -101,7 +98,7 @@ describe('Linting', () => {
   });
 
   it('Marks variables with null values for a non-nullable type as error', () => {
-    cy.visitWithOp({
+    cy.visitGraphiQL({
       query: /* GraphQL */ `
         query WithVariables($stringArg: String!) {
           hasArgs(string: $stringArg)
@@ -119,7 +116,7 @@ describe('Linting', () => {
   });
 
   it('Marks variables with non-object values for a input object type as error', () => {
-    cy.visitWithOp({
+    cy.visitGraphiQL({
       query: /* GraphQL */ `
         query WithVariables($objectArg: TestInput) {
           hasArgs(object: $objectArg)
@@ -137,7 +134,7 @@ describe('Linting', () => {
   });
 
   it('Does not mark object variables for a custom scalar with a configured customScalarSchemas as error', () => {
-    cy.visitWithOp({
+    cy.visitGraphiQL({
       query: /* GraphQL */ `
         query WithVariables($jsonArg: JSON) {
           hasArgs(json: $jsonArg)
@@ -153,7 +150,7 @@ describe('Linting', () => {
   });
 
   it('Marks GraphQL syntax errors as error', () => {
-    cy.visitWithOp({
+    cy.visitGraphiQL({
       query: /* GraphQL */ `
         {
           doesNotExist

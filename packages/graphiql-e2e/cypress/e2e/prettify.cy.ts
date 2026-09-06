@@ -20,13 +20,13 @@ describe('GraphiQL Prettify', () => {
   it('should work while click on prettify button', () => {
     const rawQuery = '{  test\n\nid  }';
     const resultQuery = '{ test id }';
-    cy.visit(`?query=${rawQuery}&onPrettifyQuery=true`);
+    cy.visitGraphiQL({ query: rawQuery, onPrettifyQuery: 'true' });
     cy.clickPrettify();
     cy.assertHasValues({ query: resultQuery });
   });
 
   it('Regular prettification', () => {
-    cy.visitWithOp({ query: uglyQuery, variablesString: uglyVariables });
+    cy.visitGraphiQL({ query: uglyQuery, variables: uglyVariables });
 
     cy.clickPrettify();
 
@@ -37,9 +37,9 @@ describe('GraphiQL Prettify', () => {
   });
 
   it('Noop prettification', () => {
-    cy.visitWithOp({
+    cy.visitGraphiQL({
       query: prettifiedQuery,
-      variablesString: prettifiedVariables,
+      variables: prettifiedVariables,
     });
 
     cy.clickPrettify();
@@ -51,7 +51,7 @@ describe('GraphiQL Prettify', () => {
   });
 
   it('No crash on bad query', () => {
-    cy.visitWithOp({ query: brokenQuery, variablesString: uglyVariables });
+    cy.visitGraphiQL({ query: brokenQuery, variables: uglyVariables });
 
     cy.clickPrettify();
 
@@ -62,7 +62,7 @@ describe('GraphiQL Prettify', () => {
   });
 
   it('No crash on bad variablesString', () => {
-    cy.visitWithOp({ query: uglyQuery, variablesString: brokenVariables });
+    cy.visitGraphiQL({ query: uglyQuery, variables: brokenVariables });
 
     cy.clickPrettify();
 

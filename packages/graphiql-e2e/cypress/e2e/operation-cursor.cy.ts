@@ -25,7 +25,7 @@ const activeTabTitle = () =>
 describe('active operation follows the editor cursor', () => {
   beforeEach(() => {
     cy.clearAllLocalStorage();
-    cy.visit(`?query=${encodeURIComponent(TWO_OPS)}`);
+    cy.visitGraphiQL({ query: TWO_OPS });
     // Gate on Monaco having painted the document before driving the cursor.
     cy.contains('.view-line', 'query Beta').should('be.visible');
   });

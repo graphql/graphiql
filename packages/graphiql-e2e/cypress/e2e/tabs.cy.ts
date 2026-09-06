@@ -1,6 +1,6 @@
 describe('Tabs', () => {
   it('Should store editor contents when switching between tabs', () => {
-    cy.visit('?defaultQuery=');
+    cy.visitGraphiQL({ defaultQuery: '' });
 
     // Assert that tab visible when there's only one session
     cy.get('.graphiql-tab-button').eq(0).should('exist');
@@ -77,7 +77,7 @@ describe('Tabs', () => {
   describe('confirmCloseTab()', () => {
     it('should keep tab when `Cancel` was clicked', () => {
       cy.on('window:confirm', () => false);
-      cy.visit('?confirmCloseTab=true');
+      cy.visitGraphiQL({ confirmCloseTab: 'true' });
 
       cy.get('.graphiql-tab-add').click();
 
@@ -88,7 +88,7 @@ describe('Tabs', () => {
 
     it('should close tab when `OK` was clicked', () => {
       cy.on('window:confirm', () => true);
-      cy.visit('?confirmCloseTab=true');
+      cy.visitGraphiQL({ confirmCloseTab: 'true' });
 
       cy.get('.graphiql-tab-add').click();
 

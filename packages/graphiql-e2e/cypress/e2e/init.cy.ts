@@ -38,7 +38,7 @@ describe('GraphiQL On Initialization', () => {
       '.graphiql-response',
       '.graphiql-editor-tool',
     ];
-    cy.visit('/');
+    cy.visitGraphiQL();
     cy.get('.graphiql-query-editor').contains('# Welcome to GraphiQL');
     for (const cSelector of containers) {
       cy.get(cSelector).should('be.visible');
@@ -46,7 +46,7 @@ describe('GraphiQL On Initialization', () => {
   });
 
   it('Places the action buttons on the editor side of the split', () => {
-    cy.visit('/');
+    cy.visitGraphiQL();
     // The prettify/merge/copy/save buttons belong to the query editor, so they
     // live in the editor column rather than floating over the response pane.
     cy.get('.graphiql-editor-column .graphiql-tab-strip-actions')
@@ -58,13 +58,13 @@ describe('GraphiQL On Initialization', () => {
   });
 
   it('Executes a GraphQL query over HTTP that has the expected result', () => {
-    cy.visitWithOp({ query: testQuery });
+    cy.visitGraphiQL({ query: testQuery });
     cy.clickExecuteQuery();
     cy.assertQueryResult(mockSuccess);
   });
   it('Shows the expected error when the schema is invalid', () => {
     cy.intercept('/graphql', { fixture: 'bad-schema.json' });
-    cy.visit('/');
+    cy.visitGraphiQL();
     cy.containQueryResult('Names must');
   });
 });

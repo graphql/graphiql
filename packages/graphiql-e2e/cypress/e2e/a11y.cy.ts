@@ -84,7 +84,7 @@ describe('a11y baseline', () => {
 
   beforeEach(() => {
     cy.clearAllLocalStorage();
-    cy.visit('/');
+    cy.visitGraphiQL();
     cy.injectAxe();
   });
 

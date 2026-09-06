@@ -1,5 +1,5 @@
 beforeEach(() => {
-  cy.visit('/');
+  cy.visitGraphiQL();
 });
 
 describe('GraphiQL DocExplorer - button', () => {

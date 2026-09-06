@@ -29,14 +29,14 @@ describe('IncrementalDelivery support via fetcher', () => {
       const delay = 100;
       const timeout = mockStreamSuccess.data.streamable.length * (delay * 1.5);
 
-      cy.visitWithOp({ query: testStreamQuery, variables: { delay } });
+      cy.visitGraphiQL({ query: testStreamQuery, variables: { delay } });
       cy.clickExecuteQuery();
       cy.wait(timeout);
       cy.assertQueryResult(mockStreamSuccess);
     });
 
     it('Expects a quick stream to resolve in a single increment', () => {
-      cy.visitWithOp({ query: testStreamQuery, variables: { delay: 0 } });
+      cy.visitGraphiQL({ query: testStreamQuery, variables: { delay: 0 } });
       cy.clickExecuteQuery();
       cy.assertQueryResult(mockStreamSuccess);
     });
@@ -58,7 +58,7 @@ describe('IncrementalDelivery support via fetcher', () => {
         }
       `;
 
-      cy.visitWithOp({ query: testQuery, variables: { delay } });
+      cy.visitGraphiQL({ query: testQuery, variables: { delay } });
       cy.clickExecuteQuery();
       cy.wait(timeout);
       cy.assertQueryResult({
@@ -105,7 +105,7 @@ describe('IncrementalDelivery support via fetcher', () => {
         }
       `;
 
-      cy.visitWithOp({ query: testQuery, variables: { delay } });
+      cy.visitGraphiQL({ query: testQuery, variables: { delay } });
       cy.clickExecuteQuery();
       cy.wait(timeout);
       cy.assertQueryResult({

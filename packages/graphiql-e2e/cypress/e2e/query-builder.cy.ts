@@ -29,7 +29,7 @@ function expectQuery(assertion: (query: string) => void) {
 }
 
 beforeEach(() => {
-  cy.visit('?defaultQuery=');
+  cy.visitGraphiQL({ defaultQuery: '' });
 });
 
 describe('Query Builder – panel toggle', () => {
@@ -102,7 +102,7 @@ mutation M {
    * focus is kept throughout.
    */
   it('keeps input focus after editing a non-first operation arg', () => {
-    cy.visit(`?query=${encodeURIComponent(QUERY_THEN_MUTATION)}`);
+    cy.visitGraphiQL({ query: QUERY_THEN_MUTATION });
     cy.contains('.view-line', 'mutation M').should('be.visible');
 
     // Activate the mutation (the second operation) via the cursor.
