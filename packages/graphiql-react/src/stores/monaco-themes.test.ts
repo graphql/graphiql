@@ -60,6 +60,10 @@ describe('MONACO_THEME_DATA light', () => {
     expect(light.colors?.['editor.background']).toBe('#ffffff00');
   });
 
+  it('uses readable foreground for dimmed line numbers', () => {
+    expect(light.colors?.['editorLineNumber.dimmedForeground']).toBe('#636E7B');
+  });
+
   it('colors keyword tokens with accent-pink light variant', () => {
     const rule = light.rules.find(r => r.token === 'keyword.gql');
     expect(rule?.foreground).toBe('CF222E');
