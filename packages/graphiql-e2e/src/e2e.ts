@@ -84,12 +84,14 @@ function updateURL(): void {
 }
 
 function getSchemaUrl(): string {
-  const isDev = /localhost$/.test(location.hostname);
-
-  if (isDev) {
+  if (isLocal()) {
     return '/graphql';
   }
   return '/.netlify/functions/graphql';
+}
+
+function isLocal(): boolean {
+  return location.hostname === 'localhost' || location.hostname === '127.0.0.1';
 }
 
 // Render <GraphiQL /> into the body.
@@ -102,9 +104,11 @@ const props: ComponentProps<typeof GraphiQL> = {
   transport: createTransport({
     url: getSchemaUrl(),
     supportedMethods: ['GET', 'POST', 'QUERY'],
-    subscriptionClient: createClient({
-      url: 'ws://localhost:8081/subscriptions',
-    }),
+    subscriptionClient: isLocal()
+      ? createClient({
+          url: `${location.protocol === 'https:' ? 'wss:' : 'ws:'}//${location.host}/subscriptions`,
+        })
+      : undefined,
   }),
 
   initialQuery: parameters.query,

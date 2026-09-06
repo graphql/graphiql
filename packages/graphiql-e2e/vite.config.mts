@@ -72,7 +72,7 @@ export default defineConfig(({ mode }) => {
         '/graphql': 'http://localhost:8080',
         '/resources': 'http://localhost:8080',
         '/subscriptions': {
-          target: 'ws://localhost:8081',
+          target: 'ws://localhost:8080',
           ws: true,
         },
       },

@@ -93,10 +93,7 @@ server.listen(process.env.PORT || 3100, function () {
   });
 });
 
-const wsServer = new WebSocketServer({
-  path: '/subscriptions',
-  port: 8081,
-});
+const wsServer = new WebSocketServer({ server, path: '/subscriptions' });
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 useServer({ schema }, wsServer);
