@@ -6,6 +6,7 @@ import { createTransport } from '@graphiql/toolkit';
 import type { TabsState, Theme } from '@graphiql/react';
 import { createClient } from 'graphql-ws';
 import { GraphiQL } from 'graphiql';
+import 'graphiql/style.css';
 import 'graphiql/setup-workers/vite';
 
 /**

@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
-import { defineConfig, type PluginOption } from 'vite';
+import { defineConfig, type Alias } from 'vite';
 import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-compiler';
 import { reactCompilerConfig as $reactCompilerConfig } from '../graphiql-react/vite.config.mjs';
 
@@ -12,66 +12,80 @@ const reactCompilerConfig: Partial<ReactCompilerConfig> = {
   },
 };
 
-export default defineConfig({
-  server: {
-    open: false,
-    proxy: {
-      '/graphql': 'http://localhost:8080',
-      '/subscriptions': {
-        target: 'ws://localhost:8081',
-        ws: true,
+export default defineConfig(({ mode }) => {
+  if (mode !== 'source' && mode !== 'built') {
+    throw new Error(
+      'Run Vite with either `--mode source` or `--mode built` in graphiql-e2e.',
+    );
+  }
+
+  const aliases: Alias[] = [
+    {
+      find: /^graphiql\/style\.css$/,
+      replacement: fileURLToPath(
+        new URL(
+          mode === 'source'
+            ? '../graphiql/src/style.css'
+            : '../graphiql/dist/style.css',
+          import.meta.url,
+        ),
+      ),
+    },
+    {
+      find: /^graphiql\/setup-workers\/vite$/,
+      replacement: fileURLToPath(
+        new URL(
+          mode === 'source'
+            ? '../graphiql/src/setup-workers/vite.ts'
+            : '../graphiql/dist/setup-workers/vite.js',
+          import.meta.url,
+        ),
+      ),
+    },
+    {
+      find: /^graphiql$/,
+      replacement: fileURLToPath(
+        new URL(
+          mode === 'source'
+            ? '../graphiql/src/index.ts'
+            : '../graphiql/dist/index.js',
+          import.meta.url,
+        ),
+      ),
+    },
+  ];
+
+  return {
+    base: mode === 'built' ? '/e2e/' : '/',
+    build: {
+      assetsDir: 'assets',
+      outDir: 'dist',
+      sourcemap: true,
+    },
+    optimizeDeps: {
+      entries: ['src/e2e.ts'],
+    },
+    resolve: { alias: aliases },
+    server: {
+      open: false,
+      proxy: {
+        '/graphql': 'http://localhost:8080',
+        '/resources': 'http://localhost:8080',
+        '/subscriptions': {
+          target: 'ws://localhost:8081',
+          ws: true,
+        },
       },
     },
-  },
-  optimizeDeps: {
-    entries: ['src/e2e.ts'],
-  },
-  resolve: {
-    alias: [
-      {
-        find: 'graphiql/setup-workers/vite',
-        replacement: fileURLToPath(
-          new URL('../graphiql/src/setup-workers/vite.ts', import.meta.url),
-        ),
-      },
-      {
-        find: 'graphiql',
-        replacement: fileURLToPath(
-          new URL('../graphiql/src/index.ts', import.meta.url),
-        ),
-      },
+    plugins: [
+      react({
+        babel: {
+          plugins: [['babel-plugin-react-compiler', reactCompilerConfig]],
+        },
+      }),
     ],
-  },
-  plugins: [
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler', reactCompilerConfig]],
-      },
-    }),
-    htmlPlugin(),
-  ],
-  worker: {
-    format: 'es',
-  },
-});
-
-function htmlPlugin(): PluginOption {
-  return {
-    name: 'html-use-source-entry',
-    transformIndexHtml: {
-      order: 'pre',
-      handler(html) {
-        const start = '<!--vite-replace-start-->';
-        const end = '<!--vite-replace-end-->';
-        const contentToReplace = html.slice(
-          html.indexOf(start),
-          html.indexOf(end) + end.length,
-        );
-        return html.replace(
-          contentToReplace,
-          '<script type="module" src="/src/e2e.ts"></script>',
-        );
-      },
+    worker: {
+      format: 'es',
     },
   };
-}
+});

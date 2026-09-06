@@ -2,11 +2,20 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { defineConfig } from 'cypress';
 
-const PORT = process.env.CI === 'true' ? 8080 : 5173;
+const target = process.env.GRAPHIQL_E2E_TARGET;
+
+if (target !== 'source' && target !== 'built') {
+  throw new Error(
+    'Set GRAPHIQL_E2E_TARGET to either "source" or "built" before running Cypress.',
+  );
+}
+
+const port = target === 'source' ? 5173 : 8080;
 
 export default defineConfig({
   e2e: {
-    baseUrl: `http://localhost:${PORT}`,
+    baseUrl: `http://localhost:${port}`,
+    env: { target },
     setupNodeEvents(on) {
       on('task', {
         writeBaseline({ filePath, data }: { filePath: string; data: unknown }) {

@@ -55,15 +55,21 @@ app.use(express.json());
 app.post('/graphql', handler);
 app.get('/graphql', handler);
 
-if (process.env.CI === 'true') {
-  const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  // const __dirname = import.meta.dirname; // can be converted to, after Node.js upgrade to v20
-  app.use('/dist', express.static(path.join(__dirname, '../../graphiql/dist')));
-  app.use(
-    '/resources',
-    express.static(path.join(__dirname, '../../graphiql/resources')),
+const target = process.env.GRAPHIQL_E2E_TARGET;
+if (target !== 'source' && target !== 'built') {
+  throw new Error(
+    'Set GRAPHIQL_E2E_TARGET to either "source" or "built" before starting the E2E server.',
   );
-  app.use(express.static(path.join(__dirname, '..')));
+}
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+app.use(
+  '/resources',
+  express.static(path.join(__dirname, '../../graphiql/resources')),
+);
+
+if (target === 'built') {
+  app.use(express.static(path.join(__dirname, '../dist')));
 } else {
   app.get('/', (req, res) => {
     res.redirect('http://localhost:5173');

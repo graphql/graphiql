@@ -49,6 +49,8 @@ packages/codemirror-graphql/*.map
 packages/graphiql-e2e/cypress/screenshots/
 packages/graphiql-e2e/cypress/downloads/
 packages/graphiql-e2e/cypress/videos/
+packages/graphiql/index.html
+packages/graphiql/e2e/
 packages/graphiql/typedoc/
 packages/graphiql/webpack/
 
