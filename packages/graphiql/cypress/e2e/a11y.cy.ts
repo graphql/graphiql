@@ -48,7 +48,14 @@ function checkOrCapture(checkpoint: string) {
         const newViolations = violations.filter(v => !baselineKeys.has(v.id));
         if (newViolations.length > 0) {
           const summary = newViolations
-            .map(v => `${v.id} (${v.impact}): ${v.help}`)
+            .map(v => {
+              const nodes = v.nodes
+                .map(
+                  node => `  ${node.target.join(' ')}: ${node.failureSummary}`,
+                )
+                .join('\n');
+              return `${v.id} (${v.impact}): ${v.help}\n${nodes}`;
+            })
             .join('\n');
           throw new Error(
             `New a11y violations at "${checkpoint}":\n${summary}`,
