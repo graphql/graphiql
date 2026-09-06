@@ -8,12 +8,14 @@ export default defineConfig({
       {
         find: 'graphiql/setup-workers/vite',
         replacement: fileURLToPath(
-          new URL('./dist/setup-workers/vite.js', import.meta.url),
+          new URL('../graphiql/dist/setup-workers/vite.js', import.meta.url),
         ),
       },
       {
         find: 'graphiql',
-        replacement: fileURLToPath(new URL('./dist/index.js', import.meta.url)),
+        replacement: fileURLToPath(
+          new URL('../graphiql/dist/index.js', import.meta.url),
+        ),
       },
     ],
   },

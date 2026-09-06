@@ -58,6 +58,11 @@ app.get('/graphql', handler);
 if (process.env.CI === 'true') {
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
   // const __dirname = import.meta.dirname; // can be converted to, after Node.js upgrade to v20
+  app.use('/dist', express.static(path.join(__dirname, '../../graphiql/dist')));
+  app.use(
+    '/resources',
+    express.static(path.join(__dirname, '../../graphiql/resources')),
+  );
   app.use(express.static(path.join(__dirname, '..')));
 } else {
   app.get('/', (req, res) => {

@@ -1,5 +1,5 @@
 /**
- * The E2E app in `packages/graphiql/src/e2e.ts` uses `createTransport` and the
+ * The E2E app in `packages/graphiql-e2e/src/e2e.ts` uses `createTransport` and the
  * `<GraphiQL transport={...}>` prop. These tests confirm that the response pane
  * header shows real wire metadata from the actual HTTP response (status code,
  * timing, response size) and that the upgrade banner is NOT shown because

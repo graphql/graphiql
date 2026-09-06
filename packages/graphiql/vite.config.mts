@@ -1,5 +1,4 @@
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { defineConfig, PluginOption } from 'vite';
 import dts from 'vite-plugin-dts';
 import react from '@vitejs/plugin-react';
@@ -28,7 +27,7 @@ export const plugins: PluginOption[] = [
   }),
 ];
 
-export default defineConfig(({ command }) => ({
+export default defineConfig({
   build: {
     cssCodeSplit: true,
     minify: false,
@@ -60,73 +59,15 @@ export default defineConfig(({ command }) => ({
       },
     },
   },
-  server: {
-    // Prevent a browser window from opening automatically
-    open: false,
-    proxy: {
-      '/graphql': 'http://localhost:8080',
-      '/subscriptions': {
-        target: 'ws://localhost:8081',
-        ws: true,
-      },
-    },
-  },
-  optimizeDeps:
-    command === 'serve'
-      ? {
-          entries: ['src/e2e.ts'],
-        }
-      : undefined,
-  resolve:
-    command === 'serve'
-      ? {
-          alias: [
-            {
-              find: 'graphiql/setup-workers/vite',
-              replacement: fileURLToPath(
-                new URL('./src/setup-workers/vite.ts', import.meta.url),
-              ),
-            },
-            {
-              find: 'graphiql',
-              replacement: fileURLToPath(
-                new URL('./src/index.ts', import.meta.url),
-              ),
-            },
-          ],
-        }
-      : undefined,
   plugins: [
     ...plugins,
-    htmlPlugin(),
     dts({
       include: ['src/**'],
       outDir: ['dist'],
-      exclude: ['src/e2e.ts', '**/*.spec.{ts,tsx}', '**/__tests__/'],
+      exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],
     }),
   ],
   worker: {
     format: 'es',
   },
-}));
-
-function htmlPlugin(): PluginOption {
-  return {
-    name: 'html-use-source-entry',
-    transformIndexHtml: {
-      order: 'pre',
-      handler(html) {
-        const start = '<!--vite-replace-start-->';
-        const end = '<!--vite-replace-end-->';
-        const contentToReplace = html.slice(
-          html.indexOf(start),
-          html.indexOf(end) + end.length,
-        );
-        return html.replace(
-          contentToReplace,
-          '<script type="module" src="/src/e2e.ts"></script>',
-        );
-      },
-    },
-  };
-}
+});

@@ -14572,6 +14572,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"graphiql-e2e@workspace:packages/graphiql-e2e":
+  version: 0.0.0-use.local
+  resolution: "graphiql-e2e@workspace:packages/graphiql-e2e"
+  dependencies:
+    "@graphiql/react": "npm:1.0.0-beta.1"
+    "@graphiql/toolkit": "npm:1.0.0-beta.0"
+    "@typescript/native-preview": "npm:^7.0.0-dev"
+    "@vitejs/plugin-react": "npm:^4.4.1"
+    axe-core: "npm:^4"
+    babel-plugin-react-compiler: "npm:19.1.0-rc.3"
+    concurrently: "npm:^7.0.0"
+    copy: "npm:^0.3.2"
+    cross-env: "npm:^7.0.2"
+    cypress: "npm:^13.13.2"
+    cypress-axe: "npm:^1"
+    cypress-real-events: "npm:^1.15.0"
+    graphiql: "npm:6.0.0-beta.1"
+    graphql: "npm:^16.14.2"
+    graphql-ws: "npm:^5.5.5"
+    mkdirp: "npm:^1.0.4"
+    react: "npm:^19.1.0"
+    react-dom: "npm:^19.1.0"
+    start-server-and-test: "npm:^1.10.11"
+    typescript: "npm:^5.8.0"
+    vite: "npm:^6.4.3"
+  languageName: unknown
+  linkType: soft
+
 "graphiql-monorepo@workspace:.":
   version: 0.0.0-use.local
   resolution: "graphiql-monorepo@workspace:."
@@ -14630,7 +14658,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"graphiql@npm:^6.0.0-beta.1, graphiql@workspace:packages/graphiql":
+"graphiql@npm:6.0.0-beta.1, graphiql@npm:^6.0.0-beta.1, graphiql@workspace:packages/graphiql":
   version: 0.0.0-use.local
   resolution: "graphiql@workspace:packages/graphiql"
   dependencies:
@@ -14645,21 +14673,13 @@ __metadata:
     "@testing-library/react": "npm:^16.3.0"
     "@vitejs/plugin-react": "npm:^4.4.1"
     "@vitest/web-worker": "npm:^4.1.6"
-    axe-core: "npm:^4"
     babel-plugin-react-compiler: "npm:19.1.0-rc.3"
     clsx: "npm:^1.2.1"
-    concurrently: "npm:^7.0.0"
-    cross-env: "npm:^7.0.2"
-    cypress: "npm:^13.13.2"
-    cypress-axe: "npm:^1"
-    cypress-real-events: "npm:^1.15.0"
     graphql: "npm:^16.14.2"
-    graphql-ws: "npm:^5.5.5"
     lightningcss: "npm:^1.29.3"
     react: "npm:^19.1.0"
     react-compiler-runtime: "npm:19.1.0-rc.1"
     react-dom: "npm:^19.1.0"
-    start-server-and-test: "npm:^1.10.11"
     typescript: "npm:^5.8.0"
     vite: "npm:^6.4.3"
     vite-plugin-dts: "npm:^4.5.3"
@@ -22325,9 +22345,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"test-server@workspace:packages/graphiql/test":
+"test-server@workspace:packages/graphiql-e2e/test":
   version: 0.0.0-use.local
-  resolution: "test-server@workspace:packages/graphiql/test"
+  resolution: "test-server@workspace:packages/graphiql-e2e/test"
   dependencies:
     express: "npm:^4.20.0"
     graphql: "npm:^17.0.2"
