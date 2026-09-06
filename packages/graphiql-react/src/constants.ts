@@ -220,6 +220,7 @@ const getBaseColors = (
   const t = TOKEN_COLORS[theme];
   return {
     'editor.background': '#ffffff00', // transparent — editor inherits container bg
+    'editorLineNumber.dimmedForeground': `#${t.fgMuted}`,
     'scrollbar.shadow': '#ffffff00',
     'textLink.foreground': `#${t.accentGreen}`,
     'textLink.activeForeground': `#${t.accentGreen}`,
