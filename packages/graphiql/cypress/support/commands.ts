@@ -142,18 +142,29 @@ Cypress.Commands.add('activateOperation', (operationName: string) => {
   });
 });
 
-Cypress.Commands.add('clickExecuteQuery', () => {
-  cy.get('[aria-label="Run query"]').click();
-});
+Cypress.Commands.add('clickExecuteQuery', () =>
+  waitForQueryEditor().then(() => cy.get('[aria-label="Run query"]').click()),
+);
 
-Cypress.Commands.add('clickPrettify', () => {
-  cy.get('[aria-label="Prettify query"]').click();
-});
+Cypress.Commands.add('clickPrettify', () =>
+  waitForQueryEditor().then(() =>
+    cy.get('[aria-label="Prettify query"]').click(),
+  ),
+);
 
 Cypress.Commands.add('clickMergeFragments', () => {
   cy.get('.graphiql-status-bar-conn-connected');
   cy.get('[aria-label="Merge fragments into query"]').click();
 });
+
+function waitForQueryEditor() {
+  return cy.window().should(win => {
+    const queryModel = win.__MONACO?.editor
+      .getModels()
+      .find(model => model.uri.path.endsWith('operation.graphql'));
+    expect(queryModel, 'query editor model').not.to.equal(undefined);
+  });
+}
 
 Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
   let url = `?query=${encodeURIComponent(query)}`;
