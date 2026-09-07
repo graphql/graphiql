@@ -571,7 +571,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                       </div>
                     </div>
                     <div
-                      role="tabpanel"
+                      role="region"
                       id="graphiql-session" // used by aria-controls="graphiql-session"
                       aria-labelledby={`${TAB_CLASS_PREFIX}${activeTabIndex}`}
                     >

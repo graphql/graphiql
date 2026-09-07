@@ -5,15 +5,6 @@ import { Tab, Tabs } from './';
 const meta: Meta = {
   title: 'Primitives/Tabs',
   tags: ['autodocs'],
-  parameters: {
-    a11y: {
-      // The Tab primitive renders `<li role="tab">` containing a child button,
-      // which axe flags as `nested-interactive`. Fixing it cleanly means
-      // restructuring the primitive's ARIA model; that's out of scope for the
-      // restyle.
-      config: { rules: [{ id: 'nested-interactive', enabled: false }] },
-    },
-  },
 };
 
 export default meta;

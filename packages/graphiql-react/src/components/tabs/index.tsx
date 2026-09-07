@@ -1,4 +1,10 @@
-import { ComponentPropsWithoutRef, forwardRef, ReactNode } from 'react';
+import {
+  ComponentPropsWithoutRef,
+  createContext,
+  forwardRef,
+  ReactNode,
+  useContext,
+} from 'react';
 import { clsx } from 'clsx';
 import { Reorder } from 'framer-motion';
 import { CloseIcon } from '../../icons';
@@ -10,29 +16,31 @@ interface TabProps extends ComponentPropsWithoutRef<typeof Reorder.Item> {
   isDirty?: boolean;
 }
 
+const TabContext = createContext({ isActive: false });
+
 const TabRoot = forwardRef<HTMLLIElement, TabProps>(
   ({ isActive, isDirty, value, children, className, ...props }, ref) => (
     <Reorder.Item
       {...props}
       ref={ref}
       value={value}
-      aria-selected={isActive}
       dragElastic={false} // Prevent over scrolling of container
-      role="tab"
       className={clsx(
         'graphiql-tab',
         isActive && 'graphiql-tab-active',
         className,
       )}
     >
-      {children}
-      {isDirty && (
-        <span
-          className="graphiql-tab-dirty"
-          aria-label="Unsaved changes"
-          role="status"
-        />
-      )}
+      <TabContext.Provider value={{ isActive: Boolean(isActive) }}>
+        {children}
+        {isDirty && (
+          <span
+            className="graphiql-tab-dirty"
+            aria-label="Unsaved changes"
+            role="status"
+          />
+        )}
+      </TabContext.Provider>
     </Reorder.Item>
   ),
 );
@@ -41,16 +49,21 @@ TabRoot.displayName = 'Tab';
 const TabButton = forwardRef<
   HTMLButtonElement,
   ComponentPropsWithoutRef<'button'>
->(({ children, className, ...props }, ref) => (
-  <UnStyledButton
-    {...props}
-    ref={ref}
-    type="button"
-    className={clsx('graphiql-tab-button', className)}
-  >
-    {children}
-  </UnStyledButton>
-));
+>(({ children, className, ...props }, ref) => {
+  const { isActive } = useContext(TabContext);
+
+  return (
+    <UnStyledButton
+      {...props}
+      ref={ref}
+      type="button"
+      aria-pressed={isActive}
+      className={clsx('graphiql-tab-button', className)}
+    >
+      {children}
+    </UnStyledButton>
+  );
+});
 TabButton.displayName = 'Tab.Button';
 
 const TabClose = forwardRef<
@@ -89,7 +102,6 @@ export const Tabs = forwardRef<HTMLUListElement, TabsProps>(
       values={values}
       onReorder={onReorder}
       axis="x"
-      role="tablist"
       className={clsx('graphiql-tabs', className)}
     >
       {children}

@@ -220,6 +220,7 @@ const getBaseColors = (
   const t = TOKEN_COLORS[theme];
   return {
     'editor.background': '#ffffff00', // transparent — editor inherits container bg
+    'editorLineNumber.dimmedForeground': `#${t.fgMuted}`,
     'scrollbar.shadow': '#ffffff00',
     'textLink.foreground': `#${t.accentGreen}`,
     'textLink.activeForeground': `#${t.accentGreen}`,
@@ -273,7 +274,11 @@ const getTokenRules = (
     { token: 'operator.gql', foreground: t.fgMuted },
     { token: 'delimiter.gql', foreground: t.fgMuted },
     // comments
-    { token: 'comment.gql', foreground: t.fgDisabled, fontStyle: 'italic' },
+    {
+      token: 'comment.gql',
+      foreground: theme === 'light' ? t.fgMuted : t.fgDisabled,
+      fontStyle: 'italic',
+    },
     // definition names (identifiers following 'fragment'/'query'/etc.)
     // are caught by key.identifier.gql above, but named fragments benefit
     // from the green-light accent to mirror the design's "name" slot.

@@ -120,6 +120,20 @@ export const CustomBrand: Story = {
 
 /** GET selected with a mutation in the editor: Run disabled, method toggle highlighted. */
 export const MutationBlockedOverGet: Story = {
+  globals: { theme: 'light' },
+  decorators: [
+    Story => (
+      <>
+        <style>{`
+          .graphiql-top-bar-method-toggle--attention {
+            animation-delay: -0.7s !important;
+            animation-play-state: paused !important;
+          }
+        `}</style>
+        <Story />
+      </>
+    ),
+  ],
   render: () => (
     <Tooltip.Provider>
       <TopBarView
