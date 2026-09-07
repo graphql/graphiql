@@ -1,6 +1,13 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["yarn.lock", "resources/patches/*"],
+  "globalDependencies": [
+    "yarn.lock",
+    "resources/patches/*",
+    "resources/tsconfig.base.cjs.json",
+    "resources/tsconfig.base.esm.json",
+    "resources/patch-monaco-editor-type.mts",
+    "scripts/renameFileExtensions.mts"
+  ],
   "tasks": {
     "build": {
       "dependsOn": [
@@ -8,7 +15,7 @@
         "^build"
       ],
       // Cache all files emitted to the packages's directories
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**", "esm/**", "*.tsbuildinfo"]
     },
     "dev": {
       "dependsOn": [
@@ -22,10 +29,8 @@
         // Run `build` in workspaces I depend on first
         "^build"
       ],
-      "outputs": ["dist/**"]
+      "outputs": []
     },
-    "test": {
-      "outputs": ["dist/**"]
-    }
+    "test": {}
   }
 }
