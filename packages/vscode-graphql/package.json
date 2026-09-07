@@ -171,6 +171,7 @@
     ]
   },
   "scripts": {
+    "build": "tsgo -p tsconfig.json",
     "types:check": "tsgo --noEmit",
     "vscode:prepublish": "npm run compile -- --minify",
     "compile": "node esbuild",

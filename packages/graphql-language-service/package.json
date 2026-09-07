@@ -53,6 +53,7 @@
     "typescript": "^5.8.0"
   },
   "scripts": {
+    "build": "tsgo -p tsconfig.json && tsgo -p tsconfig.esm.json",
     "types:check": "tsgo --noEmit",
     "benchmark": "ts-node benchmark/index.ts",
     "test": "vitest run"

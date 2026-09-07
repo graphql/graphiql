@@ -2,7 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const filePath = path.resolve(
-  './packages/monaco-graphql/esm/monaco-editor.d.ts',
+  import.meta.dirname,
+  '../packages/monaco-graphql/esm/monaco-editor.d.ts',
 );
 
 const newContent = fs

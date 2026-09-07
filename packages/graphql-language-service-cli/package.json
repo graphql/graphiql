@@ -25,6 +25,7 @@
     "src"
   ],
   "scripts": {
+    "build": "tsgo -p tsconfig.json && tsgo -p tsconfig.esm.json",
     "types:check": "tsgo --noEmit",
     "test": "vitest run"
   },
