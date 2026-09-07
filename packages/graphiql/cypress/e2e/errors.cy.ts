@@ -29,10 +29,15 @@ describe('Errors', () => {
   it('Should show an error when the schema is invalid', () => {
     cy.intercept('/graphql', { fixture: 'bad-schema.json' });
     cy.visit('/');
-    // The error includes an unstable stack trace, so match its message.
-    const expected =
-      'Names must only contain [_a-zA-Z0-9] but \\"<img src=x onerror=alert(document.';
-    cy.containQueryResult(expected);
+    cy.assertQueryResult({
+      errors: [
+        {
+          message:
+            'Names must only contain [_a-zA-Z0-9] but "<img src=x onerror=alert(document.domain)>" does not.',
+          extensions: {},
+        },
+      ],
+    });
   });
 
   it('Should show an error when sending an invalid query', () => {
