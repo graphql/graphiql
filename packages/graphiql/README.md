@@ -45,7 +45,8 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
 
 ## Examples
 
-- [`CDN (ESM-based)`](../../examples/graphiql-cdn) - A single HTML file using [JavaScript modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) from http URLs and a `<script>` tag
+- [`CDN`](../../examples/graphiql-cdn) - A single HTML file that loads GraphiQL
+  directly from a CDN
 - [`Webpack`](../../examples/graphiql-webpack) - A starter for Webpack
 - [`Create React App`](../../examples/graphiql-create-react-app) - An example
   using [Create React App](https://create-react-app.dev)
@@ -61,8 +62,8 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
 
 ### CDN usage
 
-GraphiQL doesn't publish a UMD bundle. To use GraphiQL without a bundler, follow
-the [ESM import-map example](../../examples/graphiql-cdn).
+To use GraphiQL without a bundler, follow the
+[CDN example](../../examples/graphiql-cdn).
 
 ## Usage
 

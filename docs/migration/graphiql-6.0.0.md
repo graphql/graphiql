@@ -447,10 +447,9 @@ Read `status`, `statusText`, and `headers` off the real `Response`. Don't hard-c
 
 ### CDN usage
 
-GraphiQL doesn't publish a UMD bundle. For an application without a bundler,
-start with the [ESM import-map example](../../examples/graphiql-cdn) and add a
-mapping for `graphql-ws`. With those mappings in place, create the transport
-from module imports:
+Use the [CDN example](../../examples/graphiql-cdn) as a starting point. To add
+subscriptions, map `graphql-ws` in its import map and pass a subscription client
+to the transport:
 
 ```html
 <script type="module">
