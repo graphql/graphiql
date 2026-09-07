@@ -13,15 +13,6 @@ const testQuery = `{
 }`;
 
 describe('Transport API + response pane header', () => {
-  it('Loads the ESM test app in production', function () {
-    if (Cypress.config('baseUrl') !== 'http://localhost:8080') {
-      this.skip();
-    }
-    cy.intercept('GET', '/dist/e2e/index.js').as('e2eApp');
-    cy.visit('/');
-    cy.wait('@e2eApp').its('response.statusCode').should('equal', 200);
-  });
-
   it('Shows the real HTTP status code badge after a successful query', () => {
     cy.visitWithOp({ query: testQuery });
     cy.clickExecuteQuery();

@@ -3,7 +3,7 @@
 import React, { ComponentProps } from 'react';
 import ReactDOM from 'react-dom/client';
 import { createTransport } from '@graphiql/toolkit';
-import { useGraphiQL, type TabsState, type Theme } from '@graphiql/react';
+import type { TabsState, Theme } from '@graphiql/react';
 import { createClient } from 'graphql-ws';
 import { GraphiQL } from 'graphiql';
 import 'graphiql/setup-workers/vite';
@@ -136,18 +136,8 @@ function App() {
   return React.createElement(
     React.StrictMode,
     null,
-    React.createElement(GraphiQL, props, React.createElement(ReadyIndicator)),
+    React.createElement(GraphiQL, props),
   );
-}
-
-function ReadyIndicator() {
-  const isReady = useGraphiQL(state => Boolean(state.queryEditor));
-
-  React.useEffect(() => {
-    document.documentElement.dataset.graphiqlReady = String(isReady);
-  }, [isReady]);
-
-  return null;
 }
 
 root.render(React.createElement(App));
