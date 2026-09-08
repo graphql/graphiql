@@ -1,0 +1,50 @@
+extend type Query {
+  users(
+    "First argument"
+    first: Int
+    "Second argument, with punctuation: (value)"
+    second: Int
+    """
+    Third argument
+    """
+    third: [ID!]
+    "Fourth argument"
+    fourth: String = "default value"
+    "Fifth argument"
+    fifth: String = """
+    block default
+    """
+  ): [User!] @deprecated(reason: "use user")
+
+  # prettier-ignore
+  "Next field"
+  user("Inline first" id: ID "Inline second" name: String): User
+
+  """
+  Block field description
+  """
+  other: User
+
+  "Final field"
+  final: String
+}
+
+input Filter {
+  first: Int
+  "Input field description"
+  second: String = "input default"
+  """
+  Block input description
+  """
+  third: String
+}
+
+directive @example(
+  first: Int
+  "Directive argument description"
+  second: String
+) on FIELD_DEFINITION
+
+type User {
+  id: ID!
+}
