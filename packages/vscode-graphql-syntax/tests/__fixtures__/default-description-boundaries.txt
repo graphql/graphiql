@@ -1,0 +1,25 @@
+input DefaultBoundaries {
+  compact: String="compact input default"
+  compactBlock: String="""compact input block default"""
+
+  first: String = "first input default" "Single-line input description" second: String
+  third: String = """third input default""" """Block input description""" fourth: String
+  fifth: [String!] = ["one", "two"] "After input list default" sixth: String
+  seventh: FilterInput = { enabled: true } "After input object default" eighth: String
+}
+
+input FilterInput {
+  enabled: Boolean
+}
+
+type Query {
+  field(
+    compact: String="compact argument default"
+    compactBlock: String="""compact argument block default"""
+
+    first: String = "first argument default" "Single-line argument description" second: String
+    third: String = """third argument default""" """Block argument description""" fourth: String
+    fifth: [String!] = ["one", "two"] "After argument list default" sixth: String
+    seventh: FilterInput = { enabled: true } "After argument object default" eighth: String
+  ): String
+}
