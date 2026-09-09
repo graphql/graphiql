@@ -23,7 +23,13 @@ describe('source.graphql grammar', () => {
         result.find(token => token.text.trim() === text)?.scopes,
       ).toContain('comment.line.documentation.graphql');
     }
-    for (const text of ['Third argument', 'Block input description']) {
+    for (const text of [
+      'Third argument',
+      'Block input description',
+      'After directive without arguments',
+      'After directive with arguments',
+      'After directive with block string',
+    ]) {
       expect(
         result.find(token => token.text.trim() === text)?.scopes,
       ).toContain('comment.block.documentation.graphql');
@@ -33,9 +39,11 @@ describe('source.graphql grammar', () => {
         'string.quoted.double.graphql',
       );
     }
-    expect(
-      result.find(token => token.text.trim() === 'block default')?.scopes,
-    ).toContain('string.quoted.triple.graphql');
+    for (const text of ['block default', 'block directive argument']) {
+      expect(
+        result.find(token => token.text.trim() === text)?.scopes,
+      ).toContain('string.quoted.triple.graphql');
+    }
     expect(result.find(token => token.text === 'final')?.scopes).toContain(
       'variable.graphql',
     );

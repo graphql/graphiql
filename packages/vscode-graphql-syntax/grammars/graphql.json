@@ -388,7 +388,6 @@
       },
       "patterns": [
         { "include": "#graphql-comment" },
-        { "include": "#graphql-block-string-value" },
         { "include": "#graphql-description-singleline" },
         { "include": "#graphql-arguments" },
         { "include": "#literal-quasi-embedded" },

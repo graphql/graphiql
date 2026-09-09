@@ -48,3 +48,24 @@ directive @example(
 type User {
   id: ID!
 }
+
+type DirectiveDescriptions {
+  first: String @index
+  """
+  After directive without arguments
+  """
+  second: String @index(unique: false)
+  """
+  After directive with arguments
+  """
+  third: String
+    @deprecated(
+      reason: """
+      block directive argument
+      """
+    )
+  """
+  After directive with block string
+  """
+  fourth: String
+}
