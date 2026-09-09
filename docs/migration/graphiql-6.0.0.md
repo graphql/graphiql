@@ -447,9 +447,7 @@ Read `status`, `statusText`, and `headers` off the real `Response`. Don't hard-c
 
 ### CDN usage
 
-Use the [CDN example](../../examples/graphiql-cdn) as a starting point. To add
-subscriptions, map `graphql-ws` in its import map and pass a subscription client
-to the transport:
+Use the [CDN example](../../examples/graphiql-cdn) as a starting point. To add subscriptions, map `graphql-ws` in its import map and pass a subscription client to the transport:
 
 ```html
 <script type="module">
