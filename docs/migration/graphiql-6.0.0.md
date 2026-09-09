@@ -447,24 +447,29 @@ Read `status`, `statusText`, and `headers` off the real `Response`. Don't hard-c
 
 ### CDN usage
 
-Script-tag consumers get the same API without a bundler: the CDN bundle exposes `GraphiQL.createTransport` and `GraphiQL.createWsClient` (re-exporting `graphql-ws`'s `createClient`) as static properties on the `GraphiQL` component.
+Use the [CDN example](../../examples/graphiql-cdn) as a starting point. To add subscriptions, map `graphql-ws` in its import map and pass a subscription client to the transport:
 
 ```html
-<script>
-  const transport = GraphiQL.createTransport({
+<script type="module">
+  import React from 'react';
+  import { createRoot } from 'react-dom/client';
+  import { createTransport } from '@graphiql/toolkit';
+  import { createClient } from 'graphql-ws';
+  import { GraphiQL } from 'graphiql';
+  import 'graphiql/setup-workers/esm.sh';
+
+  const transport = createTransport({
     url: 'https://my.endpoint/graphql',
-    subscriptionClient: GraphiQL.createWsClient({
+    subscriptionClient: createClient({
       url: 'wss://my.endpoint/graphql',
     }),
   });
 
-  ReactDOM.createRoot(document.getElementById('graphiql')).render(
+  createRoot(document.getElementById('graphiql')).render(
     React.createElement(GraphiQL, { transport }),
   );
 </script>
 ```
-
-`GraphiQL.createFetcher` (the old `createGraphiQLFetcher`) is still there too, marked deprecated, for anyone updating a CDN embed incrementally.
 
 ### What's deprecated, not removed
 

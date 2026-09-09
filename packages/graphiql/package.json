@@ -25,10 +25,7 @@
   "types": "dist/index.d.ts",
   "files": [
     "dist",
-    "!dist/e2e.*",
-    "!dist/workers/*",
-    "!dist/index.umd.*",
-    "!dist/cdn.*"
+    "!dist/e2e/**"
   ],
   "exports": {
     "./package.json": "./package.json",
@@ -42,7 +39,7 @@
   },
   "scripts": {
     "types:check": "tsgo --noEmit",
-    "build": "vite build && UMD=true vite build",
+    "build": "vite build && vite build --config vite.e2e.config.mts",
     "cypress-open": "cypress open --browser electron",
     "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' vite",
     "e2e": "yarn e2e-server 'cypress run'",

@@ -72,6 +72,8 @@ declare namespace Cypress {
 
     clickMergeFragments(): Chainable<Element>;
 
+    waitForQueryEditor(): Chainable<AUTWindow>;
+
     assertHasValues(op: Op): Chainable<Element>;
 
     assertQueryResult(expectedResult: MockResult): Chainable<Element>;
@@ -143,16 +145,28 @@ Cypress.Commands.add('activateOperation', (operationName: string) => {
 });
 
 Cypress.Commands.add('clickExecuteQuery', () => {
+  cy.waitForQueryEditor();
   cy.get('[aria-label="Run query"]').click();
 });
 
 Cypress.Commands.add('clickPrettify', () => {
+  cy.waitForQueryEditor();
   cy.get('[aria-label="Prettify query"]').click();
 });
 
 Cypress.Commands.add('clickMergeFragments', () => {
+  cy.waitForQueryEditor();
   cy.get('[aria-label="Merge fragments into query"]').click();
 });
+
+Cypress.Commands.add('waitForQueryEditor', () =>
+  cy.window().should(win => {
+    const queryModel = win.__MONACO?.editor
+      .getModels()
+      .find(model => model.uri.path.endsWith('operation.graphql'));
+    expect(queryModel, 'query editor model').not.to.equal(undefined);
+  }),
+);
 
 Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
   let url = `?query=${encodeURIComponent(query)}`;
@@ -221,10 +235,15 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add('assertQueryResult', expectedResult => {
-  cy.get('section.result-window').should(element => {
-    const actual = normalizeMonacoWhitespace(element.get(0).innerText); // should be innerText
-    const expected = JSON.stringify(expectedResult, null, 2);
-    expect(actual).to.equal(expected);
+  cy.get('section.result-window').should('not.have.text', '');
+  cy.window().should(win => {
+    const responseModel = win.__MONACO.editor
+      .getModels()
+      .find(model => model.uri.path.endsWith('response.json'));
+    if (!responseModel) {
+      throw new Error('Expected the response editor model to exist.');
+    }
+    expect(JSON.parse(responseModel.getValue())).to.deep.equal(expectedResult);
   });
 });
 
