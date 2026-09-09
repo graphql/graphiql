@@ -46,7 +46,7 @@ describe('Theme', () => {
           );
         },
       });
-      cy.get('html').should('have.attr', 'data-graphiql-ready', 'true');
+      cy.waitForQueryEditor();
       cy.get('.graphiql-container').should('have.attr', 'data-theme', 'dark');
     });
 

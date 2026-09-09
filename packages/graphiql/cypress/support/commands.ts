@@ -72,6 +72,8 @@ declare namespace Cypress {
 
     clickMergeFragments(): Chainable<Element>;
 
+    waitForQueryEditor(): Chainable<AUTWindow>;
+
     assertHasValues(op: Op): Chainable<Element>;
 
     assertQueryResult(expectedResult: MockResult): Chainable<Element>;
@@ -142,29 +144,29 @@ Cypress.Commands.add('activateOperation', (operationName: string) => {
   });
 });
 
-Cypress.Commands.add('clickExecuteQuery', () =>
-  waitForQueryEditor().then(() => cy.get('[aria-label="Run query"]').click()),
-);
+Cypress.Commands.add('clickExecuteQuery', () => {
+  cy.waitForQueryEditor();
+  cy.get('[aria-label="Run query"]').click();
+});
 
-Cypress.Commands.add('clickPrettify', () =>
-  waitForQueryEditor().then(() =>
-    cy.get('[aria-label="Prettify query"]').click(),
-  ),
-);
+Cypress.Commands.add('clickPrettify', () => {
+  cy.waitForQueryEditor();
+  cy.get('[aria-label="Prettify query"]').click();
+});
 
 Cypress.Commands.add('clickMergeFragments', () => {
-  cy.get('.graphiql-status-bar-conn-connected');
+  cy.waitForQueryEditor();
   cy.get('[aria-label="Merge fragments into query"]').click();
 });
 
-function waitForQueryEditor() {
-  return cy.window().should(win => {
+Cypress.Commands.add('waitForQueryEditor', () =>
+  cy.window().should(win => {
     const queryModel = win.__MONACO?.editor
       .getModels()
       .find(model => model.uri.path.endsWith('operation.graphql'));
     expect(queryModel, 'query editor model').not.to.equal(undefined);
-  });
-}
+  }),
+);
 
 Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
   let url = `?query=${encodeURIComponent(query)}`;
