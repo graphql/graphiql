@@ -50,6 +50,53 @@ describe('source.graphql grammar', () => {
     expect(result).toMatchSnapshot();
   });
 
+  it('should separate defaults from following descriptions', async () => {
+    const result = await tokenizeFile(
+      '__fixtures__/default-description-boundaries.txt',
+      scope,
+    );
+    for (const text of [
+      'compact input default',
+      'first input default',
+      'compact argument default',
+      'first argument default',
+    ]) {
+      expect(result.find(token => token.text === text)?.scopes).toContain(
+        'string.quoted.double.graphql',
+      );
+    }
+    for (const text of [
+      'compact input block default',
+      'third input default',
+      'compact argument block default',
+      'third argument default',
+    ]) {
+      expect(result.find(token => token.text === text)?.scopes).toContain(
+        'string.quoted.triple.graphql',
+      );
+    }
+    for (const text of [
+      'Single-line input description',
+      'After input list default',
+      'After input object default',
+      'Single-line argument description',
+      'After argument list default',
+      'After argument object default',
+    ]) {
+      expect(result.find(token => token.text === text)?.scopes).toContain(
+        'comment.line.documentation.graphql',
+      );
+    }
+    for (const text of [
+      'Block input description',
+      'Block argument description',
+    ]) {
+      expect(result.find(token => token.text === text)?.scopes).toContain(
+        'comment.block.documentation.graphql',
+      );
+    }
+  });
+
   it('should tokenize a simple query', async () => {
     const result = await tokenizeFile('__fixtures__/query.graphql', scope);
     expect(result).toMatchSnapshot();
