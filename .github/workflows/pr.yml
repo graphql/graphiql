@@ -146,13 +146,13 @@ jobs:
         if: failure()
         with:
           name: cypress-screenshots
-          path: packages/graphiql/cypress/screenshots
+          path: packages/graphiql-e2e/cypress/screenshots
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: cypress-videos
-          path: packages/graphiql/cypress/videos
+          path: packages/graphiql-e2e/cypress/videos
           if-no-files-found: ignore
 
   pkg-pr-new:

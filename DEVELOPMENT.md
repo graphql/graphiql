@@ -73,7 +73,8 @@ breaking their implementations.
 - `yarn test graphiql` will run all tests for graphiql. You can also run tests
   from a workspace, but most tooling is at the root.
 - `yarn test -- --watch` will run vitest in watch mode
-- `yarn e2e` at the root will run the end-to-end suite
+- `yarn e2e` at the root builds GraphiQL and runs the end-to-end suite against
+  its built package. Use `yarn e2e:source` to run the same suite against source.
 - `yarn start-monaco` will launch `webpack` dev server for the `monaco` editor
   example with GitHub API from the root. This is the fastest way to test changes
   to `graphql-language-service-interface`, parser, etc.
@@ -83,12 +84,14 @@ repo, then run `yarn build --watch` alongside either of these.
 
 ## Developing for GraphiQL
 
-If you want to develop just for graphiql, you won't need to execute commands
-from the package subdirectory at `packages/graphiql`.
+If you want to develop just for GraphiQL, you won't need to execute commands
+from the package subdirectories at `packages/graphiql` or
+`packages/graphiql-e2e`.
 
 First, you'll need to `yarn build` all the packages from the root.
 
-Then, you can run `yarn dev:graphiql` command, which will launch `vite` dev server for GraphiQL.
+Then, you can run `yarn dev:graphiql`, which launches the GraphiQL test server
+and Vite development server against source.
 
 ```text
 VITE v6.3.4  ready in 1015 ms

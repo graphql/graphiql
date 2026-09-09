@@ -1,4 +1,4 @@
 {
   "extends": "../graphiql-react/tsconfig.json",
-  "exclude": ["typedoc"]
+  "exclude": ["cypress", "cypress.config.ts"]
 }
