@@ -131,7 +131,7 @@
     "graphql-type-definition": {
       "comment": "key (optionalArgs): Type",
       "begin": "\\s*([_A-Za-z][_0-9A-Za-z]*)(?=\\s*\\(|:)",
-      "end": "(?=\\s*(([_A-Za-z][_0-9A-Za-z]*)\\s*(\\(|:)|(})))|\\s*(,)",
+      "end": "(?=\\s*(([_A-Za-z][_0-9A-Za-z]*)\\s*(\\(|:)|(})))|\\s*(,)|(?=\\s*\")",
       "beginCaptures": {
         "1": { "name": "variable.graphql" }
       },
@@ -278,7 +278,7 @@
       "comment": "variable: type = value,.... which may be a list",
       "name": "meta.variables.graphql",
       "begin": "\\s*(\\$?[_A-Za-z][_0-9A-Za-z]*)(?=\\s*\\(|:)",
-      "end": "(?=\\s*((\\$?[_A-Za-z][_0-9A-Za-z]*)\\s*(\\(|:)|(}|\\))))|\\s*(,)",
+      "end": "(?=\\s*((\\$?[_A-Za-z][_0-9A-Za-z]*)\\s*(\\(|:)|(}|\\))))|\\s*(,)|(?=\\s*\")",
       "beginCaptures": {
         "1": { "name": "variable.parameter.graphql" }
       },
@@ -388,7 +388,6 @@
       },
       "patterns": [
         { "include": "#graphql-comment" },
-        { "include": "#graphql-block-string-value" },
         { "include": "#graphql-description-singleline" },
         { "include": "#graphql-arguments" },
         { "include": "#literal-quasi-embedded" },
