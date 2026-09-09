@@ -93,7 +93,7 @@ describe('a11y baseline', () => {
   });
 
   it('after running a query has no new violations', () => {
-    cy.visitWithOp({ query: POST_RUN_QUERY });
+    cy.visitGraphiQL({ query: POST_RUN_QUERY });
     cy.contains('.graphiql-query-editor .view-line', '__typename').should(
       'be.visible',
     );

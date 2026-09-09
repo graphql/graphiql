@@ -74,7 +74,7 @@ declare global {
       visitGraphiQL(
         params?: VisitParams,
         visitOptions?: Partial<VisitOptions>,
-      ): Chainable<JQuery<HTMLHtmlElement>>;
+      ): Chainable<AUTWindow>;
 
       clickPrettify(): Chainable<Element>;
 
@@ -195,7 +195,8 @@ Cypress.Commands.add('visitGraphiQL', (params = {}, visitOptions) => {
     );
   }
   const url = queryParts.length === 0 ? '/' : `?${queryParts.join('&')}`;
-  return cy.visit(url, visitOptions);
+  cy.visit(url, visitOptions);
+  return cy.waitForQueryEditor();
 });
 
 Cypress.Commands.add(
