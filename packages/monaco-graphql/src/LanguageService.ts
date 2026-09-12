@@ -15,6 +15,7 @@ import {
   Source,
 } from 'graphql';
 import picomatch from 'picomatch-browser';
+import type { Diagnostic, Hover } from 'vscode-languageserver-types';
 import type {
   AutocompleteSuggestionOptions,
   IPosition,
@@ -241,7 +242,7 @@ export class LanguageService {
     uri: string,
     documentText: string,
     customRules?: ValidationRule[],
-  ) => {
+  ): Diagnostic[] => {
     const schema = this.getSchemaForFile(uri);
     if (!documentText || documentText.trim().length < 2 || !schema?.schema) {
       return [];
@@ -263,7 +264,7 @@ export class LanguageService {
     documentText: string,
     position: IPosition,
     options?: HoverConfig,
-  ) => {
+  ): Hover['contents'] | undefined => {
     const schema = this.getSchemaForFile(uri);
     if (schema && documentText.length > 3) {
       return getHoverInformation(

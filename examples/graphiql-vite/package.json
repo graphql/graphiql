@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
+    "@graphiql/toolkit": "^1.0.0-beta.0",
     "graphiql": "^6.0.0-beta.1",
     "graphql": "^16.14.2",
     "react": "^19",

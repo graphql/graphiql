@@ -13,51 +13,56 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
-          cache: yarn
-      - run: yarn install --immutable
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - name: Turbo cache
         uses: ./.github/actions/turbo-cache
-      - run: yarn build
+      - run: pnpm build
 
   cspell:
     name: CSpell
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
-          cache: yarn
-      - run: yarn install --immutable
-      - run: yarn lint-cspell
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint-cspell
 
   format:
     name: Format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
-          cache: yarn
-      - run: yarn install --immutable
-      - run: yarn format-check
-      - run: yarn svgo-check
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check:lockfile
+      - run: pnpm format-check
+      - run: pnpm svgo-check
 
   dedupe-check:
-    name: Yarn Dedupe Check
+    name: pnpm Dedupe Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
-          cache: yarn
-      - run: yarn install --immutable
-      - run: yarn dedupe --check
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm dedupe --check
 
   vitest:
     name: Vitest Unit Tests
@@ -65,34 +70,36 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
-          cache: yarn
-      - run: yarn install --immutable
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - name: Turbo cache
         uses: ./.github/actions/turbo-cache
         with:
           restore-build: true
-      - run: npx playwright install --with-deps chromium
-      - run: yarn test
+      - run: pnpm --filter @graphiql/react exec playwright install --with-deps chromium
+      - run: pnpm test
 
   graphql-17-fragment-arguments:
     name: GraphQL 17 Fragment Arguments
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
-          cache: yarn
-      - run: yarn install --immutable
-      - run: yarn workspace graphql-language-service add --dev graphql@17.0.2
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter graphql-language-service add --save-dev graphql@17.0.2
       - name: Build and typecheck graphql-language-service
-        run: yarn workspace graphql-language-service exec tsc
+        run: pnpm --filter graphql-language-service exec tsc
       - name: Test fragment argument integration
         run: >-
-          yarn vitest run packages/graphql-language-service/src/parser/__tests__/OnlineParser.test.ts packages/graphql-language-service/src/interface/__tests__/getAutocompleteSuggestions.test.ts packages/graphql-language-service/src/interface/__tests__/getDiagnostics.test.ts packages/graphql-language-service/src/interface/__tests__/getHoverInformation.test.ts
+          pnpm exec vitest run packages/graphql-language-service/src/parser/__tests__/OnlineParser.test.ts packages/graphql-language-service/src/interface/__tests__/getAutocompleteSuggestions.test.ts packages/graphql-language-service/src/interface/__tests__/getDiagnostics.test.ts packages/graphql-language-service/src/interface/__tests__/getHoverInformation.test.ts
 
 
   lint:
@@ -101,17 +108,18 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
-          cache: yarn
-      - run: yarn install --immutable
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - name: Turbo cache
         uses: ./.github/actions/turbo-cache
         with:
           restore-build: true
-      - run: yarn build
-      - run: yarn oxlint
+      - run: pnpm build
+      - run: pnpm oxlint
 
   types-check:
     name: Types Check
@@ -119,16 +127,17 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
-          cache: yarn
-      - run: yarn install --immutable
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - name: Turbo cache
         uses: ./.github/actions/turbo-cache
         with:
           restore-build: true
-      - run: yarn types:check
+      - run: pnpm types:check
 
   e2e:
     name: Cypress
@@ -136,26 +145,28 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
-          cache: yarn
-      - run: yarn install --immutable
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - name: Turbo cache
         uses: ./.github/actions/turbo-cache
         with:
           restore-build: true
-      - run: yarn build
+      - run: pnpm build
       - uses: actions/cache@v5
         with:
           path: |
             ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          key: cypress-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm --filter graphiql-e2e exec cypress install
       - name: Cypress run
         uses: cypress-io/github-action@v7
         with:
           install: false
-          command: yarn e2e
+          command: pnpm e2e
         env:
           # GitHub runners have no usable GPU; Electron's GPU process can
           # crash (dawn/Vulkan) and wedge the browser mid-run
@@ -179,27 +190,29 @@ jobs:
     needs: [build, lint, vitest, e2e]
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
-          cache: yarn
-      - run: yarn install --immutable
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - name: Turbo cache
         uses: ./.github/actions/turbo-cache
         with:
           restore-build: true
-      - run: yarn build
-      - run: npx pkg-pr-new publish --comment=off './packages/*'
+      - run: pnpm build
+      - run: pnpm dlx pkg-pr-new publish --comment=off './packages/*'
 
   license-check:
     name: Check Licenses
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
-          cache: yarn
-      - run: yarn install --immutable
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - name: License Check
-        run: yarn license-check
+        run: pnpm license-check

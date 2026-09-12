@@ -10,14 +10,14 @@ runs:
     - uses: actions/cache@v5
       with:
         path: .turbo/cache
-        key: turbo-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.node-version', 'yarn.lock') }}-${{ github.job }}-${{ github.sha }}
+        key: turbo-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.node-version', 'pnpm-lock.yaml') }}-${{ github.job }}-${{ github.sha }}
         restore-keys: |
-          turbo-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.node-version', 'yarn.lock') }}-${{ github.job }}-
-          turbo-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.node-version', 'yarn.lock') }}-build-
-          turbo-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.node-version', 'yarn.lock') }}-
+          turbo-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.node-version', 'pnpm-lock.yaml') }}-${{ github.job }}-
+          turbo-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.node-version', 'pnpm-lock.yaml') }}-build-
+          turbo-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.node-version', 'pnpm-lock.yaml') }}-
     - name: Restore current build cache
       if: inputs.restore-build == 'true'
       uses: actions/cache/restore@v5
       with:
         path: .turbo/cache
-        key: turbo-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.node-version', 'yarn.lock') }}-build-${{ github.sha }}
+        key: turbo-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.node-version', 'pnpm-lock.yaml') }}-build-${{ github.sha }}

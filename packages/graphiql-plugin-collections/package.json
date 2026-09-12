@@ -34,7 +34,7 @@
   "scripts": {
     "types:check": "tsgo --noEmit",
     "dev": "vite build --watch --emptyOutDir=false",
-    "build": "yarn types:check && vite build",
+    "build": "pnpm types:check && vite build",
     "test": "vitest run"
   },
   "dependencies": {
@@ -49,9 +49,12 @@
   },
   "devDependencies": {
     "@graphiql/react": "1.0.0-beta.1",
+    "@storybook/react-vite": "^10.3.6",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "@typescript/native-preview": "^7.0.0-dev",
     "@vitejs/plugin-react": "^4.4.1",
     "graphql": "^16.14.2",

@@ -15,11 +15,11 @@ import test from 'node:test';
 
 const execFileAsync = promisify(execFile);
 
-test('updates the repository package.json', async () => {
+test('updates the repository pnpm workspace config', async () => {
   const fixtureRoot = await mkdtemp(join(tmpdir(), 'set-resolution-'));
   const projectRoot = join(fixtureRoot, 'project');
   const scriptsDirectory = join(projectRoot, 'scripts');
-  const packageJsonPath = join(projectRoot, 'package.json');
+  const workspaceFilePath = join(projectRoot, 'pnpm-workspace.yaml');
 
   try {
     await mkdir(scriptsDirectory, { recursive: true });
@@ -28,8 +28,15 @@ test('updates the repository package.json', async () => {
       join(scriptsDirectory, 'set-resolution.mts'),
     );
     await writeFile(
-      packageJsonPath,
-      JSON.stringify({ resolutions: { react: '18.3.1' } }),
+      workspaceFilePath,
+      `packages:
+  - packages/*
+
+overrides:
+  react: 18.3.1
+
+patchedDependencies:
+`,
     );
 
     await execFileAsync(
@@ -38,11 +45,18 @@ test('updates the repository package.json', async () => {
       { cwd: projectRoot },
     );
 
-    const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8'));
-    assert.deepEqual(packageJson.resolutions, {
-      graphql: '16.11.0',
-      react: '18.3.1',
-    });
+    assert.equal(
+      await readFile(workspaceFilePath, 'utf8'),
+      `packages:
+  - packages/*
+
+overrides:
+  'graphql': '16.11.0'
+  react: 18.3.1
+
+patchedDependencies:
+`,
+    );
   } finally {
     await rm(fixtureRoot, { recursive: true, force: true });
   }
