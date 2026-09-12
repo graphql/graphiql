@@ -14,7 +14,8 @@ export default defineConfig({
         // Fixes Error: Failed to resolve entry for package "monaco-editor". The package may have incorrect main/module/exports specified in its package.json.
         find: /^monaco-editor$/,
         replacement: path.resolve(
-          '../../node_modules/monaco-editor/esm/vs/editor/editor.api',
+          import.meta.dirname,
+          'node_modules/monaco-editor/esm/vs/editor/editor.api',
         ),
       },
     ],

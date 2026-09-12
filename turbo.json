@@ -1,7 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": [
-    "yarn.lock",
+    "pnpm-lock.yaml",
     "resources/patches/*",
     "resources/tsconfig.base.cjs.json",
     "resources/tsconfig.base.esm.json",

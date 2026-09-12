@@ -20,7 +20,7 @@
   "typings": "dist/esm/index.d.mts",
   "scripts": {
     "types:check": "tsgo --noEmit",
-    "build": "yarn types:check && tsup",
+    "build": "pnpm types:check && tsup",
     "dev": "tsup --watch",
     "test": "vitest run"
   },

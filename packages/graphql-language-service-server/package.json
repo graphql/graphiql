@@ -47,6 +47,7 @@
     "@babel/parser": "^7.23.6",
     "@babel/types": "^7.23.5",
     "@graphql-tools/code-file-loader": "8.0.3",
+    "@graphql-tools/load": "^8.1.0",
     "cosmiconfig-toml-loader": "^1.0.0",
     "debounce-promise": "^3.1.2",
     "dotenv": "10.0.0",
@@ -74,6 +75,7 @@
     "@types/mkdirp": "^1.0.1",
     "@typescript/native-preview": "^7.0.0-dev",
     "graphql": "^16.9.0",
-    "msw": "^2.13.4"
+    "msw": "^2.13.4",
+    "vscode-languageserver-protocol": "^3.17.1"
   }
 }

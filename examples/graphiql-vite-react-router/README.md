@@ -38,5 +38,5 @@ export default Route;
 
 ## Setup
 
-1. `yarn dev` to start Vite dev server.
-1. `yarn build` to build production ready transpiled files. Find the output in `dist` folder.
+1. `pnpm dev` to start Vite dev server.
+1. `pnpm build` to build production ready transpiled files. Find the output in `dist` folder.

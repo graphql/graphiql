@@ -30,7 +30,7 @@
   "scripts": {
     "types:check": "tsgo --noEmit",
     "dev": "vite build --watch --emptyOutDir=false",
-    "build": "yarn types:check && vite build && yarn postbuild",
+    "build": "pnpm types:check && vite build && pnpm postbuild",
     "postbuild": "cp src/graphiql-explorer.d.ts dist/graphiql-explorer.d.ts"
   },
   "dependencies": {
@@ -44,6 +44,8 @@
   },
   "devDependencies": {
     "@graphiql/react": "^0.39.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "@typescript/native-preview": "^7.0.0-dev",
     "@vitejs/plugin-react": "^4.4.1",
     "graphql": "^16.9.0",

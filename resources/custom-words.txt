@@ -78,6 +78,7 @@ exfiltrate
 filesfor
 fira
 firecamp
+fsevents
 flowtests
 foldgutter
 foldmarker
@@ -116,6 +117,7 @@ jonathanawesome
 jsdelivr
 jsgl
 keymap
+keytar
 kumar
 languageservice
 leebyron
