@@ -46,7 +46,7 @@
     "@astrojs/compiler": "^2.10.1",
     "@babel/parser": "^7.23.6",
     "@babel/types": "^7.23.5",
-    "@graphql-tools/code-file-loader": "8.0.3",
+    "@graphql-tools/code-file-loader": "8.1.39",
     "cosmiconfig-toml-loader": "^1.0.0",
     "debounce-promise": "^3.1.2",
     "dotenv": "10.0.0",
@@ -56,17 +56,17 @@
     "graphql-language-service": "^5.7.0",
     "lru-cache": "^10.2.0",
     "mkdirp": "^1.0.4",
-    "node-abort-controller": "^3.0.1",
+    "node-abort-controller": "^3.1.1",
     "nullthrows": "^1.0.0",
-    "source-map-js": "1.0.2",
-    "svelte": "^5.55.7",
+    "source-map-js": "1.2.1",
+    "svelte": "^5.57.0",
     "svelte2tsx": "^0.7.0",
     "typescript": "^5.8.0",
     "vscode-jsonrpc": "^8.0.1",
     "vscode-languageserver": "^8.0.1",
-    "vscode-languageserver-types": "^3.17.2",
-    "vscode-uri": "^3.0.2",
-    "vue": "^3.2.0"
+    "vscode-languageserver-types": "^3.18.3",
+    "vscode-uri": "^3.2.0",
+    "vue": "^3.5.42"
   },
   "devDependencies": {
     "@types/debounce-promise": "^3.1.9",
@@ -74,6 +74,6 @@
     "@types/mkdirp": "^1.0.1",
     "@typescript/native-preview": "^7.0.0-dev",
     "graphql": "^16.9.0",
-    "msw": "^2.13.4"
+    "msw": "^2.15.0"
   }
 }

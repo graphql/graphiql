@@ -25,16 +25,16 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@n1ru4l/push-pull-async-iterable-iterator": "^3.1.0",
+    "@n1ru4l/push-pull-async-iterable-iterator": "^3.2.0",
     "meros": "^1.1.4"
   },
   "devDependencies": {
     "@typescript/native-preview": "^7.0.0-dev",
     "graphql": "^16.9.0",
-    "graphql-ws": "^6.0.8",
+    "graphql-ws": "^6.2.1",
     "isomorphic-fetch": "^3.0.0",
     "subscriptions-transport-ws": "0.11.0",
-    "tsup": "^8.2.4"
+    "tsup": "^8.5.1"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",

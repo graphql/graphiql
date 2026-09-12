@@ -49,7 +49,7 @@
     "graphql-language-service": "5.7.0"
   },
   "devDependencies": {
-    "@codemirror/language": "^6.0.0",
+    "@codemirror/language": "^6.12.4",
     "@typescript/native-preview": "^7.0.0-dev",
     "codemirror": "^5.65.3",
     "cross-env": "^7.0.2",

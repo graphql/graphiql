@@ -37,12 +37,12 @@
   "dependencies": {
     "debounce-promise": "^3.1.2",
     "nullthrows": "^1.0.0",
-    "vscode-languageserver-types": "^3.17.1"
+    "vscode-languageserver-types": "^3.18.3"
   },
   "devDependencies": {
     "@types/benchmark": "^1.0.33",
     "@types/debounce-promise": "^3.1.9",
-    "@types/json-schema": "7.0.9",
+    "@types/json-schema": "7.0.15",
     "@types/picomatch": "^2.3.0",
     "@typescript/native-preview": "^7.0.0-dev",
     "benchmark": "^2.1.4",

@@ -63,7 +63,7 @@
     "markdown-it": "^14.2.0",
     "monaco-editor": "0.52.2",
     "monaco-graphql": "^1.9.0",
-    "prettier": "^3.5.3",
+    "prettier": "^3.9.6",
     "react-compiler-runtime": "19.1.0-rc.1",
     "set-value": "^4.1.0",
     "zustand": "^5"
@@ -73,7 +73,7 @@
     "@types/get-value": "^3.0.5",
     "@types/markdown-it": "^14.1.2",
     "@types/react-dom": "^19.1.2",
-    "@types/set-value": "^4.0.1",
+    "@types/set-value": "^4.0.3",
     "@typescript/native-preview": "^7.0.0-dev",
     "@vitejs/plugin-react": "^4.4.1",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
