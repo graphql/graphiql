@@ -79,7 +79,7 @@
     "js-green-licenses": "4.0.0",
     "mkdirp": "^1.0.4",
     "msw": "^2.13.4",
-    "oxfmt": "^0.45.0",
+    "oxfmt": "^0.67.0",
     "oxlint": "^1",
     "oxlint-plugin-eslint": "^1",
     "oxlint-tsgolint": "latest",
