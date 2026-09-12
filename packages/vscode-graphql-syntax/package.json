@@ -162,7 +162,7 @@
   "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-syntax/README.md",
   "scripts": {
     "types:check": "tsgo --noEmit",
-    "vsce:package": "vsce package --yarn --no-dependencies",
+    "vsce:package": "vsce package --no-dependencies",
     "test": "vitest run"
   }
 }

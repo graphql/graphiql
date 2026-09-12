@@ -175,8 +175,8 @@
     "types:check": "tsgo --noEmit",
     "vscode:prepublish": "npm run compile -- --minify",
     "compile": "node esbuild",
-    "build-bundles": "yarn compile",
-    "vsce:package": "vsce package --yarn --no-dependencies",
+    "build-bundles": "pnpm compile",
+    "vsce:package": "vsce package --no-dependencies",
     "env:source": "export $(cat .envrc | xargs)"
   },
   "devDependencies": {

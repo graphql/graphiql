@@ -2,7 +2,7 @@
 
 Before landing a contribution, sign the [GraphQL Specification Membership agreement](https://github.com/graphql/graphql-wg/tree/main/membership). EasyCLA will prompt you on your pull request if you haven't signed it.
 
-1. Install Git, Node.js 24 (see `.node-version`), and Yarn 4. Use Yarn for repository commands.
+1. Install Git, Node.js 24 (see `.node-version`), and pnpm. Use pnpm for repository commands.
 2. Fork and clone the repository:
 
    ```sh
@@ -13,7 +13,7 @@ Before landing a contribution, sign the [GraphQL Specification Membership agreem
 3. Install dependencies:
 
    ```sh
-   yarn install --immutable
+   pnpm install --frozen-lockfile
    ```
 
 4. Choose a development command below. Turbo builds workspace dependencies before starting the selected task.
@@ -23,27 +23,27 @@ Before landing a contribution, sign the [GraphQL Specification Membership agreem
 Build the repository's default package and example set:
 
 ```sh
-yarn build
+pnpm build
 ```
 
 Build GraphiQL, its dependencies, and the private end-to-end test application:
 
 ```sh
-yarn build:graphiql
+pnpm build:graphiql
 ```
 
 For another package, use its name from `package.json`. The trailing `...` includes its workspace dependencies:
 
 ```sh
-yarn turbo run build --filter=monaco-graphql...
+pnpm exec turbo run build --filter=monaco-graphql...
 ```
 
-Each package declares its compiler and build command. Turbo orders package builds and caches their outputs. A direct command such as `yarn workspace @graphiql/react build` runs only that package; build its workspace dependencies first.
+Each package declares its compiler and build command. Turbo orders package builds and caches their outputs. A direct command such as `pnpm --filter @graphiql/react build` runs only that package; build its workspace dependencies first.
 
 The default repository build excludes the Monaco examples and the GraphiQL webpack example. Build an excluded example explicitly when working on it:
 
 ```sh
-yarn turbo run build --filter=example-monaco-graphql-react-vite...
+pnpm exec turbo run build --filter=example-monaco-graphql-react-vite...
 ```
 
 ## Develop GraphiQL
@@ -51,7 +51,7 @@ yarn turbo run build --filter=example-monaco-graphql-react-vite...
 Start GraphiQL and watch its dependencies:
 
 ```sh
-yarn dev:graphiql
+pnpm dev:graphiql
 ```
 
 The private `graphiql-e2e` workspace serves GraphiQL from source. Open the Vite URL printed in the terminal. The GraphQL test server runs on port 8080. Turbo rebuilds dependencies and restarts the application when their inputs change. Select only the application for `dev`; its build prerequisites include the required libraries, so separate library watchers aren't needed.
@@ -59,7 +59,7 @@ The private `graphiql-e2e` workspace serves GraphiQL from source. Open the Vite 
 To develop the Vite example instead, run:
 
 ```sh
-yarn dev:example-vite
+pnpm dev:example-vite
 ```
 
 ## Develop Monaco GraphQL
@@ -67,24 +67,24 @@ yarn dev:example-vite
 Start the Monaco Vite example with its workspace dependencies:
 
 ```sh
-yarn turbo watch dev --filter=example-monaco-graphql-react-vite
+pnpm exec turbo watch dev --filter=example-monaco-graphql-react-vite
 ```
 
 To watch only the library builds, run:
 
 ```sh
-yarn build:watch --filter=monaco-graphql...
+pnpm run build:watch -- --filter=monaco-graphql...
 ```
 
-`yarn build:watch` without a filter watches the default repository build set. It uses the same package build commands as `yarn build`, including declaration generation and the Monaco type patch. `yarn watch` is an alias.
+`pnpm build:watch` without a filter watches the default repository build set. It uses the same package build commands as `pnpm build`, including declaration generation and the Monaco type patch. `pnpm watch` is an alias.
 
 ## Develop the VS Code extensions
 
 Use the corresponding command to build and watch an extension and its dependencies:
 
 ```sh
-yarn watch-vscode
-yarn watch-vscode-exec
+pnpm watch-vscode
+pnpm watch-vscode-exec
 ```
 
 Run one command per terminal, or start the matching VS Code task. The debugger waits for a successful extension bundle before launching. Turbo reruns the finite compiler and bundler tasks when workspace sources change.
@@ -94,48 +94,48 @@ Run one command per terminal, or start the matching VS Code task. The debugger w
 Run the package tests:
 
 ```sh
-yarn test
+pnpm test
 ```
 
 Run one package's tests with its required builds:
 
 ```sh
-yarn turbo run test --filter=cm6-graphql
+pnpm exec turbo run test --filter=cm6-graphql
 ```
 
 Check types across the repository:
 
 ```sh
-yarn types:check
+pnpm types:check
 ```
 
-Use `yarn lint` for lint, formatting, and spelling checks. Use `yarn format` to apply formatting.
+Use `pnpm lint` for lint, formatting, and spelling checks. Use `pnpm format` to apply formatting.
 
 Run GraphiQL's end-to-end tests against its built package:
 
 ```sh
-yarn e2e
+pnpm e2e
 ```
 
-The command builds GraphiQL and the private `graphiql-e2e` application, then runs Cypress against the built app on port 8080. `yarn e2e:built` is an alias. Use `yarn e2e:source` to run the same suite against source, or `yarn cypress-open` to open Cypress interactively.
+The command builds GraphiQL and the private `graphiql-e2e` application, then runs Cypress against the built app on port 8080. `pnpm e2e:built` is an alias. Use `pnpm e2e:source` to run the same suite against source, or `pnpm cypress-open` to open Cypress interactively.
 
-For the React, history plugin, and query builder stories, run `yarn storybook`. Turbo builds the React package and its dependencies before starting Storybook, then rebuilds them when their inputs change. Use `yarn build-storybook` to generate the static site in `packages/graphiql-react/storybook-static`. Changes to either plugin's story sources invalidate the static site and React's Storybook test cache.
+For the React, history plugin, and query builder stories, run `pnpm storybook`. Turbo builds the React package and its dependencies before starting Storybook, then rebuilds them when their inputs change. Use `pnpm build-storybook` to generate the static site in `packages/graphiql-react/storybook-static`. Changes to either plugin's story sources invalidate the static site and React's Storybook test cache.
 
 ## Clean and rebuild
 
-`yarn build` reuses valid Turbo cache entries. To remove generated package outputs, extension bundles, and staged demos before building, run:
+`pnpm build` reuses valid Turbo cache entries. To remove generated package outputs, extension bundles, and staged demos before building, run:
 
 ```sh
-yarn build:rebuild
+pnpm build:rebuild
 ```
 
 Cleaning preserves installed dependencies, source files, and the Turbo cache. To re-execute build tasks instead of restoring cached outputs, run:
 
 ```sh
-yarn build:rebuild --force
+pnpm run build:rebuild -- --force
 ```
 
-`yarn build:clean` only removes generated artifacts. `yarn build-clean` is a compatibility alias. `yarn build-bundles-clean` removes extension bundles and staged demos while preserving compiled packages.
+`pnpm build:clean` only removes generated artifacts. `pnpm build-clean` is a compatibility alias. `pnpm build-bundles-clean` removes extension bundles and staged demos while preserving compiled packages.
 
 ## CI caching
 
@@ -152,13 +152,13 @@ To check reuse, rerun a completed PR workflow with **Re-run all jobs**. Look for
 Build the VS Code extension bundles into their `out` directories:
 
 ```sh
-yarn build-bundles
+pnpm build-bundles
 ```
 
 Build and stage the local GraphiQL application and registered webpack demos for the GraphiQL site:
 
 ```sh
-yarn build-demo
+pnpm build-demo
 ```
 
 Turbo builds each demo's dependencies first. The private `graphiql-e2e` workspace stages the local ESM application at `packages/graphiql/index.html` with assets in `packages/graphiql/e2e`. The webpack examples stage their own directories under `packages/graphiql`. Staging runs even when builds come from cache. The CDN and CM6 example directories aren't registered workspaces and aren't included in this command.

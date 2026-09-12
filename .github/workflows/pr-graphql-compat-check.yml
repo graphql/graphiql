@@ -33,39 +33,40 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v6
 
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
-          cache: yarn
+          cache: pnpm
       - name: Cache node modules
         uses: actions/cache@v5
         with:
           path: node_modules
-          key: node_modules-${{hashFiles('yarn.lock')}}
+          key: node_modules-${{hashFiles('pnpm-lock.yaml')}}
           restore-keys: node_modules-
       - name: Install dependencies
-        run: yarn install --immutable
+        run: pnpm install --frozen-lockfile
 
       - name: Force GraphQL ${{ matrix.release }} solution
-        run: yarn repo:resolve graphql@${{ matrix.release }}
+        run: pnpm repo:resolve graphql@${{ matrix.release }}
 
-      - run: yarn install --no-immutable
+      - run: pnpm install --no-frozen-lockfile
 
       - name: Turbo cache
         uses: ./.github/actions/turbo-cache
 
       - name: Build
-        run: yarn build
+        run: pnpm build
 
       - name: Unit Tests
-        run: yarn test
+        run: pnpm test
 
       - name: Cypress (GraphQL 16)
         if: matrix.release != '^17'
         env:
           CYPRESS_excludeSpecPattern: cypress/e2e/incremental-delivery.cy.ts
-        run: yarn e2e
+        run: pnpm e2e
 
       - name: Cypress (GraphQL 17)
         if: matrix.release == '^17'
-        run: yarn e2e
+        run: pnpm e2e

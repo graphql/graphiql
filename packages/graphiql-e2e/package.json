@@ -6,10 +6,10 @@
   "license": "MIT",
   "scripts": {
     "types:check": "tsgo --noEmit",
-    "build": "yarn types:check && vite build --mode built && node scripts/prepare-dist.mjs",
+    "build": "pnpm types:check && vite build --mode built && node scripts/prepare-dist.mjs",
     "build-demo": "node scripts/build-demo.mjs",
-    "dev": "yarn start:source",
-    "start:source": "concurrently 'yarn server:source' 'yarn vite:source'",
+    "dev": "pnpm start:source",
+    "start:source": "concurrently 'pnpm server:source' 'pnpm vite:source'",
     "server:source": "cross-env GRAPHIQL_E2E_TARGET=source PORT=8080 node test/e2e-server",
     "server:built": "cross-env GRAPHIQL_E2E_TARGET=built PORT=8080 node test/e2e-server",
     "vite:source": "vite --mode source",
