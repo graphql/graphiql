@@ -91,7 +91,7 @@ Run one command per terminal, or start the matching VS Code task. The debugger w
 
 ## Test and check types
 
-Run the script regressions and package tests:
+Run the package tests:
 
 ```sh
 yarn test
