@@ -47,6 +47,7 @@ jobs:
           node-version-file: '.node-version'
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm check:lockfile
       - run: pnpm format-check
       - run: pnpm svgo-check
 

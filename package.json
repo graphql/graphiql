@@ -5,6 +5,7 @@
   "license": "MIT",
   "packageManager": "pnpm@12.4.1",
   "scripts": {
+    "check:lockfile": "node scripts/check-pnpm-lockfile.mts",
     "types:check": "turbo run types:check && tsgo --noEmit -p scripts/tsconfig.json",
     "dev:graphiql": "turbo watch dev --filter=graphiql",
     "dev:example-nextjs": "turbo run dev --filter=example-graphiql-nextjs...",
