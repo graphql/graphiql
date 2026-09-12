@@ -47,6 +47,7 @@ jobs:
           node-version-file: '.node-version'
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm check:lockfile
       - run: pnpm format-check
       - run: pnpm svgo-check
 
@@ -160,6 +161,7 @@ jobs:
           path: |
             ~/.cache/Cypress
           key: cypress-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm --filter graphiql exec cypress install
       - name: Cypress run
         uses: cypress-io/github-action@v7
         with:
