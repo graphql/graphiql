@@ -127,6 +127,16 @@ yarn build:rebuild --force
 
 `yarn build:clean` only removes generated artifacts. `yarn build-clean` is a compatibility alias. `yarn build-bundles-clean` removes extension bundles and staged demos while preserving compiled packages.
 
+## CI caching
+
+GitHub Actions saves `.turbo/cache` between jobs and runs. Cache archives are grouped by runner OS, architecture, Node version file, and lockfile. Turbo checks each task's inputs before restoring its outputs; tasks with changed inputs run again. Jobs also build successfully when no cache is available.
+
+The release workflow saves caches on `main` that pull requests can reuse. Caches created by a pull request are available to later runs of that same pull request. GitHub controls this [cache access](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching#restrictions-for-accessing-a-cache).
+
+This uses GitHub's cache storage and requires no Vercel account or Turbo credentials. Turbo still reports `Remote caching disabled` because GitHub restores its local cache directory before the command runs. Developer machines keep their own local caches.
+
+To check reuse, rerun a completed PR workflow with **Re-run all jobs**. Look for a restored cache in the **Turbo cache** step and cached tasks in Turbo's summary. An empty or evicted cache makes the run slower but should not change its result.
+
 ## Build extension bundles and demos
 
 Build the VS Code extension bundles into their `out` directories:
