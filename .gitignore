@@ -54,3 +54,5 @@ packages/graphiql/webpack/
 packages/graphiql/monaco/
 
 .react-router/
+
+.claude
