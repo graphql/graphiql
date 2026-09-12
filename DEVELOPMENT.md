@@ -129,7 +129,7 @@ yarn build:rebuild --force
 
 ## CI caching
 
-GitHub Actions saves `.turbo/cache` between jobs and runs. Cache archives are grouped by runner OS, architecture, Node version file, and lockfile. Turbo checks each task's inputs before restoring its outputs; tasks with changed inputs run again. Jobs also build successfully when no cache is available.
+GitHub Actions saves `.turbo/cache` between jobs and runs. Cache archives are grouped by runner OS, architecture, Node version file, and lockfile. Each job restores its previous results; dependent PR jobs also restore the current commit's build cache. Turbo checks each task's inputs before restoring its outputs; tasks with changed inputs run again. Jobs also build successfully when no cache is available.
 
 The release workflow saves caches on `main` that pull requests can reuse. Caches created by a pull request are available to later runs of that same pull request. GitHub controls this [cache access](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching#restrictions-for-accessing-a-cache).
 
