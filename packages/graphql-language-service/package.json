@@ -44,6 +44,7 @@
     "@types/debounce-promise": "^3.1.9",
     "@types/json-schema": "7.0.9",
     "@types/picomatch": "^2.3.0",
+    "@typescript/native-preview": "^7.0.0-dev",
     "benchmark": "^2.1.4",
     "graphql": "^16.9.0",
     "graphql-config": "^5.1.6",

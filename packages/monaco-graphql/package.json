@@ -77,6 +77,7 @@
     "picomatch-browser": "^2.2.6"
   },
   "devDependencies": {
+    "@typescript/native-preview": "^7.0.0-dev",
     "execa": "^7.1.1",
     "graphql": "^16.9.0",
     "monaco-editor": "0.52.2",

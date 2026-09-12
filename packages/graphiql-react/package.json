@@ -74,6 +74,7 @@
     "@types/markdown-it": "^14.1.2",
     "@types/react-dom": "^19.1.2",
     "@types/set-value": "^4.0.1",
+    "@typescript/native-preview": "^7.0.0-dev",
     "@vitejs/plugin-react": "^4.4.1",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
     "graphql": "^16.9.0",

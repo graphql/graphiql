@@ -6,6 +6,14 @@ import { test } from 'node:test';
 
 const root = path.resolve(import.meta.dirname, '..');
 const packages = path.join(root, 'packages');
+const { packageManager } = JSON.parse(
+  readFileSync(path.join(root, 'package.json'), 'utf8'),
+) as { packageManager: string };
+const yarn = path.join(
+  root,
+  '.yarn/releases',
+  `yarn-${packageManager.split('@')[1]}.cjs`,
+);
 
 for (const directory of readdirSync(packages, { withFileTypes: true })) {
   if (!directory.isDirectory()) {
@@ -26,8 +34,8 @@ for (const directory of readdirSync(packages, { withFileTypes: true })) {
 
   test(`${manifest.name} resolves tsgo without Turbo`, () => {
     const result = spawnSync(
-      'yarn',
-      ['workspace', manifest.name, 'bin', 'tsgo'],
+      process.execPath,
+      [yarn, 'workspace', manifest.name, 'bin', 'tsgo'],
       {
         cwd: root,
         encoding: 'utf8',

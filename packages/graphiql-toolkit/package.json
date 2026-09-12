@@ -29,6 +29,7 @@
     "meros": "^1.1.4"
   },
   "devDependencies": {
+    "@typescript/native-preview": "^7.0.0-dev",
     "graphql": "^16.9.0",
     "graphql-ws": "^6.0.8",
     "isomorphic-fetch": "^3.0.0",

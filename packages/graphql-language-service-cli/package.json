@@ -47,6 +47,7 @@
     "yargs": "^16.2.0"
   },
   "devDependencies": {
+    "@typescript/native-preview": "^7.0.0-dev",
     "graphql": "^16.9.0"
   }
 }

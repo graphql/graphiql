@@ -153,6 +153,7 @@
     "directory": "packages/vscode-graphql-syntax"
   },
   "devDependencies": {
+    "@typescript/native-preview": "^7.0.0-dev",
     "@vscode/vsce": "^2.22.1-2",
     "ovsx": "0.8.3",
     "vscode-oniguruma": "^1.7.0",
