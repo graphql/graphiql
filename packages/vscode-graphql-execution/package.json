@@ -85,8 +85,8 @@
     "build": "tsgo -p tsconfig.json",
     "types:check": "tsgo --noEmit",
     "compile": "node esbuild.js",
-    "build-bundles": "yarn compile",
-    "vsce:package": "yarn compile && vsce package --yarn --no-dependencies"
+    "build-bundles": "pnpm compile",
+    "vsce:package": "pnpm compile && vsce package --no-dependencies"
   },
   "devDependencies": {
     "@types/capitalize": "2.0.0",
@@ -114,6 +114,7 @@
     "nullthrows": "1.1.1",
     "svelte": "^5.55.7",
     "svelte2tsx": "^0.6.16",
+    "wonka": "^6.3.6",
     "ws": "8.21.0"
   }
 }

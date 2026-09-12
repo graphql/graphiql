@@ -9,8 +9,8 @@
   },
   "scripts": {
     "types:check": "tsgo --noEmit",
-    "build": "yarn types:check && cm-buildhelper src/index.ts",
-    "prepare": "yarn build",
+    "build": "pnpm types:check && cm-buildhelper src/index.ts",
+    "prepare": "pnpm build",
     "test": "vitest run"
   },
   "main": "dist/index.cjs",
