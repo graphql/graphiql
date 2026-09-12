@@ -4,9 +4,6 @@ import { $ } from 'execa';
 // eslint-disable-next-line no-control-regex
 const ANSI_COLOR_REGEX = /\u001b\[\d+m/g;
 
-const VOLATILE_LINE =
-  /modules transformed|rendering chunks|computing gzip size|transforming|built in|building for production/;
-
 describe('monaco-editor', () => {
   it('should include in bundle only graphql/json languages', async () => {
     const { stdout } =
@@ -17,7 +14,7 @@ describe('monaco-editor', () => {
       .replaceAll(ANSI_COLOR_REGEX, '')
       .split('\n')
       .map(line => line.replaceAll(/\s{2,}.*/gm, '').trim())
-      .filter(line => line && !VOLATILE_LINE.test(line));
+      .filter(line => line.startsWith('dist/'));
     expect(files).toMatchInlineSnapshot(`
       [
         "dist/index.html",
