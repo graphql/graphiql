@@ -79,7 +79,7 @@ jobs:
         uses: ./.github/actions/turbo-cache
         with:
           restore-build: true
-      - run: npx playwright install --with-deps chromium
+      - run: pnpm --filter @graphiql/react exec playwright install --with-deps chromium
       - run: pnpm test
 
   graphql-17-fragment-arguments:
