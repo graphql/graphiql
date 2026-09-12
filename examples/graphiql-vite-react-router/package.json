@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@graphiql/react": "^0.39.0",
-    "@react-router/fs-routes": "^7",
+    "@react-router/fs-routes": "^8",
     "@react-router/node": "^7",
     "@react-router/serve": "^7",
     "graphiql": "^5.4.0",
