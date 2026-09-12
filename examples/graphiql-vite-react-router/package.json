@@ -22,7 +22,7 @@
     "react-router": "^7"
   },
   "devDependencies": {
-    "@react-router/dev": "^7",
+    "@react-router/dev": "^8",
     "@types/node": "^24",
     "@types/react": "^19",
     "typescript": "^5",
