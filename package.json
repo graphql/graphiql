@@ -85,7 +85,7 @@
     "oxlint-tsgolint": "latest",
     "rimraf": "^3.0.2",
     "turbo": "^2.9.14",
-    "typedoc": "^0.28.19",
+    "typedoc": "^0.28.20",
     "typescript": "^5.8.0",
     "vitest": "^4.1.11",
     "wgutils": "^1.2.5"
