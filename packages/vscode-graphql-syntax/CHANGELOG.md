@@ -1,5 +1,13 @@
 # vscode-graphql-syntax
 
+## 1.3.13
+
+### Patch Changes
+
+- [#4491](https://github.com/graphql/graphiql/pull/4491) [`d34c539`](https://github.com/graphql/graphiql/commit/d34c53970e21fa244bdea95a7dd4d9e3fa6b8129) Thanks [@rrbe](https://github.com/rrbe)! - Fix highlighting of consecutive field and argument descriptions without separating commas, preventing description punctuation from causing subsequent code to be highlighted as documentation.
+
+- [#4494](https://github.com/graphql/graphiql/pull/4494) [`e19ba2d`](https://github.com/graphql/graphiql/commit/e19ba2d06e0431a93b53210e77ecef0d27bbda26) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Fix highlighting of compact defaults and descriptions that follow default values on the same line.
+
 ## 1.3.12
 
 ### Patch Changes
