@@ -57,7 +57,7 @@
     "@babel/polyfill": "^7.12.1",
     "@babel/preset-env": "^7.29.7",
     "@babel/preset-react": "^7.18.6",
-    "@babel/preset-typescript": "^7.21.0",
+    "@babel/preset-typescript": "^7.29.7",
     "@babel/register": "^7.21.0",
     "@changesets/changelog-github": "0.7.0",
     "@changesets/cli": "2.27.7",
