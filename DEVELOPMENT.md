@@ -1,110 +1,144 @@
-# Getting Started
+# Getting started
 
-Please note that we require a signed GraphQL Specification Membership agreement
-before landing a contribution. This is checked automatically when you open a PR.
-If you have not signed the membership agreement (it's free), you will be
-prompted by the EasyCLA bot. For more details, please see the
-[GraphQL WG repo](https://github.com/graphql/graphql-wg/tree/main/membership).
+Before landing a contribution, sign the [GraphQL Specification Membership agreement](https://github.com/graphql/graphql-wg/tree/main/membership). EasyCLA will prompt you on your pull request if you haven't signed it.
 
-0. First, you will need the latest `git`, `yarn` 4, & `node` 18 or greater.
-   macOS, Windows and Linux should all be supported as build environments.
-
-> [!WARNING]
->
-> None of the commands below will work with `npm`. Please use `yarn` in this repo.
-
-1. Fork this repo by using the "Fork" button in the upper-right
-
-2. Check out your fork
+1. Install Git, Node.js 24 (see `.node-version`), and Yarn 4. Use Yarn for repository commands.
+2. Fork and clone the repository:
 
    ```sh
-   git clone git@github.com:your-name-here/graphiql.git
+   git clone https://github.com/YOUR_USERNAME/graphiql.git
+   cd graphiql
    ```
 
-3. Install or Update all dependencies
+3. Install dependencies:
 
    ```sh
-   yarn
+   yarn install --immutable
    ```
 
-4. Build all interdependencies so the project you are working on can resolve
-   other packages
+4. Choose a development command below. Turbo builds workspace dependencies before starting the selected task.
 
-   First, you'll need:
+## Build packages
 
-   ```sh
-   yarn build
-   ```
+Build the repository's default package and example set:
 
-   or
-
-   ```sh
-   yarn build:watch
-   ```
-
-   If you are focused on GraphiQL development, you can run:
-
-   ```sh
-   yarn dev:graphiql
-   ```
-
-5. Get coding! If you've added code, add tests. If you've changed APIs, update
-   any relevant documentation or tests. Ensure your work is committed within a
-   feature branch.
-
-6. Ensure all tests pass and build everything
-
-   ```sh
-   yarn test
-   ```
-
-## Fix CI issues with linting
-
-If you have `prettier` or `eslint --fix`-able issues you see in CI, use —
-
-`yarn format`
-
-If you see `typescript` build issues, do a `yarn build` locally, and make sure
-the whole project references tree builds. Changing interfaces can end up
-breaking their implementations.
-
-## Run tests for GraphiQL:
-
-- `yarn test graphiql` will run all tests for graphiql. You can also run tests
-  from a workspace, but most tooling is at the root.
-- `yarn test -- --watch` will run vitest in watch mode
-- `yarn e2e` at the root will run the end-to-end suite
-- `yarn start-monaco` will launch `webpack` dev server for the `monaco` editor
-  example with GitHub API from the root. This is the fastest way to test changes
-  to `graphql-language-service-interface`, parser, etc.
-
-If you want these commands to watch for changes to dependent packages in the
-repo, then run `yarn build --watch` alongside either of these.
-
-## Developing for GraphiQL
-
-If you want to develop just for graphiql, you won't need to execute commands
-from the package subdirectory at `packages/graphiql`.
-
-First, you'll need to `yarn build` all the packages from the root.
-
-Then, you can run `yarn dev:graphiql` command, which will launch `vite` dev server for GraphiQL.
-
-```text
-VITE v6.3.4  ready in 1015 ms
-
-➜  Local:   http://localhost:5173/
-➜  Network: use --host to expose
+```sh
+yarn build
 ```
 
-## Developing Monaco GraphQL
+Build GraphiQL and its dependencies:
 
-1. First run `yarn`.
-2. Run `yarn build:watch` to watch `monaco-graphql` and
-   `graphql-language-service` in one screen session/terminal tab/etc
-3. In another session, run `yarn start-monaco` from anywhere in the repository
-   aside from an individual workspace.
-4. Alternatively to the webpack example, or in addition, you can run monaco or
-   next.js examples, though these examples are simpler. They also require their
-   own `yarn` or `npm install` as they are excluded from the `workspaces`
-   resolved on global `yarn install`
+```sh
+yarn build:graphiql
+```
+
+For another package, use its name from `package.json`. The trailing `...` includes its workspace dependencies:
+
+```sh
+yarn turbo run build --filter=monaco-graphql...
+```
+
+Each package declares its compiler and build command. Turbo orders package builds and caches their outputs. A direct command such as `yarn workspace @graphiql/react build` runs only that package; build its workspace dependencies first.
+
+The default repository build excludes the Monaco examples and the GraphiQL webpack example. Build an excluded example explicitly when working on it:
+
+```sh
+yarn turbo run build --filter=example-monaco-graphql-react-vite...
+```
+
+## Develop GraphiQL
+
+Start GraphiQL and watch its dependencies:
+
+```sh
+yarn dev:graphiql
+```
+
+Open the Vite URL printed in the terminal. The GraphQL test server runs on port 8080. Turbo rebuilds dependencies and restarts the application when their inputs change. Select only the application for `dev`; its build prerequisites include the required libraries, so separate library watchers aren't needed.
+
+To develop the Vite example instead, run:
+
+```sh
+yarn dev:example-vite
+```
+
+## Develop Monaco GraphQL
+
+Start the Monaco Vite example with its workspace dependencies:
+
+```sh
+yarn turbo watch dev --filter=example-monaco-graphql-react-vite
+```
+
+To watch only the library builds, run:
+
+```sh
+yarn build:watch --filter=monaco-graphql...
+```
+
+`yarn build:watch` without a filter watches the default repository build set. It uses the same package build commands as `yarn build`, including declaration generation and the Monaco type patch. `yarn watch` is an alias.
+
+## Develop the VS Code extensions
+
+Use the corresponding command to build and watch an extension and its dependencies:
+
+```sh
+yarn watch-vscode
+yarn watch-vscode-exec
+```
+
+Run one command per terminal, or start the matching VS Code task. The debugger waits for a successful extension bundle before launching. Turbo reruns the finite compiler and bundler tasks when workspace sources change.
+
+## Test and check types
+
+Run the script regressions and package tests:
+
+```sh
+yarn test
+```
+
+Run one package's tests with its required builds:
+
+```sh
+yarn turbo run test --filter=cm6-graphql
+```
+
+Check types across the repository:
+
+```sh
+yarn types:check
+```
+
+Use `yarn lint` for lint, formatting, and spelling checks. Use `yarn format` to apply formatting. To run GraphiQL's end-to-end tests against the compiled app, build it with `yarn build:graphiql`, then run `CI=true yarn e2e`. The `CI` setting makes the test server serve the built app on port 8080.
+
+## Clean and rebuild
+
+`yarn build` reuses valid Turbo cache entries. To remove generated package outputs, extension bundles, and staged demos before building, run:
+
+```sh
+yarn build:rebuild
+```
+
+Cleaning preserves installed dependencies, source files, and the Turbo cache. To re-execute build tasks instead of restoring cached outputs, run:
+
+```sh
+yarn build:rebuild --force
+```
+
+`yarn build:clean` only removes generated artifacts. `yarn build-clean` is a compatibility alias. `yarn build-bundles-clean` removes extension bundles and staged demos while preserving compiled packages.
+
+## Build extension bundles and demos
+
+Build the VS Code extension bundles into their `out` directories:
+
+```sh
+yarn build-bundles
+```
+
+Build and stage the registered webpack demos for the GraphiQL site:
+
+```sh
+yarn build-demo
+```
+
+Turbo builds each demo's dependencies first. Staging replaces the demo's directory under `packages/graphiql` on every run, including when the example build comes from cache. The CDN and CM6 example directories aren't registered workspaces and aren't included in this command.
