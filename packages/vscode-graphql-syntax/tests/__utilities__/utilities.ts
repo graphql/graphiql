@@ -103,8 +103,14 @@ async function vscodeOnigurumaLib() {
 }
 
 function loadConfiguration() {
-  return packageJson.contributes.grammars.map(grammar => ({
-    ...grammar,
-    path: path.join(__dirname, '..', '..', grammar.path),
-  }));
+  return [
+    ...packageJson.contributes.grammars.map(grammar => ({
+      ...grammar,
+      path: path.join(__dirname, '..', '..', grammar.path),
+    })),
+    {
+      scopeName: 'source.ts.test',
+      path: path.join(__dirname, '..', '__fixtures__', 'source.ts.json'),
+    },
+  ];
 }

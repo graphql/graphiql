@@ -1,0 +1,11 @@
+{
+  "scopeName": "source.ts.test",
+  "patterns": [
+    {
+      "name": "meta.function-call.ts",
+      "begin": "\\b[_$[:alpha:]][_$[:alnum:]]*\\.\\s*$",
+      "end": "(?=\\()",
+      "patterns": [{ "include": "$self" }]
+    }
+  ]
+}
