@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
-  "packageManager": "pnpm@12.4.1",
+  "packageManager": "pnpm@10.34.5",
   "scripts": {
     "check:lockfile": "node scripts/check-pnpm-lockfile.mts",
     "types:check": "turbo run types:check && tsgo --noEmit -p scripts/tsconfig.json",
