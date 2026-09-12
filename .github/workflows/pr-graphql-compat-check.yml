@@ -62,7 +62,7 @@ jobs:
         run: pnpm test
 
       - name: Install Cypress
-        run: pnpm --filter graphiql exec cypress install
+        run: pnpm --filter graphiql-e2e exec cypress install
 
       - name: Cypress (GraphQL 16)
         if: matrix.release != '^17'

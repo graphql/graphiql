@@ -9,9 +9,6 @@ for (const workflow of ['pr.yml', 'pr-graphql-compat-check.yml']) {
       'utf8',
     );
 
-    assert.match(
-      contents,
-      /pnpm --filter graphiql-e2e exec cypress install/,
-    );
+    assert.match(contents, /pnpm --filter graphiql-e2e exec cypress install/);
   });
 }
