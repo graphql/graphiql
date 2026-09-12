@@ -160,6 +160,7 @@ jobs:
           path: |
             ~/.cache/Cypress
           key: cypress-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm --filter graphiql exec cypress install
       - name: Cypress run
         uses: cypress-io/github-action@v7
         with:
