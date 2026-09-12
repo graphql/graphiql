@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2",
-    "react-compiler-runtime": "19.1.0-rc.1",
+    "react-compiler-runtime": "19.1.0-rc.3",
     "zustand": "^5"
   },
   "devDependencies": {

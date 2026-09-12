@@ -53,7 +53,7 @@
     "@graphiql/plugin-doc-explorer": "^0.4.4",
     "@graphiql/plugin-history": "^0.4.4",
     "@graphiql/react": "^0.39.0",
-    "react-compiler-runtime": "19.1.0-rc.1"
+    "react-compiler-runtime": "19.1.0-rc.3"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
