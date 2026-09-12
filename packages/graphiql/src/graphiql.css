@@ -1,43 +1,23 @@
 /* Everything */
 .graphiql-container {
-  background-color: hsl(var(--color-base));
+  background: oklch(var(--bg-canvas));
   display: flex;
+  flex-direction: column;
   height: 100%;
   margin: 0;
   overflow: hidden;
   width: 100%;
 }
 
-/* The sidebar */
-.graphiql-container .graphiql-sidebar {
+/* Activity rail + main content row (below the top bar and above the status bar) */
+.graphiql-container .graphiql-body {
   display: flex;
-  flex-direction: column;
-  padding: var(--px-8);
-  width: var(--sidebar-width);
-  gap: var(--px-8);
-  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
-.graphiql-container .graphiql-sidebar > button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
-  height: calc(var(--sidebar-width) - (2 * var(--px-8)));
-  width: calc(var(--sidebar-width) - (2 * var(--px-8)));
-  flex-shrink: 0;
-}
-
-.graphiql-container .graphiql-sidebar button.active {
-  color: hsl(var(--color-neutral));
-}
-
-.graphiql-container .graphiql-sidebar button > svg {
-  height: var(--px-20);
-  width: var(--px-20);
-}
-
-/* The main content, i.e. everything except the sidebar */
+/* The main content, i.e. everything except the activity rail */
 .graphiql-container .graphiql-main {
   display: flex;
   flex: 1;
@@ -46,25 +26,61 @@
 
 /* The current session and tabs */
 .graphiql-container .graphiql-sessions {
-  background-color: hsla(var(--color-neutral), var(--alpha-background-light));
-  /* Adding the 8px of padding to the inner border radius of the operation editor */
-  border-radius: calc(var(--border-radius-12) + var(--px-8));
+  background: oklch(var(--bg-canvas));
   display: flex;
   flex-direction: column;
   flex: 1;
   max-height: 100%;
-  margin: var(--px-16);
-  margin-left: 0;
   min-width: 0;
 }
 
-/* The session header containing tabs and the logo */
+/* The editor and response panes, split by the horizontal drag bar */
+.graphiql-container .graphiql-session-row {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+/* The editor side of the split: session header stacked above the editors.
+   The divider between the two panes is drawn by the drag bar's sash. */
+.graphiql-container .graphiql-editor-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* The response side of the split */
+.graphiql-container .graphiql-response-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Match the response header's height to the editor's session header so the
+   view picker lines up with the tabs and action buttons across the split. The
+   default horizontal padding keeps the status off the divider. */
+.graphiql-container .graphiql-response-header {
+  height: var(--session-header-height);
+}
+
+/* The session header (tabs + action buttons) reads as a toolbar strip, matching
+   the elevated surface and divider of the response header across the split. */
 .graphiql-container .graphiql-session-header {
   height: var(--session-header-height);
   align-items: center;
   display: flex;
-  padding: var(--px-8) var(--px-8) 0;
   gap: var(--px-8);
+  background: oklch(var(--bg-elevated));
+  border-bottom: 1px solid oklch(var(--border-default));
+}
+
+/* The tab strip carries its own shorter height + bottom divider by default,
+   which double-lines against the header divider. Stretch it to the full header
+   height and drop its border so the header shows a single divider. */
+.graphiql-container .graphiql-session-header .graphiql-tabs {
+  height: auto;
+  align-self: stretch;
+  border-bottom: none;
 }
 
 /* The button to add a new tab */
@@ -72,28 +88,36 @@ button.graphiql-tab-add {
   padding: var(--px-4);
 
   & > svg {
-    color: hsla(var(--color-neutral), var(--alpha-secondary));
+    color: oklch(var(--fg-muted));
     display: block;
-    height: var(--px-16);
-    width: var(--px-16);
+    height: var(--icon-size-lg);
+    width: var(--icon-size-lg);
   }
 }
 
-/* The GraphiQL logo */
-.graphiql-container .graphiql-logo {
+/* Right-side tab strip action buttons (prettify, merge, copy, save) */
+.graphiql-tab-strip-actions {
+  display: flex;
+  align-items: center;
   margin-left: auto;
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
-  font-size: var(--font-size-h4);
-  font-weight: var(--font-weight-medium);
+  gap: 0;
 }
 
-/* Undo default link styling for the default GraphiQL logo link */
-.graphiql-container .graphiql-logo .graphiql-logo-link {
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
-  text-decoration: none;
+button.graphiql-tab-strip-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--px-6);
+  color: oklch(var(--fg-subtle));
 
-  &:focus {
-    outline: hsla(var(--color-neutral), var(--alpha-background-heavy)) auto 1px;
+  & > svg {
+    display: block;
+    height: var(--icon-size-lg);
+    width: var(--icon-size-lg);
+  }
+
+  &:hover {
+    color: oklch(var(--fg-default));
   }
 }
 
@@ -101,14 +125,12 @@ button.graphiql-tab-add {
 .graphiql-container #graphiql-session {
   display: flex;
   flex: 1;
-  padding: 0 var(--px-8) var(--px-8);
+  min-height: 0;
 }
 
 /* All editors (operation, variable, request headers) */
 .graphiql-container .graphiql-editors {
-  background-color: hsl(var(--color-base));
-  border-radius: 0 0 var(--border-radius-12) var(--border-radius-12);
-  box-shadow: var(--popover-box-shadow);
+  background: oklch(var(--bg-canvas));
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -116,32 +138,11 @@ button.graphiql-tab-add {
 
 /* The operation editor and the toolbar */
 .graphiql-container .graphiql-query-editor {
-  border-bottom: 1px solid
-    hsla(var(--color-neutral), var(--alpha-background-heavy));
+  border-bottom: 1px solid oklch(var(--border-default));
   padding: var(--px-16);
   column-gap: var(--px-16);
   display: flex;
   width: 100%;
-}
-
-/* The vertical toolbar next to the operation editor */
-.graphiql-container .graphiql-toolbar {
-  width: var(--toolbar-width);
-  display: flex;
-  flex-direction: column;
-  gap: var(--px-8);
-}
-
-.graphiql-container .graphiql-toolbar > button {
-  flex-shrink: 0;
-}
-
-/* The toolbar icons */
-.graphiql-toolbar-icon {
-  color: hsla(var(--color-neutral), var(--alpha-tertiary));
-  display: block;
-  height: calc(var(--toolbar-width) - (var(--px-8) * 2));
-  width: calc(var(--toolbar-width) - (var(--px-8) * 2));
 }
 
 /* The tab bar for editor tools */
@@ -154,11 +155,11 @@ button.graphiql-tab-add {
 }
 
 .graphiql-container .graphiql-editor-tools button {
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
+  color: oklch(var(--fg-muted));
 }
 
 .graphiql-container .graphiql-editor-tools button.active {
-  color: hsl(var(--color-neutral));
+  color: oklch(var(--fg-default));
 }
 
 /* The tab buttons to switch between editor tools */
@@ -174,8 +175,10 @@ button.graphiql-tab-add {
 
 /* An editor tool, e.g. variables or request headers editor */
 .graphiql-container .graphiql-editor-tool {
+  display: flex;
+  flex-direction: column;
   flex: 1;
-  padding: var(--px-16);
+  min-height: 0;
 }
 
 /**
@@ -184,7 +187,6 @@ button.graphiql-tab-add {
    * setting the position of this to `relative` makes sure this element will
    * always be on top of any editors.
    */
-.graphiql-container .graphiql-toolbar,
 .graphiql-container .graphiql-editor-tools,
 .graphiql-container .graphiql-editor-tool {
   position: relative;
@@ -192,9 +194,9 @@ button.graphiql-tab-add {
 
 /* The response view */
 .graphiql-container .graphiql-response {
-  /* Add some padding so it doesn’t touch the tabs */
-  padding-top: var(--px-16);
   display: flex;
+  flex: 1;
+  min-height: 0;
   width: 100%;
   flex-direction: column;
 }
@@ -207,41 +209,57 @@ button.graphiql-tab-add {
 
 /* The footer below the response view */
 .graphiql-container .graphiql-footer {
-  border-top: 1px solid
-    hsla(var(--color-neutral), var(--alpha-background-heavy));
+  border-top: 1px solid oklch(var(--border-default));
 }
 
-/* The plugin container */
+/* The plugin container — sizing controlled by useDragResize; chrome handled by <SidePanel> */
 .graphiql-container .graphiql-plugin {
-  border-left: 1px solid
-    hsla(var(--color-neutral), var(--alpha-background-heavy));
+  display: flex;
   flex: 1;
-  overflow-y: auto;
-  padding: var(--px-16);
+  min-width: 0;
+  overflow: hidden;
 }
 
-/* Generic drag bar for horizontal resizing */
+/* Horizontal resizer, styled as a "sash": zero layout width so the panes sit
+   flush, an invisible expanded hit area straddling the seam, and a 1px divider
+   line. Width 0 also keeps the resize math (which subtracts the bar's
+   clientWidth) pixel-exact. */
 .graphiql-horizontal-drag-bar {
-  width: var(--px-12);
+  width: 0;
+  position: relative;
+  z-index: 1;
   cursor: col-resize;
 }
 
-.graphiql-horizontal-drag-bar:hover::after {
-  border: var(--px-2) solid
-    hsla(var(--color-neutral), var(--alpha-background-heavy));
-  border-radius: var(--border-radius-2);
+/* The grab zone: 8px straddling the seam, with no layout footprint. */
+.graphiql-horizontal-drag-bar::before {
   content: '';
-  display: block;
-  height: 25%;
-  margin: 0 auto;
-  position: relative;
-  /* (100% - 25%) / 2 = 37.5% */
-  top: 37.5%;
-  width: 0;
+  position: absolute;
+  inset-block: 0;
+  left: calc(var(--px-8) / -2);
+  width: var(--px-8);
+  cursor: col-resize;
+}
+
+/* The visible divider line, centered on the seam. */
+.graphiql-horizontal-drag-bar::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  left: -0.5px;
+  width: 1px;
+  background: oklch(var(--border-default));
+}
+
+/* Thicken the divider on hover/drag as the resize affordance. */
+.graphiql-horizontal-drag-bar:hover::after,
+.graphiql-horizontal-drag-bar:active::after {
+  left: -1px;
+  width: 2px;
 }
 
 .graphiql-container .graphiql-chevron-icon {
-  color: hsla(var(--color-neutral), var(--alpha-tertiary));
+  color: oklch(var(--fg-subtle));
   display: block;
   height: var(--px-12);
   margin: var(--px-12);
@@ -280,8 +298,7 @@ button.graphiql-tab-add {
 /* A section inside the settings dialog */
 .graphiql-dialog .graphiql-dialog-section {
   align-items: center;
-  border-top: 1px solid
-    hsla(var(--color-neutral), var(--alpha-background-heavy));
+  border-top: 1px solid oklch(var(--border-default));
   display: flex;
   justify-content: space-between;
   padding: var(--px-24);
@@ -299,11 +316,11 @@ button.graphiql-tab-add {
 
 /* The section caption in the settings dialog */
 .graphiql-dialog .graphiql-dialog-section-caption {
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
+  color: oklch(var(--fg-muted));
 }
 
 .graphiql-dialog .graphiql-warning-text {
-  color: hsl(var(--color-warning));
+  color: oklch(var(--accent-orange));
   font-weight: var(--font-weight-medium);
 }
 
@@ -313,13 +330,13 @@ button.graphiql-tab-add {
 }
 
 .graphiql-dialog .graphiql-table :is(th, td) {
-  border: 1px solid hsla(var(--color-neutral), var(--alpha-background-heavy));
+  border: 1px solid oklch(var(--border-default));
   padding: var(--px-8) var(--px-12);
 }
 
 /* A single key the short-key dialog */
 .graphiql-dialog .graphiql-key {
-  background-color: hsla(var(--color-neutral), var(--alpha-background-medium));
+  background-color: oklch(var(--bg-overlay));
   border-radius: var(--border-radius-4);
   padding: var(--px-4);
 }

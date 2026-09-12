@@ -1,0 +1,163 @@
+.graphiql-response-header {
+  display: flex;
+  align-items: center;
+  gap: var(--px-8);
+  height: 32px;
+  padding: 0 var(--px-14);
+  border-bottom: 1px solid oklch(var(--border-default));
+  background: oklch(var(--bg-elevated));
+  flex-shrink: 0;
+}
+
+.graphiql-response-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-6);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-mono);
+  line-height: 1;
+}
+
+.graphiql-response-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.graphiql-response-status--ok .graphiql-response-status-dot {
+  background: oklch(var(--accent-green));
+}
+
+.graphiql-response-status--error .graphiql-response-status-dot {
+  background: oklch(var(--accent-red));
+}
+
+.graphiql-response-status--ok .graphiql-response-status-code {
+  color: oklch(var(--accent-green));
+}
+
+.graphiql-response-status--error .graphiql-response-status-code {
+  color: oklch(var(--accent-red));
+}
+
+.graphiql-response-status-text {
+  color: oklch(var(--fg-muted));
+}
+
+.graphiql-response-meta {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-mono);
+  color: oklch(var(--fg-muted));
+  line-height: 1;
+}
+
+.graphiql-response-header-spacer {
+  flex: 1;
+}
+
+/* ToolbarButton defaults to --icon-button-size-lg; shrink it so the hover
+   background fits inside the 32px header bar. */
+.graphiql-response-header .graphiql-toolbar-button {
+  height: var(--icon-button-size-sm);
+  width: var(--icon-button-size-sm);
+}
+
+.graphiql-response-pane {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Positions the loading spinner overlay below the header without taking up
+   flex layout space, so it never shifts the header or result body. */
+.graphiql-response-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+.graphiql-response-pane .result-window {
+  flex: 1;
+  min-height: 0;
+  padding: var(--px-16);
+}
+
+/* Smaller than the default .graphiql-spinner and tokenized to match the
+   response header, since it floats over polished chrome rather than a bare
+   loading screen. */
+.graphiql-response-spinner-overlay {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  height: 28px;
+  width: 28px;
+
+  &::after {
+    height: 22px;
+    width: 22px;
+    border-color: transparent;
+    border-top-color: oklch(var(--accent-blue));
+  }
+}
+
+.graphiql-response-empty-state {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: oklch(var(--fg-subtle));
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+}
+
+.graphiql-transport-upgrade-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-6);
+  font-size: var(--font-size-small);
+  line-height: 1;
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-transport-upgrade-banner-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: oklch(var(--accent-yellow));
+  flex-shrink: 0;
+}
+
+.graphiql-transport-upgrade-banner-link,
+.graphiql-transport-upgrade-banner-link:visited {
+  color: oklch(var(--fg-default));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.graphiql-transport-upgrade-banner-link:hover {
+  text-decoration-thickness: 2px;
+}
+
+.graphiql-transport-upgrade-banner-dismiss {
+  background: transparent;
+  border: 0;
+  padding: 2px;
+  cursor: pointer;
+  color: oklch(var(--fg-muted));
+  display: inline-flex;
+  align-items: center;
+  margin-left: var(--px-2);
+}
+
+.graphiql-transport-upgrade-banner-dismiss:hover {
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-transport-upgrade-banner-dismiss > svg {
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
+}

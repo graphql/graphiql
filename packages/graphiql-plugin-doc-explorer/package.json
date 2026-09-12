@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-doc-explorer",
-  "version": "0.4.4",
+  "version": "1.0.0-beta.1",
   "sideEffects": [
     "*.css"
   ],
@@ -35,11 +35,13 @@
     "types:check": "tsgo --noEmit",
     "dev": "vite build --watch --emptyOutDir=false",
     "build": "yarn types:check && vite build",
+    "build-storybook": "storybook build",
+    "storybook": "storybook dev -p 6007",
     "test": "vitest run"
   },
   "peerDependencies": {
-    "@graphiql/react": "^0.39.0",
-    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
+    "@graphiql/react": "1.0.0-beta.1",
+    "graphql": "^16.11.0 || ^17.0.0",
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   },
@@ -49,16 +51,20 @@
     "zustand": "^5"
   },
   "devDependencies": {
-    "@graphiql/react": "^0.39.0",
+    "@graphiql/react": "1.0.0-beta.1",
+    "@storybook/addon-a11y": "^10.3.6",
+    "@storybook/addon-vitest": "^10.3.6",
+    "@storybook/react-vite": "^10.3.6",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@typescript/native-preview": "^7.0.0-dev",
     "@vitejs/plugin-react": "^4.4.1",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
-    "graphql": "^16.9.0",
+    "graphql": "^16.14.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "storybook": "^10.3.6",
     "vite": "^6.4.3",
     "vite-plugin-dts": "^4.5.3"
   }

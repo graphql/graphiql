@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-code-exporter",
-  "version": "5.1.4",
+  "version": "5.1.4-beta.1",
   "sideEffects": [
     "*.css"
   ],
@@ -38,16 +38,16 @@
     "graphiql-code-exporter": "^3.0.3"
   },
   "peerDependencies": {
-    "@graphiql/react": "^0.39.0",
-    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2",
+    "@graphiql/react": "1.0.0-beta.1",
+    "graphql": "^16.11.0 || ^17.0.0",
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@graphiql/react": "^0.39.0",
+    "@graphiql/react": "1.0.0-beta.1",
     "@typescript/native-preview": "^7.0.0-dev",
     "@vitejs/plugin-react": "^4.4.1",
-    "graphql": "^16.9.0",
+    "graphql": "^16.14.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "typescript": "^5.8.0",

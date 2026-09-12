@@ -1,12 +1,12 @@
 .graphiql-doc-explorer-deprecation {
-  background-color: hsla(var(--color-warning), var(--alpha-background-light));
-  border: 1px solid hsl(var(--color-warning));
+  background-color: oklch(var(--accent-orange) / 0.1);
+  border: 1px solid oklch(var(--accent-orange));
   border-radius: var(--px-4);
-  color: hsl(var(--color-warning));
+  color: oklch(var(--accent-orange));
   padding: var(--px-8);
 }
 
 .graphiql-doc-explorer-deprecation-label {
-  font-size: var(--font-size-hint);
+  font-size: var(--font-size-eyebrow);
   font-weight: var(--font-weight-medium);
 }

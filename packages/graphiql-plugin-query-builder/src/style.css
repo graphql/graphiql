@@ -1,0 +1,1098 @@
+/* Query Builder — v6 visual language */
+/* cspell:ignore Csvg Cpath Checkmark */
+
+/* =========================================================================
+   Panel wrapper
+   ========================================================================= */
+
+.graphiql-query-builder {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: oklch(var(--bg-canvas));
+}
+
+/* =========================================================================
+   Scrollable body (everything below the PanelHeader)
+   ========================================================================= */
+
+.graphiql-qb-body {
+  flex: 1;
+  overflow-y: auto;
+  /* No top padding: the sticky operation header sits flush under the panel
+     header. */
+  padding-bottom: var(--px-8);
+}
+
+/* =========================================================================
+   Empty state
+   ========================================================================= */
+
+.graphiql-qb-empty {
+  padding: var(--px-16);
+  color: oklch(var(--fg-subtle));
+  font-size: var(--font-size-body);
+  font-family: var(--font-family);
+}
+
+/* =========================================================================
+   Root section (one per operation type: Query / Mutation / Subscription)
+   ========================================================================= */
+
+.graphiql-qb-root-section {
+  margin-bottom: var(--px-8);
+}
+
+/* =========================================================================
+   Operation header row
+   ========================================================================= */
+
+.graphiql-qb-op-header {
+  display: flex;
+  align-items: center;
+  gap: var(--px-8);
+  width: 100%;
+  padding: var(--px-6) var(--px-14);
+  border: none;
+  border-bottom: 1px solid oklch(var(--border-default));
+  background: oklch(var(--bg-elevated));
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  appearance: none;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  transition: background 80ms;
+}
+
+.graphiql-qb-op-header:not(:disabled):hover {
+  background: oklch(var(--bg-elevated) / 0.7);
+}
+
+.graphiql-qb-op-header:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: -2px;
+}
+
+/* Roots whose kind doesn't match the active operation can't be edited; they
+   stay collapsed and dimmed until the cursor moves into a matching operation. */
+.graphiql-qb-op-header:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.graphiql-qb-op-header svg {
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
+  flex-shrink: 0;
+  color: oklch(var(--fg-muted));
+}
+
+.graphiql-qb-op-name {
+  flex: 1;
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  font-weight: 600;
+  color: oklch(var(--fg-strong));
+}
+
+.graphiql-qb-op-count {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-eyebrow);
+  color: oklch(var(--fg-subtle));
+  white-space: nowrap;
+}
+
+/* =========================================================================
+   Field tree
+   ========================================================================= */
+
+.graphiql-qb-field-tree {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Filter input shown above long field lists. Inset to align with the field
+   rows rather than spanning the full pane width. */
+.graphiql-qb-field-filter {
+  display: block;
+  box-sizing: border-box;
+  width: auto;
+  margin: 0 var(--px-8) var(--px-6);
+  padding: var(--px-4) var(--px-8);
+  background-color: oklch(var(--fg-default) / 0.08);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: oklch(var(--fg-default));
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+}
+
+.graphiql-qb-field-filter::placeholder {
+  color: oklch(var(--fg-subtle));
+}
+
+.graphiql-qb-field-filter:focus {
+  outline: none;
+  border-color: oklch(var(--accent-purple));
+  background-color: oklch(var(--bg-canvas));
+}
+
+/* "...N more fields" control that reveals the capped tail of a long field list.
+   Inset to match the filter input, monospace to read as a count. */
+.graphiql-qb-show-more {
+  align-self: flex-start;
+  margin: var(--px-4) var(--px-8) 0;
+  padding: var(--px-4) var(--px-8);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: oklch(var(--accent-purple));
+  cursor: pointer;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-small);
+  text-align: left;
+  transition: background 80ms;
+}
+
+.graphiql-qb-show-more:hover {
+  background: oklch(var(--fg-default) / 0.05);
+}
+
+.graphiql-qb-field-node {
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================================================================
+   Field row
+   ========================================================================= */
+
+.graphiql-qb-field-row {
+  display: flex;
+  flex-direction: column;
+  padding: 1px 0;
+}
+
+/* Briefly highlight the field the editor cursor lands on, so it's obvious where
+   the cursor moved to once the tree expands down to it. */
+@keyframes graphiql-qb-flash {
+  from {
+    background-color: oklch(var(--accent-purple) / 0.22);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .graphiql-qb-field-row.graphiql-qb-flash > .graphiql-qb-field-header,
+  .graphiql-qb-inline-fragment.graphiql-qb-flash
+    > .graphiql-qb-inline-fragment-header {
+    animation: graphiql-qb-flash 700ms ease-out;
+    border-radius: var(--radius-sm);
+  }
+}
+
+/* Persistent "you are here" highlight while the cursor sits on this field: a
+   left accent bar and a faint tint. Kept visually distinct from the checked /
+   in-document state, which only recolors the field name. */
+.graphiql-qb-field-row.graphiql-qb-current > .graphiql-qb-field-header,
+.graphiql-qb-inline-fragment.graphiql-qb-current
+  > .graphiql-qb-inline-fragment-header {
+  background-color: oklch(var(--accent-purple) / 0.08);
+  box-shadow: inset 2px 0 0 oklch(var(--accent-purple));
+}
+
+.graphiql-qb-field-header {
+  display: flex;
+  align-items: center;
+  gap: var(--px-6);
+  padding: 3px var(--px-14) 3px var(--px-8);
+  border-radius: var(--radius-sm);
+  min-height: 26px;
+  cursor: default;
+  transition: background 80ms;
+}
+
+.graphiql-qb-field-header:hover {
+  background: oklch(var(--fg-default) / 0.05);
+}
+
+/* Unselected rows: selected names use --fg-strong (below), so unselected sit at
+   the default foreground. Going dimmer (e.g. --fg-disabled) fails WCAG AA
+   contrast for the small mono text. */
+.graphiql-qb-field-row[data-selected='false'] .graphiql-qb-field-name {
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-qb-field-row[data-selected='false'] .graphiql-qb-field-toggle svg {
+  color: oklch(var(--fg-dim));
+}
+
+/* =========================================================================
+   Custom checkbox (appearance: none — keeps real <input type=checkbox>)
+   ========================================================================= */
+
+.graphiql-qb-field-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid oklch(var(--fg-dim));
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  transition:
+    background 100ms,
+    border-color 100ms;
+}
+
+.graphiql-qb-field-checkbox:checked {
+  background: oklch(var(--accent-purple));
+  border-color: oklch(var(--accent-purple));
+}
+
+/* Checkmark via pseudo-element */
+.graphiql-qb-field-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M2 5.5l2 2 4-4' stroke='%23fff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E")
+    center / 9px no-repeat;
+}
+
+.graphiql-qb-field-checkbox:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 1px;
+}
+
+/* =========================================================================
+   Field label — wraps the chevron/checkbox and the field name so the whole
+   label is the click target (expand for composites, toggle for scalars).
+   ========================================================================= */
+
+.graphiql-qb-field-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--px-6);
+  flex: 1;
+  min-width: 0;
+  appearance: none;
+  border: none;
+  background: none;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* In a field row, the name button sizes to its content so the deprecated chip
+   sits next to the field name; the type is pushed to the right edge instead. */
+.graphiql-qb-field-header > .graphiql-qb-field-toggle {
+  flex: 0 1 auto;
+}
+
+.graphiql-qb-field-toggle svg {
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
+  flex-shrink: 0;
+  color: oklch(var(--fg-muted));
+}
+
+.graphiql-qb-field-toggle:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 1px;
+  border-radius: var(--radius-sm);
+}
+
+/* =========================================================================
+   Expand / collapse button
+   ========================================================================= */
+
+.graphiql-qb-expand-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: oklch(var(--fg-muted));
+  border-radius: var(--radius-sm);
+  transition: color 80ms;
+}
+
+.graphiql-qb-expand-btn:hover {
+  color: oklch(var(--fg-default));
+  background: oklch(var(--fg-default) / 0.08);
+}
+
+.graphiql-qb-expand-btn:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 1px;
+}
+
+.graphiql-qb-expand-btn svg {
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
+}
+
+/* =========================================================================
+   Chevron rotation for expand/collapse
+   ========================================================================= */
+
+.graphiql-qb-chevron-collapsed {
+  display: inline-flex;
+  transform: rotate(-90deg);
+  transition: transform 120ms;
+}
+
+.graphiql-qb-chevron-expanded {
+  display: inline-flex;
+  transform: rotate(0deg);
+  transition: transform 120ms;
+}
+
+/* =========================================================================
+   Field name & type
+   ========================================================================= */
+
+.graphiql-qb-field-name {
+  flex: 1;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-mono);
+  color: oklch(var(--fg-default));
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 80ms;
+}
+
+.graphiql-qb-field-row[data-selected='true'] .graphiql-qb-field-name {
+  color: oklch(var(--fg-strong));
+}
+
+.graphiql-qb-field-name--deprecated {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+/* Neutral chip mirroring the QRY/MUT/SUB method-pill geometry, so a deprecated
+   field reads as a quiet gray tag rather than loud inline text. */
+.graphiql-qb-field-deprecated {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  color: oklch(var(--fg-muted));
+  background: oklch(var(--fg-default) / 0.1);
+  cursor: help;
+}
+
+/* Cap the deprecation tooltip width so markdown reasons wrap and preserve
+   paragraphs instead of stretching the tooltip across the viewport. */
+.graphiql-qb-deprecation-tooltip {
+  max-width: 340px;
+}
+
+.graphiql-qb-field-type {
+  flex-shrink: 0;
+  margin-left: auto;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-eyebrow);
+  color: oklch(var(--type-composite));
+  text-align: right;
+  white-space: nowrap;
+}
+
+.graphiql-qb-field-type--composite {
+  color: oklch(var(--type-composite));
+}
+
+.graphiql-qb-field-type--scalar {
+  color: oklch(var(--type-scalar));
+}
+
+.graphiql-qb-field-type--enum {
+  color: oklch(var(--type-enum));
+}
+
+/* =========================================================================
+   Args panel (shown when field selected and has args)
+   ========================================================================= */
+
+.graphiql-qb-field-args {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-4);
+  margin: var(--px-4) 0 var(--px-4) 38px;
+  padding: var(--px-6) var(--px-8);
+  background: oklch(var(--bg-subtle));
+  border-radius: var(--radius-md);
+  border: 1px solid oklch(var(--border-default));
+}
+
+.graphiql-qb-arg-row {
+  display: flex;
+  align-items: center;
+  gap: var(--px-6);
+  min-width: 0;
+}
+
+.graphiql-qb-arg-name {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-eyebrow);
+  color: oklch(var(--accent-purple));
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* =========================================================================
+   Arg input controls
+   ========================================================================= */
+
+/* Element+class selectors (0-1-1) override `.graphiql-container input` (0-1-1)
+   by load-order; they also beat any class-only (0-1-0) that might appear in
+   shared stylesheets. */
+input.graphiql-qb-arg-input,
+select.graphiql-qb-arg-select {
+  flex: 1;
+  min-width: 0;
+  background: oklch(var(--bg-overlay));
+  border: 1px solid oklch(var(--border-strong));
+  border-radius: var(--radius-sm);
+  color: oklch(var(--fg-default));
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-eyebrow);
+  padding: 2px var(--px-6);
+  outline: none;
+  transition: border-color 80ms;
+}
+
+input.graphiql-qb-arg-input:focus,
+select.graphiql-qb-arg-select:focus {
+  border-color: oklch(var(--accent-purple));
+}
+
+.graphiql-qb-arg-checkbox {
+  accent-color: oklch(var(--accent-purple));
+  cursor: pointer;
+}
+
+.graphiql-qb-arg-with-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--px-4);
+  flex: 1;
+  min-width: 0;
+}
+
+/* =========================================================================
+   Variable toggle & badge
+   ========================================================================= */
+
+.graphiql-qb-var-toggle {
+  flex-shrink: 0;
+  background: oklch(var(--accent-purple) / 0.12);
+  border: 1px solid oklch(var(--accent-purple) / 0.3);
+  border-radius: var(--radius-sm);
+  color: oklch(var(--accent-purple));
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-eyebrow);
+  padding: 1px var(--px-6);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 80ms;
+}
+
+.graphiql-qb-var-toggle:hover {
+  background: oklch(var(--accent-purple) / 0.2);
+}
+
+.graphiql-qb-var-toggle[aria-pressed='true'] {
+  background: oklch(var(--accent-purple));
+  /* Light theme's accent-purple is dark enough that it needs light text;
+     dark theme's is light enough that it needs near-black text. */
+  color: oklch(10% 0 0);
+  border-color: transparent;
+
+  [data-theme='light'] & {
+    color: #fff;
+  }
+}
+
+.graphiql-qb-var-badge {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-eyebrow);
+  color: oklch(var(--accent-purple));
+  background: oklch(var(--accent-purple) / 0.12);
+  border-radius: var(--radius-sm);
+  padding: 1px var(--px-6);
+}
+
+/* =========================================================================
+   List arg
+   ========================================================================= */
+
+.graphiql-qb-list-arg {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-4);
+  flex: 1;
+}
+
+.graphiql-qb-list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--px-4);
+}
+
+.graphiql-qb-list-add {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-4);
+  align-self: flex-start;
+  background: none;
+  border: 1px dashed oklch(var(--border-strong));
+  border-radius: var(--radius-sm);
+  color: oklch(var(--fg-subtle));
+  cursor: pointer;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-eyebrow);
+  padding: 1px var(--px-6);
+  transition:
+    color 80ms,
+    border-color 80ms;
+}
+
+.graphiql-qb-list-add:hover {
+  color: oklch(var(--fg-default));
+  border-color: oklch(var(--fg-muted));
+}
+
+.graphiql-qb-list-add svg {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+  flex-shrink: 0;
+}
+
+.graphiql-qb-list-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: oklch(var(--fg-dim));
+  cursor: pointer;
+  padding: 0 var(--px-4);
+  border-radius: var(--radius-sm);
+  transition: color 80ms;
+}
+
+.graphiql-qb-list-remove:hover {
+  color: oklch(var(--accent-red));
+}
+
+.graphiql-qb-list-remove svg {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+/* =========================================================================
+   Input object (details/summary)
+   ========================================================================= */
+
+.graphiql-qb-input-object {
+  flex: 1;
+  min-width: 0;
+}
+
+.graphiql-qb-input-object > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-4);
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-eyebrow);
+  color: oklch(var(--fg-muted));
+  padding: 1px 0;
+  user-select: none;
+}
+
+.graphiql-qb-input-object > summary::-webkit-details-marker {
+  display: none;
+}
+
+.graphiql-qb-input-object > summary:hover {
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-qb-input-object > summary svg {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+/* Nested fields sit indented under the disclosure, with a guide line. */
+.graphiql-qb-input-object-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-6);
+  margin-top: var(--px-6);
+  margin-left: var(--px-4);
+  padding-left: var(--px-12);
+  border-left: 1px solid oklch(var(--border-default));
+}
+
+/* Multi-line arg controls (lists, input objects) read better stacked under
+   their label and indented than sitting inline, vertically centered against a
+   tall control. */
+.graphiql-qb-arg-row:has(> .graphiql-qb-list-arg) {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--px-4);
+}
+
+.graphiql-qb-arg-row:has(> .graphiql-qb-list-arg) > .graphiql-qb-list-arg {
+  padding-left: var(--px-12);
+}
+
+/* =========================================================================
+   Type condition selector (union / interface inline fragments)
+   ========================================================================= */
+
+.graphiql-qb-possible-types {
+  display: flex;
+  flex-direction: column;
+}
+
+.graphiql-qb-possible-types-header {
+  padding: 3px var(--px-14) 3px var(--px-8);
+  border-radius: var(--radius-sm);
+  min-height: 26px;
+}
+
+.graphiql-qb-possible-types-header:hover {
+  background: oklch(var(--fg-default) / 0.05);
+}
+
+.graphiql-qb-possible-types-label {
+  font-size: var(--font-size-eyebrow);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: oklch(var(--fg-muted));
+  font-weight: 600;
+}
+
+.graphiql-qb-possible-types-count {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-eyebrow);
+  color: oklch(var(--fg-subtle));
+}
+
+.graphiql-qb-type-condition {
+  display: flex;
+  flex-direction: column;
+}
+
+.graphiql-qb-inline-fragment {
+  display: flex;
+  flex-direction: column;
+}
+
+.graphiql-qb-inline-fragment-header {
+  display: flex;
+  align-items: center;
+  gap: var(--px-6);
+  padding: 3px var(--px-14) 3px var(--px-8);
+  border-radius: var(--radius-sm);
+  min-height: 26px;
+  cursor: default;
+}
+
+.graphiql-qb-inline-fragment-header:hover {
+  background: oklch(var(--fg-default) / 0.05);
+}
+
+.graphiql-qb-inline-fragment-label {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-mono);
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-qb-spread {
+  color: oklch(var(--fg-subtle));
+}
+
+.graphiql-qb-type-name {
+  color: oklch(var(--type-composite));
+  font-weight: 600;
+}
+
+/* Marks a type condition that is itself an interface (it matches several
+   concrete types, unlike a single object type condition). */
+.graphiql-qb-type-kind-tag {
+  margin-left: var(--px-6);
+  padding: 0 var(--px-4);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family);
+  font-size: var(--font-size-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: oklch(var(--fg-muted));
+  background: oklch(var(--fg-default) / 0.08);
+}
+
+/* =========================================================================
+   Fragment section
+   ========================================================================= */
+
+.graphiql-qb-fragment-section {
+  margin-top: var(--px-16);
+  padding: 0 var(--px-14);
+  border-top: 1px solid oklch(var(--border-default));
+  padding-top: var(--px-12);
+}
+
+.graphiql-qb-fragment-heading {
+  margin: 0 0 var(--px-8);
+  font-family: var(--font-family);
+  font-size: var(--font-size-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: oklch(var(--fg-subtle));
+}
+
+.graphiql-qb-fragment-empty {
+  /* --fg-disabled is too dim for small text; --fg-default meets WCAG AA in both themes. */
+  color: oklch(var(--fg-default));
+  font-size: var(--font-size-small);
+  font-family: var(--font-family);
+  margin: 0;
+}
+
+.graphiql-qb-fragment-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.graphiql-qb-fragment-item {
+  display: flex;
+  align-items: center;
+  gap: var(--px-8);
+  min-height: 30px;
+  padding: var(--px-6) var(--px-8) var(--px-6) var(--px-14);
+  border-radius: var(--radius-sm);
+  transition: background 80ms;
+}
+
+.graphiql-qb-fragment-item:hover {
+  background: oklch(var(--fg-default) / 0.05);
+}
+
+.graphiql-qb-fragment-item--active {
+  background: oklch(var(--bg-subtle));
+}
+
+/* The name + type condition; the whole thing opens the fragment for editing. */
+.graphiql-qb-fragment-open {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--px-6);
+}
+
+.graphiql-qb-fragment-open--button {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.graphiql-qb-fragment-open--button:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.graphiql-qb-fragment-name {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-eyebrow);
+  font-weight: 600;
+  color: oklch(var(--accent-blue));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.graphiql-qb-fragment-type {
+  flex-shrink: 0;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-eyebrow);
+  color: oklch(var(--fg-subtle));
+  white-space: nowrap;
+}
+
+.graphiql-qb-fragment-type-name {
+  color: oklch(var(--type-composite));
+}
+
+.graphiql-qb-fragment-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--px-4);
+  opacity: 0;
+  transition: opacity 80ms;
+}
+
+.graphiql-qb-fragment-item:hover .graphiql-qb-fragment-actions,
+.graphiql-qb-fragment-actions:focus-within {
+  opacity: 1;
+}
+
+.graphiql-qb-fragment-rename {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-mono);
+  color: oklch(var(--fg-default));
+  background: oklch(var(--bg-subtle));
+  border: 1px solid oklch(var(--border-strong));
+  border-radius: var(--radius-sm);
+  padding: 1px var(--px-6);
+}
+
+.graphiql-qb-fragment-rename:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 1px;
+}
+
+/* Row actions live in the right-aligned actions cluster, which reveals on row
+   hover/focus (see .graphiql-qb-fragment-actions above). */
+.graphiql-qb-fragment-rename-btn,
+.graphiql-qb-fragment-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--px-4);
+  border: none;
+  background: none;
+  color: oklch(var(--fg-subtle));
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition:
+    color 80ms,
+    background 80ms;
+}
+
+.graphiql-qb-fragment-rename-btn:hover,
+.graphiql-qb-fragment-delete-btn:hover {
+  color: oklch(var(--fg-default));
+  background: oklch(var(--fg-default) / 0.08);
+}
+
+.graphiql-qb-fragment-rename-btn svg,
+.graphiql-qb-fragment-delete-btn svg {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+.graphiql-qb-fragment-rename-btn:focus-visible,
+.graphiql-qb-fragment-delete-btn:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 1px;
+  border-radius: var(--radius-sm);
+}
+
+/* =========================================================================
+   Row-level fragment actions (extract) + the extracted-spread badge
+   ========================================================================= */
+
+/* The extract button lives in the field header and stays hidden until the row
+   is hovered or the button is focused, so it doesn't clutter every composite
+   row. Mirrors the inline-fragment header reveal pattern. */
+.graphiql-qb-field-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-6);
+  margin-left: var(--px-6);
+  opacity: 0;
+  transition: opacity 80ms;
+}
+
+.graphiql-qb-field-header:hover .graphiql-qb-field-actions,
+.graphiql-qb-field-actions:focus-within {
+  opacity: 1;
+}
+
+.graphiql-qb-extract-fragment-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-4);
+  padding: 1px var(--px-6);
+  border: 1px solid oklch(var(--border-strong));
+  border-radius: var(--radius-sm);
+  background: oklch(var(--bg-subtle));
+  color: oklch(var(--fg-muted));
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: var(--font-size-eyebrow);
+  white-space: nowrap;
+  transition:
+    background 80ms,
+    color 80ms;
+}
+
+.graphiql-qb-extract-fragment-btn svg {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+.graphiql-qb-extract-fragment-btn:hover {
+  background: oklch(var(--bg-overlay));
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-qb-extract-fragment-btn:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 1px;
+}
+
+/* Fragment spreads in a field's selection render as reference rows among its
+   children (`...FragmentName`), so an extracted field stays a normal editable
+   composite instead of collapsing into a badge. */
+.graphiql-qb-fragment-refs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.graphiql-qb-fragment-ref-item {
+  display: flex;
+  align-items: center;
+  gap: var(--px-6);
+  /* Matches the field header's left padding so the spread's checkbox lines up
+     with the sibling field checkboxes (which sit at indent + this padding). */
+  padding-left: var(--px-8);
+  min-height: var(--px-24);
+}
+
+.graphiql-qb-fragment-ref {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-mono);
+  color: oklch(var(--accent-blue));
+}
+
+/* The reference doubles as the jump-in point for editing that fragment. */
+.graphiql-qb-fragment-ref--button {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.graphiql-qb-fragment-ref--button:hover {
+  text-decoration: underline;
+}
+
+.graphiql-qb-fragment-ref--button:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 1px;
+  border-radius: var(--radius-sm);
+}
+
+/* =========================================================================
+   Focused fragment editor (shown when the active target is a fragment)
+   ========================================================================= */
+
+.graphiql-qb-fragment-editor-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-12);
+  padding: var(--px-12) var(--px-14) var(--px-12);
+  border-bottom: 1px solid oklch(var(--border-default));
+  margin-bottom: var(--px-8);
+}
+
+.graphiql-qb-fragment-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-6);
+  align-self: flex-start;
+  padding: var(--px-4) var(--px-8);
+  border: 1px solid oklch(var(--border-default));
+  background: none;
+  color: oklch(var(--fg-muted));
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+  border-radius: var(--radius-sm);
+}
+
+.graphiql-qb-fragment-back:hover {
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-qb-fragment-back:focus-visible {
+  outline: 2px solid oklch(var(--accent-purple));
+  outline-offset: 1px;
+}
+
+.graphiql-qb-fragment-back svg {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+}
+
+.graphiql-qb-fragment-editor-title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-4);
+}
+
+.graphiql-qb-fragment-editor-heading {
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  font-weight: 600;
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-qb-fragment-editor-name {
+  font-family: var(--font-family-mono);
+  font-weight: 600;
+  color: oklch(var(--accent-blue));
+}
+
+.graphiql-qb-fragment-editor-type {
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+  color: oklch(var(--fg-subtle));
+}

@@ -26,7 +26,7 @@ Build the repository's default package and example set:
 yarn build
 ```
 
-Build GraphiQL and its dependencies:
+Build GraphiQL, its dependencies, and the private end-to-end test application:
 
 ```sh
 yarn build:graphiql
@@ -54,7 +54,7 @@ Start GraphiQL and watch its dependencies:
 yarn dev:graphiql
 ```
 
-Open the Vite URL printed in the terminal. The GraphQL test server runs on port 8080. Turbo rebuilds dependencies and restarts the application when their inputs change. Select only the application for `dev`; its build prerequisites include the required libraries, so separate library watchers aren't needed.
+The private `graphiql-e2e` workspace serves GraphiQL from source. Open the Vite URL printed in the terminal. The GraphQL test server runs on port 8080. Turbo rebuilds dependencies and restarts the application when their inputs change. Select only the application for `dev`; its build prerequisites include the required libraries, so separate library watchers aren't needed.
 
 To develop the Vite example instead, run:
 
@@ -109,7 +109,17 @@ Check types across the repository:
 yarn types:check
 ```
 
-Use `yarn lint` for lint, formatting, and spelling checks. Use `yarn format` to apply formatting. To run GraphiQL's end-to-end tests against the compiled app, build it with `yarn build:graphiql`, then run `CI=true yarn e2e`. The `CI` setting makes the test server serve the built app on port 8080.
+Use `yarn lint` for lint, formatting, and spelling checks. Use `yarn format` to apply formatting.
+
+Run GraphiQL's end-to-end tests against its built package:
+
+```sh
+yarn e2e
+```
+
+The command builds GraphiQL and the private `graphiql-e2e` application, then runs Cypress against the built app on port 8080. `yarn e2e:built` is an alias. Use `yarn e2e:source` to run the same suite against source, or `yarn cypress-open` to open Cypress interactively.
+
+For the React, history plugin, and query builder stories, run `yarn storybook`. Turbo builds the React package and its dependencies before starting Storybook, then rebuilds them when their inputs change. Use `yarn build-storybook` to generate the static site in `packages/graphiql-react/storybook-static`. Changes to either plugin's story sources invalidate the static site and React's Storybook test cache.
 
 ## Clean and rebuild
 
@@ -145,10 +155,10 @@ Build the VS Code extension bundles into their `out` directories:
 yarn build-bundles
 ```
 
-Build and stage the registered webpack demos for the GraphiQL site:
+Build and stage the local GraphiQL application and registered webpack demos for the GraphiQL site:
 
 ```sh
 yarn build-demo
 ```
 
-Turbo builds each demo's dependencies first. Staging replaces the demo's directory under `packages/graphiql` on every run, including when the example build comes from cache. The CDN and CM6 example directories aren't registered workspaces and aren't included in this command.
+Turbo builds each demo's dependencies first. The private `graphiql-e2e` workspace stages the local ESM application at `packages/graphiql/index.html` with assets in `packages/graphiql/e2e`. The webpack examples stage their own directories under `packages/graphiql`. Staging runs even when builds come from cache. The CDN and CM6 example directories aren't registered workspaces and aren't included in this command.

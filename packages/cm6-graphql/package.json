@@ -36,7 +36,7 @@
     "@lezer/highlight": "^1.0.0",
     "@lezer/lr": "^1.0.0",
     "@typescript/native-preview": "^7.0.0-dev",
-    "graphql": "^16.9.0",
+    "graphql": "^16.14.2",
     "typescript": "^5.8.0"
   },
   "peerDependencies": {
@@ -46,7 +46,7 @@
     "@codemirror/state": "^6.0.0",
     "@codemirror/view": "^6.0.0",
     "@lezer/highlight": "^1.0.0",
-    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0"
+    "graphql": "^16.11.0 || ^17.0.0"
   },
   "license": "MIT"
 }

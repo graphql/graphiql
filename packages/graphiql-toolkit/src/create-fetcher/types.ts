@@ -24,15 +24,30 @@ export type Unsubscribable = {
   unsubscribe: () => void;
 };
 
+/**
+ * @deprecated Use the `Transport` API and `TransportRequest` from `@graphiql/toolkit`
+ * instead. See `docs/migration/graphiql-6.0.0.md`.
+ */
 export type FetcherParams = {
   query: string;
   operationName?: string | null;
   variables?: any;
+  extensions?: Record<string, unknown>;
 };
 
+/**
+ * @deprecated Use the `Transport` API from `@graphiql/toolkit` instead.
+ * See `docs/migration/graphiql-6.0.0.md`.
+ */
 export type FetcherOpts = {
   headers?: { [key: string]: any };
   documentAST?: DocumentNode;
+  /**
+   * Aborts the underlying `fetch` call when triggered. Only consulted by the
+   * `Transport`-facing primitives (`simpleHttpTransport`,
+   * `multipartHttpTransport`); the deprecated `Fetcher` functions ignore it.
+   */
+  signal?: AbortSignal;
 };
 
 export type ExecutionResultPayload =
@@ -67,6 +82,12 @@ export type SyncFetcherResult = SyncExecutionResult;
 
 export type FetcherReturnType = MaybePromise<SyncExecutionResult>;
 
+/**
+ * @deprecated Use `Transport` from `@graphiql/toolkit` instead. A `Transport` is
+ * an object with a `send(request)` method that returns a `TransportResponse`
+ * carrying the real HTTP wire data (status, headers, timing, size).
+ * See `docs/migration/graphiql-6.0.0.md`.
+ */
 export type Fetcher = (
   graphQLParams: FetcherParams,
   opts?: FetcherOpts,
@@ -74,6 +95,9 @@ export type Fetcher = (
 
 /**
  * Options for creating a simple, spec-compliant GraphiQL fetcher
+ *
+ * @deprecated Use `CreateTransportOptions` from `@graphiql/toolkit` instead.
+ * See `docs/migration/graphiql-6.0.0.md`.
  */
 export interface CreateFetcherOptions {
   /**
@@ -94,10 +118,6 @@ export interface CreateFetcherOptions {
    * whether via `new SubscriptionsClient()` itself or another client with a similar signature.
    */
   legacyWsClient?: any;
-  /**
-   * alias for `legacyWsClient`
-   */
-  legacyClient?: any;
   /**
    * Request headers you can provide statically.
    *

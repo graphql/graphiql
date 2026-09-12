@@ -1,6 +1,6 @@
 # GraphiQL CDN Example
 
-This is a simple example of using **GraphiQL** directly from a CDN, including the [GraphiQL Explorer plugin](../../packages/graphiql-plugin-explorer/README.md).
+This is a simple example of using **GraphiQL** directly from a CDN.
 
 It loads the latest GraphiQL version from [esm.sh](https://esm.sh), an ESM-based CDN that serves npm packages as ES modules.
 

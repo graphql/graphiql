@@ -1,0 +1,3 @@
+{
+  "extends": "../graphiql-react/tsconfig.json"
+}

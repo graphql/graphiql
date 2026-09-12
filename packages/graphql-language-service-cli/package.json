@@ -37,7 +37,7 @@
     "LSP"
   ],
   "peerDependencies": {
-    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0"
+    "graphql": "^16.11.0 || ^17.0.0"
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
@@ -48,6 +48,6 @@
   },
   "devDependencies": {
     "@typescript/native-preview": "^7.0.0-dev",
-    "graphql": "^16.9.0"
+    "graphql": "^16.14.2"
   }
 }

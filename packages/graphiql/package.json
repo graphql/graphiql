@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "5.4.0",
+  "version": "6.0.0-beta.1",
   "sideEffects": [
     "dist/setup-workers/*",
     "*.css"
@@ -25,10 +25,7 @@
   "types": "dist/index.d.ts",
   "files": [
     "dist",
-    "!dist/e2e.*",
-    "!dist/workers/*",
-    "!dist/index.umd.*",
-    "!dist/cdn.*"
+    "!dist/e2e/**"
   ],
   "exports": {
     "./package.json": "./package.json",
@@ -42,41 +39,36 @@
   },
   "scripts": {
     "types:check": "tsgo --noEmit",
-    "build": "yarn types:check && vite build && UMD=true vite build",
-    "cypress-open": "cypress open --browser electron",
-    "dev": "concurrently 'cross-env PORT=8080 node test/e2e-server' vite",
-    "e2e": "yarn e2e-server 'cypress run'",
-    "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
+    "build": "yarn types:check && vite build",
     "test": "vitest run"
   },
   "dependencies": {
-    "@graphiql/plugin-doc-explorer": "^0.4.4",
-    "@graphiql/plugin-history": "^0.4.4",
-    "@graphiql/react": "^0.39.0",
+    "@graphiql/plugin-collections": "^1.0.0-beta.1",
+    "@graphiql/plugin-doc-explorer": "^1.0.0-beta.1",
+    "@graphiql/plugin-history": "^1.0.0-beta.1",
+    "@graphiql/plugin-query-builder": "^1.0.0-beta.1",
+    "@graphiql/react": "1.0.0-beta.1",
+    "clsx": "^1.2.1",
     "react-compiler-runtime": "19.1.0-rc.1"
   },
   "peerDependencies": {
-    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
+    "graphql": "^16.11.0 || ^17.0.0",
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@graphiql/toolkit": "^0.12.1",
+    "@graphiql/toolkit": "1.0.0-beta.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@typescript/native-preview": "^7.0.0-dev",
     "@vitejs/plugin-react": "^4.4.1",
-    "@vitest/web-worker": "^4.1.6",
+    "@vitest/web-worker": "^4.1.11",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
-    "concurrently": "^7.0.0",
-    "cross-env": "^7.0.2",
-    "cypress": "^13.13.2",
-    "graphql": "^16.11.0",
+    "graphql": "^16.14.2",
     "lightningcss": "^1.29.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "start-server-and-test": "^1.10.11",
     "typescript": "^5.8.0",
     "vite": "^6.4.3",
     "vite-plugin-dts": "^4.5.3",

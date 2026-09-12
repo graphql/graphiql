@@ -1,31 +1,22 @@
 import type { FC } from 'react';
 import { GraphiQL } from 'graphiql';
-import { ToolbarButton, useGraphiQL } from '@graphiql/react';
-import { createFetcher } from './create-fetcher';
+import { createTransport } from '@graphiql/toolkit';
+import {
+  CopyIcon,
+  ToolbarButton,
+  useGraphiQL,
+  type GraphiQLPlugin,
+} from '@graphiql/react';
+import { HISTORY_PLUGIN } from '@graphiql/plugin-history';
+import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
+import { collectionsPlugin } from '@graphiql/plugin-collections';
 import 'graphiql/setup-workers/esm.sh';
 
-export const graphiql = (
-  <GraphiQL
-    dangerouslyAssumeSchemaIsValid
-    defaultEditorToolsVisibility="variables"
-    fetcher={createFetcher('https://graphql.earthdata.nasa.gov/api')}
-    isHeadersEditorEnabled={false}
-  >
-    <GraphiQL.Logo>API Explorer</GraphiQL.Logo>
-    <GraphiQL.Toolbar>
-      {({ prettify, copy, merge }) => (
-        <>
-          {prettify}
-          {copy}
-          {merge}
-          <Button />
-        </>
-      )}
-    </GraphiQL.Toolbar>
-  </GraphiQL>
-);
+const transport = createTransport({
+  url: 'https://graphql.earthdata.nasa.gov/api',
+});
 
-const Button: FC = () => {
+const ShareButton: FC = () => {
   const { queryEditor, variableEditor } = useGraphiQL(state => ({
     queryEditor: state.queryEditor,
     variableEditor: state.variableEditor,
@@ -56,3 +47,28 @@ const Button: FC = () => {
     </ToolbarButton>
   );
 };
+
+const sharePlugin: GraphiQLPlugin = {
+  title: 'Share Explorer Query',
+  icon: CopyIcon,
+  content: () => (
+    <p>Copies a link to the current query and variables to your clipboard.</p>
+  ),
+  sessionActions: ShareButton,
+};
+
+export const graphiql = (
+  <GraphiQL
+    dangerouslyAssumeSchemaIsValid
+    defaultEditorToolsVisibility="variables"
+    transport={transport}
+    isHeadersEditorEnabled={false}
+    brand="API Explorer"
+    plugins={[
+      HISTORY_PLUGIN,
+      QUERY_BUILDER_PLUGIN,
+      collectionsPlugin(),
+      sharePlugin,
+    ]}
+  />
+);
