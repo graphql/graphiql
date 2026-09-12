@@ -85,7 +85,7 @@
     "build": "tsgo -p tsconfig.json",
     "types:check": "tsgo --noEmit",
     "compile": "node esbuild.js",
-    "build-bundles": "yarn run compile",
+    "build-bundles": "yarn compile",
     "vsce:package": "yarn compile && vsce package --yarn --no-dependencies"
   },
   "devDependencies": {

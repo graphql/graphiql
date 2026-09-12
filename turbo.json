@@ -10,27 +10,29 @@
   ],
   "tasks": {
     "build": {
-      "dependsOn": [
-        // Run `build` in workspaces I depend on first
-        "^build"
-      ],
-      // Cache all files emitted to the packages's directories
+      "dependsOn": ["^build"],
       "outputs": ["dist/**", "esm/**", "*.tsbuildinfo"]
     },
+    "build-bundles": {
+      "dependsOn": ["build"],
+      "outputs": ["out/**"]
+    },
+    "build-demo": {
+      "dependsOn": ["build"],
+      "cache": false
+    },
     "dev": {
-      "dependsOn": [
-        // Run `build` in workspaces I depend on first
-        "^build"
-      ],
+      "dependsOn": ["^build"],
+      "persistent": true,
+      "interruptible": true,
       "cache": false
     },
     "types:check": {
-      "dependsOn": [
-        // Run `build` in workspaces I depend on first
-        "^build"
-      ],
+      "dependsOn": ["^build"],
       "outputs": []
     },
-    "test": {}
+    "test": {
+      "dependsOn": ["build"]
+    }
   }
 }

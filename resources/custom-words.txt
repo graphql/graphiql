@@ -107,6 +107,7 @@ imolorhe
 importmap
 inno
 intellij
+interruptible
 invalidchar
 jammu
 jeong
