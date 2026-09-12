@@ -1,31 +1,48 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["yarn.lock", "resources/patches/*"],
+  "globalDependencies": [
+    "yarn.lock",
+    "resources/patches/*",
+    "resources/tsconfig.base.cjs.json",
+    "resources/tsconfig.base.esm.json",
+    "resources/patch-monaco-editor-type.mts",
+    "scripts/renameFileExtensions.mts"
+  ],
   "tasks": {
     "build": {
-      "dependsOn": [
-        // Run `build` in workspaces I depend on first
-        "^build"
-      ],
-      // Cache all files emitted to the packages's directories
-      "outputs": ["dist/**"]
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "esm/**", "*.tsbuildinfo"]
+    },
+    "build-bundles": {
+      "dependsOn": ["build"],
+      "outputs": ["out/**"]
+    },
+    "build-demo": {
+      "dependsOn": ["build"],
+      "cache": false
+    },
+    "storybook": {
+      "dependsOn": ["build"],
+      "persistent": true,
+      "interruptible": true,
+      "cache": false
+    },
+    "build-storybook": {
+      "dependsOn": ["build"],
+      "outputs": ["storybook-static/**"]
     },
     "dev": {
-      "dependsOn": [
-        // Run `build` in workspaces I depend on first
-        "^build"
-      ],
+      "dependsOn": ["^build"],
+      "persistent": true,
+      "interruptible": true,
       "cache": false
     },
     "types:check": {
-      "dependsOn": [
-        // Run `build` in workspaces I depend on first
-        "^build"
-      ],
-      "outputs": ["dist/**"]
+      "dependsOn": ["^build"],
+      "outputs": []
     },
     "test": {
-      "outputs": ["dist/**"]
+      "dependsOn": ["build"]
     }
   }
 }

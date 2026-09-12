@@ -33,7 +33,7 @@
   "scripts": {
     "types:check": "tsgo --noEmit",
     "dev": "vite build --watch --emptyOutDir=false",
-    "build": "vite build",
+    "build": "yarn types:check && vite build",
     "test": "vitest run"
   },
   "peerDependencies": {
@@ -50,6 +50,7 @@
   "devDependencies": {
     "@graphiql/react": "1.0.0-beta.1",
     "@testing-library/react": "^16.1.0",
+    "@typescript/native-preview": "^7.0.0-dev",
     "@vitejs/plugin-react": "^4.4.1",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
     "react": "^19.1.0",

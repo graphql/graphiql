@@ -1,5 +1,22 @@
 # graphql-language-service-server
 
+## 2.15.0
+
+### Minor Changes
+
+- [#4462](https://github.com/graphql/graphiql/pull/4462) [`1cb7eba`](https://github.com/graphql/graphiql/commit/1cb7ebad08da7b58dc5120d84cdf009fe1fe6a63) Thanks [@JoviDeCroock](https://github.com/JoviDeCroock)! - Add opt-in GraphQL 17 fragment argument syntax support to parsing, validation,
+  type information, autocomplete, hover, and editor integrations. Enable it with
+  `experimentalFragmentArguments: true`; it defaults to `false` until server
+  capabilities can advertise support.
+
+  Also fix variable autocomplete to respect operation and fragment scope while
+  including variables from operations that spread the current fragment.
+
+### Patch Changes
+
+- Updated dependencies [[`d0a34f4`](https://github.com/graphql/graphiql/commit/d0a34f4270883b383367734724db01b4b0426b21), [`1cb7eba`](https://github.com/graphql/graphiql/commit/1cb7ebad08da7b58dc5120d84cdf009fe1fe6a63), [`296214d`](https://github.com/graphql/graphiql/commit/296214da85f18520772bd45fc2830631e2a2a847)]:
+  - graphql-language-service@5.7.0
+
 ## 2.14.10
 
 ### Patch Changes

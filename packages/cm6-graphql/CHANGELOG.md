@@ -1,5 +1,20 @@
 # cm6-graphql
 
+## 0.2.2
+
+### Patch Changes
+
+- [#4462](https://github.com/graphql/graphiql/pull/4462) [`1cb7eba`](https://github.com/graphql/graphiql/commit/1cb7ebad08da7b58dc5120d84cdf009fe1fe6a63) Thanks [@JoviDeCroock](https://github.com/JoviDeCroock)! - Add opt-in GraphQL 17 fragment argument syntax support to parsing, validation,
+  type information, autocomplete, hover, and editor integrations. Enable it with
+  `experimentalFragmentArguments: true`; it defaults to `false` until server
+  capabilities can advertise support.
+
+  Also fix variable autocomplete to respect operation and fragment scope while
+  including variables from operations that spread the current fragment.
+
+- Updated dependencies [[`d0a34f4`](https://github.com/graphql/graphiql/commit/d0a34f4270883b383367734724db01b4b0426b21), [`1cb7eba`](https://github.com/graphql/graphiql/commit/1cb7ebad08da7b58dc5120d84cdf009fe1fe6a63), [`296214d`](https://github.com/graphql/graphiql/commit/296214da85f18520772bd45fc2830631e2a2a847)]:
+  - graphql-language-service@5.7.0
+
 ## 0.2.1
 
 ### Patch Changes
@@ -38,7 +53,6 @@
 ### Patch Changes
 
 - [#3521](https://github.com/graphql/graphiql/pull/3521) [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d) Thanks [@acao](https://github.com/acao)! - Fixes several issues with Type System (SDL) completion across the ecosystem:
-
   - restores completion for object and input type fields when the document context is not detectable or parseable
   - correct top-level completions for either of the unknown, type system or executable definitions. this leads to mixed top level completions when the document is unparseable, but now you are not seemingly restricted to only executable top level definitions
   - `.graphqls` ad-hoc standard functionality remains, but is not required, as it is not part of the official spec, and the spec also allows mixed mode documents in theory, and this concept is required when the type is unknown

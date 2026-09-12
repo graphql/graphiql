@@ -51,6 +51,9 @@ jobs:
 
       - run: yarn install --no-immutable
 
+      - name: Turbo cache
+        uses: ./.github/actions/turbo-cache
+
       - name: Build
         run: yarn build
 

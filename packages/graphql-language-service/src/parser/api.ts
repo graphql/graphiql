@@ -14,8 +14,16 @@ import {
   ContextToken,
   State,
   getTypeInfo,
+  parseDocument,
 } from '.';
-import { BREAK, GraphQLSchema, Kind, parse, visit } from 'graphql';
+import {
+  BREAK,
+  FragmentDefinitionNode,
+  GraphQLSchema,
+  Kind,
+  visit,
+} from 'graphql';
+import type { GraphQLLanguageServiceOptions } from '../types';
 
 export type ParserCallbackFn = (
   stream: CharacterStream,
@@ -34,9 +42,10 @@ export type ParserCallbackFn = (
 export function runOnlineParser(
   queryText: string,
   callback: ParserCallbackFn,
+  options?: GraphQLLanguageServiceOptions,
 ): ContextToken {
   const lines = queryText.split('\n');
-  const parser = onlineParser();
+  const parser = onlineParser(options);
   let state = parser.startState();
   let style = '';
 
@@ -97,11 +106,14 @@ export const TYPE_SYSTEM_KINDS: Kind[] = [
   Kind.INPUT_OBJECT_TYPE_EXTENSION,
 ];
 
-const getParsedMode = (sdl: string | undefined): GraphQLDocumentMode => {
+const getParsedMode = (
+  sdl: string | undefined,
+  options?: GraphQLLanguageServiceOptions,
+): GraphQLDocumentMode => {
   let mode = GraphQLDocumentMode.UNKNOWN;
   if (sdl) {
     try {
-      visit(parse(sdl), {
+      visit(parseDocument(sdl, options), {
         enter(node) {
           if (node.kind === 'Document') {
             mode = GraphQLDocumentMode.EXECUTABLE;
@@ -124,11 +136,12 @@ const getParsedMode = (sdl: string | undefined): GraphQLDocumentMode => {
 export function getDocumentMode(
   documentText: string,
   uri?: string,
+  options?: GraphQLLanguageServiceOptions,
 ): GraphQLDocumentMode {
   if (uri?.endsWith('.graphqls')) {
     return GraphQLDocumentMode.TYPE_SYSTEM;
   }
-  return getParsedMode(documentText);
+  return getParsedMode(documentText, options);
 }
 
 /**
@@ -138,22 +151,27 @@ export function getTokenAtPosition(
   queryText: string,
   cursor: IPosition,
   offset = 0,
+  options?: GraphQLLanguageServiceOptions,
 ): ContextToken {
   let styleAtCursor = null;
   let stateAtCursor = null;
   let stringAtCursor = null;
-  const token = runOnlineParser(queryText, (stream, state, style, index) => {
-    if (
-      index !== cursor.line ||
-      stream.getCurrentPosition() + offset < cursor.character + 1
-    ) {
-      return;
-    }
-    styleAtCursor = style;
-    stateAtCursor = { ...state };
-    stringAtCursor = stream.current();
-    return 'BREAK';
-  });
+  const token = runOnlineParser(
+    queryText,
+    (stream, state, style, index) => {
+      if (
+        index !== cursor.line ||
+        stream.getCurrentPosition() + offset < cursor.character + 1
+      ) {
+        return;
+      }
+      styleAtCursor = style;
+      stateAtCursor = { ...state };
+      stringAtCursor = stream.current();
+      return 'BREAK';
+    },
+    options,
+  );
 
   // Return the state/style of parsed token in case those at cursor aren't
   // available.
@@ -175,7 +193,12 @@ export function getContextAtPosition(
   cursor: IPosition,
   schema: GraphQLSchema,
   contextToken?: ContextToken,
-  options?: { mode?: GraphQLDocumentMode; uri?: string },
+  options?: {
+    mode?: GraphQLDocumentMode;
+    uri?: string;
+    fragmentDefinitions?: ReadonlyArray<FragmentDefinitionNode>;
+    experimentalFragmentArguments?: boolean;
+  },
   offset = 0,
 ): {
   token: ContextToken;
@@ -184,7 +207,7 @@ export function getContextAtPosition(
   mode: GraphQLDocumentMode;
 } | null {
   const token: ContextToken =
-    contextToken || getTokenAtPosition(queryText, cursor, offset);
+    contextToken || getTokenAtPosition(queryText, cursor, offset, options);
   if (!token) {
     return null;
   }
@@ -197,8 +220,13 @@ export function getContextAtPosition(
 
   // relieve flow errors by checking if `state` exists
 
-  const typeInfo = getTypeInfo(schema, token.state);
-  const mode = options?.mode || getDocumentMode(queryText, options?.uri);
+  const typeInfo = getTypeInfo(
+    schema,
+    token.state,
+    options?.fragmentDefinitions,
+  );
+  const mode =
+    options?.mode || getDocumentMode(queryText, options?.uri, options);
   return {
     token,
     state,

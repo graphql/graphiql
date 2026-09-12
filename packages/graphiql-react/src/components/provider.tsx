@@ -58,6 +58,8 @@ type GraphiQLProviderProps = EditorProps &
   ThemeProps &
   StorageProps & {
     children: ReactNode;
+    /** Enable experimental fragment arguments in the operation editor. */
+    experimentalFragmentArguments?: boolean;
   };
 
 type GraphiQLStore = UseBoundStore<StoreApi<SlicesWithActions>>;
@@ -135,7 +137,9 @@ useEffect(() => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    void actions.initialize();
+    void actions.initialize({
+      experimentalFragmentArguments: props.experimentalFragmentArguments,
+    });
     setMounted(true);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -255,6 +259,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
         variables,
       });
 
+      const activeTab = tabs[activeTabIndex];
       const isStored = storage.get(STORAGE_KEY.persistHeaders) !== null;
 
       const $shouldPersistHeaders =
@@ -269,10 +274,9 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
           defaultHeaders,
           defaultQuery,
           externalFragments: getExternalFragments(externalFragments),
-          initialHeaders: headers ?? defaultHeaders ?? '',
-          initialQuery:
-            query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
-          initialVariables: variables ?? '',
+          initialHeaders: headers ?? activeTab?.headers ?? defaultHeaders ?? '',
+          initialQuery: query ?? activeTab?.query ?? '',
+          initialVariables: variables ?? activeTab?.variables ?? '',
           onCopyQuery,
           onSaveQuery,
           onEditOperationName,

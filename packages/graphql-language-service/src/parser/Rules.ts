@@ -333,6 +333,26 @@ export const ParseRules: { [name: string]: ParseRule } = {
   [Kind.INPUT_OBJECT_TYPE_EXTENSION]: ['InputDef'],
 };
 
+export const ExperimentalFragmentArgumentParseRules: typeof ParseRules = {
+  ...ParseRules,
+  FragmentArguments: [p('('), list('FragmentArgument'), p(')')],
+  FragmentArgument: [name('attribute'), p(':'), 'Value'],
+  FragmentSpread: [
+    p('...'),
+    name('def'),
+    opt('FragmentArguments'),
+    list('Directive'),
+  ],
+  FragmentDefinition: [
+    word('fragment'),
+    opt(butNot(name('def'), [word('on')])),
+    opt('VariableDefinitions'),
+    'TypeCondition',
+    list('Directive'),
+    'SelectionSet',
+  ],
+};
+
 // A keyword Token.
 function word(value: string) {
   return {

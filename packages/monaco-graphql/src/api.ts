@@ -32,6 +32,7 @@ export interface MonacoGraphQLAPIOptions
       | 'formattingOptions'
       | 'diagnosticSettings'
       | 'completionSettings'
+      | 'experimentalFragmentArguments'
     > {
   languageId: string;
 }
@@ -48,6 +49,7 @@ export class MonacoGraphQLAPI {
   private _modeConfiguration: ModeConfiguration;
   private _diagnosticSettings: DiagnosticSettings;
   private _completionSettings: CompletionSettings;
+  private _experimentalFragmentArguments: boolean;
   private _schemas: SchemaConfig[] | null = null;
   private _schemasById: Record<string, SchemaConfig> = Object.create(null);
   private _languageId: string;
@@ -60,6 +62,7 @@ export class MonacoGraphQLAPI {
     formattingOptions,
     diagnosticSettings,
     completionSettings,
+    experimentalFragmentArguments,
   }: MonacoGraphQLAPIOptions) {
     this._languageId = languageId;
 
@@ -70,6 +73,7 @@ export class MonacoGraphQLAPI {
     this._completionSettings = completionSettings;
     this._diagnosticSettings = diagnosticSettings;
     this._formattingOptions = formattingOptions;
+    this._experimentalFragmentArguments = experimentalFragmentArguments;
   }
 
   public get onDidChange(): monaco.IEvent<MonacoGraphQLAPI> {
@@ -107,6 +111,10 @@ export class MonacoGraphQLAPI {
         this._completionSettings.__experimental__fillLeafsOnComplete ??
         this._completionSettings.fillLeafsOnComplete,
     };
+  }
+
+  public get experimentalFragmentArguments(): boolean {
+    return this._experimentalFragmentArguments;
   }
 
   public get externalFragmentDefinitions() {
@@ -164,6 +172,7 @@ export function create(
       modeConfiguration: modeConfigurationDefault,
       diagnosticSettings: diagnosticSettingDefault,
       completionSettings: completionSettingDefault,
+      experimentalFragmentArguments: false,
     });
   }
   const {
@@ -172,6 +181,7 @@ export function create(
     modeConfiguration,
     diagnosticSettings,
     completionSettings,
+    experimentalFragmentArguments,
   } = config;
   return new MonacoGraphQLAPI({
     languageId,
@@ -196,6 +206,7 @@ export function create(
       ...completionSettingDefault,
       ...completionSettings,
     },
+    experimentalFragmentArguments: experimentalFragmentArguments ?? false,
   });
 }
 

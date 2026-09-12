@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "types:check": "tsgo --noEmit",
-    "build": "vite build --mode built && node scripts/prepare-dist.mjs",
+    "build": "yarn types:check && vite build --mode built && node scripts/prepare-dist.mjs",
     "build-demo": "node scripts/build-demo.mjs",
     "dev": "yarn start:source",
     "start:source": "concurrently 'yarn server:source' 'yarn vite:source'",

@@ -3,7 +3,7 @@ const [, , arg] = process.argv;
 
 const logger = console;
 
-const isWatchMode = arg === '--watch';
+logger.log('bundling vscode-graphql');
 
 build({
   entryPoints: [
@@ -65,12 +65,6 @@ build({
     }
 
     logger.log('successfully bundled vscode-graphql 🚀');
-
-    if (isWatchMode) {
-      logger.log('watching... 🕰');
-    } else {
-      process.exit();
-    }
   })
   .catch(err => {
     logger.error(err);

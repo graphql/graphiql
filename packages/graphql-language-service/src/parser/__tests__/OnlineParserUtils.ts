@@ -64,8 +64,11 @@ type Utils = { t: IAssertRules; stream?: CharacterStream };
 
 type Args = { name?: string; onKind?: RuleKind; args?: any[]; vars?: any[] };
 
-export const getUtils = (source: string) => {
-  const parser = OnlineParser();
+export const getUtils = (
+  source: string,
+  parserOptions?: Parameters<typeof OnlineParser>[0],
+) => {
+  const parser = OnlineParser(parserOptions);
   const stream = new CharacterStream(source);
   const state = parser.startState();
 

@@ -115,6 +115,10 @@ const root = createRoot(document.getElementById('root'));
 root.render(<GraphiQL transport={transport} />);
 ```
 
+When the connected server supports GraphQL.js 17 fragment arguments, opt in
+with `<GraphiQL fetcher={fetcher} experimentalFragmentArguments />`. The syntax
+is disabled by default.
+
 ## Customize
 
 GraphiQL supports customization in UI and behavior by accepting React props and

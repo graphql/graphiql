@@ -11,10 +11,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { act, render, waitFor, fireEvent } from '@testing-library/react';
 import { Component, FC, useEffect } from 'react';
 import { GraphiQL } from './GraphiQL';
-import type { Fetcher, Transport } from '@graphiql/toolkit';
+import { StorageAPI, type Fetcher, type Transport } from '@graphiql/toolkit';
 import { buildSchema, introspectionFromSchema } from 'graphql';
 import {
   ToolbarButton,
+  GraphiQLProvider,
   useGraphiQL,
   useOperationsEditorState,
   MonacoEditor,
@@ -609,6 +610,109 @@ describe('GraphiQL', () => {
         expect(
           container.querySelectorAll('.graphiql-tab .graphiql-tab-close'),
         ).toHaveLength(0);
+      });
+    });
+
+    it('keeps the active tab active when a tab to its right is closed', async () => {
+      const { container } = render(
+        <GraphiQL
+          fetcher={noOpFetcher}
+          defaultTabs={[
+            { query: 'query First { first }' },
+            { query: 'query Second { second }' },
+            { query: 'query Third { third }' },
+          ]}
+        />,
+      );
+
+      await waitFor(() => {
+        expect(
+          container.querySelectorAll('.graphiql-tabs .graphiql-tab'),
+        ).toHaveLength(3);
+      });
+
+      act(() => {
+        fireEvent.click(container.querySelectorAll('.graphiql-tab-button')[1]!);
+      });
+
+      await waitFor(() => {
+        expect(
+          container.querySelectorAll('.graphiql-tabs .graphiql-tab')[1],
+        ).toHaveClass('graphiql-tab-active');
+      });
+
+      act(() => {
+        fireEvent.click(
+          container.querySelectorAll('.graphiql-tab .graphiql-tab-close')[2]!,
+        );
+      });
+
+      await waitFor(() => {
+        expect(
+          container.querySelectorAll('.graphiql-tabs .graphiql-tab'),
+        ).toHaveLength(2);
+      });
+
+      expect(
+        container.querySelectorAll('.graphiql-tabs .graphiql-tab')[1],
+      ).toHaveClass('graphiql-tab-active');
+      expect(
+        container.querySelectorAll('.graphiql-tab-button')[1],
+      ).toHaveTextContent('Second');
+    });
+
+    it('restores the active stored tab when individual editor keys are absent', async () => {
+      const storage = new StorageAPI();
+      const query = 'query Second { second }';
+      const variables = '{"id": 2}';
+      const headers = '{"X-Test": "second"}';
+      storage.set(
+        'tabState',
+        JSON.stringify({
+          activeTabIndex: 1,
+          tabs: ['query First { first }', query].map((tabQuery, index) => ({
+            id: String(index),
+            title: index === 0 ? 'First' : 'Second',
+            query: tabQuery,
+            variables,
+            headers,
+            operationName: index === 0 ? 'First' : 'Second',
+            response: null,
+          })),
+        }),
+      );
+
+      function InitialEditorState() {
+        const state = useGraphiQL(value => ({
+          activeTabIndex: value.activeTabIndex,
+          tabCount: value.tabs.length,
+          query: value.initialQuery,
+          variables: value.initialVariables,
+          headers: value.initialHeaders,
+        }));
+        return <output>{JSON.stringify(state)}</output>;
+      }
+
+      const { container } = render(
+        <GraphiQLProvider
+          fetcher={noOpFetcher}
+          schema={null}
+          shouldPersistHeaders
+        >
+          <InitialEditorState />
+        </GraphiQLProvider>,
+      );
+
+      await waitFor(() => {
+        expect(container.querySelector('output')?.textContent).toBe(
+          JSON.stringify({
+            activeTabIndex: 1,
+            tabCount: 2,
+            query,
+            variables,
+            headers,
+          }),
+        );
       });
     });
 

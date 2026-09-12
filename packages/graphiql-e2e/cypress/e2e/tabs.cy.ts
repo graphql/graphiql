@@ -74,6 +74,30 @@ describe('Tabs', () => {
     });
   });
 
+  it('Should keep the active tab active when a tab to its right is closed', () => {
+    cy.visitGraphiQL({ defaultQuery: '' });
+    cy.typeInEditor('query First {id');
+    cy.get('.graphiql-tab-button').eq(0).should('have.text', 'First');
+
+    cy.get('.graphiql-tab-add').click();
+    cy.typeInEditor('query Second {id');
+    cy.get('.graphiql-tab-button').eq(1).should('have.text', 'Second');
+    cy.get('.graphiql-tab-add').click();
+    cy.typeInEditor('query Third {id');
+    cy.get('.graphiql-tab-button').eq(2).should('have.text', 'Third');
+
+    cy.get('.graphiql-tab-button').eq(1).click();
+    cy.get('.graphiql-tab').eq(1).should('have.class', 'graphiql-tab-active');
+
+    cy.get('.graphiql-tab-button + .graphiql-tab-close')
+      .eq(2)
+      .click({ force: true });
+    cy.get('.graphiql-tab').should('have.length', 2);
+    cy.get('.graphiql-tab').eq(1).should('have.class', 'graphiql-tab-active');
+    cy.get('.graphiql-tab-button').eq(1).should('have.text', 'Second');
+    cy.assertHasValues({ query: 'query Second {id}' });
+  });
+
   describe('confirmCloseTab()', () => {
     it('should keep tab when `Cancel` was clicked', () => {
       cy.on('window:confirm', () => false);

@@ -53,7 +53,9 @@ packages/graphiql/index.html
 packages/graphiql/e2e/
 packages/graphiql/typedoc/
 packages/graphiql/webpack/
+packages/graphiql/monaco/
 
 .react-router/
 
 storybook-static/
+.claude

@@ -50,6 +50,7 @@ export class LanguageService {
     null;
   private _externalFragmentDefinitionsString: string | null = null;
   private _completionSettings: AutocompleteSuggestionOptions;
+  private _experimentalFragmentArguments = false;
   constructor({
     parser,
     schemas,
@@ -58,6 +59,7 @@ export class LanguageService {
     customValidationRules,
     fillLeafsOnComplete,
     completionSettings,
+    experimentalFragmentArguments,
   }: GraphQLLanguageConfig) {
     this._schemaLoader = defaultSchemaLoader;
     if (schemas) {
@@ -72,6 +74,8 @@ export class LanguageService {
       fillLeafsOnComplete:
         completionSettings?.fillLeafsOnComplete ?? fillLeafsOnComplete,
     };
+    this._experimentalFragmentArguments =
+      experimentalFragmentArguments ?? false;
 
     if (parseOptions) {
       this._parseOptions = parseOptions;
@@ -140,7 +144,7 @@ export class LanguageService {
     ) {
       const definitionNodes: FragmentDefinitionNode[] = [];
       try {
-        visit(this._parser(this._externalFragmentDefinitionsString), {
+        visit(this.parse(this._externalFragmentDefinitionsString), {
           FragmentDefinition(node) {
             definitionNodes.push(node);
           },
@@ -195,7 +199,11 @@ export class LanguageService {
    * @returns {DocumentNode}
    */
   public parse(text: string | Source, options?: ParseOptions): DocumentNode {
-    return this._parser(text, options || this._parseOptions);
+    return this._parser(text, {
+      ...this._parseOptions,
+      ...options,
+      experimentalFragmentArguments: this._experimentalFragmentArguments,
+    } as ParseOptions);
   }
   /**
    * get completion for the given uri and matching schema
@@ -219,7 +227,11 @@ export class LanguageService {
       position,
       undefined,
       this.getExternalFragmentDefinitions(),
-      { uri, ...this._completionSettings },
+      {
+        uri,
+        ...this._completionSettings,
+        experimentalFragmentArguments: this._experimentalFragmentArguments,
+      },
     );
   };
   /**
@@ -240,6 +252,9 @@ export class LanguageService {
       customRules ?? this._customValidationRules,
       false,
       this.getExternalFragmentDefinitions(),
+      {
+        experimentalFragmentArguments: this._experimentalFragmentArguments,
+      },
     );
   };
 
@@ -258,6 +273,7 @@ export class LanguageService {
         undefined,
         {
           useMarkdown: true,
+          experimentalFragmentArguments: this._experimentalFragmentArguments,
           ...options,
         },
       );

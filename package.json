@@ -24,25 +24,24 @@
   },
   "scripts": {
     "types:check": "turbo run types:check && tsgo --noEmit -p scripts/tsconfig.json",
-    "dev:graphiql": "turbo run dev --filter=graphiql-e2e",
+    "dev:graphiql": "turbo watch dev --filter=graphiql-e2e",
     "dev:example-nextjs": "turbo run dev --filter=example-graphiql-nextjs...",
-    "dev:example-vite": "turbo run dev --filter=example-graphiql-vite...",
-    "storybook": "yarn workspace @graphiql/react storybook",
-    "build-storybook": "yarn workspace @graphiql/react build-storybook",
-    "build:graphiql": "yarn build:graphiql:tsc && turbo run build --filter=graphiql-e2e...",
-    "build:graphiql:tsc": "tsgo --build packages/graphql-language-service/tsconfig.esm.json packages/monaco-graphql/tsconfig.esm.json && node resources/patch-monaco-editor-type.mts",
-    "build": "yarn build-clean && yarn build:tsc && yarn build:nontsc",
-    "build-bundles": "yarn prebuild-bundles && yarn wsrun:noexamples --stages build-bundles",
-    "build-bundles-clean": "rimraf '{packages,examples}/**/{bundle,cdn,webpack}'",
-    "build-clean": "tsgo --build --clean",
+    "dev:example-vite": "turbo watch dev --filter=example-graphiql-vite",
+    "storybook": "turbo watch storybook --filter=@graphiql/react",
+    "build-storybook": "turbo run build-storybook --filter=@graphiql/react",
+    "build:graphiql": "turbo run build --filter=graphiql-e2e...",
+    "build": "turbo run build --filter='!example-monaco-graphql-*' --filter='!example-graphiql-webpack'",
+    "build-bundles": "turbo run build-bundles --filter=vscode-graphql --filter=vscode-graphql-execution",
+    "build-bundles-clean": "node scripts/clean.mts --bundles",
+    "build-clean": "yarn build:clean",
     "build-docs": "rimraf packages/graphiql/typedoc && typedoc",
-    "build:nontsc": "yarn wsrun:noexamples --exclude-missing --serial build",
-    "build:clean": "tsgo --build --clean",
-    "build:watch": "tsgo --build --watch",
-    "build-demo": "wsrun -m build-demo",
+    "build:clean": "node scripts/clean.mts",
+    "build:rebuild": "yarn build:clean && yarn build",
+    "build:watch": "turbo watch build --filter='!example-monaco-graphql-*' --filter='!example-graphiql-webpack'",
+    "build-demo": "turbo run build-demo --filter=example-graphiql-webpack --filter=example-monaco-graphql-webpack --filter=graphiql-e2e",
     "watch": "yarn build:watch",
-    "watch-vscode": "yarn build:tsc && yarn workspace vscode-graphql compile",
-    "watch-vscode-exec": "yarn workspace vscode-graphql-execution compile",
+    "watch-vscode": "turbo watch build-bundles --filter=vscode-graphql... --output-logs=full --log-order=stream --no-color",
+    "watch-vscode-exec": "turbo watch build-bundles --filter=vscode-graphql-execution... --output-logs=full --log-order=stream --no-color",
     "cypress-open": "yarn build:graphiql && yarn workspace graphiql-e2e cypress-open",
     "e2e": "yarn e2e:built",
     "e2e:built": "yarn build:graphiql && yarn workspace graphiql-e2e e2e:built",
@@ -56,7 +55,6 @@
     "postinstall": "patch-package --patch-dir resources/patches",
     "prebuild-bundles": "yarn build-bundles-clean",
     "prepublishOnly": "./scripts/prepublish.sh",
-    "postbuild": "wsrun --exclude-missing postbuild",
     "format": "oxfmt --write .",
     "format-check": "oxfmt --check .",
     "svgo": "svgo --pretty --indent 2 --eol lf --final-newline -r -f . --exclude node_modules",
@@ -69,8 +67,6 @@
     "t": "yarn test",
     "test": "yarn test:scripts && turbo run test --filter='./packages/*'",
     "test:scripts": "node --test scripts/*.spec.mts",
-    "build:tsc": "tsgo --build && node resources/patch-monaco-editor-type.mts",
-    "wsrun:noexamples": "wsrun --exclude-missing --exclude example-monaco-graphql-react-vite --exclude example-monaco-graphql-nextjs --exclude example-monaco-graphql-webpack --exclude example-graphiql-webpack",
     "gen-agenda": "wgutils agenda gen"
   },
   "dependencies": {
@@ -115,9 +111,8 @@
     "turbo": "^2.9.14",
     "typedoc": "^0.28.19",
     "typescript": "^5.8.0",
-    "vitest": "^4.1.6",
-    "wgutils": "^1.2.5",
-    "wsrun": "^5.2.4"
+    "vitest": "^4.1.11",
+    "wgutils": "^1.2.5"
   },
   "resolutions": {
     "@babel/traverse": "^7.23.2",
@@ -131,6 +126,6 @@
     "@vscode/vsce": "^2.22.1-2",
     "jsdom": "^29.0.2",
     "ovsx": "0.8.3",
-    "svgo": "^4.0.2"
+    "svgo": "^4.1.0"
   }
 }

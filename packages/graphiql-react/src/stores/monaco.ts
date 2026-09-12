@@ -1,5 +1,8 @@
 import { createStore } from 'zustand';
-import type { MonacoGraphQLAPI } from 'monaco-graphql';
+import type {
+  MonacoGraphQLAPI,
+  MonacoGraphQLInitializeConfig,
+} from 'monaco-graphql';
 import { createBoundedUseStore } from '../utility';
 import {
   JSON_DIAGNOSTIC_OPTIONS,
@@ -12,7 +15,12 @@ interface MonacoStoreType {
   monaco?: typeof import('monaco-editor');
   monacoGraphQL?: MonacoGraphQLAPI;
   actions: {
-    initialize: () => Promise<void>;
+    initialize: (
+      options?: Pick<
+        MonacoGraphQLInitializeConfig,
+        'experimentalFragmentArguments'
+      >,
+    ) => Promise<void>;
   };
 }
 
@@ -65,7 +73,7 @@ async function patchFirefox() {
  */
 export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
   actions: {
-    async initialize() {
+    async initialize(options) {
       const isInitialized = Boolean(get().monaco);
       if (isInitialized) {
         return;
@@ -88,6 +96,7 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
       }
       const monacoGraphQL = initializeMode({
         diagnosticSettings: MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
+        ...options,
       });
       set({ monaco, monacoGraphQL });
     },

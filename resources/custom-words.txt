@@ -121,6 +121,7 @@ importmap
 inno
 inputarea
 intellij
+interruptible
 invalidchar
 jammu
 jeong

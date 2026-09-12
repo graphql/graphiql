@@ -25,6 +25,7 @@
     "src"
   ],
   "scripts": {
+    "build": "tsgo -p tsconfig.json && tsgo -p tsconfig.esm.json",
     "types:check": "tsgo --noEmit",
     "test": "vitest run"
   },
@@ -46,6 +47,7 @@
     "yargs": "^16.2.0"
   },
   "devDependencies": {
+    "@typescript/native-preview": "^7.0.0-dev",
     "graphql": "^16.14.2"
   }
 }

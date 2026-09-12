@@ -18,11 +18,9 @@ jobs:
           node-version-file: '.node-version'
           cache: yarn
       - run: yarn install --immutable
+      - name: Turbo cache
+        uses: ./.github/actions/turbo-cache
       - run: yarn build
-      - uses: actions/cache@v5
-        with:
-          key: build-${{ github.sha }}
-          path: ${{ env.BUILD-CACHE-LIST }}
 
   cspell:
     name: CSpell
@@ -72,12 +70,30 @@ jobs:
           node-version-file: '.node-version'
           cache: yarn
       - run: yarn install --immutable
-      - uses: actions/cache@v5
+      - name: Turbo cache
+        uses: ./.github/actions/turbo-cache
         with:
-          key: build-${{ github.sha }}
-          path: ${{ env.BUILD-CACHE-LIST }}
+          restore-build: true
       - run: npx playwright install --with-deps chromium
       - run: yarn test
+
+  graphql-17-fragment-arguments:
+    name: GraphQL 17 Fragment Arguments
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: yarn
+      - run: yarn install --immutable
+      - run: yarn workspace graphql-language-service add --dev graphql@17.0.2
+      - name: Build and typecheck graphql-language-service
+        run: yarn workspace graphql-language-service exec tsc
+      - name: Test fragment argument integration
+        run: >-
+          yarn vitest run packages/graphql-language-service/src/parser/__tests__/OnlineParser.test.ts packages/graphql-language-service/src/interface/__tests__/getAutocompleteSuggestions.test.ts packages/graphql-language-service/src/interface/__tests__/getDiagnostics.test.ts packages/graphql-language-service/src/interface/__tests__/getHoverInformation.test.ts
+
 
   lint:
     name: Lint
@@ -90,10 +106,11 @@ jobs:
           node-version-file: '.node-version'
           cache: yarn
       - run: yarn install --immutable
-      - uses: actions/cache@v5
+      - name: Turbo cache
+        uses: ./.github/actions/turbo-cache
         with:
-          key: build-${{ github.sha }}
-          path: ${{ env.BUILD-CACHE-LIST }}
+          restore-build: true
+      - run: yarn build
       - run: yarn oxlint
 
   types-check:
@@ -107,10 +124,10 @@ jobs:
           node-version-file: '.node-version'
           cache: yarn
       - run: yarn install --immutable
-      - uses: actions/cache@v5
+      - name: Turbo cache
+        uses: ./.github/actions/turbo-cache
         with:
-          key: build-${{ github.sha }}
-          path: ${{ env.BUILD-CACHE-LIST }}
+          restore-build: true
       - run: yarn types:check
 
   e2e:
@@ -124,10 +141,11 @@ jobs:
           node-version-file: '.node-version'
           cache: yarn
       - run: yarn install --immutable
-      - uses: actions/cache@v5
+      - name: Turbo cache
+        uses: ./.github/actions/turbo-cache
         with:
-          key: build-${{ github.sha }}
-          path: ${{ env.BUILD-CACHE-LIST }}
+          restore-build: true
+      - run: yarn build
       - uses: actions/cache@v5
         with:
           path: |
@@ -166,10 +184,11 @@ jobs:
           node-version-file: '.node-version'
           cache: yarn
       - run: yarn install --immutable
-      - uses: actions/cache@v5
+      - name: Turbo cache
+        uses: ./.github/actions/turbo-cache
         with:
-          key: build-${{ github.sha }}
-          path: ${{ env.BUILD-CACHE-LIST }}
+          restore-build: true
+      - run: yarn build
       - run: npx pkg-pr-new publish --comment=off './packages/*'
 
   license-check:
@@ -184,17 +203,3 @@ jobs:
       - run: yarn install --immutable
       - name: License Check
         run: yarn license-check
-
-env:
-  BUILD-CACHE-LIST: |
-    packages/**/dist/**/*
-    packages/**/cjs/**/*
-    packages/**/esm/**/*
-    packages/**/types/**/*
-    packages/codemirror-graphql/*.js*
-    packages/codemirror-graphql/*.d.ts
-    packages/codemirror-graphql/cm6-legacy/**/*
-    packages/codemirror-graphql/results/**/*
-    packages/codemirror-graphql/variables/**/*
-    packages/codemirror-graphql/utils/**/*
-    !**/node_modules
