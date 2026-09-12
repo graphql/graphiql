@@ -20010,9 +20010,9 @@ __metadata:
   linkType: hard
 
 "smol-toml@npm:^1.6.1":
-  version: 1.7.0
-  resolution: "smol-toml@npm:1.7.0"
-  checksum: 10c0/8eef246b9b96f278a181f6dd2a90c754304cb4cf92ccdfe1d2f714fb980fb3f539ba00283609e8fd2fbcf7c0d48a4ae76b36bc0de556ed286b2c865827a778e8
+  version: 1.8.0
+  resolution: "smol-toml@npm:1.8.0"
+  checksum: 10c0/4e01dbfb7c7af142176b037ebedaccccafb8229cc873feaa47c184ee31073d86e30b4b1b0fe9a5a6d083ed3ce21615eda9e81d1f5d779ad8b2e2e9459b900aea
   languageName: node
   linkType: hard
 
