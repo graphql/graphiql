@@ -34,7 +34,7 @@
     "file-loader": "^6",
     "html-webpack-plugin": "^5",
     "react-hot-loader": "^4",
-    "style-loader": "^3",
+    "style-loader": "^4",
     "webpack": "^5",
     "webpack-cli": "^6",
     "webpack-dev-server": "^5",
