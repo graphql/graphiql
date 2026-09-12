@@ -105,7 +105,7 @@
     "@urql/core": "^6.0.1",
     "@whatwg-node/fetch": "0.2.8",
     "capitalize": "2.0.4",
-    "cosmiconfig": "8.2.0",
+    "cosmiconfig": "10.0.1",
     "cosmiconfig-toml-loader": "^1.0.0",
     "dotenv": "10.0.0",
     "graphql": "^16.9.0 || ^17.0.0-rc.0",
