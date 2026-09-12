@@ -1,8 +1,33 @@
 version: 2
 updates:
-  - package-ecosystem: 'npm'
-    directory: '/'
+  - package-ecosystem: npm
+    directory: /
     schedule:
-      interval: 'weekly'
-    # 0 disables version-update PRs; security updates still open (separate internal limit)
-    open-pull-requests-limit: 0
+      interval: monthly
+    open-pull-requests-limit: 50
+    groups:
+      non-major-dependencies:
+        applies-to: version-updates
+        patterns:
+          - '*'
+        # Dependabot cannot exclude dependencies based on their current version, so keep this list in sync with current 0.x dependencies.
+        exclude-patterns:
+          - '@changesets/changelog-github'
+          - '@codemirror/buildhelper'
+          - '@types/codemirror'
+          - '@types/copy'
+          - '@whatwg-node/fetch'
+          - copy
+          - esbuild
+          - graphiql-explorer
+          - json-schema
+          - monaco-editor
+          - ovsx
+          - oxfmt
+          - regenerator-runtime
+          - subscriptions-transport-ws
+          - svelte2tsx
+          - typedoc
+        update-types:
+          - minor
+          - patch
