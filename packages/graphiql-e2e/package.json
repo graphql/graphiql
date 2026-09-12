@@ -1,6 +1,6 @@
 {
   "name": "graphiql-e2e",
-  "version": "0.0.0",
+  "version": "0.0.1-beta.0",
   "private": true,
   "type": "module",
   "license": "MIT",
@@ -23,9 +23,9 @@
     "test:a11y:update": "start-server-and-test start:source 'http-get://localhost:8080/graphql?query={test { id }}|http://localhost:5173' cypress:a11y:update"
   },
   "dependencies": {
-    "@graphiql/react": "1.0.0-beta.1",
-    "@graphiql/toolkit": "1.0.0-beta.0",
-    "graphiql": "6.0.0-beta.1",
+    "@graphiql/react": "1.0.0-beta.2",
+    "@graphiql/toolkit": "1.0.0-beta.1",
+    "graphiql": "6.0.0-beta.2",
     "graphql": "^16.14.2",
     "graphql-ws": "^5.5.5",
     "react": "^19.1.0",
