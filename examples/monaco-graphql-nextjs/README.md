@@ -20,5 +20,5 @@ This work was sponsored by [Grafbase](https://grafbase.com)!
 
 ## Setup
 
-1. In monorepo root directory run `yarn` and `yarn build`.
-1. In this directory run `yarn dev`.
+1. In the monorepo root directory, run `pnpm install` and `pnpm build`.
+1. In this directory, run `pnpm dev`.
