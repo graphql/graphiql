@@ -10,7 +10,7 @@
   "scripts": {
     "types:check": "tsgo --noEmit",
     "build": "pnpm types:check && cm-buildhelper src/index.ts",
-    "prepack": "pnpm build",
+    "prepack": "tsgo --noEmit && cm-buildhelper src/index.ts",
     "test": "vitest run"
   },
   "main": "dist/index.cjs",
