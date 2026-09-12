@@ -57,7 +57,7 @@
     "@radix-ui/react-visually-hidden": "^1.2",
     "clsx": "^1.2.1",
     "framer-motion": "^12.12",
-    "get-value": "^3.0.1",
+    "get-value": "^4.1.0",
     "graphql-language-service": "^5.7.0",
     "jsonc-parser": "^3.3.1",
     "markdown-it": "^14.2.0",
