@@ -1411,6 +1411,9 @@ importers:
       prettier:
         specifier: 3.3.2
         version: 3.3.2
+      vite:
+        specifier: 6.4.3
+        version: 6.4.3(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.29.3)(terser@5.46.2)(yaml@2.9.0)
       vscode-languageserver-types:
         specifier: 3.17.3
         version: 3.17.3
