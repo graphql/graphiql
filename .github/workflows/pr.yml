@@ -72,6 +72,8 @@ jobs:
       - run: yarn install --immutable
       - name: Turbo cache
         uses: ./.github/actions/turbo-cache
+        with:
+          restore-build: true
       - run: yarn test
 
   graphql-17-fragment-arguments:
@@ -105,6 +107,8 @@ jobs:
       - run: yarn install --immutable
       - name: Turbo cache
         uses: ./.github/actions/turbo-cache
+        with:
+          restore-build: true
       - run: yarn build
       - run: yarn oxlint
 
@@ -121,6 +125,8 @@ jobs:
       - run: yarn install --immutable
       - name: Turbo cache
         uses: ./.github/actions/turbo-cache
+        with:
+          restore-build: true
       - run: yarn types:check
 
   e2e:
@@ -136,6 +142,8 @@ jobs:
       - run: yarn install --immutable
       - name: Turbo cache
         uses: ./.github/actions/turbo-cache
+        with:
+          restore-build: true
       - run: yarn build
       - uses: actions/cache@v5
         with:
@@ -173,6 +181,8 @@ jobs:
       - run: yarn install --immutable
       - name: Turbo cache
         uses: ./.github/actions/turbo-cache
+        with:
+          restore-build: true
       - run: yarn build
       - run: npx pkg-pr-new publish --comment=off './packages/*'
 
