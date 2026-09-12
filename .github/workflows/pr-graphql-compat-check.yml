@@ -48,6 +48,9 @@ jobs:
 
       - run: yarn install --immutable
 
+      - name: Turbo cache
+        uses: ./.github/actions/turbo-cache
+
       - name: Unit Tests
         run: yarn test
 

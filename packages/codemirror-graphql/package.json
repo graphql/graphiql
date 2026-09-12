@@ -35,7 +35,7 @@
   ],
   "scripts": {
     "types:check": "tsgo --noEmit",
-    "build": "node ../../scripts/renameFileExtensions.mts './esm/{**,!**/__tests__/}/*.js' . .esm.js",
+    "build": "tsgo -p tsconfig.json && tsgo -p tsconfig.esm.json && node ../../scripts/renameFileExtensions.mts './esm/{**,!**/__tests__/}/*.js' . .esm.js",
     "test": "vitest run"
   },
   "peerDependencies": {
@@ -50,6 +50,7 @@
   },
   "devDependencies": {
     "@codemirror/language": "^6.0.0",
+    "@typescript/native-preview": "^7.0.0-dev",
     "codemirror": "^5.65.3",
     "cross-env": "^7.0.2",
     "graphql": "^16.9.0",

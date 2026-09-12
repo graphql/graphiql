@@ -68,6 +68,7 @@
     "esm"
   ],
   "scripts": {
+    "build": "tsgo -p tsconfig.json && tsgo -p tsconfig.esm.json && node ../../resources/patch-monaco-editor-type.mts",
     "types:check": "tsgo --noEmit",
     "test": "vitest run"
   },
@@ -76,6 +77,7 @@
     "picomatch-browser": "^2.2.6"
   },
   "devDependencies": {
+    "@typescript/native-preview": "^7.0.0-dev",
     "execa": "^7.1.1",
     "graphql": "^16.9.0",
     "monaco-editor": "0.52.2",

@@ -171,16 +171,18 @@
     ]
   },
   "scripts": {
+    "build": "tsgo -p tsconfig.json",
     "types:check": "tsgo --noEmit",
     "vscode:prepublish": "npm run compile -- --minify",
     "compile": "node esbuild",
-    "build-bundles": "npm run compile -- --sourcemap",
+    "build-bundles": "yarn compile",
     "vsce:package": "vsce package --yarn --no-dependencies",
     "env:source": "export $(cat .envrc | xargs)"
   },
   "devDependencies": {
     "@types/capitalize": "2.0.0",
     "@types/vscode": "1.62.0",
+    "@typescript/native-preview": "^7.0.0-dev",
     "@vscode/vsce": "^2.22.1-2",
     "esbuild": "0.18.10",
     "ovsx": "0.8.3"

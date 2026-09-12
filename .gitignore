@@ -51,5 +51,8 @@ packages/graphiql/cypress/downloads/
 packages/graphiql/cypress/videos/
 packages/graphiql/typedoc/
 packages/graphiql/webpack/
+packages/graphiql/monaco/
 
 .react-router/
+
+.claude
