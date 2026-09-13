@@ -13,6 +13,7 @@ minimumReleaseAge: 4320
 engineStrict: true
 nodeLinker: isolated
 linkWorkspacePackages: true
+preferWorkspacePackages: true
 
 allowBuilds:
   '@vscode/vsce-sign': false

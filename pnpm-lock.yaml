@@ -242,7 +242,7 @@ importers:
     dependencies:
       '@graphiql/plugin-code-exporter':
         specifier: ^5.1.4-beta.1
-        version: 5.1.4(@graphiql/react@packages+graphiql-react)(codemirror@5.65.3)(graphql@16.14.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: link:../../packages/graphiql-plugin-code-exporter
       '@graphiql/react':
         specifier: ^1.0.0-beta.1
         version: link:../../packages/graphiql-react
@@ -3031,14 +3031,6 @@ packages:
 
   '@gerrit0/mini-shiki@3.23.0':
     resolution: {integrity: sha512-bEMORlG0cqdjVyCEuU0cDQbORWX+kYCeo0kV1lbxF5bt4r7SID2l9bqsxJEM0zndaxpOUT7riCyIVEuqq/Ynxg==}
-
-  '@graphiql/plugin-code-exporter@5.1.4':
-    resolution: {integrity: sha512-xf5kklwRwU0W2rjjrHbgE2kSJJF+0hUi0YDDVtQqyHo7G3lc7y+/KCG5DIc+o7V/NMvL9mxcKHiRveFgx86/Kg==}
-    peerDependencies:
-      '@graphiql/react': ^0.39.0
-      graphql: ^15.5.0 || ^16.0.0 || ^17.0.0-alpha.2
-      react: 19.2.7
-      react-dom: 19.2.7
 
   '@graphql-hive/signal@2.0.0':
     resolution: {integrity: sha512-Pz8wB3K0iU6ae9S1fWfsmJX24CcGeTo6hE7T44ucmV/ALKRj+bxClmqrYcDT7v3f0d12Rh4FAXBb6gon+WkDpQ==}
@@ -13641,16 +13633,6 @@ snapshots:
       '@shikijs/themes': 3.23.0
       '@shikijs/types': 3.23.0
       '@shikijs/vscode-textmate': 10.0.2
-
-  '@graphiql/plugin-code-exporter@5.1.4(@graphiql/react@packages+graphiql-react)(codemirror@5.65.3)(graphql@16.14.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
-    dependencies:
-      '@graphiql/react': link:packages/graphiql-react
-      graphiql-code-exporter: 3.0.3(codemirror@5.65.3)(graphql@16.14.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      graphql: 16.14.2
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
-    transitivePeerDependencies:
-      - codemirror
 
   '@graphql-hive/signal@2.0.0': {}
 

@@ -11,7 +11,7 @@ type ViolationSummary = {
 
 type Baseline = Record<string, ViolationSummary[]>;
 
-const UPDATE_BASELINE = Boolean(Cypress.env('A11Y_UPDATE_BASELINE'));
+const UPDATE_BASELINE = Boolean(Cypress.expose('A11Y_UPDATE_BASELINE'));
 
 const RULESET = {
   runOnly: {

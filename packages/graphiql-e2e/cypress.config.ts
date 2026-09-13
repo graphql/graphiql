@@ -16,6 +16,9 @@ export default defineConfig({
   e2e: {
     baseUrl: `http://localhost:${port}`,
     env: { target },
+    expose: {
+      A11Y_UPDATE_BASELINE: process.env.CYPRESS_A11Y_UPDATE_BASELINE === '1',
+    },
     setupNodeEvents(on) {
       on('task', {
         writeBaseline({ filePath, data }: { filePath: string; data: unknown }) {
