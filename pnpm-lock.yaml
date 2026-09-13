@@ -265,8 +265,8 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       regenerator-runtime:
-        specifier: ^0.13
-        version: 0.13.11
+        specifier: ^0.14
+        version: 0.14.1
     devDependencies:
       '@babel/plugin-proposal-class-properties':
         specifier: ^7
