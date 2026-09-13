@@ -45,13 +45,13 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2",
-    "react-compiler-runtime": "19.1.0-rc.1",
+    "react-compiler-runtime": "19.1.0-rc.3",
     "zustand": "^5"
   },
   "devDependencies": {
     "@graphiql/react": "^0.39.0",
     "@testing-library/dom": "^10.4.0",
-    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
