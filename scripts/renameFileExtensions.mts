@@ -2,7 +2,6 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import copy from 'copy';
-import mkdirp from 'mkdirp';
 import { rimrafSync } from 'rimraf';
 
 const [, , src, dest, destExtension] = process.argv;
@@ -25,7 +24,7 @@ if (fs.existsSync(tempRenamePath)) {
   rimrafSync(tempRenamePath);
 }
 
-const tempPath = mkdirp.sync(tempRenamePath);
+const tempPath = fs.mkdirSync(tempRenamePath, { recursive: true });
 
 if (tempPath) {
   copy(src, tempRenamePath, (error, files) => {
@@ -41,7 +40,7 @@ if (tempPath) {
             .replace(tempRenamePath, dest),
         );
 
-        mkdirp.sync(path.dirname(destinationPath));
+        fs.mkdirSync(path.dirname(destinationPath), { recursive: true });
         fs.renameSync(file.dest, destinationPath);
       }
     }

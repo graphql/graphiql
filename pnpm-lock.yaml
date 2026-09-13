@@ -72,9 +72,6 @@ importers:
       '@types/copy':
         specifier: ^0.3.1
         version: 0.3.5
-      '@types/mkdirp':
-        specifier: 1.0.2
-        version: 1.0.2
       '@types/node':
         specifier: ^24
         version: 24.12.2
@@ -108,9 +105,6 @@ importers:
       js-green-licenses:
         specifier: 4.0.0
         version: 4.0.0(patch_hash=9767ba756b878e055efbe878325a54d51a84423a8f46e2cccb72f741010f4ec8)(encoding@0.1.13)
-      mkdirp:
-        specifier: ^1.0.4
-        version: 1.0.4
       msw:
         specifier: ^2.13.4
         version: 2.13.4(@types/node@24.12.2)(typescript@5.9.3)
@@ -1113,9 +1107,6 @@ importers:
       lru-cache:
         specifier: ^10.2.0
         version: 10.4.3
-      mkdirp:
-        specifier: ^1.0.4
-        version: 1.0.4
       node-abort-controller:
         specifier: ^3.0.1
         version: 3.0.1
@@ -1156,9 +1147,6 @@ importers:
       '@types/glob':
         specifier: ^8.1.0
         version: 8.1.0
-      '@types/mkdirp':
-        specifier: ^1.0.1
-        version: 1.0.2
       '@typescript/native-preview':
         specifier: ^7.0.0-dev.20260707.2
         version: 7.0.0-dev.20260707.2
@@ -4851,9 +4839,6 @@ packages:
   '@types/minimist@1.2.1':
     resolution: {integrity: sha512-fZQQafSREFyuZcdWFAExYjBiCL7AUCdgsk80iO0q4yihYYdcIiH28CcuPTGFgLOCC8RlW49GSQxdHwZP+I7CNg==}
 
-  '@types/mkdirp@1.0.2':
-    resolution: {integrity: sha512-o0K1tSO0Dx5X6xlU5F1D6625FawhC3dU3iqr25lluNv/+/QIVH8RLNEiVokgIZo+mz+87w/3Mkg/VvQS+J51fQ==}
-
   '@types/mocha@9.1.1':
     resolution: {integrity: sha512-Z61JK7DKDtdKTWwLeElSEBcWGRLY8g95ic5FoQqI9CMx0ns/Ghep3B4DfcEimiKMvtamNVULVNKEsiwV3aQmXw==}
 
@@ -8446,11 +8431,6 @@ packages:
 
   mkdirp@0.5.5:
     resolution: {integrity: sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==}
-    hasBin: true
-
-  mkdirp@1.0.4:
-    resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
-    engines: {node: '>=10'}
     hasBin: true
 
   mlly@1.7.4:
@@ -14819,10 +14799,6 @@ snapshots:
 
   '@types/minimist@1.2.1': {}
 
-  '@types/mkdirp@1.0.2':
-    dependencies:
-      '@types/node': 24.12.2
-
   '@types/mocha@9.1.1': {}
 
   '@types/node@12.20.55': {}
@@ -18812,8 +18788,6 @@ snapshots:
   mkdirp@0.5.5:
     dependencies:
       minimist: 1.2.8
-
-  mkdirp@1.0.4: {}
 
   mlly@1.7.4:
     dependencies:
