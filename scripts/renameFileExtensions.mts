@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import copy from 'copy';
 import mkdirp from 'mkdirp';
-import rimraf from 'rimraf';
+import { rimrafSync } from 'rimraf';
 
 const [, , src, dest, destExtension] = process.argv;
 if (!src || !dest || !destExtension) {
@@ -22,7 +22,7 @@ const tempRenamePath = path.join(
 );
 
 if (fs.existsSync(tempRenamePath)) {
-  rimraf.sync(tempRenamePath);
+  rimrafSync(tempRenamePath);
 }
 
 const tempPath = mkdirp.sync(tempRenamePath);
@@ -45,7 +45,7 @@ if (tempPath) {
         fs.renameSync(file.dest, destinationPath);
       }
     }
-    rimraf.sync(tempRenamePath);
+    rimrafSync(tempRenamePath);
   });
 } else {
   throw new Error(`Could not generate temporary path\n${tempRenamePath}`);
