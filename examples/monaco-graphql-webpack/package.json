@@ -29,7 +29,7 @@
     "@webpack-cli/serve": "^2",
     "babel-loader": "^9",
     "cross-env": "^10",
-    "css-loader": "^6",
+    "css-loader": "^7",
     "file-loader": "^6",
     "fork-ts-checker-webpack-plugin": "^7",
     "html-webpack-plugin": "^5",
