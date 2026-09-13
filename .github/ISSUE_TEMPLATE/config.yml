@@ -5,7 +5,6 @@ contact_links:
     about: >-
       Some questions are already answered in our github discussions Q&A section If you don't find an answer, [create a support ticket](ttps://github.com/graphql/graphiql/discussions/new?category=q-a-support)
 
-
   - name: '💬 `graphiql` Discord Support'
     url: https://discord.gg/NP5vbPeUFp
     about: '`graphiql` Discord Support Channel'
@@ -18,7 +17,6 @@ contact_links:
     url: https://discord.gg/wkQCKwazxj
     about: >-
       GraphQL LSP (Language Server Protocol) Server Discord Support Channel  For `graphql-language-service-server` and/or `graphql-language-service-cli`
-
 
   - name: '💬 `monaco-graphql` Discord Support'
     url: https://discord.gg/r4BxrAG6fN

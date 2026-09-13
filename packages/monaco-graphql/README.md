@@ -138,7 +138,7 @@ monaco.editor.create(document.getElementById('someElementId'), {
 
 This will cover the basics, making an HTTP POST with the default
 `introspectionQuery()` operation. To customize the entire fetcher, see
-[advanced customization]() below. For more customization options, see the
+[advanced customization](<>) below. For more customization options, see the
 [Monaco Editor API Docs](https://microsoft.github.io/monaco-editor/api/index.html)
 
 ## Advanced Usage

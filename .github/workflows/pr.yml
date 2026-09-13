@@ -100,7 +100,6 @@ jobs:
         run: >-
           pnpm exec vitest run packages/graphql-language-service/src/parser/__tests__/OnlineParser.test.ts packages/graphql-language-service/src/interface/__tests__/getAutocompleteSuggestions.test.ts packages/graphql-language-service/src/interface/__tests__/getDiagnostics.test.ts packages/graphql-language-service/src/interface/__tests__/getHoverInformation.test.ts
 
-
   lint:
     name: Lint
     runs-on: ubuntu-latest
