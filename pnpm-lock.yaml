@@ -1032,8 +1032,8 @@ importers:
         version: 3.17.3
     devDependencies:
       '@types/benchmark':
-        specifier: ^1.0.33
-        version: 1.0.33
+        specifier: ^2.1.5
+        version: 2.1.5
       '@types/debounce-promise':
         specifier: ^3.1.9
         version: 3.1.9
@@ -4758,8 +4758,8 @@ packages:
   '@types/babel__traverse@7.20.1':
     resolution: {integrity: sha512-MitHFXnhtgwsGZWtT68URpOvLN4EREih1u3QtQiN4VdAxWKRVvGCSvw/Qth0M0Qq3pJpnGOu5JaM/ydK7OGbqg==}
 
-  '@types/benchmark@1.0.33':
-    resolution: {integrity: sha512-rG7Ieasa9UfZJnL72qiFvY9ivhEIYjCGgfcLLb5tJ/EL9+Mcxernj6W3HVCv/cOfJYuwNUwvVVhnrKl8iT8aqA==}
+  '@types/benchmark@2.1.5':
+    resolution: {integrity: sha512-cKio2eFB3v7qmKcvIHLUMw/dIx/8bhWPuzpzRT4unCPRTD8VdA9Zb0afxpcxOqR4PixRS7yT42FqGS8BYL8g1w==}
 
   '@types/body-parser@1.19.0':
     resolution: {integrity: sha512-W98JrE0j2K78swW4ukqMleo8R7h/pFETjM2DQ90MF6XK2i4LO4W3gQ71Lt4w3bfm2EvVSyWHplECvB5sK22yFQ==}
@@ -14620,7 +14620,7 @@ snapshots:
     dependencies:
       '@babel/types': 7.29.8
 
-  '@types/benchmark@1.0.33': {}
+  '@types/benchmark@2.1.5': {}
 
   '@types/body-parser@1.19.0':
     dependencies:
