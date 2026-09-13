@@ -184,7 +184,7 @@
     "@types/vscode": "1.62.0",
     "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "@vscode/vsce": "^2.22.1-2",
-    "esbuild": "0.18.10",
+    "esbuild": "0.28.2",
     "ovsx": "0.8.3"
   },
   "dependencies": {
