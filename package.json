@@ -63,7 +63,6 @@
     "@changesets/cli": "2.27.7",
     "@types/codemirror": "^0.0.90",
     "@types/copy": "^0.3.1",
-    "@types/express": "^4.17.11",
     "@types/mkdirp": "1.0.2",
     "@types/node": "^24",
     "@types/rimraf": "^3.0.2",
@@ -91,7 +90,7 @@
     "wgutils": "^1.2.5"
   },
   "devDependencies": {
-    "@vscode/vsce": "^2.22.1-2",
+    "@vscode/vsce": "^3.9.2",
     "jsdom": "^29.0.2",
     "ovsx": "0.8.3",
     "svgo": "^4.1.0"
