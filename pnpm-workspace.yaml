@@ -27,7 +27,7 @@ allowBuilds:
 overrides:
   '@babel/traverse': ^7.23.2
   vscode-languageserver-types: 3.17.3
-  markdown-it: 14.2.0
+  markdown-it: 15.0.1
   react: 19.2.7
   react-dom: 19.2.7
   vite: 8.2.2
