@@ -1096,8 +1096,8 @@ importers:
         specifier: ^3.2.7
         version: 3.3.3
       glob:
-        specifier: ^7.2.0
-        version: 7.2.3
+        specifier: ^13.0.6
+        version: 13.0.6
       graphql-config:
         specifier: ^5.1.6
         version: 5.1.6(@types/node@24.12.2)(cosmiconfig-toml-loader@1.0.0)(graphql@16.13.2)
@@ -1105,8 +1105,8 @@ importers:
         specifier: ^5.7.0
         version: link:../graphql-language-service
       lru-cache:
-        specifier: ^10.2.0
-        version: 10.4.3
+        specifier: ^11.5.2
+        version: 11.5.2
       node-abort-controller:
         specifier: ^3.0.1
         version: 3.0.1

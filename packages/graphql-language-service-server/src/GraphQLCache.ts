@@ -28,7 +28,6 @@ import type {
   Uri,
 } from 'graphql-language-service';
 
-import * as fs from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import nullthrows from 'nullthrows';
 
@@ -395,51 +394,28 @@ export class GraphQLCache {
       pattern = `{${patterns.join(',')}}`;
     }
 
-    return new Promise((resolve, reject) => {
-      const globResult = new glob.Glob(
-        pattern,
-        {
-          cwd: rootDir,
-          stat: true,
-          absolute: false,
-          ignore: [
-            'generated/relay',
-            '**/__flow__/**',
-            '**/__generated__/**',
-            '**/__github__/**',
-            '**/__mocks__/**',
-            '**/node_modules/**',
-            '**/__flowtests__/**',
-          ],
-        },
-        error => {
-          if (error) {
-            reject(error);
-          }
-        },
-      );
-      globResult.on('end', () => {
-        resolve(
-          Object.keys(globResult.statCache)
-            .filter(
-              filePath => typeof globResult.statCache[filePath] === 'object',
-            )
-            .filter(filePath => projectConfig.match(filePath))
-            .map(filePath => {
-              // @TODO
-              // so we have to force this here
-              // because glob's DefinitelyTyped doesn't use fs.Stats here though
-              // the docs indicate that is what's there :shrug:
-              const cacheEntry = globResult.statCache[filePath] as fs.Stats;
-              return {
-                filePath: URI.file(filePath).toString(),
-                mtime: Math.trunc(cacheEntry.mtime.getTime() / 1000),
-                size: cacheEntry.size,
-              };
-            }),
-        );
-      });
-    });
+    return glob(pattern, {
+      cwd: rootDir,
+      stat: true,
+      withFileTypes: true,
+      ignore: [
+        'generated/relay',
+        '**/__flow__/**',
+        '**/__generated__/**',
+        '**/__github__/**',
+        '**/__mocks__/**',
+        '**/node_modules/**',
+        '**/__flowtests__/**',
+      ],
+    }).then(files =>
+      files
+        .filter(file => projectConfig.match(file.fullpath()))
+        .map(file => ({
+          filePath: URI.file(file.fullpath()).toString(),
+          mtime: Math.trunc(file.mtimeMs! / 1000),
+          size: file.size!,
+        })),
+    );
   };
 
   _getSchemaAndDocumentFilePatterns = (projectConfig: GraphQLProjectConfig) => {
