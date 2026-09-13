@@ -28,7 +28,7 @@ describe('monaco-editor', () => {
         "dist/assets/index.css",
         "dist/assets/graphql.js",
         "dist/assets/typescript.js",
-        "dist/assets/index.js",
+        "dist/assets/dist.js",
         "dist/assets/tsMode.js",
         "dist/assets/jsonMode.js",
         "dist/assets/graphqlMode.js",
