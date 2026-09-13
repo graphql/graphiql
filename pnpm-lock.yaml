@@ -1306,9 +1306,6 @@ importers:
       '@types/dotenv':
         specifier: 8.2.0
         version: 8.2.0
-      '@types/mocha':
-        specifier: 5.2.7
-        version: 5.2.7
       '@types/node':
         specifier: ^24
         version: 24.12.2
@@ -4869,9 +4866,6 @@ packages:
 
   '@types/mkdirp@1.0.2':
     resolution: {integrity: sha512-o0K1tSO0Dx5X6xlU5F1D6625FawhC3dU3iqr25lluNv/+/QIVH8RLNEiVokgIZo+mz+87w/3Mkg/VvQS+J51fQ==}
-
-  '@types/mocha@5.2.7':
-    resolution: {integrity: sha512-NYrtPht0wGzhwe9+/idPaBB+TqkY9AhTvOLMkThm0IoEfLaiVQZwBwyJ5puCkO3AUCWrmcoePjp2mbFocKy4SQ==}
 
   '@types/mocha@9.1.1':
     resolution: {integrity: sha512-Z61JK7DKDtdKTWwLeElSEBcWGRLY8g95ic5FoQqI9CMx0ns/Ghep3B4DfcEimiKMvtamNVULVNKEsiwV3aQmXw==}
@@ -14743,8 +14737,6 @@ snapshots:
   '@types/mkdirp@1.0.2':
     dependencies:
       '@types/node': 24.12.2
-
-  '@types/mocha@5.2.7': {}
 
   '@types/mocha@9.1.1': {}
 
