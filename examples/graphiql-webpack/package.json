@@ -29,7 +29,6 @@
     "ajv-formats": "^3",
     "babel-loader": "^9",
     "copy-webpack-plugin": "^11",
-    "cross-env": "^7",
     "css-loader": "^6",
     "file-loader": "^6",
     "html-webpack-plugin": "^5",
