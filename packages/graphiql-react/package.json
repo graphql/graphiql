@@ -75,7 +75,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19.1.2",
     "@types/set-value": "^4.0.1",
-    "@typescript/native-preview": "^7.0.0-dev",
+    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "@vitejs/plugin-react": "^4.4.1",
     "@vitest/web-worker": "^4.1.6",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
