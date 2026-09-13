@@ -91,7 +91,7 @@
     "wgutils": "^1.2.5"
   },
   "devDependencies": {
-    "@vscode/vsce": "^2.22.1-2",
+    "@vscode/vsce": "^3.9.2",
     "jsdom": "^29.0.2",
     "ovsx": "0.8.3",
     "svgo": "^4.1.0"
