@@ -104,7 +104,7 @@ export default defineConfig({
     lib: {
       entry: 'src/index.ts',
       fileName(_format, entryName) {
-        const filePath = entryName.replace(/\.svg$/, '');
+        const filePath = entryName.replace(/\.svg(?:\?react)?$/, '');
         return `${filePath}.js`;
       },
       formats: ['es'],
