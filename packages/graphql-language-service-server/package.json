@@ -61,7 +61,7 @@
     "nullthrows": "^1.0.0",
     "source-map-js": "1.0.2",
     "svelte": "^5.55.7",
-    "svelte2tsx": "^0.7.0",
+    "svelte2tsx": "^0.7.61",
     "typescript": "^5.8.0",
     "vscode-jsonrpc": "^8.0.1",
     "vscode-languageserver": "^8.0.1",

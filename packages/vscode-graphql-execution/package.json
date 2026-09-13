@@ -113,7 +113,7 @@
     "graphql-ws": "6.0.8",
     "nullthrows": "1.1.1",
     "svelte": "^5.55.7",
-    "svelte2tsx": "^0.6.16",
+    "svelte2tsx": "^0.7.61",
     "wonka": "^6.3.6",
     "ws": "8.21.0"
   }
