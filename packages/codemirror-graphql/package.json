@@ -52,7 +52,7 @@
     "@codemirror/language": "^6.0.0",
     "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "codemirror": "^5.65.3",
-    "graphql": "^16.9.0",
+    "graphql": "^17.0.2",
     "rimraf": "^3.0.2",
     "sane": "2.0.0"
   }

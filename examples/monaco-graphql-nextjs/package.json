@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@graphiql/toolkit": "^0.12.1",
-    "graphql": "^16",
+    "graphql": "^17",
     "jsonc-parser": "^3",
     "monaco-editor": "^0.52",
     "monaco-graphql": "^1.9.0",

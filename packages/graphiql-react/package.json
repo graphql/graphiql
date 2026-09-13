@@ -79,7 +79,7 @@
     "@vitejs/plugin-react": "^4.4.1",
     "@vitest/web-worker": "^4.1.6",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
-    "graphql": "^16.9.0",
+    "graphql": "^17.0.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "typescript": "^5.8.0",
