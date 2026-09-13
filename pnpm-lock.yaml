@@ -1236,9 +1236,6 @@ importers:
       capitalize:
         specifier: 2.0.4
         version: 2.0.4
-      cosmiconfig:
-        specifier: 8.2.0
-        version: 8.2.0
       cosmiconfig-toml-loader:
         specifier: ^1.0.0
         version: 1.0.0
