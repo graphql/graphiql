@@ -56,7 +56,7 @@
     "graphql-config": "^5.1.6",
     "graphql-language-service": "^5.7.0",
     "lru-cache": "^10.2.0",
-    "mkdirp": "^1.0.4",
+    "mkdirp": "^3.0.1",
     "node-abort-controller": "^3.0.1",
     "nullthrows": "^1.0.0",
     "source-map-js": "1.0.2",
