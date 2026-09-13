@@ -14,7 +14,7 @@
     "@graphiql/react": "^0.39.0",
     "@react-router/fs-routes": "^7",
     "@react-router/node": "^7",
-    "@react-router/serve": "^7",
+    "@react-router/serve": "^8",
     "graphiql": "^5.4.0",
     "isbot": "^5",
     "react": "^19",
