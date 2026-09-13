@@ -583,8 +583,8 @@ importers:
         specifier: ^0.39.0
         version: link:../graphiql-react
       react-compiler-runtime:
-        specifier: 19.1.0-rc.1
-        version: 19.1.0-rc.1(react@18.3.1)
+        specifier: 19.1.0-rc.3
+        version: 19.1.0-rc.3(react@18.3.1)
     devDependencies:
       '@graphiql/toolkit':
         specifier: ^0.12.1
@@ -705,8 +705,8 @@ importers:
         specifier: ^2.2
         version: 2.2.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-compiler-runtime:
-        specifier: 19.1.0-rc.1
-        version: 19.1.0-rc.1(react@18.3.1)
+        specifier: 19.1.0-rc.3
+        version: 19.1.0-rc.3(react@18.3.1)
       zustand:
         specifier: ^5
         version: 5.0.4(@types/react@19.2.14)(react@18.3.1)(use-sync-external-store@1.5.0(react@18.3.1))
@@ -812,8 +812,8 @@ importers:
         specifier: ^0.12.0
         version: link:../graphiql-toolkit
       react-compiler-runtime:
-        specifier: 19.1.0-rc.1
-        version: 19.1.0-rc.1(react@18.3.1)
+        specifier: 19.1.0-rc.3
+        version: 19.1.0-rc.3(react@18.3.1)
       zustand:
         specifier: ^5
         version: 5.0.4(@types/react@19.2.14)(react@18.3.1)(use-sync-external-store@1.5.0(react@18.3.1))
@@ -909,8 +909,8 @@ importers:
         specifier: ^3.5.3
         version: 3.8.3
       react-compiler-runtime:
-        specifier: 19.1.0-rc.1
-        version: 19.1.0-rc.1(react@18.3.1)
+        specifier: 19.1.0-rc.3
+        version: 19.1.0-rc.3(react@18.3.1)
       set-value:
         specifier: ^4.1.0
         version: 4.1.0
@@ -9302,8 +9302,8 @@ packages:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
     hasBin: true
 
-  react-compiler-runtime@19.1.0-rc.1:
-    resolution: {integrity: sha512-wCt6g+cRh8g32QT18/9blfQHywGjYu+4FlEc3CW1mx3pPxYzZZl1y+VtqxRgnKKBCFLIGUYxog4j4rs5YS86hw==}
+  react-compiler-runtime@19.1.0-rc.3:
+    resolution: {integrity: sha512-Cssogys2XZu6SqxRdX2xd8cQAf57BBvFbLEBlIa77161lninbKUn/EqbecCe7W3eqDQfg3rIoOwzExzgCh7h/g==}
     peerDependencies:
       react: 18.3.1
 
@@ -19591,7 +19591,7 @@ snapshots:
       minimist: 1.2.8
       strip-json-comments: 2.0.1
 
-  react-compiler-runtime@19.1.0-rc.1(react@18.3.1):
+  react-compiler-runtime@19.1.0-rc.3(react@18.3.1):
     dependencies:
       react: 18.3.1
 
