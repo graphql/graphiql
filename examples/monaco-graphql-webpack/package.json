@@ -38,7 +38,7 @@
     "typescript": "^5",
     "webpack": "^5",
     "webpack-bundle-analyzer": "^3",
-    "webpack-cli": "^5",
+    "webpack-cli": "^7",
     "webpack-dev-server": "^5"
   }
 }
