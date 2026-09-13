@@ -19,7 +19,7 @@
     "graphql-ws": "^6",
     "react": "^19",
     "react-dom": "^19",
-    "regenerator-runtime": "^0.13"
+    "regenerator-runtime": "^0.14"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7",

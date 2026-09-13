@@ -91,11 +91,10 @@
   "devDependencies": {
     "@types/capitalize": "2.0.0",
     "@types/dotenv": "8.2.0",
-    "@types/mocha": "5.2.7",
     "@types/node": "^24",
     "@types/vscode": "1.62.0",
     "@types/ws": "8.2.2",
-    "@typescript/native-preview": "^7.0.0-dev",
+    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "@vscode/vsce": "^2.22.1-2",
     "esbuild": "0.28.1",
     "ovsx": "0.8.3"
@@ -113,7 +112,7 @@
     "graphql-ws": "6.0.8",
     "nullthrows": "1.1.1",
     "svelte": "^5.55.7",
-    "svelte2tsx": "^0.6.16",
+    "svelte2tsx": "^0.7.61",
     "wonka": "^6.3.6",
     "ws": "8.21.0"
   }

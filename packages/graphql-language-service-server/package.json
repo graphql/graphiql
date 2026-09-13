@@ -61,7 +61,7 @@
     "nullthrows": "^1.0.0",
     "source-map-js": "1.0.2",
     "svelte": "^5.55.7",
-    "svelte2tsx": "^0.7.0",
+    "svelte2tsx": "^0.7.61",
     "typescript": "^5.8.0",
     "vscode-jsonrpc": "^8.0.1",
     "vscode-languageserver": "^8.0.1",
@@ -73,7 +73,7 @@
     "@types/debounce-promise": "^3.1.9",
     "@types/glob": "^8.1.0",
     "@types/mkdirp": "^1.0.1",
-    "@typescript/native-preview": "^7.0.0-dev",
+    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "graphql": "^16.9.0",
     "msw": "^2.13.4",
     "vscode-languageserver-protocol": "^3.17.1"
