@@ -2,8 +2,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import copy from 'copy';
-import mkdirp from 'mkdirp';
-import rimraf from 'rimraf';
+import { rimrafSync } from 'rimraf';
 
 const [, , src, dest, destExtension] = process.argv;
 if (!src || !dest || !destExtension) {
@@ -22,10 +21,10 @@ const tempRenamePath = path.join(
 );
 
 if (fs.existsSync(tempRenamePath)) {
-  rimraf.sync(tempRenamePath);
+  rimrafSync(tempRenamePath);
 }
 
-const tempPath = mkdirp.sync(tempRenamePath);
+const tempPath = fs.mkdirSync(tempRenamePath, { recursive: true });
 
 if (tempPath) {
   copy(src, tempRenamePath, (error, files) => {
@@ -41,11 +40,11 @@ if (tempPath) {
             .replace(tempRenamePath, dest),
         );
 
-        mkdirp.sync(path.dirname(destinationPath));
+        fs.mkdirSync(path.dirname(destinationPath), { recursive: true });
         fs.renameSync(file.dest, destinationPath);
       }
     }
-    rimraf.sync(tempRenamePath);
+    rimrafSync(tempRenamePath);
   });
 } else {
   throw new Error(`Could not generate temporary path\n${tempRenamePath}`);
