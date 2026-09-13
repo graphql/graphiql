@@ -223,8 +223,14 @@ export const createExecutionSlice: CreateExecutionSlice =
             }
             const name =
               editor === variableEditor ? 'Variables' : 'Request headers';
-            // Need to format since the response editor uses `json` language
-            setResponse(formatError({ message: `${name} ${error.message}` }));
+            // Need to format since the response editor uses `json` language.
+            // Make it explicit that this is a client-side validation error and
+            // no request was sent, so it is not mistaken for a server response.
+            setResponse(
+              formatError({
+                message: `Request not sent. ${name} ${error.message}`,
+              }),
+            );
           }
 
           const newQueryId = queryId + 1;
