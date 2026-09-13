@@ -48,6 +48,7 @@ build({
     'dot',
     'bracket-template',
     'handlebars',
+    'ejs',
     'vscode',
     'velocityjs',
     'dustjs-linkedin',
