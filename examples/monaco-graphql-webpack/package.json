@@ -26,7 +26,6 @@
     "@babel/preset-env": "^7",
     "@babel/preset-react": "^7",
     "@babel/preset-typescript": "^7",
-    "@webpack-cli/serve": "^2",
     "babel-loader": "^9",
     "cross-env": "^10",
     "css-loader": "^7",
@@ -37,8 +36,8 @@
     "style-loader": "^4",
     "typescript": "^5",
     "webpack": "^5",
-    "webpack-bundle-analyzer": "^3",
-    "webpack-cli": "^5",
-    "webpack-dev-server": "^5"
+    "webpack-bundle-analyzer": "^5",
+    "webpack-cli": "^7",
+    "webpack-dev-server": "^6"
   }
 }
