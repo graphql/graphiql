@@ -1,4 +1,3 @@
 declare namespace globalThis {
-  import type { Environment } from 'monaco-editor/esm/monaco-editor';
-  var MonacoEnvironment: Environment;
+  var MonacoEnvironment: import('monaco-editor/esm/monaco-editor').Environment;
 }

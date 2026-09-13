@@ -64,7 +64,7 @@
     "monaco-editor": "0.52.2",
     "monaco-graphql": "^1.9.0",
     "prettier": "^3.5.3",
-    "react-compiler-runtime": "19.1.0-rc.1",
+    "react-compiler-runtime": "19.1.0-rc.3",
     "set-value": "^4.1.0",
     "zustand": "^5"
   },
@@ -75,7 +75,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19.1.2",
     "@types/set-value": "^4.0.1",
-    "@typescript/native-preview": "^7.0.0-dev",
+    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "@vitejs/plugin-react": "^4.4.1",
     "@vitest/web-worker": "^4.1.6",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
