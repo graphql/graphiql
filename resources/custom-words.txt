@@ -93,6 +93,7 @@ fsevents
 flowtests
 foldgutter
 foldmarker
+fullpath
 gdezerno
 ghapi
 gillam

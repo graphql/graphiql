@@ -309,21 +309,19 @@ export function getAutocompleteSuggestions(
     if (argDefs) {
       return hintList(
         token,
-        argDefs.map(
-          (argDef): CompletionItem => ({
-            label: argDef.name,
-            insertText: getInputInsertText(argDef.name + ': ', argDef.type),
-            insertTextMode: InsertTextMode.adjustIndentation,
-            insertTextFormat: InsertTextFormat.Snippet,
-            command: SuggestionCommand,
-            labelDetails: {
-              detail: ' ' + String(argDef.type),
-            },
-            documentation: argDef.description ?? undefined,
-            kind: CompletionItemKind.Variable,
-            type: argDef.type,
-          }),
-        ),
+        argDefs.map((argDef): CompletionItem => ({
+          label: argDef.name,
+          insertText: getInputInsertText(argDef.name + ': ', argDef.type),
+          insertTextMode: InsertTextMode.adjustIndentation,
+          insertTextFormat: InsertTextFormat.Snippet,
+          command: SuggestionCommand,
+          labelDetails: {
+            detail: ' ' + String(argDef.type),
+          },
+          documentation: argDef.description ?? undefined,
+          kind: CompletionItemKind.Variable,
+          type: argDef.type,
+        })),
       );
     }
   }

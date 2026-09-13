@@ -77,11 +77,11 @@
     "picomatch-browser": "^2.2.6"
   },
   "devDependencies": {
-    "@typescript/native-preview": "^7.0.0-dev",
+    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "graphql": "^16.14.2",
     "monaco-editor": "0.52.2",
     "prettier": "3.3.2",
-    "vite": "^6.4.3",
+    "vite": "^8.2.2",
     "vscode-languageserver-types": "^3.17.1"
   },
   "peerDependencies": {
