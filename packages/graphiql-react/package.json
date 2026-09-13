@@ -69,7 +69,6 @@
     "zustand": "^5"
   },
   "devDependencies": {
-    "@babel/helper-string-parser": "^7.19.4",
     "@types/get-value": "^3.0.5",
     "@types/markdown-it": "^14.1.2",
     "@types/react": "^19",
