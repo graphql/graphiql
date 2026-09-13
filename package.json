@@ -77,7 +77,7 @@
     "eslint-plugin-react-hooks": "^6.0.0-rc.1",
     "execa": "^7.1.1",
     "js-green-licenses": "4.0.0",
-    "mkdirp": "^1.0.4",
+    "mkdirp": "^3.0.1",
     "msw": "^2.13.4",
     "oxfmt": "^0.67.0",
     "oxlint": "^1",
