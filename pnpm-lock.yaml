@@ -302,8 +302,8 @@ importers:
         specifier: ^4
         version: 4.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       style-loader:
-        specifier: ^3
-        version: 3.3.4(webpack@5.106.2)
+        specifier: ^4
+        version: 4.0.0(webpack@5.106.2)
       webpack:
         specifier: ^5
         version: 5.106.2(webpack-cli@6.0.1)
@@ -464,8 +464,8 @@ importers:
         specifier: ^7
         version: 7.1.1(monaco-editor@0.52.2)(webpack@5.106.2)
       style-loader:
-        specifier: ^3
-        version: 3.3.4(webpack@5.106.2)
+        specifier: ^4
+        version: 4.0.0(webpack@5.106.2)
       typescript:
         specifier: ^5
         version: 5.9.3
@@ -10031,11 +10031,11 @@ packages:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
 
-  style-loader@3.3.4:
-    resolution: {integrity: sha512-0WqXzrsMTyb8yjZJHDqwmnwRJvhALK9LfRtRc6B4UTWe8AijYLZYZ9thuJTZc2VfQWINADW/j+LiJnfy2RoC1w==}
-    engines: {node: '>= 12.13.0'}
+  style-loader@4.0.0:
+    resolution: {integrity: sha512-1V4WqhhZZgjVAVJyt7TdDPZoPBPNHbekX4fWnCJL1yQukhCeZhJySUL+gL9y6sNdN95uEOS83Y55SqHcP7MzLA==}
+    engines: {node: '>= 18.12.0'}
     peerDependencies:
-      webpack: ^5.0.0
+      webpack: ^5.27.0
 
   style-mod@4.1.2:
     resolution: {integrity: sha512-wnD1HyVqpJUI2+eKZ+eo1UwghftP6yuFheBqqe+bWCotBjC2K1YnteJILRMs3SM4V/0dLEW1SC27MWP5y+mwmw==}
@@ -20446,7 +20446,7 @@ snapshots:
 
   strip-json-comments@3.1.1: {}
 
-  style-loader@3.3.4(webpack@5.106.2):
+  style-loader@4.0.0(webpack@5.106.2):
     dependencies:
       webpack: 5.106.2(webpack-cli@6.0.1)
 
