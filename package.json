@@ -75,7 +75,7 @@
     "copy": "^0.3.2",
     "cspell": "^10.0.1",
     "eslint-plugin-react-hooks": "^6.0.0-rc.1",
-    "execa": "^7.1.1",
+    "execa": "^10.0.1",
     "js-green-licenses": "4.0.0",
     "mkdirp": "^1.0.4",
     "msw": "^2.13.4",
