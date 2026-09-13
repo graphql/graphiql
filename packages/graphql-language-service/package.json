@@ -40,11 +40,10 @@
     "vscode-languageserver-types": "^3.17.1"
   },
   "devDependencies": {
-    "@types/benchmark": "^1.0.33",
+    "@types/benchmark": "^2.1.5",
     "@types/debounce-promise": "^3.1.9",
     "@types/json-schema": "7.0.9",
-    "@types/picomatch": "^2.3.0",
-    "@typescript/native-preview": "^7.0.0-dev",
+    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "benchmark": "^2.1.4",
     "graphql": "^16.9.0",
     "graphql-config": "^5.1.6",

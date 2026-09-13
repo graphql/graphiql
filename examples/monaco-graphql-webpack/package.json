@@ -28,7 +28,7 @@
     "@babel/preset-typescript": "^7",
     "@webpack-cli/serve": "^2",
     "babel-loader": "^9",
-    "cross-env": "^7",
+    "cross-env": "^10",
     "css-loader": "^6",
     "file-loader": "^6",
     "fork-ts-checker-webpack-plugin": "^7",
