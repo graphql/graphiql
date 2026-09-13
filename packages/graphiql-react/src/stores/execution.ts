@@ -11,7 +11,9 @@ import {
 import { ExecutionResult, GraphQLError, print } from 'graphql';
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
 import setValue from 'set-value';
-import { getValue } from 'get-value';
+// The published package types only expose the default export.
+// oxlint-disable-next-line import/no-named-as-default
+import getValue from 'get-value';
 
 import type { StateCreator } from 'zustand';
 import { tryParseJSONC, Range } from '../utility';
