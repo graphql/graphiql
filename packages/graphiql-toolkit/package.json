@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@typescript/native-preview": "^7.0.0-dev.20260707.2",
-    "graphql": "^16.9.0",
+    "graphql": "^17.0.2",
     "graphql-ws": "^6.0.8",
     "isomorphic-fetch": "^3.0.0",
     "subscriptions-transport-ws": "0.11.0",

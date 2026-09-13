@@ -79,7 +79,7 @@
   "devDependencies": {
     "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "execa": "^7.1.1",
-    "graphql": "^16.9.0",
+    "graphql": "^17.0.2",
     "monaco-editor": "0.52.2",
     "prettier": "3.3.2",
     "vscode-languageserver-types": "^3.17.1"

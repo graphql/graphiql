@@ -74,7 +74,7 @@
     "@types/glob": "^8.1.0",
     "@types/mkdirp": "^1.0.1",
     "@typescript/native-preview": "^7.0.0-dev.20260707.2",
-    "graphql": "^16.9.0",
+    "graphql": "^17.0.2",
     "msw": "^2.13.4",
     "vscode-languageserver-protocol": "^3.17.1"
   }
