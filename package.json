@@ -59,7 +59,7 @@
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.29.7",
     "@babel/register": "^7.21.0",
-    "@changesets/changelog-github": "0.7.0",
+    "@changesets/changelog-github": "1.0.1",
     "@changesets/cli": "2.27.7",
     "@types/codemirror": "^0.0.90",
     "@types/copy": "^0.3.1",
