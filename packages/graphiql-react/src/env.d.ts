@@ -1,7 +1,6 @@
 declare namespace globalThis {
-  import type * as monaco from 'monaco-editor';
-  var MonacoEnvironment: monaco.Environment;
-  var __MONACO: typeof monaco;
+  var MonacoEnvironment: import('monaco-editor').Environment;
+  var __MONACO: typeof import('monaco-editor');
 }
 
 declare module 'monaco-editor/esm/vs/editor/common/standalone/standaloneEnums.js' {

@@ -45,17 +45,17 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2",
-    "react-compiler-runtime": "19.1.0-rc.1",
+    "react-compiler-runtime": "19.1.0-rc.3",
     "zustand": "^5"
   },
   "devDependencies": {
     "@graphiql/react": "^0.39.0",
     "@testing-library/dom": "^10.4.0",
-    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@typescript/native-preview": "^7.0.0-dev",
+    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "@vitejs/plugin-react": "^4.4.1",
     "@vitest/web-worker": "^4.1.6",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
