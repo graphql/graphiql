@@ -1,10 +1,13 @@
 import path from 'node:path';
-import { defineConfig, PluginOption } from 'vite';
+import { createRequire } from 'node:module';
+import { defineConfig, esmExternalRequirePlugin, PluginOption } from 'vite';
 import dts from 'vite-plugin-dts';
 import react from '@vitejs/plugin-react';
 import { reactCompilerConfig as $reactCompilerConfig } from '../graphiql-react/vite.config.mjs';
 import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-compiler';
 import packageJSON from './package.json' with { type: 'json' };
+
+const require = createRequire(import.meta.url);
 
 const reactCompilerConfig: Partial<ReactCompilerConfig> = {
   ...$reactCompilerConfig,
@@ -28,6 +31,12 @@ export const plugins: PluginOption[] = [
 ];
 
 const umdConfig = defineConfig({
+  resolve: {
+    alias: {
+      'react/jsx-dev-runtime': require.resolve('react-18/jsx-dev-runtime'),
+      'react/jsx-runtime': require.resolve('react-18/jsx-runtime'),
+    },
+  },
   define: {
     // graphql v17
     'globalThis.process.env.NODE_ENV': 'true',
@@ -35,7 +44,12 @@ const umdConfig = defineConfig({
     'globalThis.process': 'true',
     'process.env.NODE_ENV': '"production"',
   },
-  plugins,
+  plugins: [
+    ...plugins,
+    esmExternalRequirePlugin({
+      external: ['react', 'react-dom', 'react-dom/client'],
+    }),
+  ],
   css: {
     transformer: 'lightningcss',
   },
@@ -54,11 +68,11 @@ const umdConfig = defineConfig({
       formats: ['umd'],
     },
     rollupOptions: {
-      external: ['react', 'react-dom'],
       output: {
         globals: {
           react: 'React',
           'react-dom': 'ReactDOM',
+          'react-dom/client': 'ReactDOM',
         },
       },
     },

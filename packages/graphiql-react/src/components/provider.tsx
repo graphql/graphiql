@@ -133,6 +133,7 @@ useEffect(() => {
     void actions.initialize({
       experimentalFragmentArguments: props.experimentalFragmentArguments,
     });
+    // eslint-disable-next-line react-hooks-js/set-state-in-effect -- The client-only rerender avoids hydration mismatches.
     setMounted(true);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

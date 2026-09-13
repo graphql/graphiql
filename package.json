@@ -63,7 +63,6 @@
     "@changesets/cli": "2.27.7",
     "@types/codemirror": "^0.0.90",
     "@types/copy": "^0.3.1",
-    "@types/express": "^4.17.11",
     "@types/mkdirp": "1.0.2",
     "@types/node": "^24",
     "@types/ws": "8.2.2",
@@ -73,8 +72,8 @@
     "concurrently": "^10.0.5",
     "copy": "^0.3.2",
     "cspell": "^10.0.1",
-    "eslint-plugin-react-hooks": "^6.0.0-rc.1",
-    "execa": "^7.1.1",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "execa": "^10.0.1",
     "js-green-licenses": "4.0.0",
     "mkdirp": "^1.0.4",
     "msw": "^2.13.4",
@@ -90,7 +89,7 @@
     "wgutils": "^1.2.5"
   },
   "devDependencies": {
-    "@vscode/vsce": "^2.22.1-2",
+    "@vscode/vsce": "^3.9.2",
     "jsdom": "^29.0.2",
     "ovsx": "0.8.3",
     "svgo": "^4.1.0"

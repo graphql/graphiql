@@ -12,20 +12,20 @@
   },
   "dependencies": {
     "@graphiql/react": "^0.39.0",
-    "@react-router/fs-routes": "^7",
-    "@react-router/node": "^7",
-    "@react-router/serve": "^7",
+    "@react-router/fs-routes": "^8.3.1",
+    "@react-router/node": "^8.3.1",
+    "@react-router/serve": "^8.3.1",
     "graphiql": "^5.4.0",
     "isbot": "^5",
-    "react": "^19",
-    "react-dom": "^19",
-    "react-router": "^7"
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router": "^8.3.1"
   },
   "devDependencies": {
-    "@react-router/dev": "^7",
+    "@react-router/dev": "^8.3.1",
     "@types/node": "^24",
     "@types/react": "^19",
     "typescript": "^5",
-    "vite": "^6"
+    "vite": "^8"
   }
 }
