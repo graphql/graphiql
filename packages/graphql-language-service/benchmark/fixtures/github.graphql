@@ -624,7 +624,10 @@ type CommentDeletedEvent implements Node {
   id: ID!
 }
 
-type Commit implements Node & GitObject & Subscribable & UniformResourceLocatable {
+type Commit implements Node &
+  GitObject &
+  Subscribable &
+  UniformResourceLocatable {
   abbreviatedOid: String!
 
   additions: Int!
@@ -761,7 +764,13 @@ input CommitAuthor {
   emails: [String!]
 }
 
-type CommitComment implements Node & Comment & Deletable & Updatable & UpdatableComment & Reactable & RepositoryNode {
+type CommitComment implements Node &
+  Comment &
+  Deletable &
+  Updatable &
+  UpdatableComment &
+  Reactable &
+  RepositoryNode {
   author: Actor
 
   authorAssociation: CommentAuthorAssociation!
@@ -1953,7 +1962,11 @@ type Gist implements Node & Starrable {
   viewerHasStarred: Boolean!
 }
 
-type GistComment implements Node & Comment & Deletable & Updatable & UpdatableComment {
+type GistComment implements Node &
+  Comment &
+  Deletable &
+  Updatable &
+  UpdatableComment {
   author: Actor
 
   authorAssociation: CommentAuthorAssociation!
@@ -2258,7 +2271,18 @@ input ImportProjectInput {
   clientMutationId: String
 }
 
-type Issue implements Node & Assignable & Closable & Comment & Updatable & UpdatableComment & Labelable & Lockable & Reactable & RepositoryNode & Subscribable & UniformResourceLocatable {
+type Issue implements Node &
+  Assignable &
+  Closable &
+  Comment &
+  Updatable &
+  UpdatableComment &
+  Labelable &
+  Lockable &
+  Reactable &
+  RepositoryNode &
+  Subscribable &
+  UniformResourceLocatable {
   activeLockReason: LockReason
 
   assignees(
@@ -2427,7 +2451,13 @@ type Issue implements Node & Assignable & Closable & Comment & Updatable & Updat
   viewerSubscription: SubscriptionState
 }
 
-type IssueComment implements Node & Comment & Deletable & Updatable & UpdatableComment & Reactable & RepositoryNode {
+type IssueComment implements Node &
+  Comment &
+  Deletable &
+  Updatable &
+  UpdatableComment &
+  Reactable &
+  RepositoryNode {
   author: Actor
 
   authorAssociation: CommentAuthorAssociation!
@@ -3562,7 +3592,15 @@ enum OrderDirection {
   DESC
 }
 
-type Organization implements Node & Actor & RegistryPackageOwner & RegistryPackageSearch & ProjectOwner & RepositoryOwner & UniformResourceLocatable & MemberStatusable & ProfileOwner {
+type Organization implements Node &
+  Actor &
+  RegistryPackageOwner &
+  RegistryPackageSearch &
+  ProjectOwner &
+  RepositoryOwner &
+  UniformResourceLocatable &
+  MemberStatusable &
+  ProfileOwner {
   anyPinnableItems(type: PinnableItemType): Boolean!
 
   avatarUrl(size: Int): URI!
@@ -4257,7 +4295,18 @@ type PublicKeyEdge {
   node: PublicKey
 }
 
-type PullRequest implements Node & Assignable & Closable & Comment & Updatable & UpdatableComment & Labelable & Lockable & Reactable & RepositoryNode & Subscribable & UniformResourceLocatable {
+type PullRequest implements Node &
+  Assignable &
+  Closable &
+  Comment &
+  Updatable &
+  UpdatableComment &
+  Labelable &
+  Lockable &
+  Reactable &
+  RepositoryNode &
+  Subscribable &
+  UniformResourceLocatable {
   activeLockReason: LockReason
 
   additions: Int!
@@ -4660,7 +4709,13 @@ enum PullRequestPubSubTopic {
   STATE
 }
 
-type PullRequestReview implements Node & Comment & Deletable & Updatable & UpdatableComment & Reactable & RepositoryNode {
+type PullRequestReview implements Node &
+  Comment &
+  Deletable &
+  Updatable &
+  UpdatableComment &
+  Reactable &
+  RepositoryNode {
   author: Actor
 
   authorAssociation: CommentAuthorAssociation!
@@ -4759,7 +4814,13 @@ type PullRequestReview implements Node & Comment & Deletable & Updatable & Updat
   viewerDidAuthor: Boolean!
 }
 
-type PullRequestReviewComment implements Node & Comment & Deletable & Updatable & UpdatableComment & Reactable & RepositoryNode {
+type PullRequestReviewComment implements Node &
+  Comment &
+  Deletable &
+  Updatable &
+  UpdatableComment &
+  Reactable &
+  RepositoryNode {
   author: Actor
 
   authorAssociation: CommentAuthorAssociation!
@@ -5816,7 +5877,13 @@ enum ReportedContentClassifiers {
   RESOLVED
 }
 
-type Repository implements Node & ProjectOwner & RegistryPackageOwner & Subscribable & Starrable & UniformResourceLocatable & RepositoryInfo {
+type Repository implements Node &
+  ProjectOwner &
+  RegistryPackageOwner &
+  Subscribable &
+  Starrable &
+  UniformResourceLocatable &
+  RepositoryInfo {
   assignableUsers(
     after: String
 
@@ -7672,7 +7739,14 @@ type UpdateTopicsPayload {
 
 scalar URI
 
-type User implements Node & Actor & RegistryPackageOwner & RegistryPackageSearch & ProjectOwner & RepositoryOwner & UniformResourceLocatable & ProfileOwner {
+type User implements Node &
+  Actor &
+  RegistryPackageOwner &
+  RegistryPackageSearch &
+  ProjectOwner &
+  RepositoryOwner &
+  UniformResourceLocatable &
+  ProfileOwner {
   anyPinnableItems(type: PinnableItemType): Boolean!
 
   avatarUrl(size: Int): URI!
