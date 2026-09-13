@@ -25,7 +25,7 @@
     "@codemirror/basic-setup": "^0.20",
     "@codemirror/language": "^0.20",
     "codemirror-graphql": "^2",
-    "graphql": "^16"
+    "graphql": "^16.14.2"
   },
   "devDependencies": {
     "parcel-bundler": "^1",

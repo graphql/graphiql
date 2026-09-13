@@ -1,7 +1,8 @@
-import { cn } from '../../utility';
-import { forwardRef, FC, ComponentPropsWithoutRef } from 'react';
+import { clsx } from 'clsx';
+import { forwardRef, FC, ComponentPropsWithoutRef, RefObject } from 'react';
 import { CloseIcon } from '../../icons';
 import { UnStyledButton } from '../button';
+import { usePortalContainer } from '../portal';
 import * as D from '@radix-ui/react-dialog';
 import { Root as VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
@@ -16,7 +17,7 @@ const DialogClose = forwardRef<
       {...props}
       ref={ref}
       type="button"
-      className={cn('graphiql-dialog-close', props.className)}
+      className={clsx('graphiql-dialog-close', props.className)}
     >
       <VisuallyHidden>Close dialog</VisuallyHidden>
       <CloseIcon />
@@ -25,12 +26,98 @@ const DialogClose = forwardRef<
 ));
 DialogClose.displayName = 'Dialog.Close';
 
-const DialogRoot: FC<D.DialogProps> = ({ children, ...props }) => {
+/**
+ * The styled header of a dialog: a title on the left and a close button on the
+ * right, with a bottom divider. A string child is wrapped in `Dialog.Title`
+ * automatically (Radix requires a title for accessibility); pass JSX to render
+ * your own title node.
+ */
+const DialogHeader = forwardRef<
+  HTMLDivElement,
+  ComponentPropsWithoutRef<'div'>
+>(({ children, className, ...props }, ref) => (
+  <div
+    {...props}
+    ref={ref}
+    className={clsx('graphiql-dialog-header', className)}
+  >
+    {typeof children === 'string' ? (
+      <D.Title className="graphiql-dialog-title">{children}</D.Title>
+    ) : (
+      children
+    )}
+    <DialogClose />
+  </div>
+));
+DialogHeader.displayName = 'Dialog.Header';
+
+/** The content region of a dialog, with consistent padding. */
+const DialogBody = forwardRef<HTMLDivElement, ComponentPropsWithoutRef<'div'>>(
+  ({ children, className, ...props }, ref) => (
+    <div
+      {...props}
+      ref={ref}
+      className={clsx('graphiql-dialog-body', className)}
+    >
+      {children}
+    </div>
+  ),
+);
+DialogBody.displayName = 'Dialog.Body';
+
+/** The action row at the bottom of a dialog, right-aligned with a top divider. */
+const DialogFooter = forwardRef<
+  HTMLDivElement,
+  ComponentPropsWithoutRef<'div'>
+>(({ children, className, ...props }, ref) => (
+  <div
+    {...props}
+    ref={ref}
+    className={clsx('graphiql-dialog-footer', className)}
+  >
+    {children}
+  </div>
+));
+DialogFooter.displayName = 'Dialog.Footer';
+
+export type DialogRootProps = D.DialogProps & {
+  /**
+   * The element focus should return to when the dialog closes. Radix
+   * restores focus to whatever had it when the dialog opened, but that
+   * snapshot can be clobbered by re-renders while the dialog is open (e.g.
+   * a controlled dialog whose content subscribes to store updates), which
+   * silently drops focus to `<body>`. Pass a ref to the element that opened
+   * the dialog (usually its trigger button) to make the restore explicit.
+   */
+  restoreFocusRef?: RefObject<HTMLElement | null>;
+};
+
+const DialogRoot: FC<DialogRootProps> = ({
+  children,
+  restoreFocusRef,
+  ...props
+}) => {
+  const container = usePortalContainer();
   return (
     <D.Root {...props}>
-      <D.Portal>
+      <D.Portal container={container}>
         <D.Overlay className="graphiql-dialog-overlay" />
-        <D.Content className="graphiql-dialog">{children}</D.Content>
+        <D.Content
+          className="graphiql-dialog"
+          onCloseAutoFocus={
+            restoreFocusRef
+              ? event => {
+                  const target = restoreFocusRef.current;
+                  if (target) {
+                    event.preventDefault();
+                    target.focus();
+                  }
+                }
+              : undefined
+          }
+        >
+          {children}
+        </D.Content>
       </D.Portal>
     </D.Root>
   );
@@ -41,4 +128,7 @@ export const Dialog = Object.assign(DialogRoot, {
   Title: D.Title,
   Trigger: D.Trigger,
   Description: D.Description,
+  Header: DialogHeader,
+  Body: DialogBody,
+  Footer: DialogFooter,
 });

@@ -7,7 +7,8 @@ import {
   createEditor,
   onEditorContainerKeyDown,
 } from '../utility/create-editor';
-import { useChangeHandler, cleanupDisposables, cn, pick } from '../utility';
+import { clsx } from 'clsx';
+import { useChangeHandler, cleanupDisposables, pick } from '../utility';
 import { useMonaco } from '../stores';
 
 interface VariablesEditorProps extends EditorProps {
@@ -55,7 +56,7 @@ export const VariablesEditor: FC<VariablesEditorProps> = ({
       tabIndex={0}
       onKeyDown={onEditorContainerKeyDown}
       {...props}
-      className={cn('graphiql-editor', props.className)}
+      className={clsx('graphiql-editor', props.className)}
     />
   );
 };

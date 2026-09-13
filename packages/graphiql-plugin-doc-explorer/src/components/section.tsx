@@ -43,7 +43,7 @@ export const ExplorerSection: FC<ExplorerSectionProps> = ({
   return (
     <div>
       <div className="graphiql-doc-explorer-section-title">
-        <Icon />
+        <Icon aria-hidden="true" />
         {title}
       </div>
       <div className="graphiql-doc-explorer-section-content">{children}</div>

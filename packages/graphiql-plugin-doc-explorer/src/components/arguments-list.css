@@ -1,0 +1,132 @@
+.graphiql-doc-explorer-arguments-list {
+  display: flex;
+  flex-direction: column;
+  padding: var(--px-4) 0;
+}
+
+/* Section header — "ARGUMENTS · N" / "DIRECTIVES · N" */
+.graphiql-doc-explorer-arguments-list-header {
+  display: flex;
+  align-items: center;
+  gap: var(--px-6);
+  padding: var(--px-6) var(--px-16) var(--px-4);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: oklch(var(--fg-subtle));
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  width: 100%;
+  text-align: left;
+
+  & svg {
+    width: 9px;
+    height: 9px;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    color: oklch(var(--fg-muted));
+  }
+
+  &:focus-visible {
+    outline: 2px solid oklch(var(--accent-blue));
+    outline-offset: -2px;
+  }
+}
+
+.graphiql-doc-explorer-arguments-list-count {
+  color: oklch(var(--fg-dim));
+  font-weight: 500;
+}
+
+.graphiql-doc-explorer-arguments-list-body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Individual argument row */
+.graphiql-doc-explorer-argument {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-4);
+  padding: 5px var(--px-16) 5px var(--px-24);
+}
+
+.graphiql-doc-explorer-argument--deprecated {
+  opacity: 0.6;
+}
+
+/* Signature line: name : type = default */
+.graphiql-doc-explorer-argument-sig {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--px-4);
+  font-family: var(--font-family-mono);
+  font-size: 12px;
+}
+
+.graphiql-doc-explorer-argument-name {
+  color: oklch(var(--accent-green-light));
+}
+
+.graphiql-doc-explorer-argument-colon {
+  color: oklch(var(--fg-disabled));
+}
+
+.graphiql-doc-explorer-argument-type {
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-doc-explorer-argument-default {
+  color: oklch(var(--fg-muted));
+}
+
+.graphiql-doc-explorer-argument-desc {
+  font-size: 11px;
+  color: oklch(var(--fg-subtle));
+  line-height: 15px;
+}
+
+.graphiql-doc-explorer-arguments-list-show-deprecated {
+  margin: var(--px-8) var(--px-16);
+}
+
+/* Directives — same eyebrow layout as ArgumentsList */
+.graphiql-doc-explorer-directives-list {
+  display: flex;
+  flex-direction: column;
+  padding: var(--px-4) 0;
+}
+
+.graphiql-doc-explorer-directives-list-header {
+  padding: var(--px-6) var(--px-16) var(--px-4);
+  color: oklch(var(--fg-subtle));
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.graphiql-doc-explorer-directives-list-count {
+  color: oklch(var(--fg-dim));
+  font-weight: 500;
+}
+
+.graphiql-doc-explorer-directives-list-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.graphiql-doc-explorer-directive-row {
+  padding: 5px var(--px-16) 5px var(--px-24);
+  font-family: var(--font-family-mono);
+  font-size: 12px;
+}
+
+.graphiql-doc-explorer-directive-row .graphiql-doc-explorer-directive {
+  color: oklch(var(--accent-orange));
+}

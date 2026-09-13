@@ -11,6 +11,9 @@ export const svelteParser: SourceParser = (text, uri, logger) => {
 
   const consumer = new SourceMapConsumer({
     ...svelteResult.map,
+    sourcesContent: svelteResult.map.sourcesContent?.map(
+      sourceContent => sourceContent ?? '',
+    ),
     version: String(svelteResult.map.version),
   });
 

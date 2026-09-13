@@ -1,6 +1,5 @@
 import type * as monaco from 'monaco-editor';
 import { STORAGE_KEY, MONACO_THEME_NAME } from '../constants';
-import { monacoStore } from './monaco';
 import type { StateCreator } from 'zustand';
 import type { SlicesWithActions, Theme } from '../types';
 
@@ -11,8 +10,6 @@ type MonacoTheme =
 
 export interface ThemeSlice {
   theme: Theme;
-
-  monacoTheme?: MonacoTheme;
 }
 
 export interface ThemeActions {
@@ -49,34 +46,20 @@ type CreateThemeSlice = (
   }
 >;
 
-export const createThemeSlice: CreateThemeSlice =
-  ({ editorTheme }) =>
-  (set, get) => ({
-    theme: null,
-    actions: {
-      setTheme(theme) {
-        const { storage } = get();
-        storage.set(STORAGE_KEY.theme, theme ?? '');
-        document.body.classList.remove('graphiql-light', 'graphiql-dark');
-        if (theme) {
-          document.body.classList.add(`graphiql-${theme}`);
-        }
-        const { monaco } = monacoStore.getState();
-        const resolvedTheme = theme ?? getSystemTheme();
-        const monacoTheme = editorTheme![resolvedTheme];
-        monaco?.editor.setTheme(monacoTheme);
-        set({ theme, monacoTheme });
-      },
+export const createThemeSlice: CreateThemeSlice = () => (set, get) => ({
+  theme: null,
+  actions: {
+    setTheme(theme) {
+      const { storage } = get();
+      storage.set(STORAGE_KEY.theme, theme ?? '');
+      document.body.classList.remove('graphiql-light', 'graphiql-dark');
+      if (theme) {
+        document.body.classList.add(`graphiql-${theme}`);
+        document.documentElement.setAttribute('data-theme', theme);
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+      set({ theme });
     },
-  });
-
-/**
- * Get the resolved theme - dark or light
- * @see https://github.com/pacocoursey/next-themes/blob/c89d0191ce0f19215d7ddfa9eb28e1e4f94d37e5/next-themes/src/index.tsx#L255
- */
-function getSystemTheme() {
-  const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
-  const isDark = mediaQueryList.matches;
-  const systemTheme = isDark ? 'dark' : 'light';
-  return systemTheme;
-}
+  },
+});

@@ -26,9 +26,9 @@ jobs:
           # test against the latest 16.x version, which might be newer than what we have
           - '^16'
           # test against the oldest version we support
-          - '^16.0.0'
-          # test against the latest alpha
-          - '^17.0.0-alpha'
+          - '16.11.0'
+          # test against the latest 17.x version
+          - '^17'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
@@ -44,6 +44,9 @@ jobs:
           path: node_modules
           key: node_modules-${{hashFiles('pnpm-lock.yaml')}}
           restore-keys: node_modules-
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
       - name: Force GraphQL ${{ matrix.release }} solution
         run: pnpm repo:resolve graphql@${{ matrix.release }}
 
@@ -52,10 +55,21 @@ jobs:
       - name: Turbo cache
         uses: ./.github/actions/turbo-cache
 
+      - name: Build
+        run: pnpm build
+
       - name: Unit Tests
         run: pnpm test
 
-      - name: Cypress
-        run: |
-          pnpm --filter graphiql exec cypress install
-          pnpm e2e
+      - name: Install Cypress
+        run: pnpm --filter graphiql-e2e exec cypress install
+
+      - name: Cypress (GraphQL 16)
+        if: matrix.release != '^17'
+        env:
+          CYPRESS_excludeSpecPattern: cypress/e2e/incremental-delivery.cy.ts
+        run: pnpm e2e
+
+      - name: Cypress (GraphQL 17)
+        if: matrix.release == '^17'
+        run: pnpm e2e

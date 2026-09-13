@@ -21,6 +21,16 @@
       "dependsOn": ["build"],
       "cache": false
     },
+    "storybook": {
+      "dependsOn": ["build"],
+      "persistent": true,
+      "interruptible": true,
+      "cache": false
+    },
+    "build-storybook": {
+      "dependsOn": ["build"],
+      "outputs": ["storybook-static/**"]
+    },
     "dev": {
       "dependsOn": ["^build"],
       "persistent": true,

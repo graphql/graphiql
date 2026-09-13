@@ -1,20 +1,13 @@
 import { GraphiQL } from 'graphiql';
+import { createTransport } from '@graphiql/toolkit';
 import 'graphiql/style.css';
 
-async function fetcher(graphQLParams) {
-  const response = await fetch('https://graphql.earthdata.nasa.gov/api', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(graphQLParams),
-  });
-  return response.json();
-}
+const transport = createTransport({
+  url: 'https://graphql.earthdata.nasa.gov/api',
+});
 
 function App() {
-  return <GraphiQL fetcher={fetcher} />;
+  return <GraphiQL transport={transport} />;
 }
 
 export default App;
