@@ -216,18 +216,16 @@ function getJSONSchemaFromGraphQLType(
       definition.enum.push(null);
     }
   } else if (isListType(baseType)) {
-    if (required) {
-      definition.type = 'array';
-    } else {
-      definition.type = ['array', 'null'];
-    }
-
     const { definition: def, definitions: defs } = getJSONSchemaFromGraphQLType(
       baseType.ofType,
       options,
     );
 
-    definition.items = def;
+    // The GraphQL spec allows for passing a single list item as a list
+    definition.anyOf = [
+      def,
+      { type: required ? 'array' : ['array', 'null'], items: def },
+    ];
 
     if (defs) {
       for (const defName of Object.keys(defs)) {
