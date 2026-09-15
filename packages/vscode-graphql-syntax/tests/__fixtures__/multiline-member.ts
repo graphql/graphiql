@@ -1,0 +1,2 @@
+client.
+  graphql('query { id }');
