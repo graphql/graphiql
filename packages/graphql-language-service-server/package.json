@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-server",
-  "version": "2.15.0",
+  "version": "3.0.0-beta.0",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net)",
@@ -54,7 +54,7 @@
     "fast-glob": "^3.2.7",
     "glob": "^13.0.6",
     "graphql-config": "^5.1.6",
-    "graphql-language-service": "^5.7.0",
+    "graphql-language-service": "^6.0.0-beta.0",
     "lru-cache": "^11.5.2",
     "node-abort-controller": "^3.0.1",
     "nullthrows": "^1.0.0",

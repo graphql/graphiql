@@ -155,10 +155,10 @@ importers:
   examples/graphiql-vite:
     dependencies:
       '@graphiql/toolkit':
-        specifier: ^1.0.0-beta.0
+        specifier: ^1.0.0-beta.1
         version: link:../../packages/graphiql-toolkit
       graphiql:
-        specifier: ^6.0.0-beta.1
+        specifier: ^6.0.0-beta.2
         version: link:../../packages/graphiql
       graphql:
         specifier: ^16.14.2
@@ -183,19 +183,19 @@ importers:
   examples/graphiql-vite-react-router:
     dependencies:
       '@graphiql/plugin-collections':
-        specifier: ^1.0.0-beta.1
+        specifier: ^1.0.0-beta.2
         version: link:../../packages/graphiql-plugin-collections
       '@graphiql/plugin-history':
-        specifier: ^1.0.0-beta.1
+        specifier: ^1.0.0-beta.2
         version: link:../../packages/graphiql-plugin-history
       '@graphiql/plugin-query-builder':
-        specifier: ^1.0.0-beta.1
+        specifier: ^1.0.0-beta.2
         version: link:../../packages/graphiql-plugin-query-builder
       '@graphiql/react':
-        specifier: ^1.0.0-beta.1
+        specifier: ^1.0.0-beta.2
         version: link:../../packages/graphiql-react
       '@graphiql/toolkit':
-        specifier: ^1.0.0-beta.0
+        specifier: ^1.0.0-beta.1
         version: link:../../packages/graphiql-toolkit
       '@react-router/fs-routes':
         specifier: ^8.3.1
@@ -207,7 +207,7 @@ importers:
         specifier: ^8.3.1
         version: 8.3.1(react-router@8.3.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(typescript@5.9.3)
       graphiql:
-        specifier: ^6.0.0-beta.1
+        specifier: ^6.0.0-beta.2
         version: link:../../packages/graphiql
       isbot:
         specifier: ^5
@@ -241,16 +241,16 @@ importers:
   examples/graphiql-webpack:
     dependencies:
       '@graphiql/plugin-code-exporter':
-        specifier: ^5.1.4-beta.1
+        specifier: ^6.0.0-beta.2
         version: link:../../packages/graphiql-plugin-code-exporter
       '@graphiql/react':
-        specifier: ^1.0.0-beta.1
+        specifier: ^1.0.0-beta.2
         version: link:../../packages/graphiql-react
       '@graphiql/toolkit':
-        specifier: ^1.0.0-beta.0
+        specifier: ^1.0.0-beta.1
         version: link:../../packages/graphiql-toolkit
       graphiql:
-        specifier: ^6.0.0-beta.1
+        specifier: ^6.0.0-beta.2
         version: link:../../packages/graphiql
       graphql:
         specifier: ^16.14.2
@@ -326,7 +326,7 @@ importers:
   examples/monaco-graphql-nextjs:
     dependencies:
       '@graphiql/toolkit':
-        specifier: ^1.0.0-beta.0
+        specifier: ^1.0.0-beta.1
         version: link:../../packages/graphiql-toolkit
       graphql:
         specifier: ^16.14.2
@@ -338,7 +338,7 @@ importers:
         specifier: ^0.52
         version: 0.52.2
       monaco-graphql:
-        specifier: ^1.9.0
+        specifier: ^2.0.0-beta.0
         version: link:../../packages/monaco-graphql
       next:
         specifier: ^15
@@ -363,13 +363,13 @@ importers:
   examples/monaco-graphql-react-vite:
     dependencies:
       '@graphiql/toolkit':
-        specifier: ^1.0.0-beta.0
+        specifier: ^1.0.0-beta.1
         version: link:../../packages/graphiql-toolkit
       graphql:
         specifier: ^16.14.2
         version: 16.14.2
       graphql-language-service:
-        specifier: ^5.7.0
+        specifier: ^6.0.0-beta.0
         version: link:../../packages/graphql-language-service
       jsonc-parser:
         specifier: ^3
@@ -378,7 +378,7 @@ importers:
         specifier: ^0.52
         version: 0.52.2
       monaco-graphql:
-        specifier: ^1.9.0
+        specifier: ^2.0.0-beta.0
         version: link:../../packages/monaco-graphql
       react:
         specifier: 19.2.7
@@ -400,7 +400,7 @@ importers:
         specifier: ^16.14.2
         version: 16.14.2
       graphql-language-service:
-        specifier: ^5.7.0
+        specifier: ^6.0.0-beta.0
         version: link:../../packages/graphql-language-service
       json-schema:
         specifier: ^0.4
@@ -412,7 +412,7 @@ importers:
         specifier: ^0.52
         version: 0.52.2
       monaco-graphql:
-        specifier: ^1.9.0
+        specifier: ^2.0.0-beta.0
         version: link:../../packages/monaco-graphql
       prettier:
         specifier: ^3
@@ -491,7 +491,7 @@ importers:
   packages/cm6-graphql:
     dependencies:
       graphql-language-service:
-        specifier: ^5.7.0
+        specifier: ^6.0.0-beta.0
         version: link:../graphql-language-service
     devDependencies:
       '@codemirror/autocomplete':
@@ -540,7 +540,7 @@ importers:
         specifier: ^0.0.90
         version: 0.0.90
       graphql-language-service:
-        specifier: 5.7.0
+        specifier: 6.0.0-beta.0
         version: link:../graphql-language-service
     devDependencies:
       '@codemirror/language':
@@ -562,19 +562,19 @@ importers:
   packages/graphiql:
     dependencies:
       '@graphiql/plugin-collections':
-        specifier: ^1.0.0-beta.1
+        specifier: ^1.0.0-beta.2
         version: link:../graphiql-plugin-collections
       '@graphiql/plugin-doc-explorer':
-        specifier: ^1.0.0-beta.1
+        specifier: ^1.0.0-beta.2
         version: link:../graphiql-plugin-doc-explorer
       '@graphiql/plugin-history':
-        specifier: ^1.0.0-beta.1
+        specifier: ^1.0.0-beta.2
         version: link:../graphiql-plugin-history
       '@graphiql/plugin-query-builder':
-        specifier: ^1.0.0-beta.1
+        specifier: ^1.0.0-beta.2
         version: link:../graphiql-plugin-query-builder
       '@graphiql/react':
-        specifier: 1.0.0-beta.1
+        specifier: 1.0.0-beta.2
         version: link:../graphiql-react
       clsx:
         specifier: ^1.2.1
@@ -584,7 +584,7 @@ importers:
         version: 19.1.0-rc.3(react@19.2.7)
     devDependencies:
       '@graphiql/toolkit':
-        specifier: 1.0.0-beta.0
+        specifier: 1.0.0-beta.1
         version: link:../graphiql-toolkit
       '@testing-library/dom':
         specifier: ^10.4.0
@@ -647,13 +647,13 @@ importers:
   packages/graphiql-e2e:
     dependencies:
       '@graphiql/react':
-        specifier: 1.0.0-beta.1
+        specifier: 1.0.0-beta.2
         version: link:../graphiql-react
       '@graphiql/toolkit':
-        specifier: 1.0.0-beta.0
+        specifier: 1.0.0-beta.1
         version: link:../graphiql-toolkit
       graphiql:
-        specifier: 6.0.0-beta.1
+        specifier: 6.0.0-beta.2
         version: link:../graphiql
       graphql:
         specifier: ^16.14.2
@@ -736,7 +736,7 @@ importers:
         version: 3.0.3(codemirror@5.65.3)(graphql@16.14.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
     devDependencies:
       '@graphiql/react':
-        specifier: 1.0.0-beta.1
+        specifier: 1.0.0-beta.2
         version: link:../graphiql-react
       '@types/react':
         specifier: ^19
@@ -779,7 +779,7 @@ importers:
         version: 5.0.4(@types/react@19.2.14)(react@19.2.7)(use-sync-external-store@1.5.0(react@19.2.7))
     devDependencies:
       '@graphiql/react':
-        specifier: 1.0.0-beta.1
+        specifier: 1.0.0-beta.2
         version: link:../graphiql-react
       '@storybook/react-vite':
         specifier: ^10.3.6
@@ -837,7 +837,7 @@ importers:
         version: 5.0.4(@types/react@19.2.14)(react@19.2.7)(use-sync-external-store@1.5.0(react@19.2.7))
     devDependencies:
       '@graphiql/react':
-        specifier: 1.0.0-beta.1
+        specifier: 1.0.0-beta.2
         version: link:../graphiql-react
       '@storybook/addon-a11y':
         specifier: ^10.3.6
@@ -903,7 +903,7 @@ importers:
   packages/graphiql-plugin-history:
     dependencies:
       '@graphiql/toolkit':
-        specifier: 1.0.0-beta.0
+        specifier: 1.0.0-beta.1
         version: link:../graphiql-toolkit
       clsx:
         specifier: ^1.2.1
@@ -916,7 +916,7 @@ importers:
         version: 5.0.4(@types/react@19.2.14)(react@19.2.7)(use-sync-external-store@1.5.0(react@19.2.7))
     devDependencies:
       '@graphiql/react':
-        specifier: 1.0.0-beta.1
+        specifier: 1.0.0-beta.2
         version: link:../graphiql-react
       '@storybook/react-vite':
         specifier: ^10.3.6
@@ -971,7 +971,7 @@ importers:
         version: 19.1.0-rc.3(react@19.2.7)
     devDependencies:
       '@graphiql/react':
-        specifier: 1.0.0-beta.1
+        specifier: 1.0.0-beta.2
         version: link:../graphiql-react
       '@storybook/addon-a11y':
         specifier: ^10.3.6
@@ -1031,7 +1031,7 @@ importers:
   packages/graphiql-react:
     dependencies:
       '@graphiql/toolkit':
-        specifier: 1.0.0-beta.0
+        specifier: 1.0.0-beta.1
         version: link:../graphiql-toolkit
       '@radix-ui/react-dialog':
         specifier: ^1.1
@@ -1055,7 +1055,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0
       graphql-language-service:
-        specifier: ^5.7.0
+        specifier: ^6.0.0-beta.0
         version: link:../graphql-language-service
       jsonc-parser:
         specifier: ^3.3.1
@@ -1067,7 +1067,7 @@ importers:
         specifier: 0.52.2
         version: 0.52.2
       monaco-graphql:
-        specifier: ^1.9.0
+        specifier: ^2.0.0-beta.0
         version: link:../monaco-graphql
       prettier:
         specifier: ^3.5.3
@@ -1244,10 +1244,10 @@ importers:
         specifier: 16.0.5
         version: 16.0.5
       graphql-language-service:
-        specifier: ^5.3.0
+        specifier: ^6.0.0-beta.0
         version: link:../graphql-language-service
       graphql-language-service-server:
-        specifier: ^2.14.0
+        specifier: ^3.0.0-beta.0
         version: link:../graphql-language-service-server
       yargs:
         specifier: ^16.2.0
@@ -1296,7 +1296,7 @@ importers:
         specifier: ^5.1.6
         version: 5.1.6(@types/node@24.12.2)(cosmiconfig-toml-loader@1.0.0)(graphql@16.14.2)
       graphql-language-service:
-        specifier: ^5.7.0
+        specifier: ^6.0.0-beta.0
         version: link:../graphql-language-service
       lru-cache:
         specifier: ^11.5.2
@@ -1357,7 +1357,7 @@ importers:
   packages/monaco-graphql:
     dependencies:
       graphql-language-service:
-        specifier: ^5.7.0
+        specifier: ^6.0.0-beta.0
         version: link:../graphql-language-service
       picomatch-browser:
         specifier: ^2.2.6
@@ -1388,7 +1388,7 @@ importers:
         specifier: ^16.14.2
         version: 16.14.2
       graphql-language-service-server:
-        specifier: ^2.14.9
+        specifier: ^3.0.0-beta.0
         version: link:../graphql-language-service-server
       typescript:
         specifier: ^5.8.0
