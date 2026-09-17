@@ -24,12 +24,14 @@
     "monaco-graphql": "1.8.0",
     "vscode-graphql": "0.13.5",
     "vscode-graphql-execution": "0.3.7",
-    "vscode-graphql-syntax": "1.3.12"
+    "vscode-graphql-syntax": "1.3.12",
+    "graphiql-e2e": "0.0.0"
   },
   "changesets": [
     "a11y-keyboard-audit",
     "a11y-labels-focus-rings",
     "collections",
+    "drop-graphql-15",
     "drop-legacy-client-alias",
     "explorer-removal",
     "keycap-hint",
