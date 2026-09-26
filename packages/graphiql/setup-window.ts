@@ -21,6 +21,19 @@ if (!window.matchMedia) {
   });
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+if (!globalThis.ResizeObserver) {
+  class ResizeObserverMock {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+  Object.defineProperty(globalThis, 'ResizeObserver', {
+    writable: false,
+    value: ResizeObserverMock,
+  });
+}
+
 Object.defineProperty(document, 'queryCommandSupported', {
   writable: false,
   value: vi.fn().mockReturnValue(false),
