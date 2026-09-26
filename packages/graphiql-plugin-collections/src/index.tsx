@@ -62,3 +62,5 @@ export const collectionsPlugin = (
     sessionActions: CollectionsSessionActionsWithOptions,
   };
 };
+
+export const COLLECTIONS_PLUGIN = collectionsPlugin();

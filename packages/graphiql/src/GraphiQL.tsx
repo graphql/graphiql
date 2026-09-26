@@ -50,13 +50,13 @@ import {
   DOC_EXPLORER_PLUGIN,
 } from '@graphiql/plugin-doc-explorer';
 import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
-import { collectionsPlugin } from '@graphiql/plugin-collections';
+import { COLLECTIONS_PLUGIN } from '@graphiql/plugin-collections';
 import { ActivityBar, GraphiQLFooter } from './ui';
 
 const DEFAULT_PLUGINS = [
   HISTORY_PLUGIN,
   QUERY_BUILDER_PLUGIN,
-  collectionsPlugin(),
+  COLLECTIONS_PLUGIN,
 ];
 
 /**
