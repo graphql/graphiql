@@ -6,16 +6,16 @@ GraphiQL 6 ships with a complete visual overhaul, new first-party features and A
 
 1. [Overview](#overview)
 2. [CSS and retheming](#css-and-retheming)
-3. [Theme, density, and font-size settings](#theme-density-and-font-size-settings)
-4. [Monaco Editor 0.56 and 0.57 worker setup](#monaco-editor-056-and-057-worker-setup)
-5. [New first-party plugins](#new-first-party-plugins)
-6. [`@graphiql/plugin-explorer` removal](#graphiqlplugin-explorer-removal)
-7. [New `transport` API](#new-transport-api)
-8. [Active operation follows the cursor](#active-operation-follows-the-cursor)
-9. [GraphQL.js minimum version](#graphqljs-minimum-version)
-10. [Removed hooks](#removed-hooks)
-11. [Removed `GraphiQL.Toolbar` and `GraphiQL.Logo`](#removed-graphiqltoolbar-and-graphiqllogo)
-12. [Deprecated APIs](#deprecated-apis)
+3. [New first-party plugins](#new-first-party-plugins)
+4. [New `transport` API](#new-transport-api)
+5. [Theme, density, and font-size settings](#theme-density-and-font-size-settings)
+6. [Monaco Editor 0.56 and 0.57 worker setup](#monaco-editor-056-and-057-worker-setup)
+7. [GraphQL.js minimum version](#graphqljs-minimum-version)
+8. [`@graphiql/plugin-explorer` removal](#graphiqlplugin-explorer-removal)
+9. [Removed hooks](#removed-hooks)
+10. [Removed `GraphiQL.Toolbar` and `GraphiQL.Logo`](#removed-graphiqltoolbar-and-graphiqllogo)
+11. [Deprecated APIs](#deprecated-apis)
+12. [Active operation follows the cursor](#active-operation-follows-the-cursor)
 13. [Other notes](#other-notes)
 
 ## Overview
@@ -119,63 +119,6 @@ Because the selector is `[data-theme='dark']`, this overrides the built-in value
 
 v5 toggled `body.graphiql-light` / `body.graphiql-dark` classes and used a `prefers-color-scheme` media query. v6 applies the new token cascade through `data-theme="light"` / `data-theme="dark"` instead. The old `body.graphiql-*` classes remain available for backwards compatibility, so CSS that uses them still works. If your JavaScript reads the theme from `document.body.classList`, consider using `useGraphiQLSettings()` (see [Theme, density, and font-size settings](#theme-density-and-font-size-settings)) or reading the `data-theme` attribute directly.
 
-## Theme, density, and font-size settings
-
-v6 adds a settings dialog (the gear icon in the activity rail) with controls for theme, density, and font size. The new `useGraphiQLSettings()` hook in `@graphiql/react` exposes the active values and setters. GraphiQL saves these settings to `localStorage` and reflects them as `data-*` attributes on its container. Custom integrations can use those attributes to adjust their own spacing, typography, or colors when a user changes a setting.
-
-```ts
-import { useGraphiQLSettings } from '@graphiql/react';
-
-const { theme, density, fontSize, setTheme, setDensity, setFontSize } =
-  useGraphiQLSettings();
-```
-
-| Setting    | Values                                            | Default         |
-| ---------- | ------------------------------------------------- | --------------- |
-| `theme`    | `'auto'` \| `'light'` \| `'dark'`                 | `'auto'`        |
-| `density`  | `'compact'` \| `'comfortable'` \| `'spacious'`    | `'comfortable'` |
-| `fontSize` | `'compact'` \| `'default'` \| `'large'` \| `'xl'` | `'default'`     |
-
-`'auto'` theme follows `prefers-color-scheme` and updates live if the OS setting changes while GraphiQL is open.
-
-### CSS attribute selectors
-
-Each setting is reflected as an attribute (`data-theme`, `data-density`, `data-font-size`) on the container, with `tokens.css` defining the values each preset resolves to (see [CSS and retheming](#css-and-retheming) for the color tokens; density and font-size presets fill in things like `--row-padding-y`, `--top-bar-height`, and `--font-size-body`). If you write custom CSS that needs to vary by density or font size, target the same attributes:
-
-```css
-[data-density='compact'] .my-custom-toolbar {
-  padding-block: 2px;
-}
-```
-
-## Monaco Editor 0.56 and 0.57 worker setup
-
-GraphiQL 6 supports Monaco Editor 0.56 and 0.57, and installs 0.57 by default. This also moves `monaco-graphql` to its next major version because Monaco changed its worker API and replaced the legacy `monaco-editor/esm/vs/*` deep imports with exported entry points.
-
-If you use one of GraphiQL's worker setup helpers, keep the same import. The helpers now load the Monaco 0.57 worker entry points for you:
-
-```ts
-import 'graphiql/setup-workers/vite';
-// or: graphiql/setup-workers/webpack
-// or: graphiql/setup-workers/esm.sh
-```
-
-If your application installs or configures Monaco directly, make these changes:
-
-1. Upgrade `monaco-editor` to `0.57.x`, or remain on `0.56.x` if needed. `monaco-graphql@2` accepts `>=0.56.0 <0.58.0`.
-2. Replace `monaco-editor/esm/vs/*` imports with Monaco's exported entry points. For example, import the editor worker from `monaco-editor/editor/editor.worker` and the JSON worker from `monaco-editor/languages/features/json/json.worker`.
-3. Configure `globalThis.MonacoEnvironment.getWorker` to return the GraphQL worker for the `graphql` label. Returning a URL from `getWorkerUrl` is not sufficient for the new worker contract.
-
-```ts
-globalThis.MonacoEnvironment = {
-  getWorker(_workerId: string, label: string) {
-    return label === 'graphql' ? new GraphQLWorker() : new EditorWorker();
-  },
-};
-```
-
-Custom GraphQL workers must call Monaco's `initialize` function as soon as the worker module loads. Don't wrap it in an additional `onmessage` handler. To pass functions or other values that structured cloning can't transfer to the worker, subclass `GraphQLWorker` and override its `initialize` method. See the [`monaco-graphql` custom worker example](../../packages/monaco-graphql/README.md#custom-webworker-for-passing-non-static-config-to-worker) for the complete worker and bundler configuration.
-
 ## New first-party plugins
 
 Two new plugins ship in v6 and are **installed by default** in the `graphiql` meta-package: a visual query builder and operation collections. If you pass your own `plugins` array to `<GraphiQL>`, it replaces the default set entirely, so you'll want to include the ones you still want alongside your custom plugins.
@@ -216,42 +159,6 @@ import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
 // History only: no query builder or collections.
 <GraphiQL plugins={[HISTORY_PLUGIN]} transport={transport} />;
 ```
-
-## `@graphiql/plugin-explorer` removal
-
-`@graphiql/plugin-explorer`, which wraps OneGraph's `graphiql-explorer` library, is **removed in v6**. The upstream library is no longer actively maintained. The default-installed `@graphiql/plugin-query-builder` replaces it and supports fragments, variables, unions, and interfaces.
-
-The package is no longer published from the v6 line. If you can't migrate yet, use its last `5.x` release from npm and remain on the **v5 LTS branch**. New development targets the query builder.
-
-### Migrating
-
-In most integrations this is a drop-in swap:
-
-**Before:**
-
-```tsx
-import { GraphiQL } from 'graphiql';
-import { explorerPlugin } from '@graphiql/plugin-explorer';
-import '@graphiql/plugin-explorer/style.css';
-
-const explorer = explorerPlugin();
-
-<GraphiQL plugins={[explorer]} transport={transport} />;
-```
-
-**After:**
-
-```tsx
-import { GraphiQL } from 'graphiql';
-import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
-import '@graphiql/plugin-query-builder/style.css';
-
-<GraphiQL plugins={[QUERY_BUILDER_PLUGIN]} transport={transport} />;
-```
-
-If you're using `graphiql` (rather than assembling your own plugin list), the query builder plugin is already installed by default, so you can likely just remove `explorerPlugin()` from your `plugins` array and drop the `@graphiql/plugin-explorer` dependency entirely.
-
-If you can't migrate before upgrading to v6, pin `@graphiql/plugin-explorer` to its last `5.x` release from npm and track the v5 LTS branch, where it stays maintained.
 
 ## New `transport` API
 
@@ -446,20 +353,104 @@ Use the [CDN example](../../examples/graphiql-cdn) as a starting point. To add s
 </script>
 ```
 
-## Active operation follows the cursor
+## Theme, density, and font-size settings
 
-In a document with more than one operation, the active operation now tracks the editor cursor. Moving the cursor into a different named operation updates `operationName`, so the Run button, the operation dropdown, and operation-aware plugins reflect the operation you are editing. Previously `operationName` changed only on run-at-cursor (`Cmd`/`Ctrl`+`Enter`) or by picking from the operation dropdown.
+v6 adds a settings dialog (the gear icon in the activity rail) with controls for theme, density, and font size. The new `useGraphiQLSettings()` hook in `@graphiql/react` exposes the active values and setters. GraphiQL saves these settings to `localStorage` and reflects them as `data-*` attributes on its container. Custom integrations can use those attributes to adjust their own spacing, typography, or colors when a user changes a setting.
 
-Two things to know if you embed GraphiQL:
+```ts
+import { useGraphiQLSettings } from '@graphiql/react';
 
-- The `onEditOperationName` callback now fires when the cursor crosses into a different named operation, not only on edit or run. If you mirror `operationName` into your URL or app state, expect it to update as the user navigates between operations.
-- A tab holding multiple operations shows the active operation name followed by a `+N` count of the others (for example, `GetUser +2`).
+const { theme, density, fontSize, setTheme, setDensity, setFontSize } =
+  useGraphiQLSettings();
+```
+
+| Setting    | Values                                            | Default         |
+| ---------- | ------------------------------------------------- | --------------- |
+| `theme`    | `'auto'` \| `'light'` \| `'dark'`                 | `'auto'`        |
+| `density`  | `'compact'` \| `'comfortable'` \| `'spacious'`    | `'comfortable'` |
+| `fontSize` | `'compact'` \| `'default'` \| `'large'` \| `'xl'` | `'default'`     |
+
+`'auto'` theme follows `prefers-color-scheme` and updates live if the OS setting changes while GraphiQL is open.
+
+### CSS attribute selectors
+
+Each setting is reflected as an attribute (`data-theme`, `data-density`, `data-font-size`) on the container, with `tokens.css` defining the values each preset resolves to (see [CSS and retheming](#css-and-retheming) for the color tokens; density and font-size presets fill in things like `--row-padding-y`, `--top-bar-height`, and `--font-size-body`). If you write custom CSS that needs to vary by density or font size, target the same attributes:
+
+```css
+[data-density='compact'] .my-custom-toolbar {
+  padding-block: 2px;
+}
+```
+
+## Monaco Editor 0.56 and 0.57 worker setup
+
+GraphiQL 6 supports Monaco Editor 0.56 and 0.57, and installs 0.57 by default. This also moves `monaco-graphql` to its next major version because Monaco changed its worker API and replaced the legacy `monaco-editor/esm/vs/*` deep imports with exported entry points.
+
+If you use one of GraphiQL's worker setup helpers, keep the same import. The helpers now load the Monaco 0.57 worker entry points for you:
+
+```ts
+import 'graphiql/setup-workers/vite';
+// or: graphiql/setup-workers/webpack
+// or: graphiql/setup-workers/esm.sh
+```
+
+If your application installs or configures Monaco directly, make these changes:
+
+1. Upgrade `monaco-editor` to `0.57.x`, or remain on `0.56.x` if needed. `monaco-graphql@2` accepts `>=0.56.0 <0.58.0`.
+2. Replace `monaco-editor/esm/vs/*` imports with Monaco's exported entry points. For example, import the editor worker from `monaco-editor/editor/editor.worker` and the JSON worker from `monaco-editor/languages/features/json/json.worker`.
+3. Configure `globalThis.MonacoEnvironment.getWorker` to return the GraphQL worker for the `graphql` label. Returning a URL from `getWorkerUrl` is not sufficient for the new worker contract.
+
+```ts
+globalThis.MonacoEnvironment = {
+  getWorker(_workerId: string, label: string) {
+    return label === 'graphql' ? new GraphQLWorker() : new EditorWorker();
+  },
+};
+```
+
+Custom GraphQL workers must call Monaco's `initialize` function as soon as the worker module loads. Don't wrap it in an additional `onmessage` handler. To pass functions or other values that structured cloning can't transfer to the worker, subclass `GraphQLWorker` and override its `initialize` method. See the [`monaco-graphql` custom worker example](../../packages/monaco-graphql/README.md#custom-webworker-for-passing-non-static-config-to-worker) for the complete worker and bundler configuration.
 
 ## GraphQL.js minimum version
 
 GraphiQL 6 requires `graphql` `^16.11.0 || ^17.0.0`. Upgrade `graphql` before upgrading GraphiQL.
 
 If you must remain on GraphQL.js 15 or 16.0–16.10, stay on `graphiql` 5.x and the matching previous majors of the other packages.
+
+## `@graphiql/plugin-explorer` removal
+
+`@graphiql/plugin-explorer`, which wraps OneGraph's `graphiql-explorer` library, is **removed in v6**. The upstream library is no longer actively maintained. The default-installed `@graphiql/plugin-query-builder` replaces it and supports fragments, variables, unions, and interfaces.
+
+The package is no longer published from the v6 line. If you can't migrate yet, use its last `5.x` release from npm and remain on the **v5 LTS branch**. New development targets the query builder.
+
+### Migrating
+
+In most integrations this is a drop-in swap:
+
+**Before:**
+
+```tsx
+import { GraphiQL } from 'graphiql';
+import { explorerPlugin } from '@graphiql/plugin-explorer';
+import '@graphiql/plugin-explorer/style.css';
+
+const explorer = explorerPlugin();
+
+<GraphiQL plugins={[explorer]} transport={transport} />;
+```
+
+**After:**
+
+```tsx
+import { GraphiQL } from 'graphiql';
+import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
+import '@graphiql/plugin-query-builder/style.css';
+
+<GraphiQL plugins={[QUERY_BUILDER_PLUGIN]} transport={transport} />;
+```
+
+If you're using `graphiql` (rather than assembling your own plugin list), the query builder plugin is already installed by default, so you can likely just remove `explorerPlugin()` from your `plugins` array and drop the `@graphiql/plugin-explorer` dependency entirely.
+
+If you can't migrate before upgrading to v6, pin `@graphiql/plugin-explorer` to its last `5.x` release from npm and track the v5 LTS branch, where it stays maintained.
 
 ## Removed hooks
 
@@ -648,6 +639,15 @@ The following APIs still work in v6, but they are deprecated:
 | `Fetcher` type from `@graphiql/toolkit`          | `Transport`       |
 
 The v5 `--color-*` variables are also deprecated. They remain defined at their v5 values for custom CSS, but GraphiQL's components no longer read them. Migrate to the OKLCH tokens described in [CSS and retheming](#css-and-retheming).
+
+## Active operation follows the cursor
+
+In a document with more than one operation, the active operation now tracks the editor cursor. Moving the cursor into a different named operation updates `operationName`, so the Run button, the operation dropdown, and operation-aware plugins reflect the operation you are editing. Previously `operationName` changed only on run-at-cursor (`Cmd`/`Ctrl`+`Enter`) or by picking from the operation dropdown.
+
+Two things to know if you embed GraphiQL:
+
+- The `onEditOperationName` callback now fires when the cursor crosses into a different named operation, not only on edit or run. If you mirror `operationName` into your URL or app state, expect it to update as the user navigates between operations.
+- A tab holding multiple operations shows the active operation name followed by a `+N` count of the others (for example, `GetUser +2`).
 
 ## Other notes
 
