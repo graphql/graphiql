@@ -1,5 +1,13 @@
 # @graphiql/plugin-history
 
+## 1.0.0-beta.2
+
+### Patch Changes
+
+- Updated dependencies [[`066528a`](https://github.com/graphql/graphiql/commit/066528a6bb7706d685536888d7b5549d6fd5a109), [`f916fd6`](https://github.com/graphql/graphiql/commit/f916fd6ba17c23cedd459b5bf16c55dea3b826e8)]:
+  - @graphiql/react@1.0.0-beta.2
+  - @graphiql/toolkit@1.0.0-beta.1
+
 ## 1.0.0-beta.1
 
 ### Patch Changes
