@@ -256,13 +256,15 @@ The `Fetcher` contract returns only the parsed GraphQL result, so GraphiQL can't
 - `GET` sends queries in the URL without a request body.
 - [`QUERY`](https://datatracker.ietf.org/doc/draft-ietf-httpbis-safe-method-w-body/) sends queries in a JSON request body but is defined as safe and idempotent.
 
+> **Note:** At the time of writing, `QUERY` is a very new HTTP method and is unlikely to be supported by your GraphQL server. Verify support across your server and any intervening proxies before enabling it.
+
 Use `method` to set the initial method and `supportedMethods` to list the methods users can select:
 
 ```ts
 const transport = createTransport({
   url: 'https://my.endpoint/graphql',
-  method: 'QUERY',
-  supportedMethods: ['GET', 'POST', 'QUERY'],
+  method: 'POST',
+  supportedMethods: ['POST', 'GET', 'QUERY'],
 });
 ```
 
