@@ -5,7 +5,7 @@ describe('Tabs', () => {
     // Assert that tab visible when there's only one session
     cy.get('.graphiql-tab-button').eq(0).should('exist');
     // Enter a query without operation name
-    cy.typeInEditor('{id');
+    cy.typeInEditor('{id}');
 
     // Run the query
     cy.clickExecuteQuery();
@@ -16,14 +16,14 @@ describe('Tabs', () => {
     cy.get('.graphiql-tab-add').click();
 
     // Enter a query
-    cy.typeInEditor('query Foo {image');
+    cy.typeInEditor('query Foo {image}');
     cy.get('.graphiql-tab-button').eq(1).should('have.text', 'Foo');
 
     // Enter variables
-    cy.typeInEditor('{"someVar":42', { editor: 'variables' });
+    cy.typeInEditor('{"someVar":42}', { editor: 'variables' });
 
     // Enter headers
-    cy.typeInEditor('{"someHeader":"someValue"', { editor: 'headers' });
+    cy.typeInEditor('{"someHeader":"someValue"}', { editor: 'headers' });
 
     // Run the query
     cy.clickExecuteQuery();
@@ -76,14 +76,14 @@ describe('Tabs', () => {
 
   it('Should keep the active tab active when a tab to its right is closed', () => {
     cy.visitGraphiQL({ defaultQuery: '' });
-    cy.typeInEditor('query First {id');
+    cy.typeInEditor('query First {id}');
     cy.get('.graphiql-tab-button').eq(0).should('have.text', 'First');
 
     cy.get('.graphiql-tab-add').click();
-    cy.typeInEditor('query Second {id');
+    cy.typeInEditor('query Second {id}');
     cy.get('.graphiql-tab-button').eq(1).should('have.text', 'Second');
     cy.get('.graphiql-tab-add').click();
-    cy.typeInEditor('query Third {id');
+    cy.typeInEditor('query Third {id}');
     cy.get('.graphiql-tab-button').eq(2).should('have.text', 'Third');
 
     cy.get('.graphiql-tab-button').eq(1).click();

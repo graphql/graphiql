@@ -102,33 +102,48 @@ Cypress.Commands.add('dataCy', value => {
   cy.get(`[data-cy="${value}"]`);
 });
 
-const QUERY_EDITOR_TEXTAREA = '.graphiql-query-editor textarea';
-
 Cypress.Commands.add('typeInEditor', (text, options = {}) => {
-  const { editor = 'query', ...typeOptions } = options;
+  const { editor = 'query', delay = 0 } = options;
   if (editor === 'query') {
-    cy.get(QUERY_EDITOR_TEXTAREA).type(text, { force: true, ...typeOptions });
+    cy.get('.graphiql-query-editor .view-lines').realClick();
+    realTypeInFocusedEditor(text, delay);
     return;
   }
   // The Variables and Headers editors live in the bottom tool pane; reveal the
   // requested one, then target it (Variables is index 0, Headers index 1).
   const index = editor === 'variables' ? 0 : 1;
   cy.contains(editor === 'variables' ? 'Variables' : 'Headers').click();
-  cy.get('.graphiql-editor-tool textarea')
-    .eq(index)
-    .type(text, { force: true, ...typeOptions });
+  cy.get('.graphiql-editor-tool .view-lines').eq(index).realClick();
+  realTypeInFocusedEditor(text, delay);
 });
 
+function realTypeInFocusedEditor(text: string, delay: number) {
+  if (text === '{esc}') {
+    cy.focused().type('{esc}', { force: true });
+    return;
+  }
+  for (const character of text) {
+    cy.realPress(character === '\n' ? 'Enter' : character, {
+      pressDelay: delay,
+    });
+  }
+}
+
 Cypress.Commands.add('setCursorToLine', (line: number) => {
-  // `{upArrow}` past the top clamps at line 1, then step down to the target;
-  // `{home}` pins the column so the resulting offset is unambiguous. Keyboard
-  // moves are `Explicit` cursor changes and the offscreen `<textarea>` is stable
-  // across Monaco's layout repaints, unlike the `.view-line` DOM.
-  const toTop = '{upArrow}'.repeat(100);
-  const down = '{downArrow}'.repeat(Math.max(0, line - 1));
-  cy.get(QUERY_EDITOR_TEXTAREA).type(`${toTop}${down}{home}`, {
-    force: true,
-    delay: 0,
+  cy.window().then(win => {
+    const model = win.__MONACO.editor
+      .getModels()
+      .find(candidate => candidate.uri.path.endsWith('operation.graphql'))!;
+    const codeEditor = win.__MONACO.editor
+      .getEditors()
+      .find(candidate => candidate.getModel() === model)!;
+    codeEditor.setPosition({ lineNumber: 1, column: 1 });
+    for (let currentLine = 1; currentLine < line; currentLine++) {
+      codeEditor.trigger('keyboard', 'cursorDown', null);
+    }
+    codeEditor.trigger('keyboard', 'cursorHome', null);
+    codeEditor.trigger('keyboard', 'cursorRight', null);
+    codeEditor.trigger('keyboard', 'cursorLeft', null);
   });
 });
 

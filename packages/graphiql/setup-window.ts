@@ -21,4 +21,9 @@ if (!window.matchMedia) {
   });
 }
 
+Object.defineProperty(document, 'queryCommandSupported', {
+  writable: false,
+  value: vi.fn().mockReturnValue(false),
+});
+
 export {};

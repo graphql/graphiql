@@ -45,7 +45,7 @@ export function createEditor(
   if (!monaco) {
     throw new Error('Monaco editor is not initialized');
   }
-  return monaco.editor.create(domElement.current, {
+  const editor = monaco.editor.create(domElement.current, {
     language,
     automaticLayout: true,
     fontSize: 15,
@@ -72,4 +72,30 @@ export function createEditor(
     tabIndex: -1, // Do not allow tabbing into the editor, only via by pressing Enter or its container
     ...options,
   });
+  const ownerDocument = domElement.current.ownerDocument;
+  const completionEscapeEvents = new WeakSet<KeyboardEvent>();
+  const rememberCompletionEscape = (event: KeyboardEvent) => {
+    if (
+      event.key === 'Escape' &&
+      ownerDocument.querySelector('.suggest-widget.visible')
+    ) {
+      completionEscapeEvents.add(event);
+    }
+  };
+  const stopCompletionEscape = (event: KeyboardEvent) => {
+    if (completionEscapeEvents.has(event)) {
+      event.stopImmediatePropagation();
+    }
+  };
+  ownerDocument.addEventListener('keydown', rememberCompletionEscape, true);
+  ownerDocument.addEventListener('keydown', stopCompletionEscape);
+  editor.onDidDispose(() => {
+    ownerDocument.removeEventListener(
+      'keydown',
+      rememberCompletionEscape,
+      true,
+    );
+    ownerDocument.removeEventListener('keydown', stopCompletionEscape);
+  });
+  return editor;
 }

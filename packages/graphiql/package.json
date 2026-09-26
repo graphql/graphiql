@@ -69,7 +69,7 @@
     "babel-plugin-react-compiler": "19.1.0-rc.3",
     "graphql": "^16.14.2",
     "lightningcss": "^1.29.3",
-    "monaco-editor": "0.52.2",
+    "monaco-editor": ">=0.56.0 <0.58.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "typescript": "^5.8.0",

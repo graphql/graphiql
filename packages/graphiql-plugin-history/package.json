@@ -58,7 +58,7 @@
     "@vitejs/plugin-react": "^5.2.0",
     "@vitest/web-worker": "^4.1.6",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
-    "monaco-editor": "0.52.2",
+    "monaco-editor": ">=0.56.0 <0.58.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "vite": "^8.2.2",

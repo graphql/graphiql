@@ -22,8 +22,15 @@ export class GraphQLWorker {
   private _languageService: LanguageService;
   private _formattingOptions: FormattingOptions | undefined;
 
-  constructor(ctx: monaco.worker.IWorkerContext, createData: ICreateData) {
+  constructor(ctx: monaco.worker.IWorkerContext, createData?: ICreateData) {
     this._ctx = ctx;
+    this._languageService = new LanguageService(
+      createData?.languageConfig ?? {},
+    );
+    this._formattingOptions = createData?.formattingOptions;
+  }
+
+  public initialize(createData: ICreateData) {
     this._languageService = new LanguageService(createData.languageConfig);
     this._formattingOptions = createData.formattingOptions;
   }

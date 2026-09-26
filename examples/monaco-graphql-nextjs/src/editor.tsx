@@ -3,10 +3,10 @@ import { getIntrospectionQuery, IntrospectionQuery } from 'graphql';
 import { editor, KeyMod, KeyCode } from 'monaco-graphql/monaco-editor';
 
 // to get typescript mode working
-import 'monaco-editor/esm/vs/basic-languages/typescript/typescript.contribution';
-import 'monaco-editor/esm/vs/editor/contrib/peekView/browser/peekView';
-import 'monaco-editor/esm/vs/editor/contrib/parameterHints/browser/parameterHints';
-import 'monaco-editor/esm/vs/language/typescript/monaco.contribution';
+import 'monaco-editor/languages/definitions/typescript/register';
+import 'monaco-editor/editor/contrib/peekView/browser/peekView';
+import 'monaco-editor/editor/contrib/parameterHints/browser/parameterHints';
+import 'monaco-editor/languages/features/typescript/register';
 
 import { createTransport, type TransportResponse } from '@graphiql/toolkit';
 import * as JSONC from 'jsonc-parser';

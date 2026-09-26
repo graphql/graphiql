@@ -1,5 +1,5 @@
-/* Monaco import is only needed for CDN bundle */
-@import 'monaco-editor/min/vs/editor/editor.main.css';
+/* Monaco doesn't export its aggregate CSS file. This physical import is only needed for the CDN bundle. */
+@import '../node_modules/monaco-editor/min/vs/editor/editor.main.css';
 
 @import '@graphiql/react/font/roboto.css';
 @import '@graphiql/react/font/fira-code.css';

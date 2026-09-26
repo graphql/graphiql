@@ -5,7 +5,6 @@
     "resources/patches/*",
     "resources/tsconfig.base.cjs.json",
     "resources/tsconfig.base.esm.json",
-    "resources/patch-monaco-editor-type.mts",
     "scripts/renameFileExtensions.mts"
   ],
   "tasks": {

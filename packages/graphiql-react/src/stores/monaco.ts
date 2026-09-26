@@ -12,7 +12,7 @@ import {
 } from '../constants';
 
 interface MonacoStoreType {
-  monaco?: typeof import('monaco-editor');
+  monaco?: typeof import('monaco-graphql/monaco-editor');
   monacoGraphQL?: MonacoGraphQLAPI;
   actions: {
     initialize: (
@@ -41,7 +41,7 @@ interface MonacoStoreType {
 async function patchFirefox() {
   const { MouseTargetFactory } = await import(
     // @ts-expect-error -- no types
-    'monaco-editor/esm/vs/editor/browser/controller/mouseTarget.js'
+    'monaco-editor/editor/browser/controller/mouseTarget.js'
   );
   const originalFn = MouseTargetFactory._doHitTestWithCaretPositionFromPoint;
 
@@ -78,14 +78,13 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
       if (isInitialized) {
         return;
       }
-      const [monaco, { initializeMode }] = await Promise.all([
+      const [monaco, { initializeMode }, { jsonDefaults }] = await Promise.all([
         import('monaco-graphql/esm/monaco-editor.js'),
         import('monaco-graphql/esm/lite.js'),
+        import('monaco-editor/languages/features/json/register'),
       ]);
       globalThis.__MONACO = monaco;
-      monaco.languages.json.jsonDefaults.setDiagnosticsOptions(
-        JSON_DIAGNOSTIC_OPTIONS,
-      );
+      jsonDefaults.setDiagnosticsOptions(JSON_DIAGNOSTIC_OPTIONS);
       monaco.editor.defineTheme(MONACO_THEME_NAME.dark, MONACO_THEME_DATA.dark);
       monaco.editor.defineTheme(
         MONACO_THEME_NAME.light,

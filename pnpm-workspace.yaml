@@ -10,6 +10,8 @@ packages:
   - examples/graphiql-webpack
 
 minimumReleaseAge: 4320
+minimumReleaseAgeExclude:
+  - monaco-editor@0.57.0
 engineStrict: true
 nodeLinker: isolated
 linkWorkspacePackages: true

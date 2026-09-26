@@ -176,9 +176,6 @@ importers:
       vite:
         specifier: 8.2.2
         version: 8.2.2(@types/node@24.12.2)(esbuild@0.28.2)(jiti@2.6.1)(terser@5.46.2)(yaml@2.9.0)
-      vite-plugin-monaco-editor:
-        specifier: ^1
-        version: 1.1.0(monaco-editor@0.52.2)
 
   examples/graphiql-vite-react-router:
     dependencies:
@@ -335,8 +332,8 @@ importers:
         specifier: ^3
         version: 3.3.1
       monaco-editor:
-        specifier: ^0.52
-        version: 0.52.2
+        specifier: 0.57.0
+        version: 0.57.0
       monaco-graphql:
         specifier: ^1.9.0
         version: link:../../packages/monaco-graphql
@@ -375,8 +372,8 @@ importers:
         specifier: ^3
         version: 3.3.1
       monaco-editor:
-        specifier: ^0.52
-        version: 0.52.2
+        specifier: 0.57.0
+        version: 0.57.0
       monaco-graphql:
         specifier: ^1.9.0
         version: link:../../packages/monaco-graphql
@@ -409,8 +406,8 @@ importers:
         specifier: ^3
         version: 3.3.1
       monaco-editor:
-        specifier: ^0.52
-        version: 0.52.2
+        specifier: 0.57.0
+        version: 0.57.0
       monaco-graphql:
         specifier: ^1.9.0
         version: link:../../packages/monaco-graphql
@@ -459,7 +456,7 @@ importers:
         version: 5.6.7(webpack@5.106.2)
       monaco-editor-webpack-plugin:
         specifier: ^7
-        version: 7.1.1(monaco-editor@0.52.2)(webpack@5.106.2)
+        version: 7.1.1(monaco-editor@0.57.0)(webpack@5.106.2)
       style-loader:
         specifier: ^4
         version: 4.0.0(webpack@5.106.2)
@@ -620,8 +617,8 @@ importers:
         specifier: ^1.29.3
         version: 1.33.0
       monaco-editor:
-        specifier: 0.52.2
-        version: 0.52.2
+        specifier: '>=0.56.0 <0.58.0'
+        version: 0.57.0
       react:
         specifier: 19.2.7
         version: 19.2.7
@@ -879,8 +876,8 @@ importers:
         specifier: ^16.14.2
         version: 16.14.2
       monaco-editor:
-        specifier: 0.52.2
-        version: 0.52.2
+        specifier: '>=0.56.0 <0.58.0'
+        version: 0.57.0
       react:
         specifier: 19.2.7
         version: 19.2.7
@@ -946,8 +943,8 @@ importers:
         specifier: 19.1.0-rc.3
         version: 19.1.0-rc.3
       monaco-editor:
-        specifier: 0.52.2
-        version: 0.52.2
+        specifier: '>=0.56.0 <0.58.0'
+        version: 0.57.0
       react:
         specifier: 19.2.7
         version: 19.2.7
@@ -1064,8 +1061,8 @@ importers:
         specifier: 15.0.1
         version: 15.0.1
       monaco-editor:
-        specifier: 0.52.2
-        version: 0.52.2
+        specifier: '>=0.56.0 <0.58.0'
+        version: 0.57.0
       monaco-graphql:
         specifier: ^1.9.0
         version: link:../monaco-graphql
@@ -1370,8 +1367,8 @@ importers:
         specifier: ^16.14.2
         version: 16.14.2
       monaco-editor:
-        specifier: 0.52.2
-        version: 0.52.2
+        specifier: 0.57.0
+        version: 0.57.0
       prettier:
         specifier: 3.3.2
         version: 3.3.2
@@ -7030,6 +7027,9 @@ packages:
     resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
     engines: {node: '>= 4'}
 
+  dompurify@3.4.15:
+    resolution: {integrity: sha512-EUBjM+B+lkDE41iE82DDSCfkoPGfXx8IxFxPMjNzm/Uk4xDet77rTN9wqlxlVg71kK7XGuUMv6wUxJUwwv+Xyw==}
+
   domutils@2.8.0:
     resolution: {integrity: sha512-w96Cjofp72M5IIhpjgobBimYEfoPjx1Vx0BSX9P30WBdZW2WIKU0T1Bd0kz2eNZ9ikjKgHbEyKx8BB6H1L3h3A==}
 
@@ -8931,6 +8931,11 @@ packages:
     resolution: {integrity: sha512-9/7gE95FNPkfUWrjJIoHZza2iLmuJlPD0UNMxPi7bxUrbCR525YZY0r+zyfes0dZI5ZZ/uNIXUJca0pJvtw41g==}
     hasBin: true
 
+  marked@14.0.0:
+    resolution: {integrity: sha512-uIj4+faQ+MgHgwUW1l2PsPglZLOLOT1uErt06dAPtx2kjteLAkbsd/0FiYg/MGS+i7ZKLb7w2WClxHkzOOuryQ==}
+    engines: {node: '>= 18'}
+    hasBin: true
+
   matched@0.4.4:
     resolution: {integrity: sha512-zpasnbB5vQkvb0nfcKV0zEoGgMtV7atlWR1Vk3E8tEKh6EicMseKtVV+5vc+zsZwvDlcNMKlKK/CVOEeAalYRQ==}
     engines: {node: '>= 0.12.0'}
@@ -9095,8 +9100,8 @@ packages:
       monaco-editor: '>= 0.31.0'
       webpack: ^4.5.0 || 5.x
 
-  monaco-editor@0.52.2:
-    resolution: {integrity: sha512-GEQWEZmfkOGLdd3XK8ryrfWz3AIP8YymVXiPHEdewrUq7mh0qrKrfHLNCXcbB6sTnMLnOZ3ztSiKcciFUkIJwQ==}
+  monaco-editor@0.57.0:
+    resolution: {integrity: sha512-5BkI9KGoqrNvBGUe15/QlZq3OooZ8WLg1AxTpaqHRCP3HNpzPPZKE2EDz8M7c+VRmCeUw1Brp4cx/PWm3kI/5A==}
 
   moo-color@1.0.3:
     resolution: {integrity: sha512-i/+ZKXMDf6aqYtBhuOcej71YSlbjT3wCO/4H1j8rPvxDJEifdwgg5MaFyu6iYAT8GBZJg2z0dkgK4YMzvURALQ==}
@@ -11278,11 +11283,6 @@ packages:
     peerDependenciesMeta:
       vite:
         optional: true
-
-  vite-plugin-monaco-editor@1.1.0:
-    resolution: {integrity: sha512-IvtUqZotrRoVqwT0PBBDIZPNraya3BxN/bfcNfnxZ5rkJiGcNtO5eAOWWSgT7zullIAEqQwxMU83yL9J5k7gww==}
-    peerDependencies:
-      monaco-editor: '>=0.33.0'
 
   vite-plugin-svgr@4.3.0:
     resolution: {integrity: sha512-Jy9qLB2/PyWklpYy0xk0UU3TlU0t2UMpJXZvf+hWII1lAmRHrOUKi11Uw8N3rxoNk7atZNYO3pR3vI1f7oi+6w==}
@@ -17668,6 +17668,10 @@ snapshots:
     dependencies:
       domelementtype: 2.3.0
 
+  dompurify@3.4.15:
+    optionalDependencies:
+      '@types/trusted-types': 2.0.7
+
   domutils@2.8.0:
     dependencies:
       dom-serializer: 1.3.2
@@ -19769,6 +19773,8 @@ snapshots:
       punycode.js: 2.3.1
       uc.micro: 3.0.0
 
+  marked@14.0.0: {}
+
   matched@0.4.4:
     dependencies:
       arr-union: 3.1.0
@@ -19963,13 +19969,16 @@ snapshots:
       yargs-parser: 20.2.4
       yargs-unparser: 2.0.0
 
-  monaco-editor-webpack-plugin@7.1.1(monaco-editor@0.52.2)(webpack@5.106.2):
+  monaco-editor-webpack-plugin@7.1.1(monaco-editor@0.57.0)(webpack@5.106.2):
     dependencies:
       loader-utils: 2.0.4
-      monaco-editor: 0.52.2
+      monaco-editor: 0.57.0
       webpack: 5.106.2(esbuild@0.28.2)(webpack-cli@7.2.3)
 
-  monaco-editor@0.52.2: {}
+  monaco-editor@0.57.0:
+    dependencies:
+      dompurify: 3.4.15
+      marked: 14.0.0
 
   moo-color@1.0.3:
     dependencies:
@@ -22378,10 +22387,6 @@ snapshots:
       - '@types/node'
       - rollup
       - supports-color
-
-  vite-plugin-monaco-editor@1.1.0(monaco-editor@0.52.2):
-    dependencies:
-      monaco-editor: 0.52.2
 
   vite-plugin-svgr@4.3.0(rollup@4.40.1)(vite@8.2.2(@types/node@24.12.2)(esbuild@0.28.2)(jiti@2.6.1)(terser@5.46.2)(yaml@2.9.0)):
     dependencies:

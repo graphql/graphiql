@@ -492,6 +492,34 @@ Two things to know if you embed GraphiQL:
 
 To opt out of cursor tracking, pin the operation with the `operationName` prop on `<GraphiQL>`; an explicit `operationName` overrides what the cursor would otherwise select.
 
+## Monaco Editor 0.56 and 0.57 worker setup
+
+GraphiQL 6 supports Monaco Editor 0.56 and 0.57, and installs 0.57 by default. This also moves `monaco-graphql` to its next major version because Monaco changed its worker API and replaced the legacy `monaco-editor/esm/vs/*` deep imports with exported entry points.
+
+If you use one of GraphiQL's worker setup helpers, keep the same import. The helpers now load the Monaco 0.57 worker entry points for you:
+
+```ts
+import 'graphiql/setup-workers/vite';
+// or: graphiql/setup-workers/webpack
+// or: graphiql/setup-workers/esm.sh
+```
+
+If your application installs or configures Monaco directly, make these changes:
+
+1. Upgrade `monaco-editor` to `0.57.x`, or remain on `0.56.x` if needed. `monaco-graphql@2` accepts `>=0.56.0 <0.58.0`.
+2. Replace `monaco-editor/esm/vs/*` imports with Monaco's exported entry points. For example, import the editor worker from `monaco-editor/editor/editor.worker` and the JSON worker from `monaco-editor/languages/features/json/json.worker`.
+3. Configure `globalThis.MonacoEnvironment.getWorker` to return the GraphQL worker for the `graphql` label. Returning a URL from `getWorkerUrl` is not sufficient for the new worker contract.
+
+```ts
+globalThis.MonacoEnvironment = {
+  getWorker(_workerId: string, label: string) {
+    return label === 'graphql' ? new GraphQLWorker() : new EditorWorker();
+  },
+};
+```
+
+Custom GraphQL workers must call Monaco's `initialize` function as soon as the worker module loads. Don't wrap it in an additional `onmessage` handler. To pass functions or other values that structured cloning can't transfer to the worker, subclass `GraphQLWorker` and override its `initialize` method. See the [`monaco-graphql` custom worker example](../../packages/monaco-graphql/README.md#custom-webworker-for-passing-non-static-config-to-worker) for the complete worker and bundler configuration.
+
 ## New first-party plugins
 
 Two new plugins ship in v6 and are **installed by default** in the `graphiql` meta-package: a visual query builder and operation collections. If you pass your own `plugins` array to `<GraphiQL>`, it replaces the default set entirely, so you'll want to include the ones you still want alongside your custom plugins.

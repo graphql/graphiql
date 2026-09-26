@@ -68,7 +68,7 @@
     "esm"
   ],
   "scripts": {
-    "build": "tsgo -p tsconfig.json && tsgo -p tsconfig.esm.json && node ../../resources/patch-monaco-editor-type.mts",
+    "build": "tsgo -p tsconfig.json && tsgo -p tsconfig.esm.json",
     "types:check": "tsgo --noEmit",
     "test": "vitest run"
   },
@@ -79,14 +79,14 @@
   "devDependencies": {
     "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "graphql": "^16.14.2",
-    "monaco-editor": "0.52.2",
+    "monaco-editor": "0.57.0",
     "prettier": "3.3.2",
     "vite": "^8.2.2",
     "vscode-languageserver-types": "^3.17.1"
   },
   "peerDependencies": {
     "graphql": "^16.11.0 || ^17.0.0",
-    "monaco-editor": ">= 0.20.0 < 0.53",
+    "monaco-editor": ">=0.56.0 <0.58.0",
     "prettier": "^2.8.0 || ^3.0.0"
   }
 }

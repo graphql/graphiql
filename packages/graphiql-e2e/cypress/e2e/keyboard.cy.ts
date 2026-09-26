@@ -16,7 +16,7 @@ describe('GraphiQL keyboard interactions', () => {
   });
 
   it('Does prevent the escape key from being handled outside the editor if closing the autocomplete dialog', () => {
-    cy.visitGraphiQL();
+    cy.visitGraphiQL({ query: '' });
     const mockFn = cy.stub().as('escapeHandler');
     cy.document().then(doc => {
       doc.addEventListener('keydown', event => {
@@ -27,8 +27,17 @@ describe('GraphiQL keyboard interactions', () => {
     });
     cy.typeInEditor('{\n  t');
     // Wait autocomplete dialog to appear
-    cy.get('.monaco-list').should('exist');
-    cy.typeInEditor('{esc}');
+    cy.get('.suggest-widget.visible').then($widget => {
+      const doc = $widget[0].ownerDocument;
+      doc.activeElement!.dispatchEvent(
+        new doc.defaultView!.KeyboardEvent('keydown', {
+          key: 'Escape',
+          code: 'Escape',
+          bubbles: true,
+          cancelable: true,
+        }),
+      );
+    });
     cy.get('@escapeHandler').should('not.have.been.called');
   });
 });
@@ -161,7 +170,7 @@ describe('keyboard navigation', () => {
     cy.get('.graphiql-query-editor .graphiql-editor').first().focus();
     cy.focused().should('have.class', 'graphiql-editor');
     cy.realPress('Enter');
-    cy.focused().should('have.class', 'inputarea');
+    cy.focused().should('match', '.ime-text-area, .native-edit-context');
   });
 
   it('Escape closes the settings dialog and returns focus to the gear', () => {
@@ -230,7 +239,7 @@ describe('keyboard navigation', () => {
 
     cy.get('.graphiql-query-editor .graphiql-editor').first().realClick();
     cy.realPress('Enter');
-    cy.focused().should('have.class', 'inputarea');
+    cy.focused().should('match', '.ime-text-area, .native-edit-context');
     cy.clickExecuteQuery();
     cy.get('.result-window').should('contain.text', '__typename');
   });
