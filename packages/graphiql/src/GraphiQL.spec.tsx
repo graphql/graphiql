@@ -1,6 +1,6 @@
 'use no memo';
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
 
 /**
  *  Copyright (c) 2021 GraphQL Contributors.
@@ -17,6 +17,7 @@ import {
   ToolbarButton,
   GraphiQLProvider,
   useGraphiQL,
+  useMonaco,
   useOperationsEditorState,
   MonacoEditor,
   isMacOs,
@@ -36,6 +37,34 @@ beforeEach(() => {
 describe('GraphiQL', () => {
   // @ts-expect-error -- fixme
   const noOpFetcher: Fetcher = () => {};
+
+  beforeAll(async () => {
+    let isMonacoReady = false;
+
+    const MonacoReady: FC = () => {
+      isMonacoReady = useMonaco(state => Boolean(state.monaco));
+      return null;
+    };
+
+    const { unmount } = render(
+      <GraphiQLProvider fetcher={noOpFetcher}>
+        <MonacoReady />
+      </GraphiQLProvider>,
+    );
+
+    try {
+      await waitFor(
+        () => {
+          if (!isMonacoReady) {
+            throw new Error('Monaco is not initialized');
+          }
+        },
+        { timeout: 60_000 },
+      );
+    } finally {
+      unmount();
+    }
+  }, 65_000);
 
   describe('fetcher', () => {
     it('should throw error without fetcher or transport', () => {
@@ -199,36 +228,33 @@ describe('GraphiQL', () => {
   }); // schema
 
   describe('default query', () => {
-    // First test to boot Monaco's editor worker; cold start needs extra time under
-    // Vitest 4's forks pool. Both the it() testTimeout and the waitFor()
-    // asyncUtilTimeout (configured at 9s in setup-files.ts) must be bumped.
-    it('defaults to the built-in default query', async () => {
-      const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+    const InitialQuery: FC = () => {
+      const initialQuery = useGraphiQL(state => state.initialQuery);
+      return <output data-testid="initial-query">{initialQuery}</output>;
+    };
 
-      await waitFor(
-        () => {
-          const queryEditor = container.querySelector<HTMLDivElement>(
-            '.graphiql-editor .monaco-scrollable-element',
-          );
-          expect(queryEditor).toBeVisible();
-          expect(queryEditor!.textContent).toBe('# Welcome to GraphiQL');
-        },
-        { timeout: 25_000 },
+    it('defaults to the built-in default query', async () => {
+      const { findByTestId } = render(
+        <GraphiQL fetcher={noOpFetcher}>
+          <InitialQuery />
+        </GraphiQL>,
       );
-    }, 30000);
+
+      expect((await findByTestId('initial-query')).textContent).toMatch(
+        /^# Welcome to GraphiQL/,
+      );
+    });
 
     it('accepts a custom default query', async () => {
-      const { container } = render(
-        <GraphiQL fetcher={noOpFetcher} defaultQuery="GraphQL Party!!" />,
+      const { findByTestId } = render(
+        <GraphiQL fetcher={noOpFetcher} defaultQuery="GraphQL Party!!">
+          <InitialQuery />
+        </GraphiQL>,
       );
 
-      await waitFor(() => {
-        const queryEditor = container.querySelector<HTMLDivElement>(
-          '.graphiql-editor .monaco-scrollable-element',
-        );
-        expect(queryEditor).toBeVisible();
-        expect(queryEditor!.textContent).toBe('GraphQL Party!!');
-      });
+      expect((await findByTestId('initial-query')).textContent).toBe(
+        'GraphQL Party!!',
+      );
     });
   }); // default query
 

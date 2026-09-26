@@ -90,7 +90,19 @@ async function loadMonaco(
 }
 
 export function createMonacoInitializer(load: LoadMonaco = loadMonaco) {
-  return (options?: InitializeOptions) => load(options);
+  let initialization: Promise<InitializedMonaco> | undefined;
+
+  return async (options?: InitializeOptions) => {
+    const current = (initialization ??= load(options));
+    try {
+      return await current;
+    } catch (error) {
+      if (initialization === current) {
+        initialization = undefined;
+      }
+      throw error;
+    }
+  };
 }
 
 const initializeMonaco = createMonacoInitializer();
