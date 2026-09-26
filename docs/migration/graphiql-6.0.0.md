@@ -15,8 +15,7 @@ GraphiQL 6 ships with a complete visual overhaul, new first-party features and A
 9. [Removed hooks](#removed-hooks)
 10. [Removed `GraphiQL.Toolbar` and `GraphiQL.Logo`](#removed-graphiqltoolbar-and-graphiqllogo)
 11. [Deprecated APIs](#deprecated-apis)
-12. [Active operation follows the cursor](#active-operation-follows-the-cursor)
-13. [Other notes](#other-notes)
+12. [Other notes](#other-notes)
 
 ## Overview
 
@@ -640,17 +639,11 @@ The following APIs still work in v6, but they are deprecated:
 
 The v5 `--color-*` variables are also deprecated. They remain defined at their v5 values for custom CSS, but GraphiQL's components no longer read them. Migrate to the OKLCH tokens described in [CSS and retheming](#css-and-retheming).
 
-## Active operation follows the cursor
-
-In a document with more than one operation, the active operation now tracks the editor cursor. Moving the cursor into a different named operation updates `operationName`, so the Run button, the operation dropdown, and operation-aware plugins reflect the operation you are editing. Previously `operationName` changed only on run-at-cursor (`Cmd`/`Ctrl`+`Enter`) or by picking from the operation dropdown.
-
-Two things to know if you embed GraphiQL:
-
-- The `onEditOperationName` callback now fires when the cursor crosses into a different named operation, not only on edit or run. If you mirror `operationName` into your URL or app state, expect it to update as the user navigates between operations.
-- A tab holding multiple operations shows the active operation name followed by a `+N` count of the others (for example, `GetUser +2`).
-
 ## Other notes
 
+- **Active operation follows the cursor.** In a document with more than one operation, moving the cursor into a different named operation updates `operationName`. The Run button, operation dropdown, and operation-aware plugins therefore reflect the operation you are editing. Previously, `operationName` changed only on run-at-cursor (`Cmd`/`Ctrl`+`Enter`) or when selected from the operation dropdown.
+  - The `onEditOperationName` callback now fires when the cursor crosses into a different named operation, not only on edit or run. If you mirror `operationName` into your URL or app state, expect it to update as the user navigates between operations.
+  - A tab holding multiple operations shows the active operation name followed by a `+N` count of the others (for example, `GetUser +2`).
 - **Browserslist.** v6 replaces the project's custom `.browserslistrc` contents with the single `defaults` browserslist preset (`> 0.5%, last 2 versions, Firefox ESR, not dead`). That range covers the modern browsers that support the OKLCH color functions the new token system relies on. If your previous bespoke config deliberately targeted very old browsers, check `defaults` against your support matrix.
 - **Monaco editor theme registration.** The built-in Monaco themes (`graphiql-DARK` and `graphiql-LIGHT`) use the v6 accent palette. GraphQL tokens and the surrounding editor interface now use the same palette as the rest of GraphiQL. The `editorTheme` prop on `<GraphiQL>` still accepts the same `{ dark, light }` pair of Monaco theme names or definitions, so a custom theme registered through that prop continues to work. If a screenshot test depends on the previous built-in theme values, update its expected colors.
 - **`cn` removed from `@graphiql/react`.** The `cn` helper was just a re-export of `clsx`. It's gone now, so import `clsx` directly from the `clsx` package instead.
