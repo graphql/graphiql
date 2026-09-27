@@ -166,6 +166,44 @@ describe('run uses the current document', () => {
     });
   });
 
+  it('restores the selected operation when switching to a multi-operation tab', async () => {
+    const { store, queryEditor, fetcher } = prepare('query Changed { bar }');
+    const query = 'query Alpha { bar } query Beta { bar }';
+    queryEditor.setValue = vi.fn(value =>
+      queryEditor.getValue.mockReturnValue(value),
+    );
+    store.setState({
+      tabs: [
+        createTab({ query: 'query Changed { bar }' }),
+        { ...createTab({ query }), operationName: 'Beta' },
+      ],
+    });
+    store.getState().actions.changeTab(1);
+    await store.getState().actions.run();
+    expect(fetcher.mock.calls[0]?.[0]).toMatchObject({
+      query,
+      operationName: 'Beta',
+    });
+  });
+
+  it('appends external fragments required by the current document', async () => {
+    const { store, queryEditor, fetcher } = prepare('query Changed { ...Old }');
+    const fragments = parse(
+      'fragment Old on Query { bar } fragment New on Query { bar }',
+    ).definitions.filter(
+      definition => definition.kind === Kind.FRAGMENT_DEFINITION,
+    );
+    store.setState({
+      externalFragments: new Map(
+        fragments.map(fragment => [fragment.name.value, fragment]),
+      ),
+    });
+    queryEditor.getValue.mockReturnValue('query Saved { ...New }');
+    await store.getState().actions.run();
+    expect(fetcher.mock.calls[0]?.[0]?.query).toContain('fragment New');
+    expect(fetcher.mock.calls[0]?.[0]?.query).not.toContain('fragment Old');
+  });
+
   it('keeps an explicit selection when multiple operations still contain it', async () => {
     const query = 'query Alpha { bar } query Beta { bar }';
     const { store, queryEditor, fetcher } = prepare(query, 'Beta');
