@@ -118,7 +118,7 @@ importers:
         specifier: ^1
         version: 1.63.0
       oxlint-tsgolint:
-        specifier: latest
+        specifier: 7.0.2002
         version: 7.0.2002
       rimraf:
         specifier: ^6.1.3
