@@ -245,34 +245,62 @@ describe('keyboard navigation', () => {
   });
 
   it('The Run button caret opens a keyboard-operable operation picker', () => {
+    cy.clock(Date.now(), ['setTimeout', 'clearTimeout']);
+    cy.intercept('POST', '/graphql', request => {
+      if (['A', 'B'].includes(request.body.operationName)) {
+        request.alias = 'pickedOperation';
+      }
+    });
     cy.visitGraphiQL({
       query: 'query A { __typename }\nquery B { __typename }\n',
     });
-    cy.get('.graphiql-query-editor .view-lines').should('exist');
-    cy.activateOperation('A');
-
-    // Real OS-level focus is already established by `activateOperation`'s
-    // keyboard interaction with the editor above; `.focus()` here just moves
-    // it to the caret without a trusted event, which Radix doesn't require —
-    // only the key presses that follow need to be trusted.
-    cy.get('[aria-label="Choose operation to run"]').as('caret').focus();
-    cy.realPress('Enter');
-    cy.get('[role="menu"]').should('be.visible');
-
-    // The menu opens with the first item (A) highlighted; move to B and pick it.
-    cy.realPress('ArrowDown');
-    cy.realPress('Enter');
+    cy.get('.graphiql-top-bar-brand').realClick();
+    cy.activateOperation('B');
+    cy.tick(100);
     cy.get('.graphiql-tab-active .graphiql-tab-button').should(
       'contain.text',
       'B',
     );
-    cy.get('.result-window').should('contain.text', '__typename');
+    cy.activateOperation('A');
+
+    cy.get('[aria-label="Choose operation to run"]').as('caret').focus();
+    cy.realPress('Enter');
+    cy.get('[role="menu"]').should('be.visible');
+    cy.tick(0);
+    cy.focused().should('have.attr', 'role', 'menuitem').and('have.text', 'A');
+
+    cy.realPress('ArrowDown');
+    cy.tick(0);
+    cy.focused().should('have.attr', 'role', 'menuitem').and('have.text', 'B');
+    cy.realPress('Enter');
+    cy.tick(0);
+    cy.wait('@pickedOperation')
+      .its('request.body.operationName')
+      .should('equal', 'B');
+    cy.get('.graphiql-tab-active .graphiql-tab-button').should(
+      'contain.text',
+      'B',
+    );
+
+    // Flush an older cursor update after the explicit picker selection.
+    cy.tick(100);
+    cy.get('.graphiql-execute-button-primary').click();
+    cy.wait('@pickedOperation')
+      .its('request.body.operationName')
+      .should('equal', 'B');
+    cy.get('.graphiql-tab-active .graphiql-tab-button').should(
+      'contain.text',
+      'B',
+    );
 
     cy.get('@caret').focus();
     cy.realPress('Enter');
     cy.get('[role="menu"]').should('be.visible');
+    cy.tick(0);
+    cy.focused().should('have.attr', 'role', 'menuitem');
     cy.realPress('Escape');
     cy.get('[role="menu"]').should('not.exist');
+    cy.tick(0);
     cy.focused().should('have.attr', 'aria-label', 'Choose operation to run');
   });
 });
