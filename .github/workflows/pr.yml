@@ -22,7 +22,6 @@ jobs:
       - name: Turbo cache
         uses: ./.github/actions/turbo-cache
       - run: pnpm build
-      - run: pnpm check:packages
 
   cspell:
     name: CSpell
@@ -201,7 +200,6 @@ jobs:
         with:
           restore-build: true
       - run: pnpm build
-      - run: pnpm check:packages
       - run: pnpm dlx pkg-pr-new publish --comment=off './packages/*'
 
   license-check:

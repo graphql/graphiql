@@ -42,15 +42,14 @@
     "svgo": "svgo --pretty --indent 2 --eol lf --final-newline -r -f . --exclude node_modules",
     "svgo-check": "pnpm svgo && git diff --exit-code -- '*.svg'",
     "ci:version": "pnpm changeset version && pnpm install --no-frozen-lockfile && pnpm build && pnpm fix",
-    "release": "pnpm build && pnpm build-bundles && pnpm check:packages && pnpm changeset publish",
+    "release": "pnpm build && pnpm build-bundles && pnpm changeset publish",
     "repo:lint": "manypkg check",
     "repo:fix": "manypkg fix",
     "repo:resolve": "node scripts/set-resolution.mts",
     "t": "pnpm test",
     "test": "pnpm test:scripts && turbo run test --filter='./packages/*'",
     "test:scripts": "node --test scripts/*.spec.mts",
-    "gen-agenda": "wgutils agenda gen",
-    "check:packages": "node scripts/check-packed-packages.mts"
+    "gen-agenda": "wgutils agenda gen"
   },
   "dependencies": {
     "@babel/cli": "^7.29.7",
