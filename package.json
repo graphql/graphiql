@@ -5,6 +5,7 @@
   "license": "MIT",
   "packageManager": "pnpm@10.34.5",
   "scripts": {
+    "check:cypress-policy": "node scripts/check-cypress-policy.mts",
     "check:lockfile": "node scripts/check-pnpm-lockfile.mts",
     "types:check": "turbo run types:check && tsgo --noEmit -p scripts/tsconfig.json",
     "dev:graphiql": "turbo watch dev --filter=graphiql-e2e",
@@ -32,7 +33,7 @@
     "oxlint": "oxlint --max-warnings=0 --ignore-path .eslintignore",
     "fix": "pnpm lint-fix && pnpm format && pnpm svgo",
     "license-check": "jsgl --local .",
-    "lint": "pnpm oxlint && pnpm format-check && pnpm lint-cspell",
+    "lint": "pnpm oxlint && pnpm check:cypress-policy && pnpm format-check && pnpm lint-cspell",
     "lint-cspell": "cspell --unique --no-progress --no-must-find-files",
     "lint-fix": "pnpm oxlint --fix",
     "prebuild-bundles": "pnpm build-bundles-clean",
