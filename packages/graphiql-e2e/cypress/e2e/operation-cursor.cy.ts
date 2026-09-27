@@ -43,3 +43,53 @@ describe('active operation follows the editor cursor', () => {
     activeTabTitle().should('contain.text', 'Beta +1');
   });
 });
+
+// Replace the document and run in one browser callback so the content debounce
+// cannot reconcile the previous operation name before execution.
+describe('immediate execution after replacing the document', () => {
+  beforeEach(() => {
+    cy.clearAllLocalStorage();
+    cy.visitGraphiQL({ query: 'query Changed { test { id } }' });
+    cy.waitForQueryEditor();
+    cy.intercept('POST', '/graphql', request => {
+      if (!request.body.query.includes('__schema')) {
+        request.alias = 'immediateRun';
+        request.reply({ body: { data: { test: { id: '1' } } } });
+      }
+    });
+  });
+
+  it('uses the displayed document when Run is clicked immediately', () => {
+    const query = 'query Saved { test { id } }';
+    cy.window().then(win => {
+      const model = win.__MONACO.editor
+        .getModels()
+        .find(candidate => candidate.uri.path.endsWith('operation.graphql'))!;
+      model.setValue(query);
+      win.document
+        .querySelector<HTMLButtonElement>('.graphiql-execute-button-primary')!
+        .click();
+    });
+    cy.wait('@immediateRun')
+      .its('request.body')
+      .should('include', { query, operationName: 'Saved' });
+  });
+
+  it('uses current operation ranges for the keyboard Run action', () => {
+    const query = 'query Alpha { test { id } }\nquery Saved { test { id } }';
+    cy.window().then(win => {
+      const model = win.__MONACO.editor
+        .getModels()
+        .find(candidate => candidate.uri.path.endsWith('operation.graphql'))!;
+      const editor = win.__MONACO.editor
+        .getEditors()
+        .find(candidate => candidate.getModel() === model)!;
+      model.setValue(query);
+      editor.setPosition({ lineNumber: 2, column: 15 });
+      void editor.getAction('graphql-run')!.run();
+    });
+    cy.wait('@immediateRun')
+      .its('request.body')
+      .should('include', { query, operationName: 'Saved' });
+  });
+});

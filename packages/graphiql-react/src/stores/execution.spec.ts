@@ -2,8 +2,9 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import { create } from 'zustand';
+import { Kind, parse } from 'graphql';
 import { StorageAPI } from '@graphiql/toolkit';
-import type { Transport, TransportResponse } from '@graphiql/toolkit';
+import type { Fetcher, Transport, TransportResponse } from '@graphiql/toolkit';
 import { createExecutionSlice, isResponseView } from './execution';
 import { createStorageSlice } from './storage';
 import { createEditorSlice } from './editor';
@@ -109,6 +110,121 @@ function makeRunnableStore(initial: { fetcher?: any; transport?: Transport }) {
 }
 
 const tick = () => new Promise<void>(resolve => setTimeout(resolve, 0));
+
+describe('run uses the current document', () => {
+  function prepare(query: string, selected = 'Changed') {
+    const fetcher = vi.fn<Fetcher>(async () => ({ data: {} }));
+    const { store, queryEditor } = makeRunnableStore({ fetcher });
+    const documentAST = parse(query);
+    store.getState().actions.setOperationFacts({
+      documentAST,
+      operations: documentAST.definitions.filter(
+        definition => definition.kind === Kind.OPERATION_DEFINITION,
+      ),
+      operationName: selected,
+    });
+    return { store, queryEditor, fetcher };
+  }
+
+  it.each([
+    ['query Saved { bar }', 'Saved'],
+    ['{ bar }', undefined],
+  ])(
+    'runs a replacement document immediately: %s',
+    async (query, operationName) => {
+      const { store, queryEditor, fetcher } = prepare('query Changed { bar }');
+      queryEditor.getValue.mockReturnValue(query);
+      await store.getState().actions.run();
+      expect(fetcher.mock.calls[0]?.[0]).toMatchObject({
+        query,
+        operationName,
+      });
+      expect(fetcher.mock.calls[0]?.[1]?.documentAST?.loc?.source.body).toBe(
+        query,
+      );
+      expect(store.getState().operationName).toBe(operationName);
+    },
+  );
+
+  it('runs a tab immediately after switching to its document', async () => {
+    const { store, queryEditor, fetcher } = prepare('query Changed { bar }');
+    const query = 'query Saved { bar }';
+    queryEditor.setValue = vi.fn(value =>
+      queryEditor.getValue.mockReturnValue(value),
+    );
+    store.setState({
+      tabs: [
+        createTab({ query: 'query Changed { bar }' }),
+        createTab({ query }),
+      ],
+    });
+    store.getState().actions.changeTab(1);
+    await store.getState().actions.run();
+    expect(fetcher.mock.calls[0]?.[0]).toMatchObject({
+      query,
+      operationName: 'Saved',
+    });
+  });
+
+  it('keeps an explicit selection when multiple operations still contain it', async () => {
+    const query = 'query Alpha { bar } query Beta { bar }';
+    const { store, queryEditor, fetcher } = prepare(query, 'Beta');
+    queryEditor.getValue.mockReturnValue(query + ' query Gamma { bar }');
+    await store.getState().actions.run();
+    expect(fetcher.mock.calls[0]?.[0]?.operationName).toBe('Beta');
+  });
+
+  it('keeps the selected position when an operation is renamed', async () => {
+    const { store, queryEditor, fetcher } = prepare(
+      'query Alpha { bar } query Beta { bar }',
+      'Beta',
+    );
+    queryEditor.getValue.mockReturnValue(
+      'query Alpha { bar } query Saved { bar }',
+    );
+    await store.getState().actions.run();
+    expect(fetcher.mock.calls[0]?.[0]?.operationName).toBe('Saved');
+  });
+
+  it('preserves an operation name supplied by the host', async () => {
+    const query = 'query Alpha { bar } query Beta { bar }';
+    const { store, queryEditor, fetcher } = prepare('query Changed { bar }');
+    store.setState({ overrideOperationName: 'Beta' });
+    queryEditor.getValue.mockReturnValue(query);
+    await store.getState().actions.run();
+    expect(fetcher.mock.calls[0]?.[0]).toMatchObject({
+      query,
+      operationName: 'Beta',
+    });
+  });
+
+  it('blocks a newly displayed mutation until POST is selected', async () => {
+    const { store, queryEditor, fetcher } = prepare('query Changed { bar }');
+    store.setState({ transportMethod: 'GET' });
+    queryEditor.getValue.mockReturnValue('mutation Saved { bar }');
+    await store.getState().actions.run();
+    expect(fetcher).not.toHaveBeenCalled();
+    expect(store.getState().transportMethod).toBe('GET');
+  });
+
+  it('allows a newly displayed query with GET even after a mutation', async () => {
+    const { store, queryEditor, fetcher } = prepare('mutation Changed { bar }');
+    store.setState({ transportMethod: 'GET' });
+    queryEditor.getValue.mockReturnValue('query Saved { bar }');
+    await store.getState().actions.run();
+    expect(fetcher.mock.calls[0]?.[0]?.operationName).toBe('Saved');
+    expect(store.getState().transportMethod).toBe('GET');
+  });
+
+  it('uses the host override to block a mutation within a mixed document', async () => {
+    const query = 'query Alpha { bar } mutation Beta { bar }';
+    const { store, queryEditor, fetcher } = prepare(query, 'Alpha');
+    store.setState({ overrideOperationName: 'Beta', transportMethod: 'GET' });
+    queryEditor.getValue.mockReturnValue(query);
+    await store.getState().actions.run();
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+});
 
 describe('isResponseView', () => {
   it('accepts the three known views', () => {
