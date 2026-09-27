@@ -193,9 +193,14 @@ Cypress.Commands.add('setEditorValue', (value, editor = 'query') =>
 );
 
 Cypress.Commands.add('assertEditorValue', (expected, editor = 'query') =>
-  cy.getEditorModel(editor).should(model => {
-    expect(model.getValue(), `${editor} editor value`).to.equal(expected);
-  }),
+  cy
+    .window()
+    .should(win => {
+      const model = findAttachedEditorModel(win, editor);
+      expect(model, `${editor} editor model`).not.to.equal(undefined);
+      expect(model!.getValue(), `${editor} editor value`).to.equal(expected);
+    })
+    .then(win => findAttachedEditorModel(win, editor)!),
 );
 
 function realTypeInFocusedEditor(text: string, delay: number) {
@@ -369,12 +374,24 @@ Cypress.Commands.add(
         expect(marker!.severity).eq(markerSeverity);
       }
     });
-    assertHoverShowsMessage(text, message);
+    assertHoverShowsMessage(text, message, uri);
   },
 );
 
-function assertHoverShowsMessage(text: string, message: string) {
-  cy.contains(text).should($element => {
+function assertHoverShowsMessage(
+  text: string,
+  message: string,
+  uri: 'operation.graphql' | 'variables.json',
+) {
+  const editor =
+    uri === 'operation.graphql'
+      ? cy.get('.graphiql-query-editor .view-lines')
+      : cy
+          .get('.graphiql-var-headers-strip input[value="variables"]')
+          .check({ force: true })
+          .get('.graphiql-editor-tool .view-lines')
+          .eq(0);
+  editor.contains(text).should($element => {
     const element = $element.get(0);
     const bounds = element.getBoundingClientRect();
     const MouseEvent = element.ownerDocument.defaultView!.MouseEvent;
@@ -395,7 +412,11 @@ Cypress.Commands.add('assertNoLinterMarks', (uri = 'operation.graphql') => {
   const editorName = uri === 'operation.graphql' ? 'query' : 'variables';
   cy.getEditorModel(editorName).then(model => {
     const originalValue = model.getValue();
-    model.setValue(`${originalValue}\n+`);
+    const invalidValue =
+      uri === 'operation.graphql'
+        ? 'query CypressValidationSentinel { fieldThatDoesNotExist }'
+        : '{';
+    model.setValue(invalidValue);
     cy.window().should(win => {
       const markers = win.__MONACO.editor.getModelMarkers({
         resource: model.uri,
