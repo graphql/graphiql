@@ -57,6 +57,35 @@ function makeStore(
 }
 
 describe('tab management', () => {
+  it('leaves live edits alone when selecting the already active tab', () => {
+    const store = makeStore();
+    const editor = {
+      getValue: () => 'query Unsaved { hello }',
+      setValue: vi.fn(),
+    };
+    store.getState().actions.setEditor({ queryEditor: editor as any });
+
+    store.getState().actions.changeTab(0);
+
+    expect(editor.setValue).not.toHaveBeenCalled();
+    expect(store.getState().actions.stop).not.toHaveBeenCalled();
+  });
+
+  it('captures unsynchronized live edits before switching tabs', () => {
+    const firstTab = createTab({ query: 'query First { hello }' });
+    const secondTab = createTab({ query: 'query Second { counter }' });
+    const store = makeStore({ tabs: [firstTab, secondTab] });
+    const query = 'query Unsaved { hello counter }';
+    store.getState().actions.setEditor({
+      queryEditor: { getValue: () => query, setValue: vi.fn() } as any,
+    });
+
+    store.getState().actions.changeTab(1);
+
+    expect(store.getState().tabs[0]?.query).toBe(query);
+    expect(store.getState().tabs[0]?.lastSavedQuery).toBeNull();
+  });
+
   it('addTab adds a new tab', () => {
     const store = makeStore();
     expect(store.getState().tabs).toHaveLength(1);
