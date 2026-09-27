@@ -210,6 +210,13 @@ function subscribe(
     return source;
   };
 
+  const closeSource = async () => {
+    if (!closed) {
+      closed = true;
+      await source?.return?.();
+    }
+  };
+
   return {
     async next() {
       if (closed) {
@@ -226,15 +233,16 @@ function subscribe(
           value: toSubscriptionResponse(result.value, startMs),
         };
       } catch (error) {
-        closed = true;
+        try {
+          await closeSource();
+        } catch {
+          // Preserve the error that ended iteration.
+        }
         throw error;
       }
     },
     async return() {
-      if (!closed) {
-        closed = true;
-        await source?.return?.();
-      }
+      await closeSource();
       return { done: true, value: undefined };
     },
     [Symbol.asyncIterator]() {
