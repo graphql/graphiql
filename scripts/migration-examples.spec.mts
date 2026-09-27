@@ -1,7 +1,17 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
 import test from 'node:test';
-import { transpileModule, ModuleKind } from 'typescript';
+import {
+  createCompilerHost,
+  createProgram,
+  createSourceFile,
+  getPreEmitDiagnostics,
+  ModuleKind,
+  ModuleResolutionKind,
+  ScriptTarget,
+  transpileModule,
+} from 'typescript';
 
 const guide = await readFile(
   new URL('../docs/migration/graphiql-6.0.0.md', import.meta.url),
@@ -11,6 +21,39 @@ const section = guide.split('**After (custom transport):**')[1];
 assert.ok(section, 'The custom transport section must exist.');
 const snippet = /```ts\n([\s\S]*?)\n```/.exec(section)?.[1];
 assert.ok(snippet, 'The custom transport example must remain runnable.');
+const snippetPath = resolve(
+  'examples/graphiql-vite/.migration-transport-check.ts',
+);
+const compilerOptions = {
+  module: ModuleKind.ESNext,
+  moduleResolution: ModuleResolutionKind.Bundler,
+  target: ScriptTarget.ES2022,
+  lib: ['lib.es2022.d.ts', 'lib.dom.d.ts'],
+  skipLibCheck: true,
+  strict: true,
+};
+const compilerHost = createCompilerHost(compilerOptions);
+const getSourceFile = compilerHost.getSourceFile;
+compilerHost.getSourceFile = (
+  fileName,
+  languageVersion,
+  onError,
+  shouldCreateNewSourceFile,
+) =>
+  fileName === snippetPath
+    ? createSourceFile(fileName, snippet, languageVersion)
+    : getSourceFile(
+        fileName,
+        languageVersion,
+        onError,
+        shouldCreateNewSourceFile,
+      );
+const program = createProgram([snippetPath], compilerOptions, compilerHost);
+assert.deepEqual(
+  getPreEmitDiagnostics(program).map(diagnostic => diagnostic.messageText),
+  [],
+  'The custom transport example must typecheck against the Vite example dependencies.',
+);
 const { outputText } = transpileModule(`${snippet}\nexport { transport };`, {
   compilerOptions: { module: ModuleKind.ESNext },
 });
