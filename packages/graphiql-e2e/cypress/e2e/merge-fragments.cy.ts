@@ -11,10 +11,8 @@ query TestQuery {
     cy.visitGraphiQL({ query });
     cy.clickMergeFragments();
 
-    cy.get(
-      '.graphiql-query-editor .view-lines.monaco-mouse-cursor-text',
-    ).should(element => {
-      const text = element.get(0).innerText;
+    cy.getEditorModel().should(model => {
+      const text = model.getValue();
       expect(text).to.not.contain('fragment IdFragment');
       expect(text).to.not.contain('...IdFragment');
       expect(text).to.contain('id');
