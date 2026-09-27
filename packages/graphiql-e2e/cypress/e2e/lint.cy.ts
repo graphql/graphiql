@@ -73,6 +73,7 @@ describe('Linting', () => {
       'unusedVariable',
       'error',
       'Property unusedVariable is not allowed.',
+      'variables.json',
     );
   });
 
