@@ -157,6 +157,14 @@ function findAttachedEditorModel(
   return editor?.getModel() ?? undefined;
 }
 
+function afterEditorEffects<T>(win: Cypress.AUTWindow, value: T) {
+  return new Cypress.Promise<T>(resolve => {
+    win.requestAnimationFrame(() => {
+      win.requestAnimationFrame(() => resolve(value));
+    });
+  });
+}
+
 Cypress.Commands.add('getEditorModel', (editor = 'query') =>
   cy
     .window()
@@ -166,7 +174,12 @@ Cypress.Commands.add('getEditorModel', (editor = 'query') =>
         `${editor} editor model`,
       ).not.to.equal(undefined);
     })
-    .then(win => findAttachedEditorModel(win, editor)!),
+    // Monaco attaches its editor in one React effect. Consumers subscribe to
+    // that editor after the resulting render, so cross the paint boundary
+    // before allowing tests to mutate the model.
+    .then(win =>
+      afterEditorEffects(win, findAttachedEditorModel(win, editor)!),
+    ),
 );
 
 Cypress.Commands.add('setEditorValue', (value, editor = 'query') =>
