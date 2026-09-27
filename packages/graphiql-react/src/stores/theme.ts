@@ -10,6 +10,7 @@ type MonacoTheme =
 
 export interface ThemeSlice {
   theme: Theme;
+  editorTheme: NonNullable<ThemeProps['editorTheme']>;
 }
 
 export interface ThemeActions {
@@ -46,20 +47,23 @@ type CreateThemeSlice = (
   }
 >;
 
-export const createThemeSlice: CreateThemeSlice = () => (set, get) => ({
-  theme: null,
-  actions: {
-    setTheme(theme) {
-      const { storage } = get();
-      storage.set(STORAGE_KEY.theme, theme ?? '');
-      document.body.classList.remove('graphiql-light', 'graphiql-dark');
-      if (theme) {
-        document.body.classList.add(`graphiql-${theme}`);
-        document.documentElement.setAttribute('data-theme', theme);
-      } else {
-        document.documentElement.removeAttribute('data-theme');
-      }
-      set({ theme });
+export const createThemeSlice: CreateThemeSlice =
+  ({ editorTheme = MONACO_THEME_NAME }) =>
+  (set, get) => ({
+    theme: null,
+    editorTheme,
+    actions: {
+      setTheme(theme) {
+        const { storage } = get();
+        storage.set(STORAGE_KEY.theme, theme ?? '');
+        document.body.classList.remove('graphiql-light', 'graphiql-dark');
+        if (theme) {
+          document.body.classList.add(`graphiql-${theme}`);
+          document.documentElement.setAttribute('data-theme', theme);
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+        }
+        set({ theme });
+      },
     },
-  },
-});
+  });

@@ -441,6 +441,12 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   );
 };
 
+// Appearance settings also work outside a GraphiQL provider. The mapping is
+// fixed when the provider's store is created, so it needs no subscription.
+export function useEditorTheme() {
+  return useContext(GraphiQLContext)?.current.getState().editorTheme;
+}
+
 export function useGraphiQL<T>(selector: (state: SlicesWithActions) => T): T {
   const store = useContext(GraphiQLContext);
   if (!store) {

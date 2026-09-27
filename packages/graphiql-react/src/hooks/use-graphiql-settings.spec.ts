@@ -9,6 +9,9 @@ import {
 } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { MONACO_THEME_NAME } from '../constants';
+import { createStore, type StoreApi } from 'zustand';
+import { createThemeSlice, type ThemeProps } from '../stores/theme';
+import type { SlicesWithActions } from '../types';
 
 // The settings hook drives the Monaco theme through `monacoStore`; stub it
 // out so tests can control the mock editor instance the hook sees.
@@ -22,6 +25,23 @@ vi.mock('../stores/monaco', () => ({
   useMonaco: (selector: (state: { monaco: typeof mockMonaco }) => unknown) =>
     selector({ monaco: mockMonaco }),
 }));
+
+let mockThemeStore: StoreApi<SlicesWithActions>;
+
+vi.mock('../components/provider', () => ({
+  useEditorTheme: () =>
+    (mockThemeStore.getState() as { editorTheme?: ThemeProps['editorTheme'] })
+      .editorTheme,
+}));
+
+function setEditorTheme(editorTheme?: ThemeProps['editorTheme']) {
+  mockThemeStore = createStore<SlicesWithActions>(
+    (...args) =>
+      ({
+        ...createThemeSlice({ editorTheme })(...args),
+      }) as SlicesWithActions,
+  );
+}
 
 import {
   useGraphiQLSettings,
@@ -41,6 +61,16 @@ function clearStorage() {
 
 // jsdom doesn't implement matchMedia; install a configurable stub.
 let matchMediaMatches = false;
+const systemThemeListeners = new Set<() => void>();
+
+function changeSystemTheme(dark: boolean) {
+  act(() => {
+    matchMediaMatches = dark;
+    for (const listener of systemThemeListeners) {
+      listener();
+    }
+  });
+}
 
 beforeAll(() => {
   // Node 24 + jsdom: window exists but localStorage is not populated. Install
@@ -76,14 +106,20 @@ beforeAll(() => {
       ({
         matches: matchMediaMatches,
         media: query,
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
+        addEventListener(_event: string, listener: () => void) {
+          systemThemeListeners.add(listener);
+        },
+        removeEventListener(_event: string, listener: () => void) {
+          systemThemeListeners.delete(listener);
+        },
       }) as unknown as MediaQueryList,
   });
 });
 
 beforeEach(() => {
   clearStorage();
+  setEditorTheme();
+  systemThemeListeners.clear();
   matchMediaMatches = false;
   mockMonaco = { editor: { setTheme: vi.fn() } };
 });
@@ -299,5 +335,80 @@ describe('useGraphiQLSettings — drives the Monaco theme', () => {
     // Nothing to assert on `setTheme` itself since there's no monaco
     // instance, but the hook must not throw when monaco is unavailable.
     expect(result.current.theme).toBe('dark');
+  });
+});
+
+describe('useGraphiQLSettings — registered editor themes', () => {
+  beforeEach(() => {
+    setEditorTheme({ light: 'company-light', dark: 'company-dark' });
+  });
+
+  it.each([false, true])(
+    'preserves the custom theme on cold initialization with dark system preference %s',
+    dark => {
+      matchMediaMatches = dark;
+      renderHook(() => useGraphiQLSettings());
+      expect(mockMonaco!.editor.setTheme).toHaveBeenLastCalledWith(
+        dark ? 'company-dark' : 'company-light',
+      );
+    },
+  );
+
+  it.each(['light', 'dark'] as const)(
+    'restores the custom %s theme from saved settings',
+    theme => {
+      setStorage({ theme });
+      renderHook(() => useGraphiQLSettings());
+      expect(mockMonaco!.editor.setTheme).toHaveBeenLastCalledWith(
+        `company-${theme}`,
+      );
+    },
+  );
+
+  it('keeps custom names when Settings switches between light and dark', () => {
+    const { result } = renderHook(() => useGraphiQLSettings());
+    for (const theme of ['dark', 'light'] as const) {
+      act(() => result.current.setTheme(theme));
+      expect(mockMonaco!.editor.setTheme).toHaveBeenLastCalledWith(
+        `company-${theme}`,
+      );
+    }
+  });
+
+  it('follows system changes in Auto with the registered names and removes its listener on unmount', () => {
+    const container = document.createElement('div');
+    const { unmount } = renderHook(() =>
+      useGraphiQLSettings({ current: container }),
+    );
+    changeSystemTheme(true);
+    expect(container).toHaveAttribute('data-theme', 'dark');
+    expect(mockMonaco!.editor.setTheme).toHaveBeenLastCalledWith(
+      'company-dark',
+    );
+    changeSystemTheme(false);
+    expect(container).toHaveAttribute('data-theme', 'light');
+    expect(mockMonaco!.editor.setTheme).toHaveBeenLastCalledWith(
+      'company-light',
+    );
+    unmount();
+    expect(systemThemeListeners.size).toBe(0);
+  });
+
+  it('keeps explicit selection when the system theme changes', () => {
+    setStorage({ theme: 'light' });
+    renderHook(() => useGraphiQLSettings());
+    changeSystemTheme(true);
+    expect(mockMonaco!.editor.setTheme).toHaveBeenLastCalledWith(
+      'company-light',
+    );
+  });
+
+  it('applies the registered name once Monaco finishes initializing', () => {
+    mockMonaco = undefined;
+    setStorage({ theme: 'dark' });
+    const { rerender } = renderHook(() => useGraphiQLSettings());
+    mockMonaco = { editor: { setTheme: vi.fn() } };
+    rerender();
+    expect(mockMonaco.editor.setTheme).toHaveBeenLastCalledWith('company-dark');
   });
 });

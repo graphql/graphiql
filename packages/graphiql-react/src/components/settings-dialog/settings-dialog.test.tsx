@@ -32,6 +32,7 @@ let mockShouldPersistHeaders = false;
 type MockState = { shouldPersistHeaders: boolean; storage: typeof mockStorage };
 
 vi.mock('../provider', () => ({
+  useEditorTheme() {},
   useGraphiQL: (selector: (s: MockState) => unknown) =>
     selector({
       shouldPersistHeaders: mockShouldPersistHeaders,
