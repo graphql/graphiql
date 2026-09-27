@@ -8,7 +8,7 @@ function setQuery(query: string) {
 }
 
 function saveNewOperation() {
-  cy.get('[aria-label="Save query"]').click();
+  cy.get('[aria-label="Save query"], [aria-label="Save operation"]').click();
   cy.contains('label', 'Operation name')
     .find('input')
     .clear()
@@ -33,6 +33,12 @@ function expectPersistedQuery(query: string) {
 function reopenSavedOperation(query: string) {
   cy.reload();
   cy.waitForQueryEditor();
+  cy.window().should(win => {
+    const model = win.__MONACO.editor
+      .getModels()
+      .find(candidate => candidate.uri.path.endsWith('operation.graphql'))!;
+    expect(model.getValue()).to.equal(query);
+  });
   cy.get('[aria-label="Show Collections"]').click();
   cy.contains('.graphiql-collection-item-row', 'Saved operation').click();
   cy.window().then(win => {
@@ -45,10 +51,9 @@ function reopenSavedOperation(query: string) {
 
 describe('Collections saves', () => {
   it('survives reloading before any edit or tab-persistence timer runs', () => {
-    cy.visitGraphiQL({ defaultQuery: '' });
-    cy.waitForQueryEditor();
-    cy.get('[aria-label="Show Collections"]').should('be.visible');
     cy.clock(Date.now(), ['setTimeout', 'clearTimeout']);
+    cy.visitGraphiQL({ defaultQuery: '' });
+    cy.get('[aria-label="Show Collections"]').should('be.visible');
     const query = 'query Saved { id }';
     setQuery(query);
 
@@ -59,16 +64,15 @@ describe('Collections saves', () => {
   });
 
   it('persists updates to a linked item without losing later unsaved edits', () => {
-    cy.visitGraphiQL({ defaultQuery: '' });
-    cy.waitForQueryEditor();
-    cy.get('[aria-label="Show Collections"]').should('be.visible');
     cy.clock(Date.now(), ['setTimeout', 'clearTimeout']);
+    cy.visitGraphiQL({ defaultQuery: '' });
+    cy.get('[aria-label="Show Collections"]').should('be.visible');
     setQuery('query First { id }');
     saveNewOperation();
     const query = 'query Updated { image }';
     setQuery(query);
 
-    cy.get('[aria-label="Save query"]').click();
+    cy.get('[aria-label="Save query"], [aria-label="Save operation"]').click();
 
     cy.get('[role="dialog"]').should('not.exist');
     expectPersistedQuery(query);
