@@ -1,10 +1,12 @@
 'use no memo';
 
 import { describe, it, expect, vi } from 'vitest';
-import type {
-  Transport,
-  TransportRequest,
-  TransportResponse,
+import {
+  createTransport,
+  type SubscriptionSink,
+  type Transport,
+  type TransportRequest,
+  type TransportResponse,
 } from '@graphiql/toolkit';
 import { TransportHookRegistry } from './transport-hooks';
 
@@ -265,6 +267,41 @@ describe('TransportHookRegistry', () => {
       await iterator.return?.();
 
       expect(disposed).toBe(true);
+    });
+
+    it('forwards Stop to a toolkit subscription while its next event is pending', async () => {
+      const dispose = vi.fn();
+      let sink!: SubscriptionSink;
+      const registry = new TransportHookRegistry();
+      const onResponse = vi.fn();
+      registry.onResponse(onResponse);
+      const transport = registry.wrap(
+        createTransport({
+          url: 'http://unused.invalid/graphql',
+          fetch: vi.fn(),
+          subscriptionClient: {
+            subscribe(_request, observer) {
+              sink = observer;
+              return dispose;
+            },
+          },
+        }),
+      );
+      const iterator = (
+        transport.send({
+          query: 'subscription { tick }',
+        }) as AsyncIterable<TransportResponse>
+      )[Symbol.asyncIterator]();
+      const first = iterator.next();
+      sink.next({ data: { tick: 1 } });
+      expect((await first).done).toBe(false);
+      const pending = iterator.next();
+      await iterator.return!();
+      await expect(pending).resolves.toMatchObject({ done: true });
+      sink.next({ data: { tick: 2 } });
+      await iterator.return!();
+      expect(dispose).toHaveBeenCalledTimes(1);
+      expect(onResponse).toHaveBeenCalledTimes(1);
     });
 
     it('calling [Symbol.asyncIterator]() a second time yields an independent iterator', async () => {

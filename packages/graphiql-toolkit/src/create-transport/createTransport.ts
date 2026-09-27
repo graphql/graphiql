@@ -1,7 +1,7 @@
 import { parse } from 'graphql';
 import type { OperationDefinitionNode } from 'graphql';
 import {
-  createWebsocketsFetcherFromClient,
+  createSubscriptionIterator,
   multipartHttpTransport,
   simpleHttpTransport,
 } from '../create-fetcher/lib';
@@ -130,7 +130,7 @@ export function createTransport(opts: CreateTransportOptions): Transport {
     );
 
     if (selectedOperation === 'subscription') {
-      return subscribe(opts.subscriptionClient, params);
+      return subscribe(opts.subscriptionClient, params, req.signal);
     }
 
     // Mutations may only be sent over POST. GET and QUERY are both safe methods
@@ -187,19 +187,23 @@ export function createTransport(opts: CreateTransportOptions): Transport {
   return transport;
 }
 
-async function* subscribe(
+function subscribe(
   subscriptionClient: SubscriptionClient | undefined,
   params: FetcherParams,
-): AsyncGenerator<TransportResponse> {
-  if (!subscriptionClient) {
-    throw new Error(
-      "createTransport is not configured for subscriptions. Pass a `subscriptionClient` (e.g. `graphql-ws`'s `createClient({ url })` or `graphql-sse`'s `createClient({ url })`). See docs/migration/graphiql-6.0.0.md.",
-    );
-  }
-  const wsFetcher = createWebsocketsFetcherFromClient(subscriptionClient);
-  const iterable = wsFetcher(params) as AsyncIterable<unknown>;
-  const startMs = performance.now();
-  for await (const event of iterable) {
-    yield toSubscriptionResponse(event, startMs);
-  }
+  signal?: AbortSignal,
+): AsyncIterableIterator<TransportResponse> {
+  let startMs = 0;
+  return createSubscriptionIterator(
+    sink => {
+      if (!subscriptionClient) {
+        throw new Error(
+          "createTransport is not configured for subscriptions. Pass a `subscriptionClient` (e.g. `graphql-ws`'s `createClient({ url })` or `graphql-sse`'s `createClient({ url })`). See docs/migration/graphiql-6.0.0.md.",
+        );
+      }
+      startMs = performance.now();
+      return subscriptionClient.subscribe(params, sink);
+    },
+    event => toSubscriptionResponse(event, startMs),
+    signal,
+  );
 }

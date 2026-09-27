@@ -9,6 +9,7 @@ import type {
 import {
   isAsyncIterable,
   makeAsyncIterableIteratorFromSink,
+  makePushPullAsyncIterableIterator,
 } from '@n1ru4l/push-pull-async-iterable-iterator';
 
 import type {
@@ -23,6 +24,7 @@ import type {
 import type {
   HttpMethod,
   SubscriptionClient,
+  SubscriptionSink,
   TransportResponse,
 } from '../create-transport/types';
 
@@ -269,26 +271,144 @@ export async function createWebsocketsFetcherFromUrl(
  * {@link SubscriptionClient} contract (`graphql-ws`, `graphql-sse`, or a custom
  * one — e.g. HTTP `multipart/mixed`).
  */
+export function createSubscriptionIterator<T>(
+  subscribe: (sink: SubscriptionSink) => () => void,
+  map: (value: ExecutionResult) => T,
+  signal?: AbortSignal,
+  startImmediately = false,
+): AsyncIterableIterator<T> {
+  const complete = Symbol('complete');
+  type QueueItem =
+    | { kind: 'value'; value: T }
+    | { kind: 'error'; error: unknown }
+    | typeof complete;
+  const { pushValue, asyncIterableIterator: source } =
+    makePushPullAsyncIterableIterator<QueueItem>();
+  const doneResult: IteratorResult<T> = {
+    done: true,
+    value: undefined,
+  };
+  let started = false;
+  let ended = false;
+  let cancelled = false;
+  let dispose: (() => void) | undefined;
+
+  function cleanup() {
+    const cleanupSubscription = dispose;
+    dispose = undefined;
+    cleanupSubscription?.();
+  }
+
+  function finish(item: QueueItem) {
+    if (ended) {
+      return;
+    }
+    ended = true;
+    signal?.removeEventListener('abort', cancel);
+    cleanup();
+    pushValue(item);
+  }
+
+  function start(propagateError = false) {
+    started = true;
+    signal?.addEventListener('abort', cancel, { once: true });
+    try {
+      dispose = subscribe({
+        next(value) {
+          if (ended) {
+            return;
+          }
+          try {
+            pushValue({ kind: 'value', value: map(value) });
+          } catch (error) {
+            finish({ kind: 'error', error });
+          }
+        },
+        complete() {
+          finish(complete);
+        },
+        error(error) {
+          finish({
+            kind: 'error',
+            error:
+              typeof CloseEvent !== 'undefined' && error instanceof CloseEvent
+                ? new Error(
+                    `Socket closed with event ${error.code} ${error.reason || ''}`.trim(),
+                  )
+                : error,
+          });
+        },
+      });
+    } catch (error) {
+      finish({ kind: 'error', error });
+      if (propagateError) {
+        throw error;
+      }
+    }
+    if (ended) {
+      cleanup();
+    }
+  }
+
+  function cancel() {
+    ended = true;
+    cancelled = true;
+    signal?.removeEventListener('abort', cancel);
+    cleanup();
+    return source.return().then(() => doneResult);
+  }
+
+  const iterator: AsyncIterableIterator<T> = {
+    [Symbol.asyncIterator]() {
+      return this;
+    },
+    next() {
+      if (signal?.aborted) {
+        return cancel();
+      }
+      if (cancelled) {
+        return Promise.resolve(doneResult);
+      }
+      if (!started) {
+        start();
+      }
+      return source.next().then(async result => {
+        if (result.done || result.value === complete) {
+          await source.return();
+          return doneResult;
+        }
+        if (result.value.kind === 'error') {
+          await source.return();
+          throw result.value.error;
+        }
+        return { done: false, value: result.value.value };
+      });
+    },
+    return() {
+      return cancel();
+    },
+    throw(error) {
+      ended = true;
+      signal?.removeEventListener('abort', cancel);
+      cleanup();
+      return source.throw(error) as Promise<IteratorResult<T>>;
+    },
+  };
+
+  if (startImmediately) {
+    start(true);
+  }
+  return iterator;
+}
+
 export const createWebsocketsFetcherFromClient =
   (wsClient: SubscriptionClient): Fetcher =>
   (graphQLParams: FetcherParams) =>
-    makeAsyncIterableIteratorFromSink<ExecutionResult>(sink =>
-      wsClient.subscribe(graphQLParams, {
-        ...sink,
-        error(err) {
-          if (err instanceof CloseEvent) {
-            sink.error(
-              new Error(
-                `Socket closed with event ${err.code} ${
-                  err.reason || ''
-                }`.trim(),
-              ),
-            );
-          } else {
-            sink.error(err);
-          }
-        },
-      }),
+    createSubscriptionIterator(
+      sink => wsClient.subscribe(graphQLParams, sink),
+      value => value,
+      undefined,
+      true,
     );
 
 /**

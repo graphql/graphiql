@@ -16,9 +16,8 @@ export type TransportRequest = {
    */
   headers?: Record<string, string>;
   /**
-   * Aborts the request. For subscriptions, prefer stopping the returned
-   * `AsyncIterable` (call `.return()` on its iterator) instead — an aborted
-   * signal only cancels the initial HTTP request, not an open socket.
+   * Aborts the request, including an active subscription. Subscriptions can
+   * also be stopped by calling `.return()` on the returned iterator.
    */
   signal?: AbortSignal;
 };

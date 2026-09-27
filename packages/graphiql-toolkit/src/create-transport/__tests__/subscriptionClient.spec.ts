@@ -39,7 +39,7 @@ describe('createTransport — custom SubscriptionClient', () => {
     expect(asContract(wsClient)).toBe(wsClient);
   });
 
-  it('drives subscriptions end-to-end through the real adapter (no graphql-ws)', async () => {
+  it('drives subscriptions end-to-end through a custom client', async () => {
     const dispose = vi.fn();
     const client: SubscriptionClient = {
       subscribe(_request, sink) {
@@ -165,6 +165,141 @@ describe('createTransport — custom SubscriptionClient', () => {
     await iterator.return!();
     sink.next({ data: { tick: 2 } });
     sink.complete();
+    expect(dispose).toHaveBeenCalledTimes(1);
+    await expect(iterator.next()).resolves.toMatchObject({ done: true });
+  });
+
+  it.each(['return', 'abort'] as const)(
+    'stops before the first event via %s',
+    async mode => {
+      const dispose = vi.fn();
+      const controller = new AbortController();
+      const transport = createTransport({
+        url: URL,
+        subscriptionClient: {
+          subscribe() {
+            return dispose;
+          },
+        },
+      });
+      const iterator = (
+        transport.send({
+          query: SUBSCRIPTION,
+          signal: controller.signal,
+        }) as AsyncIterable<TransportResponse>
+      )[Symbol.asyncIterator]();
+      const pending = iterator.next();
+      if (mode === 'return') {
+        await iterator.return!();
+      } else {
+        controller.abort();
+      }
+      await expect(pending).resolves.toMatchObject({ done: true });
+      await iterator.return!();
+      controller.abort();
+      expect(dispose).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it('does not start a subscription cancelled before iteration', async () => {
+    const subscribe = vi.fn(() => () => {});
+    const transport = createTransport({
+      url: URL,
+      subscriptionClient: { subscribe },
+    });
+    const iterator = (
+      transport.send({
+        query: SUBSCRIPTION,
+      }) as AsyncIterable<TransportResponse>
+    )[Symbol.asyncIterator]();
+    await iterator.return!();
+    await expect(iterator.next()).resolves.toMatchObject({ done: true });
+    const controller = new AbortController();
+    controller.abort();
+    const aborted = (
+      transport.send({
+        query: SUBSCRIPTION,
+        signal: controller.signal,
+      }) as AsyncIterable<TransportResponse>
+    )[Symbol.asyncIterator]();
+    await expect(aborted.next()).resolves.toMatchObject({ done: true });
+    expect(subscribe).not.toHaveBeenCalled();
+  });
+
+  it('retains queued final events and disposes synchronous completion once', async () => {
+    const dispose = vi.fn();
+    const transport = createTransport({
+      url: URL,
+      subscriptionClient: {
+        subscribe(_request, sink) {
+          sink.next({ data: { tick: 1 } });
+          sink.next({ data: { tick: 2 } });
+          sink.complete();
+          sink.next({ data: { tick: 3 } });
+          return dispose;
+        },
+      },
+    });
+    const events = await collect(
+      transport.send({
+        query: SUBSCRIPTION,
+      }) as AsyncIterable<TransportResponse>,
+    );
+    expect(events.map(event => event.body)).toEqual([
+      { data: { tick: 1 } },
+      { data: { tick: 2 } },
+    ]);
+    expect(dispose).toHaveBeenCalledTimes(1);
+  });
+
+  it('settles pending iteration and disposes once when the consumer throws', async () => {
+    const dispose = vi.fn();
+    const transport = createTransport({
+      url: URL,
+      subscriptionClient: {
+        subscribe() {
+          return dispose;
+        },
+      },
+    });
+    const iterator = (
+      transport.send({
+        query: SUBSCRIPTION,
+      }) as AsyncIterable<TransportResponse>
+    )[Symbol.asyncIterator]();
+    const pending = iterator.next();
+    await Promise.all([
+      expect(pending).rejects.toThrow('consumer failed'),
+      expect(iterator.throw!(new Error('consumer failed'))).rejects.toThrow(
+        'consumer failed',
+      ),
+    ]);
+    await iterator.return!();
+    expect(dispose).toHaveBeenCalledTimes(1);
+  });
+
+  it('disposes after a subscription error', async () => {
+    const dispose = vi.fn();
+    let sink!: SubscriptionSink;
+    const transport = createTransport({
+      url: URL,
+      subscriptionClient: {
+        subscribe(_request, observer) {
+          sink = observer;
+          return dispose;
+        },
+      },
+    });
+    const iterator = (
+      transport.send({
+        query: SUBSCRIPTION,
+      }) as AsyncIterable<TransportResponse>
+    )[Symbol.asyncIterator]();
+    const pending = iterator.next();
+    await Promise.all([
+      expect(pending).rejects.toThrow('subscription failed'),
+      Promise.resolve(sink.error(new Error('subscription failed'))),
+    ]);
     expect(dispose).toHaveBeenCalledTimes(1);
     await expect(iterator.next()).resolves.toMatchObject({ done: true });
   });
