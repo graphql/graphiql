@@ -166,9 +166,14 @@ Cypress.Commands.add('setEditorValue', (value, editor = 'query') =>
 );
 
 Cypress.Commands.add('assertEditorValue', (expected, editor = 'query') =>
-  cy.getEditorModel(editor).should(model => {
-    expect(model.getValue(), `${editor} editor value`).to.equal(expected);
-  }),
+  cy
+    .window()
+    .should(win => {
+      const model = findAttachedEditorModel(win, editor);
+      expect(model, `${editor} editor model`).not.to.equal(undefined);
+      expect(model!.getValue(), `${editor} editor value`).to.equal(expected);
+    })
+    .then(win => findAttachedEditorModel(win, editor)!),
 );
 
 function realTypeInFocusedEditor(text: string, delay: number) {
