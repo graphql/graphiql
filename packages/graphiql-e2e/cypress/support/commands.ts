@@ -153,8 +153,10 @@ Cypress.Commands.add('getEditorModel', (editor = 'query') =>
   cy
     .window()
     .should(win => {
-      expect(findAttachedEditorModel(win, editor), `${editor} editor model`).to
-        .exist;
+      expect(
+        findAttachedEditorModel(win, editor),
+        `${editor} editor model`,
+      ).not.to.equal(undefined);
     })
     .then(win => findAttachedEditorModel(win, editor)!),
 );
@@ -246,7 +248,7 @@ Cypress.Commands.add('clickMergeFragments', () => {
 Cypress.Commands.add('waitForQueryEditor', expectedValue =>
   cy.window().should(win => {
     const queryModel = findAttachedEditorModel(win, 'query');
-    expect(queryModel, 'query editor model').to.exist;
+    expect(queryModel, 'query editor model').not.to.equal(undefined);
     if (expectedValue !== undefined) {
       expect(queryModel!.getValue(), 'query editor value').to.equal(
         expectedValue,
