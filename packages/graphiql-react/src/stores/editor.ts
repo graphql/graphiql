@@ -405,10 +405,14 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       });
     },
     changeTab(index) {
-      set(({ actions, onTabChange, tabs }) => {
+      set(({ actions, activeTabIndex, onTabChange, tabs }) => {
         actions.stop();
-        const updated = {
+        const updatedValues = synchronizeActiveTabValues({
           tabs,
+          activeTabIndex,
+        });
+        const updated = {
+          tabs: updatedValues.tabs,
           activeTabIndex: index,
         };
         actions.storeTabs(updated);
