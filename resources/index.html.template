@@ -10,7 +10,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GraphiQL 5 with React 19 and GraphiQL Explorer</title>
+    <title>GraphiQL 6 with React 19</title>
     <style>
       body {
         margin: 0;
@@ -34,31 +34,38 @@
       integrity="{{GRAPHIQL_CSS_INTEGRITY}}"
       crossorigin="anonymous"
     />
-    <!--
-     * Note:
-     * The ?standalone flag bundles the module along with all of its `dependencies`, excluding `peerDependencies`, into a single JavaScript file.
-     * `@emotion/is-prop-valid` is a shim to remove the console error ` module "@emotion /is-prop-valid" not found`. Upstream issue: https://github.com/motiondivision/motion/issues/3126
-    -->
+    <!-- The Monaco API and language registrations share one bundle. Its scoped
+         process alias preserves browser platform detection and keyboard shortcuts. -->
+    <!-- cspell:ignoreRegExp /data:text\/javascript,[^"]+/g -->
     <script type="importmap">
 {{IMPORTMAP}}
     </script>
     <script type="module">
       import React from 'react';
       import ReactDOM from 'react-dom/client';
-      import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
-      import { createGraphiQLFetcher } from '@graphiql/toolkit';
-      import { explorerPlugin } from '@graphiql/plugin-explorer';
-      import 'graphiql/setup-workers/esm.sh';
+      import { GraphiQL } from 'graphiql';
+      import { createTransport } from '@graphiql/toolkit';
+      import EditorWorker from '{{EditorWorker}}';
+      import JsonWorker from '{{JsonWorker}}';
+      import GraphQLWorker from '{{GraphQLWorker}}';
 
-      const fetcher = createGraphiQLFetcher({
-        url: 'https://countries.trevorblades.com',
+      globalThis.MonacoEnvironment = {
+        getWorker(_workerId, label) {
+          if (label === 'graphql') return new GraphQLWorker();
+          if (label === 'json') return new JsonWorker();
+          return new EditorWorker();
+        },
+      };
+
+      const parameters = new URLSearchParams(location.search);
+      const transport = createTransport({
+        url: parameters.get('endpoint') || 'https://countries.trevorblades.com',
       });
-      const plugins = [HISTORY_PLUGIN, explorerPlugin()];
 
       function App() {
         return React.createElement(GraphiQL, {
-          fetcher,
-          plugins,
+          transport,
+          initialQuery: parameters.get('query') || undefined,
           defaultEditorToolsVisibility: true,
         });
       }

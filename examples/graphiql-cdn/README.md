@@ -1,23 +1,24 @@
-# GraphiQL CDN Example
+# GraphiQL CDN example
 
-This is a simple example of using **GraphiQL** directly from a CDN.
+This example loads the latest stable GraphiQL package family from [esm.sh](https://esm.sh) without a build step. Its import map shares one Monaco editor instance across GraphQL and JSON language features.
 
-It loads the latest GraphiQL version from [esm.sh](https://esm.sh), an ESM-based CDN that serves npm packages as ES modules.
+## Open the example
 
-## Setup
+From the repository root, serve the example over HTTP:
 
-No installation or build step is required — just open the `index.html` file in your browser:
+```sh
+python3 -m http.server 8000 --directory examples/graphiql-cdn
+```
 
-- macOS:
+Open [the example](http://localhost:8000/) in your browser. It uses the Countries GraphQL endpoint. To use your own server or supply an initial query, add the `endpoint` and `query` URL parameters.
 
-  ```sh
-  open index.html
-  ```
+## Update dependencies
 
-- Linux:
+Generate the example from the latest stable package versions and refresh its integrity hashes:
 
-  ```sh
-  firefox index.html
-  # or
-  chromium index.html
-  ```
+```sh
+node .github/scripts/update-cdn-versions.mjs > examples/graphiql-cdn/index.html
+pnpm format
+```
+
+Serve the generated file and exercise query execution, formatting, completion, diagnostics, keyboard shortcuts, and the editor, JSON, and GraphQL workers in a native browser before committing it.
