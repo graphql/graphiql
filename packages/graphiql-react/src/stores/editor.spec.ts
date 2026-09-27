@@ -71,7 +71,7 @@ describe('tab management', () => {
     expect(store.getState().actions.stop).not.toHaveBeenCalled();
   });
 
-  it('captures unsynchronized live edits before switching tabs', () => {
+  it('captures live edits before switching tabs without waiting for the edit timer', () => {
     const firstTab = createTab({ query: 'query First { hello }' });
     const secondTab = createTab({ query: 'query Second { counter }' });
     const store = makeStore({ tabs: [firstTab, secondTab] });
@@ -206,29 +206,14 @@ describe('save-handler registry', () => {
     expect(handlerC).toHaveBeenCalledOnce();
   });
 
-  it('tab is marked saved (lastSavedQuery updated) when at least one handler returns true', () => {
+  it('uses stored contents when marking a tab saved before its editor mounts', () => {
     const store = makeStore();
-    // Advance the stored query so we can detect a real change.
     store.getState().actions.updateActiveTabValues({ query: 'query Saved {}' });
-    const tabBefore = store.getState().tabs[0]!;
-    // Confirm the tab has a non-null query and lastSavedQuery is still null.
-    expect(tabBefore.query).toBe('query Saved {}');
-    expect(tabBefore.lastSavedQuery).toBeNull();
-
-    // Register a handler that commits synchronously.
     store.getState().actions.registerSaveHandler(() => true);
+
     store.getState().actions.saveQuery();
 
-    // markTabSaved uses queryEditor?.getValue() ?? null (no Monaco in tests).
-    // The point is the tab's lastSavedQuery was updated (even if null) vs remaining
-    // in its prior state — which was also null here. We verify markTabSaved ran by
-    // checking that the tab object has been updated in state.
-    //
-    // To make this test meaningful we use a handler that returns true and confirm
-    // that unregistering a handler prevents mark-saved from running (see next test).
-    const tabAfter = store.getState().tabs[0]!;
-    // lastSavedQuery set to queryEditor.getValue() ?? null; Monaco absent → null.
-    expect(tabAfter.lastSavedQuery).toBeNull();
+    expect(store.getState().tabs[0]!.lastSavedQuery).toBe('query Saved {}');
   });
 
   it('tab is NOT marked saved when every handler returns void/false', () => {
@@ -335,13 +320,13 @@ describe('saved tab persistence', () => {
     const values = new Map<string, string>();
     return new StorageAPI({
       getItem: key => values.get(key) ?? null,
-      setItem: (key, value) => {
+      setItem(key, value) {
         values.set(key, value);
       },
-      removeItem: key => {
+      removeItem(key) {
         values.delete(key);
       },
-      clear: () => {
+      clear() {
         values.clear();
       },
       get length() {
