@@ -4,21 +4,20 @@ beforeEach(() => {
 
 describe('GraphiQL DocExplorer - button', () => {
   beforeEach(() => {
-    cy.get('.graphiql-activity-rail-item').eq(0).click();
+    cy.showPlugin('Documentation Explorer');
   });
   it('Toggles doc pane on', () => {
     cy.get('.graphiql-doc-explorer').should('be.visible');
   });
 
   it('Toggles doc pane back off', () => {
-    cy.get('.graphiql-activity-rail-item').eq(0).click();
-    cy.get('.graphiql-doc-explorer').should('not.exist');
+    cy.hidePlugin('Documentation Explorer');
   });
 });
 
 describe('GraphiQL DocExplorer - search', () => {
   beforeEach(() => {
-    cy.get('.graphiql-activity-rail-item').eq(0).click();
+    cy.showPlugin('Documentation Explorer');
     cy.dataCy('doc-explorer-input').type('test');
     cy.dataCy('doc-explorer-option').should('have.length', 7);
   });
@@ -28,7 +27,7 @@ describe('GraphiQL DocExplorer - search', () => {
   });
 
   it('Navigates to a docs entry on selecting a search result', () => {
-    cy.dataCy('doc-explorer-option').eq(4).children().click();
+    cy.contains('[data-cy="doc-explorer-option"]', /^TestInput$/).click();
     cy.get('.graphiql-doc-explorer-breadcrumb-current').should(
       'have.text',
       'TestInput',
@@ -36,7 +35,7 @@ describe('GraphiQL DocExplorer - search', () => {
   });
 
   it('Allows searching fields within a type', () => {
-    cy.dataCy('doc-explorer-option').eq(4).children().click();
+    cy.contains('[data-cy="doc-explorer-option"]', /^TestInput$/).click();
     cy.dataCy('doc-explorer-input').clear().type('list');
     cy.dataCy('doc-explorer-option').should('have.length', 14);
     cy.get('.graphiql-doc-explorer-search-divider').should(
@@ -54,7 +53,7 @@ describe('GraphiQL DocExplorer - search', () => {
   });
 
   it('Navigates back', () => {
-    cy.dataCy('doc-explorer-option').eq(4).children().click();
+    cy.contains('[data-cy="doc-explorer-option"]', /^TestInput$/).click();
     // Click the root breadcrumb segment (first link, at depth 0 = "Root")
     cy.get('.graphiql-doc-explorer-breadcrumb-root').click();
     // After navigating back, breadcrumb disappears (at root level, no breadcrumb shown)
@@ -62,7 +61,7 @@ describe('GraphiQL DocExplorer - search', () => {
   });
 
   it('Type fields link to their own docs entry', () => {
-    cy.dataCy('doc-explorer-option').last().click();
+    cy.contains('[data-cy="doc-explorer-option"]', /\.isTest$/).click();
     cy.get('.graphiql-doc-explorer-breadcrumb-current').should(
       'have.text',
       'isTest',
@@ -77,7 +76,7 @@ describe('GraphiQL DocExplorer - search', () => {
 describe('GraphQL DocExplorer - deprecated fields', () => {
   it('should show deprecated fields details when expanding', () => {
     // Open doc explorer
-    cy.get('.graphiql-activity-rail-item').eq(0).click();
+    cy.showPlugin('Documentation Explorer');
 
     // Select query type
     cy.get('.graphiql-doc-explorer-type-name').first().click();
@@ -106,7 +105,7 @@ describe('GraphQL DocExplorer - deprecated fields', () => {
 describe('GraphQL DocExplorer - deprecated arguments', () => {
   it('should show deprecated arguments category title', () => {
     // Open doc explorer
-    cy.get('.graphiql-activity-rail-item').eq(0).click();
+    cy.showPlugin('Documentation Explorer');
 
     // Select query type
     cy.get('.graphiql-doc-explorer-type-name').first().click();
