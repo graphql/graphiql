@@ -169,7 +169,7 @@ To migrate from `createGraphiQLFetcher` to `createTransport`:
 
 1. Replace the `createGraphiQLFetcher` import and call with `createTransport`.
 2. Keep the shared HTTP options, such as `url`, `headers`, and `fetch`.
-3. For subscriptions, create a `graphql-ws` or `graphql-sse` client and pass it as `subscriptionClient`. The `subscriptionUrl`, `wsClient`, `legacyWsClient`, and `wsConnectionParams` options are not available on `createTransport`.
+3. For subscriptions, create a `graphql-ws` v6 or `graphql-sse` client and pass it as `subscriptionClient`. The client must expose `iterate(request)`. The `subscriptionUrl`, `wsClient`, `legacyWsClient`, and `wsConnectionParams` options are not available on `createTransport`.
 
 If you continue using `createGraphiQLFetcher` for now, replace the removed `legacyClient` option with `legacyWsClient`.
 
@@ -198,7 +198,7 @@ const transport = createTransport({
 
 **After (SSE subscriptions):**
 
-`graphql-sse`'s `createClient()` is signature-compatible with `graphql-ws`, so the same option drives either protocol:
+`graphql-sse`'s `createClient()` exposes the same `iterate()` method as `graphql-ws`, so the same option drives either protocol:
 
 ```ts
 import { createClient } from 'graphql-sse';
@@ -213,6 +213,8 @@ const transport = createTransport({
 ```
 
 If you only run queries and mutations, leave `subscriptionClient` off. A subscription dispatched without it throws with a pointer back to this page.
+
+Older `graphql-ws` clients without `iterate()` remain supported by the deprecated `createGraphiQLFetcher` API, but they don't satisfy the new `Transport` subscription contract.
 
 ### `<GraphiQL fetcher={...}>` → `<GraphiQL transport={...}>`
 

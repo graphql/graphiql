@@ -10,21 +10,8 @@ import {
 import 'isomorphic-fetch';
 
 import { createTransport } from '../createTransport';
-import {
-  createSimpleFetcher,
-  createWebsocketsFetcherFromClient,
-} from '../../create-fetcher/lib';
-import type { SubscriptionClient, TransportResponse } from '../types';
-
-// Keep the real HTTP transport helpers; only stub the client-to-fetcher adapter
-// so no real socket is required.
-vi.mock('../../create-fetcher/lib', async () => {
-  const actual = await vi.importActual('../../create-fetcher/lib');
-  return {
-    ...actual,
-    createWebsocketsFetcherFromClient: vi.fn(),
-  };
-});
+import { createSimpleFetcher } from '../../create-fetcher/lib';
+import type { TransportResponse } from '../types';
 
 const URL = 'http://localhost:3000/graphql';
 const QUERY = '{ __typename }';
@@ -226,18 +213,14 @@ describe('createTransport — subscription', () => {
   });
 
   it('returns an AsyncIterable<TransportResponse> with no HTTP envelope', async () => {
-    (createWebsocketsFetcherFromClient as Mock).mockReturnValue(() =>
-      (async function* () {
-        yield { data: { tick: 1 } };
-        yield { data: { tick: 2 } };
-      })(),
-    );
-
     const transport = createTransport({
       url: URL,
-      // Truthy placeholder; the real client never gets called since the
-      // adapter above is mocked.
-      subscriptionClient: {} as SubscriptionClient,
+      subscriptionClient: {
+        async *iterate() {
+          yield { data: { tick: 1 } };
+          yield { data: { tick: 2 } };
+        },
+      },
     });
     const result = transport.send({ query: SUBSCRIPTION });
 
