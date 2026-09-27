@@ -74,7 +74,7 @@ describe('keyboard navigation', () => {
   // in order.
   const TOP_BAR_AND_RAIL_LABELS = [
     { className: 'graphiql-top-bar-method-toggle' },
-    { ariaLabel: 'Run query' },
+    { ariaLabel: 'Run operation' },
     { ariaLabel: 'Show Documentation Explorer' },
     { ariaLabel: 'Show History' },
     { ariaLabel: 'Show Query Builder' },
@@ -109,9 +109,9 @@ describe('keyboard navigation', () => {
     cy.get('.graphiql-tab-strip-action').then($actions => {
       const labels = [...$actions].map(el => el.getAttribute('aria-label'));
       expect(labels).to.include.members([
-        'Prettify query',
-        'Merge fragments into query',
-        'Copy query',
+        'Prettify editors',
+        'Merge fragments',
+        'Copy operation',
       ]);
       for (const label of labels) {
         cy.realPress('Tab');

@@ -25,18 +25,29 @@ const renderBlocked = (ui: ReactElement) =>
   render(<Tooltip.Provider>{ui}</Tooltip.Provider>);
 
 describe('ExecuteButtonView', () => {
-  it('renders the Run button', () => {
-    render(<ExecuteButtonView {...DEFAULTS} />);
-    expect(
-      screen.getByRole('button', { name: /Run query/i }),
-    ).toBeInTheDocument();
-  });
+  it.each(['query', 'mutation', 'subscription'])(
+    'uses operation-neutral labels for a %s',
+    kind => {
+      render(
+        <ExecuteButtonView
+          {...DEFAULTS}
+          operations={opsOf(`${kind} Selected { field }`)}
+        />,
+      );
+      expect(
+        screen.getByRole('button', { name: 'Run operation' }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByLabelText('Run operation shortcut'),
+      ).toBeInTheDocument();
+    },
+  );
 
   it('calls onRun when the Run button is clicked', async () => {
     const user = userEvent.setup();
     const onRun = vi.fn();
     render(<ExecuteButtonView {...DEFAULTS} onRun={onRun} />);
-    await user.click(screen.getByRole('button', { name: /Run query/i }));
+    await user.click(screen.getByRole('button', { name: /Run operation/i }));
     expect(onRun).toHaveBeenCalled();
   });
 
@@ -48,7 +59,9 @@ describe('ExecuteButtonView', () => {
         runDisabledReason="Mutations can only be sent via POST"
       />,
     );
-    expect(screen.getByRole('button', { name: /Run query/i })).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: /Run operation/i }),
+    ).toBeDisabled();
   });
 
   it('wraps the disabled Run button in a focusable tooltip target when blocked', () => {
@@ -62,7 +75,7 @@ describe('ExecuteButtonView', () => {
     // A native disabled button emits no events, so the tooltip needs a
     // focusable wrapper to receive hover/focus and open.
     const target = screen
-      .getByRole('button', { name: /Run query/i })
+      .getByRole('button', { name: /Run operation/i })
       .closest('.graphiql-execute-button-tooltip-target');
     expect(target).not.toBeNull();
     expect(target).toHaveAttribute('tabindex', '0');
@@ -71,7 +84,7 @@ describe('ExecuteButtonView', () => {
   it('does not disable or wrap the button when not blocked', () => {
     const { container } = render(<ExecuteButtonView {...DEFAULTS} />);
     expect(
-      screen.getByRole('button', { name: /Run query/i }),
+      screen.getByRole('button', { name: /Run operation/i }),
     ).not.toBeDisabled();
     expect(
       container.querySelector('.graphiql-execute-button-tooltip-target'),
@@ -82,17 +95,17 @@ describe('ExecuteButtonView', () => {
     it('becomes a Stop button while fetching', () => {
       render(<ExecuteButtonView {...DEFAULTS} isFetching />);
       expect(
-        screen.getByRole('button', { name: /Stop query/i }),
+        screen.getByRole('button', { name: /Stop operation/i }),
       ).toBeInTheDocument();
       expect(
-        screen.queryByRole('button', { name: /Run query/i }),
+        screen.queryByRole('button', { name: /Run operation/i }),
       ).not.toBeInTheDocument();
     });
 
     it('becomes a Stop button while subscribed', () => {
       render(<ExecuteButtonView {...DEFAULTS} isSubscribed />);
       expect(
-        screen.getByRole('button', { name: /Stop query/i }),
+        screen.getByRole('button', { name: /Stop operation/i }),
       ).toBeInTheDocument();
     });
 
@@ -108,7 +121,7 @@ describe('ExecuteButtonView', () => {
           onStop={onStop}
         />,
       );
-      await user.click(screen.getByRole('button', { name: /Stop query/i }));
+      await user.click(screen.getByRole('button', { name: /Stop operation/i }));
       expect(onStop).toHaveBeenCalled();
       expect(onRun).not.toHaveBeenCalled();
     });
@@ -123,7 +136,7 @@ describe('ExecuteButtonView', () => {
         />,
       );
       expect(
-        screen.getByRole('button', { name: /Stop query/i }),
+        screen.getByRole('button', { name: /Stop operation/i }),
       ).not.toBeDisabled();
     });
 

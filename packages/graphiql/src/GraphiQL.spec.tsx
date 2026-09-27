@@ -860,18 +860,16 @@ describe('GraphiQL', () => {
 
       await waitFor(() => {
         expect(
-          container.querySelectorAll('[aria-label="Prettify query"]'),
+          container.querySelectorAll('[aria-label="Prettify editors"]'),
         ).toHaveLength(1);
         expect(
-          container.querySelectorAll(
-            '[aria-label="Merge fragments into query"]',
-          ),
+          container.querySelectorAll('[aria-label="Merge fragments"]'),
         ).toHaveLength(1);
         expect(
-          container.querySelectorAll('[aria-label="Copy query"]'),
+          container.querySelectorAll('[aria-label="Copy operation"]'),
         ).toHaveLength(1);
         expect(
-          container.querySelectorAll('[aria-label="Save query"]'),
+          container.querySelectorAll('[aria-label="Save operation"]'),
         ).toHaveLength(1);
       });
     });
@@ -913,7 +911,7 @@ query TestQuery { ...NameFragment }`;
         expect(documentAST).toBeTruthy();
       });
 
-      fireEvent.click(getByLabelText('Merge fragments into query'));
+      fireEvent.click(getByLabelText('Merge fragments'));
 
       await waitFor(() => {
         const merged = queryEditor.getValue();

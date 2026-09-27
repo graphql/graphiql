@@ -7,7 +7,7 @@ const meta: Meta<typeof ToolbarButton> = {
   component: ToolbarButton,
   tags: ['autodocs'],
   args: {
-    label: 'Prettify query',
+    label: 'Prettify editors',
     children: '✦',
   },
   decorators: [

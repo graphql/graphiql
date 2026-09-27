@@ -39,10 +39,10 @@ describe('KeycapHint (non-macOS)', () => {
     render(
       <KeycapHint
         keys={[MODIFIER.Meta, MODIFIER.Enter]}
-        ariaLabel="Run query (Ctrl+Enter)"
+        ariaLabel="Run operation (Ctrl+Enter)"
       />,
     );
-    expect(screen.getByLabelText(/Run query/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Run operation/i)).toBeInTheDocument();
   });
 
   it('renders a <kbd> element for each key', () => {

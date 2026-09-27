@@ -112,7 +112,7 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
       )}
       onClick={isRunning ? onStop : onRun}
       disabled={isBlocked}
-      aria-label={isRunning ? 'Stop query' : 'Run query'}
+      aria-label={isRunning ? 'Stop operation' : 'Run operation'}
     >
       {isRunning ? (
         <StopIcon className="graphiql-execute-button-icon" aria-hidden="true" />
@@ -125,7 +125,9 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
       <span className="graphiql-execute-button-sep" aria-hidden="true" />
       <KeycapHint
         keys={[MODIFIER.Meta, MODIFIER.Enter]}
-        ariaLabel={isRunning ? 'Stop query shortcut' : 'Run query shortcut'}
+        ariaLabel={
+          isRunning ? 'Stop operation shortcut' : 'Run operation shortcut'
+        }
       />
     </button>
   );

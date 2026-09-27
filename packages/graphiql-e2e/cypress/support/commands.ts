@@ -170,18 +170,18 @@ Cypress.Commands.add('activateOperation', (operationName: string) => {
 
 Cypress.Commands.add('clickExecuteQuery', () => {
   cy.waitForQueryEditor();
-  cy.get('[aria-label="Run query"]').click();
+  cy.get('[aria-label="Run operation"]').click();
 });
 
 Cypress.Commands.add('clickPrettify', () => {
   cy.waitForQueryEditor();
-  cy.get('[aria-label="Prettify query"]').click();
+  cy.get('[aria-label="Prettify editors"]').click();
 });
 
 Cypress.Commands.add('clickMergeFragments', () => {
   cy.waitForQueryEditor();
   waitForSchema();
-  cy.get('[aria-label="Merge fragments into query"]').click();
+  cy.get('[aria-label="Merge fragments"]').click();
 });
 
 Cypress.Commands.add('waitForQueryEditor', () =>
