@@ -43,10 +43,10 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@graphiql/plugin-collections": "^1.0.0-beta.2",
-    "@graphiql/plugin-doc-explorer": "^1.0.0-beta.2",
-    "@graphiql/plugin-history": "^1.0.0-beta.2",
-    "@graphiql/plugin-query-builder": "^1.0.0-beta.2",
+    "@graphiql/plugin-collections": "1.0.0-beta.2",
+    "@graphiql/plugin-doc-explorer": "1.0.0-beta.2",
+    "@graphiql/plugin-history": "1.0.0-beta.2",
+    "@graphiql/plugin-query-builder": "1.0.0-beta.2",
     "@graphiql/react": "1.0.0-beta.2",
     "clsx": "^1.2.1",
     "react-compiler-runtime": "19.1.0-rc.3"
