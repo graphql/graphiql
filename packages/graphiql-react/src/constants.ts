@@ -81,11 +81,11 @@ export const DEFAULT_QUERY = `# Welcome to GraphiQL
 #
 # Keyboard shortcuts:
 #
-#   Prettify query:  ${KEY_MAP.prettify.key} (or press the prettify button)
+#   Prettify editors:  ${KEY_MAP.prettify.key} (or press the prettify button)
 #
 #  Merge fragments:  ${KEY_MAP.mergeFragments.key} (or press the merge button)
 #
-#        Run Query:  ${formatShortcutForOS(KEY_MAP.runQuery.key, 'Cmd')} (or press the play button)
+#        Run Operation:  ${formatShortcutForOS(KEY_MAP.runQuery.key, 'Cmd')} (or press the play button)
 #
 #    Auto Complete:  ${KEY_MAP.autoComplete.key} (or just start typing)
 #
@@ -101,7 +101,7 @@ export const KEY_BINDINGS = {
   },
   mergeFragments: {
     id: 'graphql-merge',
-    label: 'Merge Fragments into Query',
+    label: 'Merge Fragments',
     contextMenuGroupId: 'graphql',
     keybindings: KEY_MAP.mergeFragments.keybindings,
   },
@@ -113,13 +113,13 @@ export const KEY_BINDINGS = {
   },
   copyQuery: {
     id: 'graphql-copy',
-    label: 'Copy Query',
+    label: 'Copy Operation',
     contextMenuGroupId: 'graphql',
     keybindings: KEY_MAP.copyQuery.keybindings,
   },
   saveQuery: {
     id: 'graphql-save',
-    label: 'Save Query',
+    label: 'Save Operation',
     contextMenuGroupId: 'graphql',
     keybindings: KEY_MAP.saveQuery.keybindings,
   },

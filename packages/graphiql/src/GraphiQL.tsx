@@ -208,10 +208,10 @@ type ButtonHandler = MouseEventHandler<HTMLButtonElement>;
 
 const LABEL = {
   newTab: 'New tab',
-  prettify: 'Prettify query',
-  merge: 'Merge fragments into query',
-  copy: 'Copy query',
-  save: 'Save query',
+  prettify: 'Prettify editors',
+  merge: 'Merge fragments',
+  copy: 'Copy operation',
+  save: 'Save operation',
 };
 
 export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
