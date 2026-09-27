@@ -143,12 +143,12 @@ Save named operations into folder collections and reuse them later: a collapsibl
 
 ```tsx
 import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
-import { collectionsPlugin } from '@graphiql/plugin-collections';
+import { COLLECTIONS_PLUGIN } from '@graphiql/plugin-collections';
 import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
 import '@graphiql/plugin-query-builder/style.css';
 import '@graphiql/plugin-collections/style.css';
 
-const plugins = [HISTORY_PLUGIN, QUERY_BUILDER_PLUGIN, collectionsPlugin()];
+const plugins = [HISTORY_PLUGIN, QUERY_BUILDER_PLUGIN, COLLECTIONS_PLUGIN];
 
 <GraphiQL plugins={plugins} transport={transport} />;
 ```
@@ -166,7 +166,7 @@ import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
 <GraphiQL plugins={[HISTORY_PLUGIN]} transport={transport} />;
 ```
 
-Declare each imported plugin package as a direct dependency. `collectionsPlugin()` works with `@graphiql/plugin-collections@1.0.0-beta.2`, which does not export `COLLECTIONS_PLUGIN`. Create the plugin and its array outside render to keep its component identities stable. If you omit `plugins`, GraphiQL installs History, Query Builder, and Collections for you.
+Declare each imported plugin package as a direct dependency. Create the plugin array outside render to keep its identity stable. If you omit `plugins`, GraphiQL installs History, Query Builder, and Collections for you.
 
 ## New `transport` API
 
@@ -502,16 +502,16 @@ const plugins = [HISTORY_PLUGIN, explorerPlugin()];
 ```tsx
 import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
 import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
-import { collectionsPlugin } from '@graphiql/plugin-collections';
+import { COLLECTIONS_PLUGIN } from '@graphiql/plugin-collections';
 import '@graphiql/plugin-query-builder/style.css';
 import '@graphiql/plugin-collections/style.css';
 
-const plugins = [HISTORY_PLUGIN, QUERY_BUILDER_PLUGIN, collectionsPlugin()];
+const plugins = [HISTORY_PLUGIN, QUERY_BUILDER_PLUGIN, COLLECTIONS_PLUGIN];
 
 <GraphiQL plugins={plugins} transport={transport} />;
 ```
 
-Add the imported Query Builder and Collections packages to your app's dependencies and remove `@graphiql/plugin-explorer`. The factory works with the published Collections beta.2; create it outside render. To use all default plugins, omit the `plugins` prop entirely. Removing Explorer from an existing array does not add the v6 defaults to that array.
+Add the imported Query Builder and Collections packages to your app's dependencies and remove `@graphiql/plugin-explorer`. Create the plugin array outside render. To use all default plugins, omit the `plugins` prop entirely. Removing Explorer from an existing array does not add the v6 defaults to that array.
 
 If you cannot migrate the Explorer integration, stay on GraphiQL 5 and its matching plugin release.
 
@@ -643,7 +643,7 @@ function App() {
 ```tsx
 import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
 import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
-import { collectionsPlugin } from '@graphiql/plugin-collections';
+import { COLLECTIONS_PLUGIN } from '@graphiql/plugin-collections';
 import {
   ToolbarButton,
   useGraphiQL,
@@ -682,7 +682,7 @@ const myActionsPlugin: GraphiQLPlugin = {
 const plugins = [
   HISTORY_PLUGIN,
   QUERY_BUILDER_PLUGIN,
-  collectionsPlugin(),
+  COLLECTIONS_PLUGIN,
   myActionsPlugin,
 ];
 
@@ -761,4 +761,4 @@ editor.defineTheme('company-dark', {
 />;
 ```
 
-Declare `monaco-graphql` as a direct dependency when importing it here. For server-rendered apps, register themes on the client rather than importing Monaco on the server. GraphiQL 6.0.0-beta.2 accepts these names but resets them to built-in themes; check the fixed prerelease before relying on custom editor colors.
+Declare `monaco-graphql` as a direct dependency when importing it here. For server-rendered apps, register themes on the client rather than importing Monaco on the server.
