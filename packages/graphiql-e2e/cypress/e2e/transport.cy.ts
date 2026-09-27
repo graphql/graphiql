@@ -57,3 +57,40 @@ describe('Transport API + response pane header', () => {
     cy.get('.graphiql-transport-upgrade-banner').should('not.exist');
   });
 });
+
+describe('Manual POST selection for mutations', () => {
+  it('keeps GET selected and blocks button, dropdown, and shortcut execution until POST is selected', () => {
+    const mutationRequests: unknown[] = [];
+    cy.intercept('POST', '/graphql', request => {
+      if (request.body.operationName === 'Change') {
+        mutationRequests.push(request.body);
+      }
+    }).as('graphql');
+    cy.visitGraphiQL({
+      query: 'query Read { __typename }\nmutation Change { __typename }\n',
+    });
+    cy.get('.graphiql-top-bar-method-toggle').click();
+    cy.get('.graphiql-top-bar-method-toggle').click();
+    cy.get('.graphiql-top-bar-method-toggle').should('have.text', 'GET');
+    cy.activateOperation('Change');
+    cy.get('[aria-label="Run query"]').should('be.disabled');
+    cy.get('[aria-label="Choose operation to run"]').click();
+    cy.contains('[role="menuitem"]', 'Change').should(
+      'have.attr',
+      'aria-disabled',
+      'true',
+    );
+    cy.realPress('Escape');
+    cy.get('.graphiql-query-editor textarea').focus();
+    cy.realPress([Cypress.platform === 'darwin' ? 'Meta' : 'Control', 'Enter']);
+    cy.get('[aria-label="Run query"]').should('be.disabled');
+    cy.get('.graphiql-top-bar-method-toggle').should('have.text', 'GET');
+    cy.then(() => expect(mutationRequests).to.have.length(0));
+
+    cy.get('.graphiql-top-bar-method-toggle').click();
+    cy.get('.graphiql-top-bar-method-toggle').should('have.text', 'POST');
+    cy.get('[aria-label="Run query"]').should('be.enabled').click();
+    cy.get('.result-window').should('contain.text', 'MutationType');
+    cy.then(() => expect(mutationRequests).to.have.length(1));
+  });
+});

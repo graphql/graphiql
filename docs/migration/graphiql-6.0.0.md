@@ -127,11 +127,14 @@ Two new plugins ship in v6 and are **installed by default** in the `graphiql` me
 The query builder is a schema-driven alternative to writing operations by hand. Select fields from a collapsible tree to add them to the current operation, or clear them to remove them. You can also provide field arguments, promote scalar arguments to variables, create named fragments, and select type conditions for unions and interfaces. This resolves the long-standing [#734](https://github.com/graphql/graphiql/issues/734).
 
 ```tsx
-import { GraphiQL } from 'graphiql';
+import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
 import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
 import '@graphiql/plugin-query-builder/style.css';
 
-<GraphiQL plugins={[QUERY_BUILDER_PLUGIN]} transport={transport} />;
+<GraphiQL
+  plugins={[HISTORY_PLUGIN, QUERY_BUILDER_PLUGIN]}
+  transport={transport}
+/>;
 ```
 
 ### `@graphiql/plugin-collections`
@@ -139,11 +142,15 @@ import '@graphiql/plugin-query-builder/style.css';
 Save named operations into folder collections and reuse them later: a collapsible tree UI with inline rename, drag-and-drop (or keyboard) reordering, JSON import/export that merges by stable id instead of duplicating, and clipboard copy/share for individual operations or whole collections. Saving is wired to `Cmd`/`Ctrl`+`S` and the tab-strip Save button.
 
 ```tsx
-import { GraphiQL } from 'graphiql';
-import { COLLECTIONS_PLUGIN } from '@graphiql/plugin-collections';
+import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
+import { collectionsPlugin } from '@graphiql/plugin-collections';
+import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
+import '@graphiql/plugin-query-builder/style.css';
 import '@graphiql/plugin-collections/style.css';
 
-<GraphiQL plugins={[COLLECTIONS_PLUGIN]} transport={transport} />;
+const plugins = [HISTORY_PLUGIN, QUERY_BUILDER_PLUGIN, collectionsPlugin()];
+
+<GraphiQL plugins={plugins} transport={transport} />;
 ```
 
 Use `collectionsPlugin(options)` instead when you need a custom storage backend or want to restrict write, import, export, or replace operations. See the [package README](../../packages/graphiql-plugin-collections/README.md) for the full option list and the import and merge behavior.
@@ -158,6 +165,8 @@ import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
 // History only: no query builder or collections.
 <GraphiQL plugins={[HISTORY_PLUGIN]} transport={transport} />;
 ```
+
+Declare each imported plugin package as a direct dependency. `collectionsPlugin()` works with `@graphiql/plugin-collections@1.0.0-beta.2`, which does not export `COLLECTIONS_PLUGIN`. Create the plugin and its array outside render to keep its component identities stable. If you omit `plugins`, GraphiQL installs History, Query Builder, and Collections for you.
 
 ## New `transport` API
 
@@ -246,7 +255,7 @@ function App() {
 
 ### `Transport` benefits
 
-With a `Transport`, the response pane header shows the HTTP status code, total round-trip time, and request and response byte sizes. The response detail panel also shows the response headers.
+With a `Transport`, the response pane header shows the HTTP status code, elapsed time, and response byte size. `TransportResponse` also exposes request bytes and HTTP response headers for your integration to use. The standard GraphiQL UI does not display those fields or provide a response-details panel.
 
 The `Fetcher` contract returns only the parsed GraphQL result, so GraphiQL can't show this HTTP metadata when you use `fetcher`.
 
@@ -270,11 +279,13 @@ const transport = createTransport({
 });
 ```
 
-Mutations always use `POST` because `GET` and `QUERY` are safe methods and can't carry side effects. If `POST` isn't included in `supportedMethods`, attempting a mutation throws an error. When you configure more than one method, the top bar's method control cycles through the entries in `supportedMethods`.
+Direct calls to `transport.send()` route mutations through `POST`, even when `GET` or `QUERY` is selected. If `POST` isn't included in `supportedMethods`, the transport rejects the mutation.
+
+In GraphiQL, select **POST** before running a mutation. With **GET** or **QUERY** selected, Run is disabled with the explanation **Mutations can only be sent via POST**. The operation dropdown and keyboard shortcut apply the same restriction. GraphiQL keeps your selected method until you change it. When more than one method is configured, the top bar's method control cycles through `supportedMethods`; for a blocked mutation, selecting the control chooses **POST** when supported.
 
 ### Custom transports (FAQ)
 
-If you hand-rolled a `Fetcher` rather than using `createGraphiQLFetcher`, migrate by implementing the `Transport` interface directly. A `Transport` is an object with a `send(request)` method. For queries and mutations it returns a `Promise<TransportResponse>`; for subscriptions and incremental delivery it returns an `AsyncIterable<TransportResponse>`, one entry per event or chunk.
+If you hand-rolled a `Fetcher` rather than using `createGraphiQLFetcher`, migrate by implementing the `Transport` interface directly. A `Transport` declares its endpoint `url`, active `method`, `supportedMethods`, and a `send(request)` method. For queries and mutations it returns a `Promise<TransportResponse>`; for subscriptions and incremental delivery it returns an `AsyncIterable<TransportResponse>`, one entry per event or chunk.
 
 **Before (custom fetcher):**
 
@@ -295,27 +306,34 @@ const fetcher: Fetcher = async params => {
 
 ```ts
 import type { Transport } from '@graphiql/toolkit';
+import type { ExecutionResult } from 'graphql';
 
 const transport: Transport = {
+  url: '/graphql',
+  method: 'POST',
+  supportedMethods: ['POST'],
   async send(request) {
     const startMs = performance.now();
     const requestBody = JSON.stringify({
       query: request.query,
       operationName: request.operationName,
       variables: request.variables,
+      extensions: request.extensions,
     });
     const response = await fetch('/graphql', {
       method: 'POST',
       headers: { 'content-type': 'application/json', ...request.headers },
       body: requestBody,
+      signal: request.signal,
     });
-    const body = await response.json();
+    const responseText = await response.text();
+    const body = JSON.parse(responseText) as ExecutionResult;
     const headers: Record<string, string> = {};
     response.headers.forEach((value, key) => {
       headers[key] = value;
     });
     return {
-      ok: !body.errors?.length,
+      ok: response.ok && !body.errors?.length,
       status: response.status,
       statusText: response.statusText,
       headers,
@@ -323,7 +341,7 @@ const transport: Transport = {
       timing: { totalMs: performance.now() - startMs },
       size: {
         request: new TextEncoder().encode(requestBody).length,
-        response: new TextEncoder().encode(JSON.stringify(body)).length,
+        response: new TextEncoder().encode(responseText).length,
       },
     };
   },
@@ -404,12 +422,50 @@ If your application installs or configures Monaco directly, make these changes:
 3. Configure `globalThis.MonacoEnvironment.getWorker` to return the GraphQL worker for the `graphql` label. Returning a URL from `getWorkerUrl` is not sufficient for the new worker contract.
 
 ```ts
+import EditorWorker from 'monaco-editor/editor/editor.worker.js?worker';
+import JsonWorker from 'monaco-editor/languages/features/json/json.worker.js?worker';
+import GraphQLWorker from 'monaco-graphql/esm/graphql.worker.js?worker';
+
 globalThis.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
-    return label === 'graphql' ? new GraphQLWorker() : new EditorWorker();
+    if (label === 'json') {
+      return new JsonWorker();
+    }
+    if (label === 'graphql') {
+      return new GraphQLWorker();
+    }
+    return new EditorWorker();
   },
 };
 ```
+
+### Vite development and production
+
+Use this configuration with the Vite worker factories above or `graphiql/setup-workers/vite`:
+
+```js
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  worker: { format: 'es' },
+  optimizeDeps: {
+    include: [
+      'graphiql > @graphiql/react > graphql-language-service > nullthrows',
+      'graphiql > @graphiql/react > monaco-graphql > picomatch-browser',
+      'graphiql > @graphiql/react > prettier/parser-graphql',
+      'graphiql > @graphiql/react > prettier/parser-babel',
+    ],
+    exclude: [
+      'graphiql/setup-workers/vite',
+      '@graphiql/react/setup-workers/vite',
+    ],
+  },
+});
+```
+
+The worker dependencies (`nullthrows` and `picomatch-browser`) and formatter parsers (`prettier/parser-graphql` and `prettier/parser-babel`) need CommonJS optimization during development. [Vite's nested dependency syntax](https://vite.dev/config/dep-optimization-options#optimizedeps-include) locates them through GraphiQL's dependencies, including with pnpm's isolated package layout. This requirement also applies to v5 integrations; it is separate from the v6 worker-path changes. Restart Vite after updating the configuration, using `--force` if its dependency cache is stale. A successful production build does not verify development workers: check schema completion, an unknown-field diagnostic, JSON validation, and Prettify in the browser. See the [Vite example](../../examples/graphiql-vite).
 
 Custom GraphQL workers must call Monaco's `initialize` function as soon as the worker module loads. Don't wrap it in an additional `onmessage` handler. To pass functions or other values that structured cloning can't transfer to the worker, subclass `GraphQLWorker` and override its `initialize` method. See the [`monaco-graphql` custom worker example](../../packages/monaco-graphql/README.md#custom-webworker-for-passing-non-static-config-to-worker) for the complete worker and bundler configuration.
 
@@ -427,33 +483,37 @@ The package is no longer published from the v6 line. If you can't migrate yet, u
 
 ### Migrating
 
-In most integrations this is a drop-in swap:
+An explicit `plugins` array replaces GraphiQL's defaults in both v5 and v6. Include History and the other plugins you want to retain. These snippets assume your app already creates `fetcher` or `transport` as shown above.
 
-**Before:**
+**Before (v5):**
 
 ```tsx
-import { GraphiQL } from 'graphiql';
+import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
 import { explorerPlugin } from '@graphiql/plugin-explorer';
 import '@graphiql/plugin-explorer/style.css';
 
-const explorer = explorerPlugin();
+const plugins = [HISTORY_PLUGIN, explorerPlugin()];
 
-<GraphiQL plugins={[explorer]} transport={transport} />;
+<GraphiQL plugins={plugins} fetcher={fetcher} />;
 ```
 
-**After:**
+**After (v6):**
 
 ```tsx
-import { GraphiQL } from 'graphiql';
+import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
 import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
+import { collectionsPlugin } from '@graphiql/plugin-collections';
 import '@graphiql/plugin-query-builder/style.css';
+import '@graphiql/plugin-collections/style.css';
 
-<GraphiQL plugins={[QUERY_BUILDER_PLUGIN]} transport={transport} />;
+const plugins = [HISTORY_PLUGIN, QUERY_BUILDER_PLUGIN, collectionsPlugin()];
+
+<GraphiQL plugins={plugins} transport={transport} />;
 ```
 
-If you're using `graphiql` (rather than assembling your own plugin list), the query builder plugin is already installed by default, so you can likely just remove `explorerPlugin()` from your `plugins` array and drop the `@graphiql/plugin-explorer` dependency entirely.
+Add the imported Query Builder and Collections packages to your app's dependencies and remove `@graphiql/plugin-explorer`. The factory works with the published Collections beta.2; create it outside render. To use all default plugins, omit the `plugins` prop entirely. Removing Explorer from an existing array does not add the v6 defaults to that array.
 
-If you can't migrate before upgrading to v6, pin `@graphiql/plugin-explorer` to its last `5.x` release from npm and track the v5 LTS branch, where it stays maintained.
+If you cannot migrate the Explorer integration, stay on GraphiQL 5 and its matching plugin release.
 
 ## Removed hooks
 
@@ -567,7 +627,9 @@ function App() {
             {prettify}
             {merge}
             {copy}
-            <ToolbarButton label="My custom action" onClick={onClick} />
+            <ToolbarButton label="My custom action" onClick={onClick}>
+              My custom action
+            </ToolbarButton>
           </>
         )}
       </GraphiQL.Toolbar>
@@ -579,37 +641,59 @@ function App() {
 **After:**
 
 ```tsx
-import { GraphiQL } from 'graphiql';
-import { HISTORY_PLUGIN } from '@graphiql/plugin-history';
+import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
 import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
-import { COLLECTIONS_PLUGIN } from '@graphiql/plugin-collections';
-import { ToolbarButton, type GraphiQLPlugin } from '@graphiql/react';
+import { collectionsPlugin } from '@graphiql/plugin-collections';
+import {
+  ToolbarButton,
+  useGraphiQL,
+  useGraphiQLActions,
+  type GraphiQLPlugin,
+} from '@graphiql/react';
+import '@graphiql/plugin-query-builder/style.css';
+import '@graphiql/plugin-collections/style.css';
+
+function ExampleAction() {
+  const queryEditor = useGraphiQL(state => state.queryEditor);
+  const { prettifyEditors } = useGraphiQLActions();
+  return (
+    <ToolbarButton
+      label="Load example"
+      disabled={!queryEditor}
+      onClick={async () => {
+        if (!queryEditor) {
+          return;
+        }
+        queryEditor.setValue('query Loaded{__typename}');
+        await prettifyEditors();
+      }}
+    >
+      Load example
+    </ToolbarButton>
+  );
+}
 
 const myActionsPlugin: GraphiQLPlugin = {
-  title: 'My Plugin',
-  icon: MyIcon,
-  content: MyPluginPanel,
-  sessionActions: () => (
-    <ToolbarButton label="My custom action" onClick={onClick} />
-  ),
+  title: 'Migration notes',
+  icon: () => <span aria-hidden="true">✦</span>,
+  content: () => <p>Load example replaces and formats the active operation.</p>,
+  sessionActions: ExampleAction,
 };
+const plugins = [
+  HISTORY_PLUGIN,
+  QUERY_BUILDER_PLUGIN,
+  collectionsPlugin(),
+  myActionsPlugin,
+];
 
 function App() {
-  return (
-    <GraphiQL
-      fetcher={fetcher}
-      plugins={[
-        HISTORY_PLUGIN,
-        QUERY_BUILDER_PLUGIN,
-        COLLECTIONS_PLUGIN,
-        myActionsPlugin,
-      ]}
-    />
-  );
+  return <GraphiQL transport={transport} plugins={plugins} />;
 }
 ```
 
-Prettify, merge, and copy are built into the tab strip, so you don't need to wire them up again. Passing the `plugins` prop replaces the default-installed plugin set. Include the plugins you still want (`HISTORY_PLUGIN`, `QUERY_BUILDER_PLUGIN`, `COLLECTIONS_PLUGIN`) alongside your own.
+Assign the component itself to `sessionActions`. GraphiQL renders one action component for each registered plugin, including when its pane is hidden. Give every plugin a unique title. `ToolbarButton` needs a `label` for its accessible name and children for its visible content. The editor can be absent while Monaco initializes, so disable the action or guard access until it exists. Await `prettifyEditors()` after replacing its value.
+
+Prettify, merge, and copy are built into the tab strip. The explicit plugin array above keeps History, Query Builder, and Collections alongside the custom action. Install imported plugin packages directly; `graphiql/style.css` includes the standard GraphiQL styles.
 
 ### `GraphiQL.Logo` → the top bar's `brand` prop
 
@@ -649,5 +733,32 @@ The v5 `--color-*` variables are also deprecated. They remain defined at their v
   - The `onEditOperationName` callback now fires when the cursor crosses into a different named operation, not only on edit or run. If you mirror `operationName` into your URL or app state, expect it to update as the user navigates between operations.
   - A tab holding multiple operations shows the active operation name followed by a `+N` count of the others (for example, `GetUser +2`).
 - **Browserslist.** v6 replaces the project's custom `.browserslistrc` contents with the single `defaults` browserslist preset (`> 0.5%, last 2 versions, Firefox ESR, not dead`). That range covers the modern browsers that support the OKLCH color functions the new token system relies on. If your previous bespoke config deliberately targeted very old browsers, check `defaults` against your support matrix.
-- **Monaco editor theme registration.** The built-in Monaco themes (`graphiql-DARK` and `graphiql-LIGHT`) use the v6 accent palette. GraphQL tokens and the surrounding editor interface now use the same palette as the rest of GraphiQL. The `editorTheme` prop on `<GraphiQL>` still accepts the same `{ dark, light }` pair of Monaco theme names or definitions, so a custom theme registered through that prop continues to work. If a screenshot test depends on the previous built-in theme values, update its expected colors.
+- **Monaco editor theme registration.** The built-in Monaco themes (`graphiql-DARK` and `graphiql-LIGHT`) use the v6 accent palette. GraphQL tokens and the surrounding editor interface now use the same palette as the rest of GraphiQL. Register custom themes with `monaco.editor.defineTheme` on the same Monaco instance GraphiQL uses, then pass their names as `editorTheme={{ dark: 'company-dark', light: 'company-light' }}`. The prop accepts names, not inline theme definitions. If a screenshot test depends on the previous built-in theme values, update its expected colors.
 - **`cn` removed from `@graphiql/react`.** The `cn` helper was just a re-export of `clsx`. It's gone now, so import `clsx` directly from the `clsx` package instead.
+
+To register a custom editor theme before rendering GraphiQL in a browser integration:
+
+```tsx
+import { editor } from 'monaco-graphql/monaco-editor';
+import { GraphiQL } from 'graphiql';
+
+editor.defineTheme('company-light', {
+  base: 'vs',
+  inherit: true,
+  rules: [{ token: 'keyword', foreground: '006D77' }],
+  colors: { 'editor.background': '#fff4dc' },
+});
+editor.defineTheme('company-dark', {
+  base: 'vs-dark',
+  inherit: true,
+  rules: [{ token: 'keyword', foreground: '80CBC4' }],
+  colors: { 'editor.background': '#112f35' },
+});
+
+<GraphiQL
+  transport={transport}
+  editorTheme={{ light: 'company-light', dark: 'company-dark' }}
+/>;
+```
+
+Declare `monaco-graphql` as a direct dependency when importing it here. For server-rendered apps, register themes on the client rather than importing Monaco on the server. GraphiQL 6.0.0-beta.2 accepts these names but resets them to built-in themes; check the fixed prerelease before relying on custom editor colors.
