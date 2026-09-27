@@ -1,0 +1,97 @@
+name: Cypress burn-in
+
+on:
+  schedule:
+    - cron: '17 3 * * 0'
+  workflow_dispatch:
+    inputs:
+      repeats:
+        description: Number of times to run each spec
+        required: true
+        default: '20'
+        type: choice
+        options:
+          - '1'
+          - '5'
+          - '10'
+          - '20'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cypress-burn-in
+  cancel-in-progress: false
+
+jobs:
+  burn-in:
+    name: ${{ matrix.target }} / ${{ matrix.spec }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [source, built]
+        spec:
+          - docs.cy.ts
+          - headers.cy.ts
+          - incremental-delivery.cy.ts
+          - lint.cy.ts
+          - merge-fragments.cy.ts
+          - operation-cursor.cy.ts
+          - prettify.cy.ts
+          - query-builder.cy.ts
+          - tabs.cy.ts
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: graphiql-6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Turbo cache
+        uses: ./.github/actions/turbo-cache
+      - run: pnpm build:graphiql
+      - uses: actions/cache@v5
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm --filter graphiql-e2e exec cypress install
+      - name: Burn in spec
+        run: >-
+          node .github/scripts/cypress-burn-in.mjs --target '${{ matrix.target }}' --spec 'cypress/e2e/${{ matrix.spec }}' --repeats '${{ inputs.repeats || '20' }}' --output 'burn-in/${{ matrix.target }}/${{ matrix.spec }}'
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: burn-in-${{ matrix.target }}-${{ matrix.spec }}
+          path: burn-in
+          if-no-files-found: error
+          retention-days: 14
+
+  report:
+    name: Report flakes
+    if: always()
+    needs: burn-in
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: graphiql-6
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: burn-in-*
+          path: burn-in-results
+      - name: Update flake issues
+        env:
+          ADVANCE_CLEAN_STREAK: ${{ github.event_name == 'schedule' || inputs.repeats == '20' }}
+          EXPECTED_RESULTS: '18'
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node .github/scripts/report-cypress-burn-in.mjs burn-in-results
