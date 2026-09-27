@@ -9,10 +9,7 @@ describe('Linting', () => {
           }
         }
       `,
-    })
-      .contains('myAlias')
-      .should('not.have.class', 'CodeMirror-lint-mark')
-      .and('not.have.class', 'CodeMirror-lint-mark-error');
+    }).assertNoLinterMarks();
   });
 
   it('Marks invalid fields as error', () => {
@@ -143,10 +140,7 @@ describe('Linting', () => {
       variables: {
         jsonArg: { foo: 'bar' },
       },
-    })
-      .contains('foo')
-      .should('not.have.class', 'CodeMirror-lint-mark')
-      .and('not.have.class', 'CodeMirror-lint-mark-error');
+    }).assertNoLinterMarks('variables.json');
   });
 
   it('Marks GraphQL syntax errors as error', () => {

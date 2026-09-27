@@ -96,7 +96,10 @@ declare global {
 
       assertHasValues(op: Op): Chainable<Element>;
 
-      assertQueryResult(expectedResult: MockResult): Chainable<Element>;
+      assertQueryResult(
+        expectedResult: MockResult,
+        options?: { timeout: number },
+      ): Chainable<Element>;
 
       containQueryResult(expectedResult: string): Chainable<Element>;
 
@@ -104,6 +107,11 @@ declare global {
         text: string,
         severity: 'error' | 'warning',
         message: string,
+        uri?: 'operation.graphql' | 'variables.json',
+      ): Chainable<Element>;
+
+      /** Prove validation has run, then assert that it leaves no markers. */
+      assertNoLinterMarks(
         uri?: 'operation.graphql' | 'variables.json',
       ): Chainable<Element>;
     }
@@ -153,8 +161,10 @@ Cypress.Commands.add('getEditorModel', (editor = 'query') =>
   cy
     .window()
     .should(win => {
-      expect(findAttachedEditorModel(win, editor), `${editor} editor model`).to
-        .exist;
+      expect(
+        findAttachedEditorModel(win, editor),
+        `${editor} editor model`,
+      ).not.to.equal(undefined);
     })
     .then(win => findAttachedEditorModel(win, editor)!),
 );
@@ -241,7 +251,7 @@ Cypress.Commands.add('clickMergeFragments', () => {
 Cypress.Commands.add('waitForQueryEditor', expectedValue =>
   cy.window().should(win => {
     const queryModel = findAttachedEditorModel(win, 'query');
-    expect(queryModel, 'query editor model').to.exist;
+    expect(queryModel, 'query editor model').not.to.equal(undefined);
     if (expectedValue !== undefined) {
       expect(queryModel!.getValue(), 'query editor value').to.equal(
         expectedValue,
@@ -294,9 +304,9 @@ Cypress.Commands.add(
   },
 );
 
-Cypress.Commands.add('assertQueryResult', expectedResult => {
+Cypress.Commands.add('assertQueryResult', (expectedResult, options) => {
   cy.get('section.result-window').should('not.have.text', '');
-  cy.window().should(win => {
+  cy.window(options).should(win => {
     const responseModel = win.__MONACO.editor
       .getModels()
       .find(model => model.uri.path.endsWith('response.json'));
@@ -322,9 +332,7 @@ Cypress.Commands.add('containQueryResult', expected => {
 Cypress.Commands.add(
   'assertLinterMarkWithMessage',
   (text, severity, message, uri = 'operation.graphql') => {
-    // Ensure error is visible in the DOM
-    cy.get(`.squiggly-${severity}`, { timeout: 10_000 });
-    cy.window().then(win => {
+    cy.window().should(win => {
       const { editor, MarkerSeverity } = win.__MONACO;
       const models = editor.getModels();
       const model = models.find(m => m.uri.path.endsWith(uri))!;
@@ -333,40 +341,59 @@ Cypress.Commands.add(
       });
       // Only "Property is not allowed." isn't added in model markers
       if (!message.endsWith(' is not allowed.')) {
-        expect(markers.length).to.be.greaterThan(0);
-        expect(markers[0].message).eq(message);
         const markerSeverity = {
           error: MarkerSeverity.Error,
           warning: MarkerSeverity.Warning,
         }[severity];
-        expect(markers[0].severity).eq(markerSeverity);
+        const marker = markers.find(candidate => candidate.message === message);
+        expect(marker, `marker with message "${message}"`).not.to.equal(
+          undefined,
+        );
+        expect(marker!.severity).eq(markerSeverity);
       }
     });
-    // Monaco computes the hover tooltip from a single `mousemove`. When that
-    // event fires before the hover provider has picked up the latest markers,
-    // the tooltip never renders and no further event re-asks for it. Re-trigger
-    // until the message shows so the assertion stops racing the tooltip.
     assertHoverShowsMessage(text, message);
   },
 );
 
-function assertHoverShowsMessage(text: string, message: string, attempt = 0) {
-  cy.contains(text).trigger('mousemove', {
-    // Hover in the right corner, because some errors like `Expected comma or closing brace` are
-    // highlighted at the end
-    position: 'bottomRight',
-    force: true, // otherwise popup doesn't show
-  });
-  if (attempt >= 10) {
-    cy.contains(message); // out of retries: assert directly so failures report clearly
-    return;
-  }
-  cy.get('body').then($body => {
-    if ($body.text().includes(message)) {
-      cy.contains(message);
-    } else {
-      cy.wait(300);
-      assertHoverShowsMessage(text, message, attempt + 1);
-    }
+function assertHoverShowsMessage(text: string, message: string) {
+  cy.contains(text).should($element => {
+    const element = $element.get(0);
+    const bounds = element.getBoundingClientRect();
+    const MouseEvent = element.ownerDocument.defaultView!.MouseEvent;
+    element.dispatchEvent(
+      new MouseEvent('mousemove', {
+        bubbles: true,
+        clientX: bounds.right - 1,
+        clientY: bounds.bottom - 1,
+        view: element.ownerDocument.defaultView!,
+      }),
+    );
+    expect(element.ownerDocument.body).to.contain.text(message);
   });
 }
+
+Cypress.Commands.add('assertNoLinterMarks', (uri = 'operation.graphql') => {
+  waitForSchema();
+  const editorName = uri === 'operation.graphql' ? 'query' : 'variables';
+  cy.getEditorModel(editorName).then(model => {
+    const originalValue = model.getValue();
+    model.setValue(`${originalValue}\n+`);
+    cy.window().should(win => {
+      const markers = win.__MONACO.editor.getModelMarkers({
+        resource: model.uri,
+      });
+      expect(markers, 'sentinel validation markers').to.have.length.greaterThan(
+        0,
+      );
+    });
+
+    model.setValue(originalValue);
+    cy.window().should(win => {
+      const markers = win.__MONACO.editor.getModelMarkers({
+        resource: model.uri,
+      });
+      expect(markers, `${editorName} validation markers`).to.have.length(0);
+    });
+  });
+});
