@@ -97,6 +97,51 @@ const transport = createTransport({
 });
 ```
 
+### Custom subscription client
+
+If a protocol library exposes an abortable `AsyncIterable`, adapt it by
+forwarding iteration and aborting its work from `.return()`. The abort signal
+must cause a pending source `.next()` call to settle. In this example,
+`myProtocol.subscribe()` represents that abortable stream API:
+
+```ts
+import { createTransport, type SubscriptionClient } from '@graphiql/toolkit';
+
+const subscriptionClient: SubscriptionClient = {
+  iterate(request) {
+    const controller = new AbortController();
+    const source = myProtocol
+      .subscribe(request, { signal: controller.signal })
+      [Symbol.asyncIterator]();
+    let closed = false;
+
+    return {
+      next() {
+        return closed
+          ? Promise.resolve({ done: true, value: undefined })
+          : source.next();
+      },
+      async return() {
+        if (!closed) {
+          closed = true;
+          controller.abort();
+          await source.return?.();
+        }
+        return { done: true, value: undefined };
+      },
+      [Symbol.asyncIterator]() {
+        return this;
+      },
+    };
+  },
+};
+
+const transport = createTransport({
+  url: 'https://my.endpoint/graphql',
+  subscriptionClient,
+});
+```
+
 ## Migrating from `createGraphiQLFetcher`
 
 `createGraphiQLFetcher` hardwired subscriptions to WebSockets via
