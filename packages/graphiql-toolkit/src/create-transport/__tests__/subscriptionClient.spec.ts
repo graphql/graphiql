@@ -135,6 +135,40 @@ describe('createTransport — custom SubscriptionClient', () => {
     expect(event.body).toMatchObject({ errors: [{ message: 'boom' }] });
   });
 
+  it('disposes while the next event is pending and settles pending iteration', async () => {
+    const dispose = vi.fn();
+    let sink!: SubscriptionSink;
+    const transport = createTransport({
+      url: URL,
+      subscriptionClient: {
+        subscribe(_request, observer) {
+          sink = observer;
+          return dispose;
+        },
+      },
+    });
+    const iterator = (
+      transport.send({
+        query: SUBSCRIPTION,
+      }) as AsyncIterable<TransportResponse>
+    )[Symbol.asyncIterator]();
+    const first = iterator.next();
+    sink.next({ data: { tick: 1 } });
+    expect((await first).value.body).toMatchObject({ data: { tick: 1 } });
+
+    const pending = iterator.next();
+    const stopped = iterator.return!();
+    await tick();
+    expect(dispose).toHaveBeenCalledTimes(1);
+    await expect(stopped).resolves.toMatchObject({ done: true });
+    await expect(pending).resolves.toMatchObject({ done: true });
+    await iterator.return!();
+    sink.next({ data: { tick: 2 } });
+    sink.complete();
+    expect(dispose).toHaveBeenCalledTimes(1);
+    await expect(iterator.next()).resolves.toMatchObject({ done: true });
+  });
+
   it('disposes the subscription when the consumer stops iterating early', async () => {
     const dispose = vi.fn();
     const client: SubscriptionClient = {
