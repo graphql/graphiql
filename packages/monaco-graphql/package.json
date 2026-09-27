@@ -65,7 +65,8 @@
   },
   "files": [
     "dist",
-    "esm"
+    "esm",
+    "src"
   ],
   "scripts": {
     "build": "tsgo -p tsconfig.json && tsgo -p tsconfig.esm.json",
