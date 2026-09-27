@@ -20,11 +20,18 @@ import type {
 } from './types';
 // Type-only import: erased at build time, so no runtime dependency cycle with
 // `create-transport`, which imports the helpers below at runtime.
-import type {
-  HttpMethod,
-  SubscriptionClient,
-  TransportResponse,
-} from '../create-transport/types';
+import type { HttpMethod, TransportResponse } from '../create-transport/types';
+
+type SinkSubscriptionClient = {
+  subscribe(
+    request: FetcherParams,
+    sink: {
+      next: (value: ExecutionResult) => void;
+      error: (error: unknown) => void;
+      complete: () => void;
+    },
+  ): () => void;
+};
 
 const errorHasCode = (err: unknown): err is { code: string } => {
   return typeof err === 'object' && err !== null && 'code' in err;
@@ -265,12 +272,10 @@ export async function createWebsocketsFetcherFromUrl(
 }
 
 /**
- * Create a subscription fetcher from any client satisfying the
- * {@link SubscriptionClient} contract (`graphql-ws`, `graphql-sse`, or a custom
- * one — e.g. HTTP `multipart/mixed`).
+ * Create a subscription fetcher from a `graphql-ws`-compatible client.
  */
 export const createWebsocketsFetcherFromClient =
-  (wsClient: SubscriptionClient): Fetcher =>
+  (wsClient: SinkSubscriptionClient): Fetcher =>
   (graphQLParams: FetcherParams) =>
     makeAsyncIterableIteratorFromSink<ExecutionResult>(sink =>
       wsClient.subscribe(graphQLParams, {
