@@ -1,15 +1,18 @@
 'use no memo';
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { create } from 'zustand';
 import { StorageAPI } from '@graphiql/toolkit';
 import { createEditorSlice } from './editor';
 import { createStorageSlice } from './storage';
-import { createTab } from '../utility/tabs';
+import { createTab, getDefaultTabState } from '../utility/tabs';
+import { STORAGE_KEY } from '../constants';
 import type { SlicesWithActions } from '../types';
 
-function makeStore(overrides: Record<string, unknown> = {}) {
-  const storage = new StorageAPI();
+function makeStore(
+  overrides: Record<string, unknown> = {},
+  storage = new StorageAPI(),
+) {
   const tab = createTab({ query: 'query Foo {}' });
 
   const store = create<SlicesWithActions>((...args) => {
@@ -54,6 +57,35 @@ function makeStore(overrides: Record<string, unknown> = {}) {
 }
 
 describe('tab management', () => {
+  it('leaves live edits alone when selecting the already active tab', () => {
+    const store = makeStore();
+    const editor = {
+      getValue: () => 'query Unsaved { hello }',
+      setValue: vi.fn(),
+    };
+    store.getState().actions.setEditor({ queryEditor: editor as any });
+
+    store.getState().actions.changeTab(0);
+
+    expect(editor.setValue).not.toHaveBeenCalled();
+    expect(store.getState().actions.stop).not.toHaveBeenCalled();
+  });
+
+  it('captures live edits before switching tabs without waiting for the edit timer', () => {
+    const firstTab = createTab({ query: 'query First { hello }' });
+    const secondTab = createTab({ query: 'query Second { counter }' });
+    const store = makeStore({ tabs: [firstTab, secondTab] });
+    const query = 'query Unsaved { hello counter }';
+    store.getState().actions.setEditor({
+      queryEditor: { getValue: () => query, setValue: vi.fn() } as any,
+    });
+
+    store.getState().actions.changeTab(1);
+
+    expect(store.getState().tabs[0]?.query).toBe(query);
+    expect(store.getState().tabs[0]?.lastSavedQuery).toBeNull();
+  });
+
   it('addTab adds a new tab', () => {
     const store = makeStore();
     expect(store.getState().tabs).toHaveLength(1);
@@ -174,29 +206,14 @@ describe('save-handler registry', () => {
     expect(handlerC).toHaveBeenCalledOnce();
   });
 
-  it('tab is marked saved (lastSavedQuery updated) when at least one handler returns true', () => {
+  it('uses stored contents when marking a tab saved before its editor mounts', () => {
     const store = makeStore();
-    // Advance the stored query so we can detect a real change.
     store.getState().actions.updateActiveTabValues({ query: 'query Saved {}' });
-    const tabBefore = store.getState().tabs[0]!;
-    // Confirm the tab has a non-null query and lastSavedQuery is still null.
-    expect(tabBefore.query).toBe('query Saved {}');
-    expect(tabBefore.lastSavedQuery).toBeNull();
-
-    // Register a handler that commits synchronously.
     store.getState().actions.registerSaveHandler(() => true);
+
     store.getState().actions.saveQuery();
 
-    // markTabSaved uses queryEditor?.getValue() ?? null (no Monaco in tests).
-    // The point is the tab's lastSavedQuery was updated (even if null) vs remaining
-    // in its prior state — which was also null here. We verify markTabSaved ran by
-    // checking that the tab object has been updated in state.
-    //
-    // To make this test meaningful we use a handler that returns true and confirm
-    // that unregistering a handler prevents mark-saved from running (see next test).
-    const tabAfter = store.getState().tabs[0]!;
-    // lastSavedQuery set to queryEditor.getValue() ?? null; Monaco absent → null.
-    expect(tabAfter.lastSavedQuery).toBeNull();
+    expect(store.getState().tabs[0]!.lastSavedQuery).toBe('query Saved {}');
   });
 
   it('tab is NOT marked saved when every handler returns void/false', () => {
@@ -290,5 +307,102 @@ describe('save-handler registry', () => {
 
     unregisterA();
     expect(store.getState().saveHandlers.size).toBe(1);
+  });
+});
+
+describe('saved tab persistence', () => {
+  afterEach(() => {
+    vi.clearAllTimers();
+    vi.useRealTimers();
+  });
+
+  function memoryStorage() {
+    const values = new Map<string, string>();
+    return new StorageAPI({
+      getItem: key => values.get(key) ?? null,
+      setItem(key, value) {
+        values.set(key, value);
+      },
+      removeItem(key) {
+        values.delete(key);
+      },
+      clear() {
+        values.clear();
+      },
+      get length() {
+        return values.size;
+      },
+    });
+  }
+
+  it('restores the live saved query on an immediate reload', () => {
+    vi.useFakeTimers();
+    const storage = memoryStorage();
+    const store = makeStore({}, storage);
+    const query = 'query Saved { hello counter }';
+    const tabId = store.getState().tabs[0]!.id;
+    store.getState().actions.storeTabs(store.getState());
+    store.getState().actions.setEditor({
+      queryEditor: { getValue: () => query } as any,
+    });
+
+    store.getState().actions.markTabSaved(tabId);
+
+    const restored = getDefaultTabState({
+      defaultQuery: '',
+      query,
+      variables: null,
+      headers: null,
+      storage,
+    });
+    expect(restored.tabs).toHaveLength(1);
+    expect(restored.tabs[0]).toMatchObject({
+      id: tabId,
+      query,
+      lastSavedQuery: query,
+    });
+  });
+
+  it('does not overwrite a completed save with a pending older tab write', () => {
+    vi.useFakeTimers();
+    const storage = memoryStorage();
+    const store = makeStore({}, storage);
+    const tabId = store.getState().tabs[0]!.id;
+    store.getState().actions.updateActiveTabValues({ query: 'query Older {}' });
+    const query = 'query Latest {}';
+    store.getState().actions.setEditor({
+      queryEditor: { getValue: () => query } as any,
+    });
+
+    store.getState().actions.markTabSaved(tabId);
+    vi.advanceTimersByTime(500);
+
+    const saved = JSON.parse(storage.get(STORAGE_KEY.tabs)!);
+    expect(saved.tabs[0]).toMatchObject({ query, lastSavedQuery: query });
+  });
+
+  it('persists a saved inactive tab without reading the other tab editor', () => {
+    vi.useFakeTimers();
+    const storage = memoryStorage();
+    const store = makeStore({}, storage);
+    const query = 'query Saved {}';
+    const tabId = store.getState().tabs[0]!.id;
+    store.getState().actions.setEditor({
+      queryEditor: { getValue: () => query, setValue: vi.fn() } as any,
+    });
+    store.getState().actions.addTab();
+    store.getState().actions.setEditor({
+      queryEditor: { getValue: () => 'query Other {}' } as any,
+    });
+
+    store.getState().actions.markTabSaved(tabId);
+
+    const saved = JSON.parse(storage.get(STORAGE_KEY.tabs)!);
+    expect(saved.activeTabIndex).toBe(1);
+    expect(saved.tabs[0]).toMatchObject({
+      id: tabId,
+      query,
+      lastSavedQuery: query,
+    });
   });
 });

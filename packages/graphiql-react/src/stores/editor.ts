@@ -377,14 +377,25 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       responseEditor,
       operationName,
     } = get();
+    const activeTab = tabsState.tabs[tabsState.activeTabIndex]!;
     return setPropertiesInActiveTab(tabsState, {
-      query: queryEditor?.getValue() ?? null,
-      variables: variableEditor?.getValue() ?? null,
-      headers: headerEditor?.getValue() ?? null,
-      response: responseEditor?.getValue() ?? null,
+      query: queryEditor?.getValue() ?? activeTab.query,
+      variables: variableEditor?.getValue() ?? activeTab.variables,
+      headers: headerEditor?.getValue() ?? activeTab.headers,
+      response: responseEditor?.getValue() ?? activeTab.response,
       operationName: operationName ?? null,
     });
   }
+
+  function persistTabs(tabsState: TabsState) {
+    const { shouldPersistHeaders, storage } = get();
+    storage.set(
+      STORAGE_KEY.tabs,
+      serializeTabState(tabsState, shouldPersistHeaders),
+    );
+  }
+
+  const scheduleTabPersistence = debounce(500, persistTabs);
 
   const $actions: EditorActions = {
     addTab() {
@@ -405,10 +416,13 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       });
     },
     changeTab(index) {
-      set(({ actions, onTabChange, tabs }) => {
+      set(({ actions, onTabChange, tabs, activeTabIndex }) => {
+        if (index === activeTabIndex) {
+          return {};
+        }
         actions.stop();
         const updated = {
-          tabs,
+          ...synchronizeActiveTabValues({ tabs, activeTabIndex }),
           activeTabIndex: index,
         };
         actions.storeTabs(updated);
@@ -492,12 +506,8 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       storage.set(STORAGE_KEY.persistHeaders, persist.toString());
       set({ shouldPersistHeaders: persist });
     },
-    storeTabs({ tabs, activeTabIndex }) {
-      const { shouldPersistHeaders, storage } = get();
-      const store = debounce(500, (value: string) => {
-        storage.set(STORAGE_KEY.tabs, value);
-      });
-      store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
+    storeTabs(tabsState) {
+      scheduleTabPersistence(tabsState);
     },
     setOperationFacts({ documentAST, operationName, operations }) {
       set({
@@ -514,6 +524,8 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
     saveQuery() {
       const {
         queryEditor,
+        variableEditor,
+        headerEditor,
         onSaveQuery,
         saveHandlers,
         tabs,
@@ -531,8 +543,12 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       if (handlers.length === 0) {
         return;
       }
-      const query = queryEditor?.getValue() ?? null;
-      const tabArg = { ...activeTab, query };
+      const tabArg = {
+        ...activeTab,
+        query: queryEditor?.getValue() ?? activeTab.query,
+        variables: variableEditor?.getValue() ?? activeTab.variables,
+        headers: headerEditor?.getValue() ?? activeTab.headers,
+      };
       let committed = false;
       for (const handler of handlers) {
         if (handler(tabArg) === true) {
@@ -544,25 +560,47 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       }
     },
     markTabSaved(tabId) {
-      set(({ activeTabIndex, tabs, onTabChange, actions, queryEditor }) => {
-        const activeTabId = tabs[activeTabIndex]?.id;
-        const updated = {
-          tabs: tabs.map(tab =>
-            tab.id === tabId
-              ? {
-                  ...tab,
-                  // Use the live editor value for the active tab (the editors
-                  // only reflect the active tab); fall back to stored content.
-                  lastSavedQuery:
-                    tab.id === activeTabId
-                      ? (queryEditor?.getValue() ?? null)
-                      : tab.query,
-                }
-              : tab,
-          ),
+      set(state => {
+        const {
           activeTabIndex,
-        };
-        actions.storeTabs(updated);
+          tabs,
+          onTabChange,
+          queryEditor,
+          variableEditor,
+          headerEditor,
+          storage,
+          shouldPersistHeaders,
+        } = state;
+        const activeTab = tabs[activeTabIndex];
+        const updated =
+          activeTab?.id === tabId
+            ? setPropertiesInActiveTab(
+                { tabs, activeTabIndex },
+                {
+                  query: queryEditor?.getValue() ?? activeTab.query,
+                  variables: variableEditor?.getValue() ?? activeTab.variables,
+                  headers: headerEditor?.getValue() ?? activeTab.headers,
+                  lastSavedQuery: queryEditor?.getValue() ?? activeTab.query,
+                },
+              )
+            : {
+                tabs: tabs.map(tab =>
+                  tab.id === tabId
+                    ? { ...tab, lastSavedQuery: tab.query }
+                    : tab,
+                ),
+                activeTabIndex,
+              };
+        scheduleTabPersistence.cancel();
+        persistTabs(updated);
+        if (activeTab?.id === tabId) {
+          const saved = updated.tabs[activeTabIndex]!;
+          storage.set(STORAGE_KEY.query, saved.query ?? '');
+          storage.set(STORAGE_KEY.variables, saved.variables ?? '');
+          if (shouldPersistHeaders) {
+            storage.set(STORAGE_KEY.headers, saved.headers ?? '');
+          }
+        }
         onTabChange?.(updated);
         return updated;
       });
