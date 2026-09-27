@@ -16,14 +16,14 @@ npm install react react-dom graphql @graphiql/react
 
 ## Usage
 
-The collections plugin is installed by default in GraphiQL, so an unmodified `<GraphiQL>` already shows a Collections rail icon. You only need to register it explicitly to configure it, for example to supply a custom storage backend or restrict what users can do.
+The collections plugin is installed by default in GraphiQL, so an unmodified `<GraphiQL>` already shows a Collections rail icon. Use `COLLECTIONS_PLUGIN` when you pass a custom `plugins` array and want to keep the default collections configuration. Use `collectionsPlugin(options)` to supply a custom storage backend or restrict what users can do.
 
 > **Note:** passing the `plugins` prop replaces the default plugin set, so include the others you want alongside it.
 
 ```jsx
 import { GraphiQL } from 'graphiql';
 import { createTransport } from '@graphiql/toolkit';
-import { collectionsPlugin } from '@graphiql/plugin-collections';
+import { COLLECTIONS_PLUGIN } from '@graphiql/plugin-collections';
 import 'graphiql/style.css';
 import '@graphiql/plugin-collections/style.css';
 
@@ -31,10 +31,8 @@ const transport = createTransport({
   url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
 });
 
-const collections = collectionsPlugin();
-
 function GraphiQLWithCollections() {
-  return <GraphiQL transport={transport} plugins={[collections]} />;
+  return <GraphiQL transport={transport} plugins={[COLLECTIONS_PLUGIN]} />;
 }
 ```
 
@@ -155,7 +153,8 @@ await actions.reload();
 
 ## Exports
 
-- `collectionsPlugin(options?)` — the plugin factory
+- `COLLECTIONS_PLUGIN` — the default plugin configuration
+- `collectionsPlugin(options?)` — the plugin factory for custom configuration
 - `collectionsStore`, `useCollectionsStore` — the store and its React hook
 - `createLocalStorageAdapter(key)`, `localStorageAdapter` — built-in storage
 - `CollectionsSaveDialog` — the save dialog component
