@@ -65,7 +65,8 @@
   },
   "files": [
     "dist",
-    "esm"
+    "esm",
+    "src"
   ],
   "scripts": {
     "build": "tsgo -p tsconfig.json && tsgo -p tsconfig.esm.json",
@@ -73,7 +74,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "graphql-language-service": "^6.0.0-beta.0",
+    "graphql-language-service": "6.0.0-beta.0",
     "picomatch-browser": "^2.2.6"
   },
   "devDependencies": {
