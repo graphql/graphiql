@@ -1,15 +1,16 @@
 describe('Linting', () => {
   it('Does not mark valid fields', () => {
-    cy.visitGraphiQL({
-      query: /* GraphQL */ `
-        {
-          myAlias: id
-          test {
-            id
-          }
+    const validQuery = /* GraphQL */ `
+      {
+        myAlias: id
+        test {
+          id
         }
-      `,
-    }).assertNoLinterMarks();
+      }
+    `;
+    cy.visitGraphiQL({
+      query: '{ doesNotExist }',
+    }).clearLinterMarksWithValue(validQuery);
   });
 
   it('Marks invalid fields as error', () => {
@@ -132,16 +133,15 @@ describe('Linting', () => {
   });
 
   it('Does not mark object variables for a custom scalar with a configured customScalarSchemas as error', () => {
+    const validVariables = JSON.stringify({ jsonArg: { foo: 'bar' } }, null, 2);
     cy.visitGraphiQL({
       query: /* GraphQL */ `
         query WithVariables($jsonArg: JSON) {
           hasArgs(json: $jsonArg)
         }
       `,
-      variables: {
-        jsonArg: { foo: 'bar' },
-      },
-    }).assertNoLinterMarks('variables.json');
+      variables: '{',
+    }).clearLinterMarksWithValue(validVariables, 'variables.json');
   });
 
   it('Marks GraphQL syntax errors as error', () => {

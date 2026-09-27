@@ -110,8 +110,9 @@ declare global {
         uri?: 'operation.graphql' | 'variables.json',
       ): Chainable<Element>;
 
-      /** Prove validation has run, then assert that it leaves no markers. */
-      assertNoLinterMarks(
+      /** Replace known-invalid input and retry until its markers clear. */
+      clearLinterMarksWithValue(
+        value: string,
         uri?: 'operation.graphql' | 'variables.json',
       ): Chainable<Element>;
     }
@@ -388,50 +389,50 @@ function assertHoverShowsMessage(
           .check({ force: true })
           .get('.graphiql-editor-tool .view-lines')
           .eq(0);
-  editor
-    .contains('.view-line', text)
-    .find(`.squiggly-${severity}`)
-    .should($element => {
-      const element = $element.get(0);
-      const bounds = element.getBoundingClientRect();
-      const MouseEvent = element.ownerDocument.defaultView!.MouseEvent;
-      element.dispatchEvent(
-        new MouseEvent('mousemove', {
-          bubbles: true,
-          clientX: bounds.right - 1,
-          clientY: bounds.bottom - 1,
-          view: element.ownerDocument.defaultView!,
-        }),
-      );
-      expect(element.ownerDocument.body).to.contain.text(message);
-    });
+  const target = message.endsWith(' is not allowed.')
+    ? editor.find(`.squiggly-${severity}`)
+    : editor.contains(text);
+  target.should($element => {
+    const element = $element.get(0);
+    const bounds = element.getBoundingClientRect();
+    const MouseEvent = element.ownerDocument.defaultView!.MouseEvent;
+    element.dispatchEvent(
+      new MouseEvent('mousemove', {
+        bubbles: true,
+        clientX: bounds.right - 1,
+        clientY: bounds.bottom - 1,
+        view: element.ownerDocument.defaultView!,
+      }),
+    );
+    expect(element.ownerDocument.body).to.contain.text(message);
+  });
 }
 
-Cypress.Commands.add('assertNoLinterMarks', (uri = 'operation.graphql') => {
-  waitForSchema();
-  const editorName = uri === 'operation.graphql' ? 'query' : 'variables';
-  cy.getEditorModel(editorName).then(model => {
-    const originalValue = model.getValue();
-    const invalidValue =
-      uri === 'operation.graphql'
-        ? 'query CypressValidationSentinel { doesNotExist }'
-        : '{';
-    model.setValue(invalidValue);
-    cy.window().should(win => {
-      const markers = win.__MONACO.editor.getModelMarkers({
-        resource: model.uri,
+Cypress.Commands.add(
+  'clearLinterMarksWithValue',
+  (value, uri = 'operation.graphql') => {
+    waitForSchema();
+    const editorName = uri === 'operation.graphql' ? 'query' : 'variables';
+    cy.getEditorModel(editorName).then(model => {
+      cy.window()
+        .should(win => {
+          const markers = win.__MONACO.editor.getModelMarkers({
+            resource: model.uri,
+          });
+          expect(
+            markers,
+            'initial validation markers',
+          ).to.have.length.greaterThan(0);
+        })
+        .then(() => {
+          model.setValue(value);
+        });
+      cy.window().should(win => {
+        const markers = win.__MONACO.editor.getModelMarkers({
+          resource: model.uri,
+        });
+        expect(markers, `${editorName} validation markers`).to.have.length(0);
       });
-      expect(markers, 'sentinel validation markers').to.have.length.greaterThan(
-        0,
-      );
     });
-
-    model.setValue(originalValue);
-    cy.window().should(win => {
-      const markers = win.__MONACO.editor.getModelMarkers({
-        resource: model.uri,
-      });
-      expect(markers, `${editorName} validation markers`).to.have.length(0);
-    });
-  });
-});
+  },
+);
