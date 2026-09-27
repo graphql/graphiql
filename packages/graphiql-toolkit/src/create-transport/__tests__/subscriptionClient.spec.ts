@@ -107,6 +107,43 @@ describe('createTransport — custom SubscriptionClient', () => {
     expect(event.body).toMatchObject({ errors: [{ message: 'boom' }] });
   });
 
+  it('disposes the subscription when wrapping an event fails', async () => {
+    const dispose = vi.fn();
+    const data: Record<string, unknown> = {};
+    data.self = data;
+    const source: AsyncIterableIterator<FormattedExecutionResult> = {
+      async next() {
+        return {
+          done: false,
+          value: { data },
+        };
+      },
+      async return() {
+        dispose();
+        return { done: true, value: undefined };
+      },
+      [Symbol.asyncIterator]() {
+        return this;
+      },
+    };
+    const transport = createTransport({
+      url: URL,
+      subscriptionClient: {
+        iterate() {
+          return source;
+        },
+      },
+    });
+    const iterator = (
+      transport.send({
+        query: SUBSCRIPTION,
+      }) as AsyncIterable<TransportResponse>
+    )[Symbol.asyncIterator]();
+
+    await expect(iterator.next()).rejects.toThrow('circular structure');
+    expect(dispose).toHaveBeenCalledTimes(1);
+  });
+
   it('disposes while the next event is pending and settles pending iteration', async () => {
     const dispose = vi.fn();
     let settleNext!: (result: IteratorResult<FormattedExecutionResult>) => void;
