@@ -29,6 +29,13 @@ const compilerOptions = {
   moduleResolution: ModuleResolutionKind.Bundler,
   target: ScriptTarget.ES2022,
   lib: ['lib.es2022.d.ts', 'lib.dom.d.ts'],
+  baseUrl: resolve('.'),
+  // Script tests run without package builds, so resolve the source Transport type.
+  paths: {
+    '@graphiql/toolkit': [
+      'packages/graphiql-toolkit/src/create-transport/types.ts',
+    ],
+  },
   skipLibCheck: true,
   strict: true,
 };
