@@ -327,7 +327,6 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
         };
       });
       const { actions } = store.getState();
-      actions.storeTabs({ activeTabIndex, tabs });
       actions.setPlugins(plugins);
       actions.setVisiblePlugin(getInitialVisiblePlugin());
       actions.setTheme(getInitialTheme());
@@ -350,6 +349,11 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   //     lastShouldPersistHeadersProp.current = propValue;
   //   }
   // }, [shouldPersistHeaders]);
+
+  useEffect(() => {
+    const { actions, tabs, activeTabIndex } = storeRef.current.getState();
+    actions.storeTabs({ activeTabIndex, tabs });
+  }, []);
 
   // Execution sync — rewrap transport with the hook registry on change
   useDidUpdate(() => {

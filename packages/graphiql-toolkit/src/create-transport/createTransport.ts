@@ -1,7 +1,9 @@
 import { parse } from 'graphql';
-import type { OperationDefinitionNode } from 'graphql';
+import type {
+  FormattedExecutionResult,
+  OperationDefinitionNode,
+} from 'graphql';
 import {
-  createWebsocketsFetcherFromClient,
   multipartHttpTransport,
   simpleHttpTransport,
 } from '../create-fetcher/lib';
@@ -187,19 +189,64 @@ export function createTransport(opts: CreateTransportOptions): Transport {
   return transport;
 }
 
-async function* subscribe(
+function subscribe(
   subscriptionClient: SubscriptionClient | undefined,
   params: FetcherParams,
-): AsyncGenerator<TransportResponse> {
-  if (!subscriptionClient) {
-    throw new Error(
-      "createTransport is not configured for subscriptions. Pass a `subscriptionClient` (e.g. `graphql-ws`'s `createClient({ url })` or `graphql-sse`'s `createClient({ url })`). See docs/migration/graphiql-6.0.0.md.",
-    );
-  }
-  const wsFetcher = createWebsocketsFetcherFromClient(subscriptionClient);
-  const iterable = wsFetcher(params) as AsyncIterable<unknown>;
-  const startMs = performance.now();
-  for await (const event of iterable) {
-    yield toSubscriptionResponse(event, startMs);
-  }
+): AsyncIterableIterator<TransportResponse> {
+  let source: AsyncIterableIterator<FormattedExecutionResult> | undefined;
+  let closed = false;
+  let startMs = 0;
+
+  const getSource = () => {
+    if (!subscriptionClient) {
+      throw new Error(
+        "createTransport is not configured for subscriptions. Pass a `subscriptionClient` (e.g. `graphql-ws`'s `createClient({ url })` or `graphql-sse`'s `createClient({ url })`). See docs/migration/graphiql-6.0.0.md.",
+      );
+    }
+    if (!source) {
+      startMs = performance.now();
+      source = subscriptionClient.iterate(params);
+    }
+    return source;
+  };
+
+  const closeSource = async () => {
+    if (!closed) {
+      closed = true;
+      await source?.return?.();
+    }
+  };
+
+  return {
+    async next() {
+      if (closed) {
+        return { done: true, value: undefined };
+      }
+      try {
+        const result = await getSource().next();
+        if (result.done) {
+          closed = true;
+          return { done: true, value: undefined };
+        }
+        return {
+          done: false,
+          value: toSubscriptionResponse(result.value, startMs),
+        };
+      } catch (error) {
+        try {
+          await closeSource();
+        } catch {
+          // Preserve the error that ended iteration.
+        }
+        throw error;
+      }
+    },
+    async return() {
+      await closeSource();
+      return { done: true, value: undefined };
+    },
+    [Symbol.asyncIterator]() {
+      return this;
+    },
+  };
 }

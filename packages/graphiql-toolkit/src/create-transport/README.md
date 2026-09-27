@@ -47,32 +47,23 @@ contract, and the transport routes every subscription operation through it:
 
 ```ts
 type SubscriptionClient = {
-  subscribe(
-    request: {
-      query: string;
-      operationName?: string | null;
-      variables?: Record<string, unknown>;
-      extensions?: Record<string, unknown>;
-    },
-    sink: {
-      next: (value: ExecutionResult) => void;
-      error: (error: unknown) => void;
-      complete: () => void;
-    },
-  ): () => void; // returns a dispose function
+  iterate(request: {
+    query: string;
+    operationName?: string | null;
+    variables?: Record<string, unknown>;
+    extensions?: Record<string, unknown>;
+  }): AsyncIterableIterator<FormattedExecutionResult>;
 };
 ```
 
-That is the whole surface. `subscribe` receives the operation and a `sink`,
-pushes each event into `sink.next`, calls `sink.complete()` when the stream ends
-(or `sink.error(err)` on failure), and returns a function that tears the
-subscription down. GraphiQL calls that dispose function when the user stops the
-subscription or the tab closes.
+That is the whole surface. GraphiQL calls `iterate` when it starts reading the
+subscription, then forwards `.return()` to the returned iterator when the user
+stops the subscription or the tab closes. A custom iterator's `.return()` must
+promptly stop its underlying work and settle any pending `.next()` call.
 
-`graphql-ws` and `graphql-sse` both return a client that satisfies this contract
-directly, so either drops in with no wrapping. Any protocol you can express as
-`subscribe(request, sink)` — including plain HTTP `multipart/mixed` — works the
-same way, with no changes to the toolkit.
+`graphql-ws` v6 and `graphql-sse` both return a client that satisfies this
+contract directly, so either drops in with no wrapping. Any protocol can be
+used by exposing the same async-iterator contract.
 
 If a subscription is sent and no `subscriptionClient` is configured, `send()`
 throws. Leave the option off if you only run queries and mutations.
@@ -91,8 +82,8 @@ const transport = createTransport({
 
 ### Server-Sent Events — `graphql-sse`
 
-`graphql-sse`'s `createClient()` is signature-compatible, so the same option
-drives SSE with no SSE-specific code:
+`graphql-sse`'s `createClient()` exposes the same `iterate()` method, so the
+same option drives SSE with no SSE-specific code:
 
 ```ts
 import { createClient } from 'graphql-sse';
@@ -106,93 +97,50 @@ const transport = createTransport({
 });
 ```
 
-### HTTP `multipart/mixed` subscriptions
+### Custom subscription client
 
-Some servers deliver subscriptions over the same HTTP endpoint as queries and
-mutations, as a `multipart/mixed` stream of `{ payload }` envelopes with `{}`
-heartbeats — there is no WebSocket endpoint at all. Because `subscriptionClient`
-is just `subscribe(request, sink)`, you can implement that protocol as a small
-client and pass it in. `meros` (already a toolkit dependency) parses the stream:
+If a protocol library exposes an abortable `AsyncIterable`, adapt it by
+forwarding iteration and aborting its work from `.return()`. The abort signal
+must cause a pending source `.next()` call to settle. In this example,
+`myProtocol.subscribe()` represents that abortable stream API:
 
 ```ts
-import { meros } from 'meros/browser';
-import { isAsyncIterable } from '@n1ru4l/push-pull-async-iterable-iterator';
 import { createTransport, type SubscriptionClient } from '@graphiql/toolkit';
 
-const url = 'https://my.endpoint/graphql';
-
-const multipartSubscriptionClient: SubscriptionClient = {
-  subscribe(request, sink) {
+const subscriptionClient: SubscriptionClient = {
+  iterate(request) {
     const controller = new AbortController();
+    const source = myProtocol
+      .subscribe(request, { signal: controller.signal })
+      [Symbol.asyncIterator]();
+    let closed = false;
 
-    void (async () => {
-      try {
-        const response = await fetch(url, {
-          method: 'POST',
-          signal: controller.signal,
-          headers: {
-            'content-type': 'application/json',
-            accept: 'multipart/mixed;subscriptionSpec="1.0", application/json',
-          },
-          body: JSON.stringify(request),
-        });
-
-        const parts = await meros<{
-          payload?: {
-            data?: unknown;
-            errors?: unknown;
-            extensions?: unknown;
-          } | null;
-          errors?: unknown;
-        }>(response);
-
-        // Server answered with a single JSON body (e.g. a request error).
-        if (!isAsyncIterable(parts)) {
-          sink.next(await response.json());
-          sink.complete();
-          return;
+    return {
+      next() {
+        return closed
+          ? Promise.resolve({ done: true, value: undefined })
+          : source.next();
+      },
+      async return() {
+        if (!closed) {
+          closed = true;
+          controller.abort();
+          await source.return?.();
         }
-
-        for await (const part of parts) {
-          if (!part.json) {
-            continue;
-          }
-          const frame = part.body;
-
-          // Heartbeat: `{}` — no `payload` key. Skip it.
-          if (!('payload' in frame)) {
-            continue;
-          }
-          // Fatal error frame: `{ payload: null, errors: [...] }`. Terminate.
-          if (frame.payload === null) {
-            if (frame.errors) {
-              sink.next({ errors: frame.errors as any });
-            }
-            break;
-          }
-          // Normal frame: `{ payload: { data, errors, extensions } }`.
-          sink.next(frame.payload as any);
-        }
-        sink.complete();
-      } catch (error) {
-        if (!controller.signal.aborted) {
-          sink.error(error);
-        }
-      }
-    })();
-
-    return () => controller.abort();
+        return { done: true, value: undefined };
+      },
+      [Symbol.asyncIterator]() {
+        return this;
+      },
+    };
   },
 };
 
 const transport = createTransport({
-  url,
-  subscriptionClient: multipartSubscriptionClient,
+  url: 'https://my.endpoint/graphql',
+  subscriptionClient,
 });
 ```
-
-Queries and mutations still take the transport's normal HTTP path; only
-subscription operations are routed to the client above.
 
 ## Migrating from `createGraphiQLFetcher`
 
