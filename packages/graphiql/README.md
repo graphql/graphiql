@@ -97,7 +97,7 @@ implement your own transport, you can use the `Transport` type from
 `fetcher` is still supported — it's deprecated but not removed, and predates
 `transport`. Unlike a `transport`, a `fetcher` is a plain function that returns
 an execution result directly, with no access to the underlying HTTP response.
-See the [v6 migration guide](../../docs/migration/graphiql-6.0.0.md#new-transport-prop)
+See the [v6 migration guide](../../docs/migration/graphiql-6.0.0.md#new-transport-api)
 if you're moving from `fetcher` to `transport`.
 
 The following is everything you need to render GraphiQL in your React
