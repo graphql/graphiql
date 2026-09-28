@@ -1,6 +1,6 @@
 # graphql-language-service
 
-## 6.0.0-rc.2
+## 6.0.0-rc.0
 
 ### Patch Changes
 

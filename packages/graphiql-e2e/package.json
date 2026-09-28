@@ -23,9 +23,9 @@
     "test:a11y:update": "start-server-and-test start:source 'http-get://localhost:8080/graphql?query={test { id }}|http://localhost:5173' cypress:a11y:update"
   },
   "dependencies": {
-    "@graphiql/react": "1.0.0-rc.5",
-    "@graphiql/toolkit": "1.0.0-rc.3",
-    "graphiql": "6.0.0-rc.5",
+    "@graphiql/react": "1.0.0-rc.0",
+    "@graphiql/toolkit": "1.0.0-rc.0",
+    "graphiql": "6.0.0-rc.0",
     "graphql": "^16.14.2",
     "graphql-ws": "^5.5.5",
     "react": "^19.1.0",

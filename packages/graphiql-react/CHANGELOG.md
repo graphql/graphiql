@@ -1,6 +1,6 @@
 # @graphiql/react
 
-## 1.0.0-rc.5
+## 1.0.0-rc.0
 
 ### Patch Changes
 
@@ -9,9 +9,9 @@
 - [#4595](https://github.com/graphql/graphiql/pull/4595) [`bcd13dc`](https://github.com/graphql/graphiql/commit/bcd13dca46e2bb75837b33fce9f574712c669457) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Move the GraphiQL 6 package family from beta to release candidate versions.
 
 - Updated dependencies [[`bcd13dc`](https://github.com/graphql/graphiql/commit/bcd13dca46e2bb75837b33fce9f574712c669457)]:
-  - @graphiql/toolkit@1.0.0-rc.3
-  - graphql-language-service@6.0.0-rc.2
-  - monaco-graphql@2.0.0-rc.2
+  - @graphiql/toolkit@1.0.0-rc.0
+  - graphql-language-service@6.0.0-rc.0
+  - monaco-graphql@2.0.0-rc.0
 
 ## 1.0.0-beta.4
 

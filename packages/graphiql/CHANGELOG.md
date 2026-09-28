@@ -1,17 +1,17 @@
 # Change Log
 
-## 6.0.0-rc.5
+## 6.0.0-rc.0
 
 ### Patch Changes
 
 - [#4595](https://github.com/graphql/graphiql/pull/4595) [`bcd13dc`](https://github.com/graphql/graphiql/commit/bcd13dca46e2bb75837b33fce9f574712c669457) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Move the GraphiQL 6 package family from beta to release candidate versions.
 
 - Updated dependencies [[`5081f23`](https://github.com/graphql/graphiql/commit/5081f23e1e4e7e505ab2dd9dacea5742f9a3392f), [`bcd13dc`](https://github.com/graphql/graphiql/commit/bcd13dca46e2bb75837b33fce9f574712c669457)]:
-  - @graphiql/react@1.0.0-rc.5
-  - @graphiql/plugin-collections@1.0.0-rc.5
-  - @graphiql/plugin-doc-explorer@1.0.0-rc.5
-  - @graphiql/plugin-history@1.0.0-rc.5
-  - @graphiql/plugin-query-builder@1.0.0-rc.5
+  - @graphiql/react@1.0.0-rc.0
+  - @graphiql/plugin-collections@1.0.0-rc.0
+  - @graphiql/plugin-doc-explorer@1.0.0-rc.0
+  - @graphiql/plugin-history@1.0.0-rc.0
+  - @graphiql/plugin-query-builder@1.0.0-rc.0
 
 ## 6.0.0-beta.4
 

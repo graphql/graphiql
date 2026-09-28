@@ -1,6 +1,6 @@
 # @graphiql/toolkit
 
-## 1.0.0-rc.3
+## 1.0.0-rc.0
 
 ### Patch Changes
 
