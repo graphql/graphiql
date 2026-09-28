@@ -387,12 +387,13 @@ Cypress.Commands.add(
         expect(marker!.severity).eq(markerSeverity);
       }
     });
-    assertHoverShowsMessage(text, message, uri);
+    assertHoverShowsMessage(text, severity, message, uri);
   },
 );
 
 function assertHoverShowsMessage(
   text: string,
+  severity: 'error' | 'warning',
   message: string,
   uri: 'operation.graphql' | 'variables.json',
 ) {
@@ -404,8 +405,23 @@ function assertHoverShowsMessage(
           .check({ force: true })
           .get('.graphiql-editor-tool .view-lines')
           .eq(0);
-  editor.contains(text).realHover();
-  cy.get('body').should('contain.text', message);
+  const target = message.endsWith(' is not allowed.')
+    ? cy.get('.graphiql-editor-tool').find(`.squiggly-${severity}`)
+    : editor.contains(text);
+  target.should($element => {
+    const element = $element.get(0);
+    const bounds = element.getBoundingClientRect();
+    const MouseEvent = element.ownerDocument.defaultView!.MouseEvent;
+    element.dispatchEvent(
+      new MouseEvent('mousemove', {
+        bubbles: true,
+        clientX: bounds.right - 1,
+        clientY: bounds.bottom - 1,
+        view: element.ownerDocument.defaultView!,
+      }),
+    );
+    expect(element.ownerDocument.body).to.contain.text(message);
+  });
 }
 
 Cypress.Commands.add(
