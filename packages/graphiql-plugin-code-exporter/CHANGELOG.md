@@ -1,5 +1,12 @@
 # @graphiql/plugin-code-exporter
 
+## 6.0.0-beta.3
+
+### Patch Changes
+
+- Updated dependencies [[`9d9790d`](https://github.com/graphql/graphiql/commit/9d9790decc93744f6e5c1237a2046fa8f9638d6d)]:
+  - @graphiql/react@1.0.0-beta.3
+
 ## 6.0.0-beta.2
 
 ### Major Changes

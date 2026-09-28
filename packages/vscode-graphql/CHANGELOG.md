@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.0.0-beta.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - graphql-language-service-server@3.0.0-beta.1
+
 ## 1.0.0-beta.0
 
 ### Major Changes

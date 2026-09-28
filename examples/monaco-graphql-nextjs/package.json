@@ -14,7 +14,7 @@
     "graphql": "^16.14.2",
     "jsonc-parser": "^3",
     "monaco-editor": "0.57.0",
-    "monaco-graphql": "2.0.0-beta.0",
+    "monaco-graphql": "2.0.0-beta.1",
     "next": "^15",
     "react": "^19",
     "react-dom": "^19"

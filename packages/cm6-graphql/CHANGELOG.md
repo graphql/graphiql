@@ -1,5 +1,12 @@
 # cm6-graphql
 
+## 1.0.0-beta.1
+
+### Patch Changes
+
+- Updated dependencies [[`5affc68`](https://github.com/graphql/graphiql/commit/5affc680b14dc04feb02fc8713a18dfdd56b4a81)]:
+  - graphql-language-service@6.0.0-beta.1
+
 ## 1.0.0-beta.0
 
 ### Major Changes

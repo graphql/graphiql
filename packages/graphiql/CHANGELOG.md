@@ -1,5 +1,22 @@
 # Change Log
 
+## 6.0.0-beta.3
+
+### Minor Changes
+
+- [#4589](https://github.com/graphql/graphiql/pull/4589) [`7f9e0cc`](https://github.com/graphql/graphiql/commit/7f9e0ccdd673c7b1f05aca12fe3a8d1f12cee982) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Export the immutable `DEFAULT_PLUGINS` array and the default Query Builder and Collections plugin constants. Customize GraphiQL's defaults without importing its plugin packages directly.
+
+### Patch Changes
+
+- [#4570](https://github.com/graphql/graphiql/pull/4570) [`c7d5295`](https://github.com/graphql/graphiql/commit/c7d52956bad5f75470fae28361d4dee8d1523509) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Export `COLLECTIONS_PLUGIN` for the default collections configuration. Use `collectionsPlugin(options)` when you need custom storage or permissions.
+
+- Updated dependencies [[`c7d5295`](https://github.com/graphql/graphiql/commit/c7d52956bad5f75470fae28361d4dee8d1523509), [`9d9790d`](https://github.com/graphql/graphiql/commit/9d9790decc93744f6e5c1237a2046fa8f9638d6d)]:
+  - @graphiql/plugin-collections@1.0.0-beta.3
+  - @graphiql/react@1.0.0-beta.3
+  - @graphiql/plugin-doc-explorer@1.0.0-beta.3
+  - @graphiql/plugin-history@1.0.0-beta.3
+  - @graphiql/plugin-query-builder@1.0.0-beta.3
+
 ## 6.0.0-beta.2
 
 ### Major Changes
