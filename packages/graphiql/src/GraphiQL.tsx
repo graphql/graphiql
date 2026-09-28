@@ -42,6 +42,7 @@ import {
   useMonaco,
   VariableEditor,
   HeaderEditor,
+  type GraphiQLPlugin,
 } from '@graphiql/react';
 import type { Fetcher, Transport } from '@graphiql/toolkit';
 import { HistoryStore, HISTORY_PLUGIN } from '@graphiql/plugin-history';
@@ -53,11 +54,11 @@ import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
 import { COLLECTIONS_PLUGIN } from '@graphiql/plugin-collections';
 import { ActivityBar, GraphiQLFooter } from './ui';
 
-const DEFAULT_PLUGINS = [
+export const DEFAULT_PLUGINS: readonly GraphiQLPlugin[] = Object.freeze([
   HISTORY_PLUGIN,
   QUERY_BUILDER_PLUGIN,
   COLLECTIONS_PLUGIN,
-];
+]);
 
 /**
  * API docs for this live here:
@@ -72,9 +73,10 @@ export type GraphiQLProps = GraphiQLInterfaceProps &
   Omit<ComponentPropsWithoutRef<typeof HistoryStore>, 'children'> &
   Omit<
     ComponentPropsWithoutRef<typeof GraphiQLProvider>,
-    'children' | 'fetcher' | 'transport'
-  > &
-  (
+    'children' | 'fetcher' | 'plugins' | 'transport'
+  > & {
+    plugins?: readonly GraphiQLPlugin[];
+  } & (
     | { fetcher: Fetcher; transport?: never }
     | { transport: Transport; fetcher?: never }
   );
