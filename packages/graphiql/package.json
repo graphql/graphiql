@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "6.0.0-beta.3",
+  "version": "6.0.0-beta.4",
   "sideEffects": [
     "dist/setup-workers/*",
     "*.css"
@@ -43,11 +43,11 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@graphiql/plugin-collections": "1.0.0-beta.3",
-    "@graphiql/plugin-doc-explorer": "1.0.0-beta.3",
-    "@graphiql/plugin-history": "1.0.0-beta.3",
-    "@graphiql/plugin-query-builder": "1.0.0-beta.3",
-    "@graphiql/react": "1.0.0-beta.3",
+    "@graphiql/plugin-collections": "1.0.0-beta.4",
+    "@graphiql/plugin-doc-explorer": "1.0.0-beta.4",
+    "@graphiql/plugin-history": "1.0.0-beta.4",
+    "@graphiql/plugin-query-builder": "1.0.0-beta.4",
+    "@graphiql/react": "1.0.0-beta.4",
     "clsx": "^1.2.1",
     "react-compiler-runtime": "19.1.0-rc.3"
   },
@@ -57,7 +57,7 @@
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@graphiql/toolkit": "1.0.0-beta.1",
+    "@graphiql/toolkit": "1.0.0-beta.2",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.0",
