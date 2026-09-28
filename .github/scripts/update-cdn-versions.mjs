@@ -7,6 +7,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+
+const execFileAsync = promisify(execFile);
 
 const monacoEditorVersion = '0.57.0';
 const versionOption = process.argv.indexOf('--graphiql-version');
@@ -34,6 +38,71 @@ async function fetchPackage(packageName, version) {
     );
   }
   return response.json();
+}
+
+function compareVersions(left, right) {
+  const leftDash = left.indexOf('-');
+  const rightDash = right.indexOf('-');
+  const leftCore = leftDash === -1 ? left : left.slice(0, leftDash);
+  const rightCore = rightDash === -1 ? right : right.slice(0, rightDash);
+  const leftPre = leftDash === -1 ? '' : left.slice(leftDash + 1);
+  const rightPre = rightDash === -1 ? '' : right.slice(rightDash + 1);
+  const leftParts = leftCore.split('.').map(Number);
+  const rightParts = rightCore.split('.').map(Number);
+  for (let index = 0; index < 3; index++) {
+    if (leftParts[index] !== rightParts[index]) {
+      return leftParts[index] - rightParts[index];
+    }
+  }
+  if (!leftPre || !rightPre) {
+    return Number(Boolean(rightPre)) - Number(Boolean(leftPre));
+  }
+  const leftIdentifiers = leftPre.split('.');
+  const rightIdentifiers = rightPre.split('.');
+  for (
+    let index = 0;
+    index < Math.max(leftIdentifiers.length, rightIdentifiers.length);
+    index++
+  ) {
+    const leftId = leftIdentifiers[index];
+    const rightId = rightIdentifiers[index];
+    if (leftId === undefined || rightId === undefined) {
+      return Number(leftId !== undefined) - Number(rightId !== undefined);
+    }
+    if (leftId === rightId) continue;
+    const leftNumeric = /^\d+$/.test(leftId);
+    const rightNumeric = /^\d+$/.test(rightId);
+    if (leftNumeric && rightNumeric) return Number(leftId) - Number(rightId);
+    if (leftNumeric !== rightNumeric) return leftNumeric ? -1 : 1;
+    return leftId < rightId ? -1 : 1;
+  }
+  return 0;
+}
+
+async function resolveVersion(packageName, specifier) {
+  if (/^\d+\.\d+\.\d+(?:-[\w.-]+)?$/.test(specifier)) {
+    return specifier;
+  }
+  const { stdout } = await execFileAsync('npm', [
+    'view',
+    `${packageName}@${specifier}`,
+    'version',
+    '--json',
+  ]);
+  const result = JSON.parse(stdout);
+  const published = Array.isArray(result) ? result : [result];
+  const channel = /\d+\.\d+\.\d+-([a-z]+)(?:\.|$)/i.exec(specifier)?.[1];
+  const versions = channel
+    ? published.filter(
+        version => !version.includes('-') || version.includes(`-${channel}.`),
+      )
+    : published;
+  if (!versions.length) {
+    throw new Error(
+      `No published version satisfies ${packageName}@${specifier}`,
+    );
+  }
+  return versions.sort(compareVersions).at(-1);
 }
 
 /**
@@ -69,18 +138,35 @@ async function main() {
 
   const graphiqlReact = await fetchPackage(
     '@graphiql/react',
-    graphiql.dependencies['@graphiql/react'],
+    await resolveVersion(
+      '@graphiql/react',
+      graphiql.dependencies['@graphiql/react'],
+    ),
   );
+  const [toolkitVersion, monacoGraphqlVersion, languageServiceVersion] =
+    await Promise.all([
+      resolveVersion(
+        '@graphiql/toolkit',
+        graphiqlReact.dependencies['@graphiql/toolkit'],
+      ),
+      resolveVersion(
+        'monaco-graphql',
+        graphiqlReact.dependencies['monaco-graphql'],
+      ),
+      resolveVersion(
+        'graphql-language-service',
+        graphiqlReact.dependencies['graphql-language-service'],
+      ),
+    ]);
   const versions = {
     graphiql: graphiql.version,
     react: react.version,
     'react-dom': reactDom.version,
     graphql: graphql.version,
     '@graphiql/react': graphiqlReact.version,
-    '@graphiql/toolkit': graphiqlReact.dependencies['@graphiql/toolkit'],
-    'monaco-graphql': graphiqlReact.dependencies['monaco-graphql'],
-    'graphql-language-service':
-      graphiqlReact.dependencies['graphql-language-service'],
+    '@graphiql/toolkit': toolkitVersion,
+    'monaco-graphql': monacoGraphqlVersion,
+    'graphql-language-service': languageServiceVersion,
     'monaco-editor': monacoEditorVersion,
   };
   const cdnUrl = packageName =>
