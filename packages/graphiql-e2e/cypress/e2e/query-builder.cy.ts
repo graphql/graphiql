@@ -103,8 +103,6 @@ mutation M {
    */
   it('keeps input focus after editing a non-first operation arg', () => {
     cy.visitGraphiQL({ query: QUERY_THEN_MUTATION });
-    cy.contains('.view-line', 'mutation M').should('be.visible');
-
     // Activate the mutation (the second operation) via the cursor.
     cy.activateOperation('M');
 
@@ -113,14 +111,12 @@ mutation M {
 
     cy.get('[aria-label="value"]').should('have.value', 'a').type('b');
 
-    // Wait past the editor's debounced sync, where the buggy remount happened,
-    // then confirm focus is still on the same input rather than dropped to body.
-    cy.wait(300); // eslint-disable-line cypress/no-unnecessary-waiting
-    cy.focused().should('have.attr', 'aria-label', 'value');
-
     expectQuery(query =>
       expect(query.replaceAll(/\s+/g, '')).to.include('setString(value:"ab")'),
     );
+    // The URL update happens after the editor's debounced sync. Once it has
+    // settled, focus must still be on the same input rather than dropped to body.
+    cy.focused().should('have.attr', 'aria-label', 'value');
   });
 });
 

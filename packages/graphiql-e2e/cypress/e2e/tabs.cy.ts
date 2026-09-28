@@ -43,6 +43,7 @@ describe('Tabs', () => {
       headersString: '',
       response: { data: { id: 'abc123' } },
     });
+    cy.waitForQueryCommit('{id}');
 
     // Switch back to the second tab
     cy.get('.graphiql-tab-button').eq(1).click();
@@ -58,6 +59,7 @@ describe('Tabs', () => {
       headersString: '{"someHeader":"someValue"}',
       response: { data: { image: '/resources/logo.svg' } },
     });
+    cy.waitForQueryCommit('query Foo {image}');
 
     // Close tab
     cy.get('.graphiql-tab-button + .graphiql-tab-close').eq(1).click();

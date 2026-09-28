@@ -1,5 +1,23 @@
 # @graphiql/plugin-collections
 
+## 1.0.0-beta.4
+
+### Patch Changes
+
+- Updated dependencies [[`093cb10`](https://github.com/graphql/graphiql/commit/093cb100a4524b1005b82c1c064bb897416bfc82)]:
+  - @graphiql/react@1.0.0-beta.4
+
+## 1.0.0-beta.3
+
+### Minor Changes
+
+- [#4570](https://github.com/graphql/graphiql/pull/4570) [`c7d5295`](https://github.com/graphql/graphiql/commit/c7d52956bad5f75470fae28361d4dee8d1523509) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Export `COLLECTIONS_PLUGIN` for the default collections configuration. Use `collectionsPlugin(options)` when you need custom storage or permissions.
+
+### Patch Changes
+
+- Updated dependencies [[`9d9790d`](https://github.com/graphql/graphiql/commit/9d9790decc93744f6e5c1237a2046fa8f9638d6d)]:
+  - @graphiql/react@1.0.0-beta.3
+
 ## 1.0.0-beta.2
 
 ### Major Changes

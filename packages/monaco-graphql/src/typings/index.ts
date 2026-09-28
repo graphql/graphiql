@@ -31,7 +31,7 @@ export type SchemaConfig = {
   uri: string;
   /**
    * An array of URIs or globs to associate with this schema in the language worker
-   * Uses `picomatch` which supports many common expressions except brackets
+   * Uses `minimatch` glob patterns
    * Only necessary if you provide more than one schema, otherwise it defaults to the sole schema
    */
   fileMatch?: string[];

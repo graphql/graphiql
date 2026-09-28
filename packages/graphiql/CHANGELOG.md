@@ -1,5 +1,45 @@
 # Change Log
 
+## 6.0.0-beta.4
+
+### Minor Changes
+
+- [#4333](https://github.com/graphql/graphiql/pull/4333) [`093cb10`](https://github.com/graphql/graphiql/commit/093cb100a4524b1005b82c1c064bb897416bfc82) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a structured `Transport` API alongside the existing `Fetcher`. `createTransport({...})` performs the GraphQL request and returns a `TransportResponse` carrying the real HTTP wire metadata (status, headers, timing, size) for queries, mutations, subscriptions, and incremental delivery, so the response pane can surface those values directly instead of fabricating them. That metadata is there even when the response body isn't valid JSON (an HTML error page from a proxy, a plain-text 401), so a broken response still shows its real status code instead of a generic error. `<GraphiQL>` accepts a new `transport` prop, mutually exclusive with `fetcher` at the type level.
+
+  Transports support GET, POST, and the [HTTP `QUERY`](https://datatracker.ietf.org/doc/draft-ietf-httpbis-safe-method-w-body/) method per the GraphQL over HTTP spec. Pass `method` / `supportedMethods` to choose; GET encodes the query into the URL with no body, `QUERY` sends a JSON body but is safe and idempotent, and mutations are always sent over POST (or blocked when POST is unavailable). `Transport` exposes `url`, `method`, `supportedMethods`, and an optional `setMethod`, and the top bar shows the active method and endpoint with an inline switcher that cycles through the supported methods. Every request, incremental delivery on or off, sends `application/graphql-response+json` in its `accept` header alongside `application/json`, so spec-compliant servers don't fall back to legacy response semantics. Subscriptions require an explicit `subscriptionClient` satisfying a small `SubscriptionClient` contract: a single `.iterate(request)` method that `graphql-ws` v6 and `graphql-sse` clients meet directly. The low-level `simpleHttpTransport` and `multipartHttpTransport` primitives also accept an optional `method`.
+
+  `TransportRequest` carries `extensions` for GraphQL-over-HTTP extensions such as automatic persisted queries (encoded into the URL for `GET`, included in the JSON body for `POST` and `QUERY`), and `signal`, an `AbortSignal` that cancels an in-flight query or mutation. Stopping a running query or mutation aborts the request; stopping a subscription closes the underlying socket or SSE connection. `TransportResponse.ok` reflects both layers: the HTTP status and the absence of top-level GraphQL errors, so a 401 or 500 is never `ok: true` just because its body happens to parse as JSON with no `errors`.
+
+  Plugins can observe and transform traffic through `transport.onBeforeSend`, `transport.onResponse`, and `transport.onError`, available via `useGraphiQLPluginContext()` (all three return a cleanup function; the `transport` field is `undefined` under the legacy `fetcher` path, so guard with optional chaining). `onError` fires when a request fails outright, such as a network error, so plugins can react to failures the same way they observe successful responses.
+
+  `createGraphiQLFetcher`, the `Fetcher` type and its companions, and `<GraphiQL fetcher={...}>` are deprecated but continue to work unchanged. Consumers on the deprecated path see a one-time dismissible banner in the response pane pointing at `docs/migration/graphiql-6.0.0.md` rather than fabricated status/timing/size values.
+
+### Patch Changes
+
+- Updated dependencies [[`093cb10`](https://github.com/graphql/graphiql/commit/093cb100a4524b1005b82c1c064bb897416bfc82)]:
+  - @graphiql/react@1.0.0-beta.4
+  - @graphiql/plugin-history@1.0.0-beta.4
+  - @graphiql/plugin-collections@1.0.0-beta.4
+  - @graphiql/plugin-doc-explorer@1.0.0-beta.4
+  - @graphiql/plugin-query-builder@1.0.0-beta.4
+
+## 6.0.0-beta.3
+
+### Minor Changes
+
+- [#4589](https://github.com/graphql/graphiql/pull/4589) [`7f9e0cc`](https://github.com/graphql/graphiql/commit/7f9e0ccdd673c7b1f05aca12fe3a8d1f12cee982) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Export the immutable `DEFAULT_PLUGINS` array and the default Query Builder and Collections plugin constants. Customize GraphiQL's defaults without importing its plugin packages directly.
+
+### Patch Changes
+
+- [#4570](https://github.com/graphql/graphiql/pull/4570) [`c7d5295`](https://github.com/graphql/graphiql/commit/c7d52956bad5f75470fae28361d4dee8d1523509) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Export `COLLECTIONS_PLUGIN` for the default collections configuration. Use `collectionsPlugin(options)` when you need custom storage or permissions.
+
+- Updated dependencies [[`c7d5295`](https://github.com/graphql/graphiql/commit/c7d52956bad5f75470fae28361d4dee8d1523509), [`9d9790d`](https://github.com/graphql/graphiql/commit/9d9790decc93744f6e5c1237a2046fa8f9638d6d)]:
+  - @graphiql/plugin-collections@1.0.0-beta.3
+  - @graphiql/react@1.0.0-beta.3
+  - @graphiql/plugin-doc-explorer@1.0.0-beta.3
+  - @graphiql/plugin-history@1.0.0-beta.3
+  - @graphiql/plugin-query-builder@1.0.0-beta.3
+
 ## 6.0.0-beta.2
 
 ### Major Changes

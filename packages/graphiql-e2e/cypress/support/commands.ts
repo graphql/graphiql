@@ -8,6 +8,7 @@
 
 /// <reference types="cypress" />
 
+import type * as monaco from 'monaco-editor';
 import type { Params } from '../../src/params.js';
 
 interface Op {
@@ -29,6 +30,7 @@ declare global {
       | { errors: any[] };
 
     type EditorName = 'query' | 'variables' | 'headers';
+    type PluginName = 'Documentation Explorer' | 'History';
 
     interface Chainable {
       /**
@@ -37,18 +39,35 @@ declare global {
        */
       dataCy(value: string): Chainable<Element>;
 
+      /** Open a plugin by its accessible name and wait for its panel. */
+      showPlugin(name: PluginName): Chainable<Element>;
+
+      /** Close a plugin by its accessible name and wait for its panel to leave. */
+      hidePlugin(name: PluginName): Chainable<Element>;
+
       /**
-       * Type into one of GraphiQL's Monaco editors. The golden path for editor
-       * input: Monaco's real `<textarea>` is offscreen, so a plain `.type()`
-       * fails Cypress' actionability check; this forces the event and targets the
-       * right editor (revealing the Variables/Headers pane first when needed).
+       * Type into one of GraphiQL's Monaco editors with trusted keyboard events.
+       * Use this only when the behavior under test depends on typing. For test
+       * setup, prefer `setEditorValue`, which does not depend on focus or paint.
        * @example cy.typeInEditor('query Foo { id }')
        * @example cy.typeInEditor('{"id":1', { editor: 'variables' })
        */
       typeInEditor(
         text: string,
-        options?: { editor?: EditorName } & Partial<Cypress.TypeOptions>,
-      ): Chainable<Element>;
+        options?: { editor?: EditorName; delay?: number },
+      ): Chainable<void>;
+
+      /** Get the model belonging to the currently attached GraphiQL editor. */
+      getEditorModel(editor?: EditorName): Chainable<monaco.editor.ITextModel>;
+
+      /** Set editor contents directly. Prefer this for test setup. */
+      setEditorValue(value: string, editor?: EditorName): Chainable<void>;
+
+      /** Retry until the attached editor model has the expected contents. */
+      assertEditorValue(
+        expected: string,
+        editor?: EditorName,
+      ): Chainable<monaco.editor.ITextModel>;
 
       /**
        * Move the query editor's cursor to a 1-indexed line via the keyboard. See
@@ -80,11 +99,16 @@ declare global {
 
       clickMergeFragments(): Chainable<Element>;
 
-      waitForQueryEditor(): Chainable<AUTWindow>;
+      waitForQueryEditor(expectedValue?: string): Chainable<AUTWindow>;
+
+      waitForQueryCommit(expectedValue: string): Chainable<AUTWindow>;
 
       assertHasValues(op: Op): Chainable<Element>;
 
-      assertQueryResult(expectedResult: MockResult): Chainable<Element>;
+      assertQueryResult(
+        expectedResult: MockResult,
+        options?: { timeout: number },
+      ): Chainable<Element>;
 
       containQueryResult(expectedResult: string): Chainable<Element>;
 
@@ -94,12 +118,28 @@ declare global {
         message: string,
         uri?: 'operation.graphql' | 'variables.json',
       ): Chainable<Element>;
+
+      /** Replace known-invalid input and retry until its markers clear. */
+      clearLinterMarksWithValue(
+        value: string,
+        uri?: 'operation.graphql' | 'variables.json',
+      ): Chainable<Element>;
     }
   }
 }
 
 Cypress.Commands.add('dataCy', value => {
   cy.get(`[data-cy="${value}"]`);
+});
+
+Cypress.Commands.add('showPlugin', name => {
+  cy.get(`button[aria-label="Show ${name}"]`).click();
+  return cy.get(`[aria-label="${name}"]`).should('be.visible');
+});
+
+Cypress.Commands.add('hidePlugin', name => {
+  cy.get(`button[aria-label="Hide ${name}"]`).click();
+  return cy.get(`[aria-label="${name}"]`).should('not.exist');
 });
 
 Cypress.Commands.add('typeInEditor', (text, options = {}) => {
@@ -116,6 +156,78 @@ Cypress.Commands.add('typeInEditor', (text, options = {}) => {
   cy.get('.graphiql-editor-tool .view-lines').eq(index).realClick();
   realTypeInFocusedEditor(text, delay);
 });
+
+const EDITOR_MODEL_FILES: Record<Cypress.EditorName, string> = {
+  query: 'operation.graphql',
+  variables: 'variables.json',
+  headers: 'request-headers.json',
+};
+
+function findAttachedEditorModel(
+  win: Cypress.AUTWindow,
+  editorName: Cypress.EditorName,
+) {
+  const modelFile = EDITOR_MODEL_FILES[editorName];
+  const editor = win.__MONACO?.editor.getEditors().find(candidate => {
+    const domNode = candidate.getDomNode();
+    return (
+      domNode?.isConnected && candidate.getModel()?.uri.path.endsWith(modelFile)
+    );
+  });
+  return editor?.getModel() ?? undefined;
+}
+
+function waitForEditorEffects(win: Cypress.AUTWindow) {
+  return new Cypress.Promise<void>(resolve => {
+    win.requestAnimationFrame(() => {
+      win.requestAnimationFrame(() => resolve());
+    });
+  });
+}
+
+function afterEditorEffects<T>(win: Cypress.AUTWindow, value: T) {
+  return waitForEditorEffects(win).then(() => value);
+}
+
+Cypress.Commands.add('getEditorModel', (editor = 'query') =>
+  cy
+    .window()
+    .should(win => {
+      expect(
+        findAttachedEditorModel(win, editor),
+        `${editor} editor model`,
+      ).not.to.equal(undefined);
+    })
+    // Monaco attaches its editor in one React effect. Consumers subscribe to
+    // that editor after the resulting render, so cross the paint boundary
+    // before allowing tests to mutate the model.
+    .then(win =>
+      afterEditorEffects(win, findAttachedEditorModel(win, editor)!),
+    ),
+);
+
+Cypress.Commands.add('setEditorValue', (value, editor = 'query') =>
+  cy
+    .getEditorModel(editor)
+    .then(model => {
+      model.setValue(value);
+    })
+    // Model changes notify React synchronously, but their rendered state (for
+    // example a tab's operation name) is not observable until the next paint.
+    .then(() => cy.window())
+    .then(waitForEditorEffects),
+);
+
+Cypress.Commands.add('assertEditorValue', (expected, editor = 'query') =>
+  cy
+    .window()
+    .should(win => {
+      const model = findAttachedEditorModel(win, editor);
+      expect(model, `${editor} editor model`).not.to.equal(undefined);
+      expect(model!.getValue(), `${editor} editor value`).to.equal(expected);
+    })
+    .then(win => findAttachedEditorModel(win, editor)!),
+);
 
 function realTypeInFocusedEditor(text: string, delay: number) {
   if (text === '{esc}') {
@@ -184,12 +296,24 @@ Cypress.Commands.add('clickMergeFragments', () => {
   cy.get('[aria-label="Merge fragments"]').click();
 });
 
-Cypress.Commands.add('waitForQueryEditor', () =>
+Cypress.Commands.add('waitForQueryEditor', expectedValue =>
   cy.window().should(win => {
-    const queryModel = win.__MONACO?.editor
-      .getModels()
-      .find(model => model.uri.path.endsWith('operation.graphql'));
+    const queryModel = findAttachedEditorModel(win, 'query');
     expect(queryModel, 'query editor model').not.to.equal(undefined);
+    if (expectedValue !== undefined) {
+      expect(queryModel!.getValue(), 'query editor value').to.equal(
+        expectedValue,
+      );
+    }
+  }),
+);
+
+Cypress.Commands.add('waitForQueryCommit', expectedValue =>
+  cy.window().should(win => {
+    expect(
+      win.localStorage.getItem('graphiql:query'),
+      'committed query',
+    ).to.equal(expectedValue);
   }),
 );
 
@@ -211,54 +335,21 @@ Cypress.Commands.add('visitGraphiQL', (params = {}, visitOptions) => {
   }
   const url = queryParts.length === 0 ? '/' : `?${queryParts.join('&')}`;
   cy.visit(url, visitOptions);
-  return cy.waitForQueryEditor();
+  return cy.waitForQueryEditor(params.query ?? params.defaultQuery);
 });
 
 Cypress.Commands.add(
   'assertHasValues',
   ({ query, variables, variablesString, headersString, response }: Op) => {
-    cy.get(
-      '.graphiql-query-editor .view-lines.monaco-mouse-cursor-text',
-    ).should(element => {
-      const actual = normalizeMonacoWhitespace(element.get(0).innerText); // should be innerText
-      const expected = query;
-      expect(actual).to.equal(expected);
-    });
+    cy.assertEditorValue(query);
     if (variables !== undefined) {
-      cy.contains('Variables').click();
-      cy.get(
-        '.graphiql-editor-tool .graphiql-editor .view-lines.monaco-mouse-cursor-text',
-      )
-        .eq(0)
-        .should(element => {
-          const actual = normalizeMonacoWhitespace(element.get(0).textContent);
-          const expected = JSON.stringify(variables, null, 2);
-          expect(actual).to.equal(expected);
-        });
+      cy.assertEditorValue(JSON.stringify(variables, null, 2), 'variables');
     }
     if (variablesString !== undefined) {
-      cy.contains('Variables').click();
-      cy.get(
-        '.graphiql-editor-tool .graphiql-editor .view-lines.monaco-mouse-cursor-text',
-      )
-        .eq(0)
-        .should(element => {
-          const actual = normalizeMonacoWhitespace(element.get(0).innerText); // should be innerText
-          const expected = variablesString;
-          expect(actual).to.equal(expected);
-        });
+      cy.assertEditorValue(variablesString, 'variables');
     }
     if (headersString !== undefined) {
-      cy.contains('Headers').click();
-      cy.get(
-        '.graphiql-editor-tool .graphiql-editor .view-lines.monaco-mouse-cursor-text',
-      )
-        .eq(1)
-        .should(element => {
-          const actual = normalizeMonacoWhitespace(element.get(0).textContent);
-          const expected = headersString;
-          expect(actual).to.equal(expected);
-        });
+      cy.assertEditorValue(headersString, 'headers');
     }
     if (response !== undefined) {
       cy.get('.result-window').should(element => {
@@ -270,9 +361,9 @@ Cypress.Commands.add(
   },
 );
 
-Cypress.Commands.add('assertQueryResult', expectedResult => {
+Cypress.Commands.add('assertQueryResult', (expectedResult, options) => {
   cy.get('section.result-window').should('not.have.text', '');
-  cy.window().should(win => {
+  cy.window(options).should(win => {
     const responseModel = win.__MONACO.editor
       .getModels()
       .find(model => model.uri.path.endsWith('response.json'));
@@ -298,9 +389,7 @@ Cypress.Commands.add('containQueryResult', expected => {
 Cypress.Commands.add(
   'assertLinterMarkWithMessage',
   (text, severity, message, uri = 'operation.graphql') => {
-    // Ensure error is visible in the DOM
-    cy.get(`.squiggly-${severity}`, { timeout: 10_000 });
-    cy.window().then(win => {
+    cy.window().should(win => {
       const { editor, MarkerSeverity } = win.__MONACO;
       const models = editor.getModels();
       const model = models.find(m => m.uri.path.endsWith(uri))!;
@@ -309,40 +398,101 @@ Cypress.Commands.add(
       });
       // Only "Property is not allowed." isn't added in model markers
       if (!message.endsWith(' is not allowed.')) {
-        expect(markers.length).to.be.greaterThan(0);
-        expect(markers[0].message).eq(message);
         const markerSeverity = {
           error: MarkerSeverity.Error,
           warning: MarkerSeverity.Warning,
         }[severity];
-        expect(markers[0].severity).eq(markerSeverity);
+        const marker = markers.find(candidate => candidate.message === message);
+        expect(marker, `marker with message "${message}"`).not.to.equal(
+          undefined,
+        );
+        expect(marker!.severity).eq(markerSeverity);
       }
     });
-    // Monaco computes the hover tooltip from a single `mousemove`. When that
-    // event fires before the hover provider has picked up the latest markers,
-    // the tooltip never renders and no further event re-asks for it. Re-trigger
-    // until the message shows so the assertion stops racing the tooltip.
-    assertHoverShowsMessage(text, message);
+    assertHoverShowsMessage(text, severity, message, uri);
   },
 );
 
-function assertHoverShowsMessage(text: string, message: string, attempt = 0) {
-  cy.contains(text).trigger('mousemove', {
-    // Hover in the right corner, because some errors like `Expected comma or closing brace` are
-    // highlighted at the end
-    position: 'bottomRight',
-    force: true, // otherwise popup doesn't show
-  });
-  if (attempt >= 10) {
-    cy.contains(message); // out of retries: assert directly so failures report clearly
+function assertHoverShowsMessage(
+  text: string,
+  severity: 'error' | 'warning',
+  message: string,
+  uri: 'operation.graphql' | 'variables.json',
+) {
+  const editor =
+    uri === 'operation.graphql'
+      ? cy.get('.graphiql-query-editor .view-lines')
+      : cy
+          .get('.graphiql-var-headers-strip input[value="variables"]')
+          .check({ force: true })
+          .get('.graphiql-editor-tool .view-lines')
+          .eq(0);
+
+  if (message.endsWith(' is not allowed.')) {
+    cy.get('.graphiql-editor-tool')
+      .find(`.squiggly-${severity}`)
+      .should($decoration => {
+        const decoration = $decoration.get(0);
+        const bounds = decoration.getBoundingClientRect();
+        const editorSurface = decoration
+          .closest('.monaco-editor')
+          ?.querySelector('.view-lines');
+        expect(editorSurface, 'Monaco editor surface').not.to.equal(null);
+        const view = decoration.ownerDocument.defaultView!;
+        editorSurface!.dispatchEvent(
+          new view.MouseEvent('mousemove', {
+            bubbles: true,
+            clientX: bounds.left + bounds.width / 2,
+            clientY: bounds.bottom - 1,
+            view,
+          }),
+        );
+        expect(decoration.ownerDocument.body).to.contain.text(message);
+      });
     return;
   }
-  cy.get('body').then($body => {
-    if ($body.text().includes(message)) {
-      cy.contains(message);
-    } else {
-      cy.wait(300);
-      assertHoverShowsMessage(text, message, attempt + 1);
-    }
+
+  editor.contains(text).should($element => {
+    const element = $element.get(0);
+    const bounds = element.getBoundingClientRect();
+    const MouseEvent = element.ownerDocument.defaultView!.MouseEvent;
+    element.dispatchEvent(
+      new MouseEvent('mousemove', {
+        bubbles: true,
+        clientX: bounds.right - 1,
+        clientY: bounds.bottom - 1,
+        view: element.ownerDocument.defaultView!,
+      }),
+    );
+    expect(element.ownerDocument.body).to.contain.text(message);
   });
 }
+
+Cypress.Commands.add(
+  'clearLinterMarksWithValue',
+  (value, uri = 'operation.graphql') => {
+    waitForSchema();
+    const editorName = uri === 'operation.graphql' ? 'query' : 'variables';
+    cy.getEditorModel(editorName).then(model => {
+      cy.window()
+        .should(win => {
+          const markers = win.__MONACO.editor.getModelMarkers({
+            resource: model.uri,
+          });
+          expect(
+            markers,
+            'initial validation markers',
+          ).to.have.length.greaterThan(0);
+        })
+        .then(() => {
+          model.setValue(value);
+        });
+      cy.window().should(win => {
+        const markers = win.__MONACO.editor.getModelMarkers({
+          resource: model.uri,
+        });
+        expect(markers, `${editorName} validation markers`).to.have.length(0);
+      });
+    });
+  },
+);

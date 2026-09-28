@@ -99,6 +99,39 @@ describe('tab management', () => {
     expect(store.getState().activeTabIndex).toBe(1);
   });
 
+  it('changeTab stores live editor values before switching', () => {
+    const store = makeStore();
+    store.getState().actions.addTab();
+    const editors = {
+      queryEditor: {
+        getValue: () => 'query Live {}',
+        setValue: vi.fn(),
+      },
+      variableEditor: {
+        getValue: () => '{"live":true}',
+        setValue: vi.fn(),
+      },
+      headerEditor: {
+        getValue: () => '{"x-live":"true"}',
+        setValue: vi.fn(),
+      },
+      responseEditor: {
+        getValue: () => '{"data":null}',
+        setValue: vi.fn(),
+      },
+    };
+    store.getState().actions.setEditor(editors as any);
+
+    store.getState().actions.changeTab(0);
+
+    expect(store.getState().tabs[1]).toMatchObject({
+      query: 'query Live {}',
+      variables: '{"live":true}',
+      headers: '{"x-live":"true"}',
+      response: '{"data":null}',
+    });
+  });
+
   it('closeTab removes the tab at the given index', () => {
     const store = makeStore();
     store.getState().actions.addTab();

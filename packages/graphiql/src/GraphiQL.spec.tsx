@@ -10,7 +10,7 @@ import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
  */
 import { act, render, waitFor, fireEvent } from '@testing-library/react';
 import { Component, FC, useEffect } from 'react';
-import { GraphiQL } from './GraphiQL';
+import { DEFAULT_PLUGINS, GraphiQL } from './GraphiQL';
 import { StorageAPI, type Fetcher, type Transport } from '@graphiql/toolkit';
 import { buildSchema, introspectionFromSchema } from 'graphql';
 import {
@@ -37,6 +37,15 @@ beforeEach(() => {
 describe('GraphiQL', () => {
   // @ts-expect-error -- fixme
   const noOpFetcher: Fetcher = () => {};
+
+  it('exports immutable default plugins', () => {
+    expect(Object.isFrozen(DEFAULT_PLUGINS)).toBe(true);
+    expect(DEFAULT_PLUGINS.map(plugin => plugin.title)).toEqual([
+      'History',
+      'Query Builder',
+      'Collections',
+    ]);
+  });
 
   beforeAll(async () => {
     let isMonacoReady = false;
