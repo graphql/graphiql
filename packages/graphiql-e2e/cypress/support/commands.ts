@@ -101,6 +101,8 @@ declare global {
 
       waitForQueryEditor(expectedValue?: string): Chainable<AUTWindow>;
 
+      waitForQueryCommit(expectedValue: string): Chainable<AUTWindow>;
+
       assertHasValues(op: Op): Chainable<Element>;
 
       assertQueryResult(
@@ -306,6 +308,15 @@ Cypress.Commands.add('waitForQueryEditor', expectedValue =>
   }),
 );
 
+Cypress.Commands.add('waitForQueryCommit', expectedValue =>
+  cy.window().should(win => {
+    expect(
+      win.localStorage.getItem('graphiql:query'),
+      'committed query',
+    ).to.equal(expectedValue);
+  }),
+);
+
 function waitForSchema() {
   return cy.get('.graphiql-status-bar-conn-connected');
 }
@@ -331,12 +342,6 @@ Cypress.Commands.add(
   'assertHasValues',
   ({ query, variables, variablesString, headersString, response }: Op) => {
     cy.assertEditorValue(query);
-    // A tab switch updates Monaco immediately, then commits the query through
-    // the editor's debounced change handler. Wait for that observable commit
-    // so a subsequent switch cannot apply the pending update to the next tab.
-    cy.window().should(win => {
-      expect(win.localStorage.getItem('graphiql:query')).to.equal(query);
-    });
     if (variables !== undefined) {
       cy.assertEditorValue(JSON.stringify(variables, null, 2), 'variables');
     }
@@ -422,10 +427,32 @@ function assertHoverShowsMessage(
           .check({ force: true })
           .get('.graphiql-editor-tool .view-lines')
           .eq(0);
-  const target = message.endsWith(' is not allowed.')
-    ? cy.get('.graphiql-editor-tool').find(`.squiggly-${severity}`)
-    : editor.contains(text);
-  target.should($element => {
+
+  if (message.endsWith(' is not allowed.')) {
+    cy.get('.graphiql-editor-tool')
+      .find(`.squiggly-${severity}`)
+      .should($decoration => {
+        const decoration = $decoration.get(0);
+        const bounds = decoration.getBoundingClientRect();
+        const editorSurface = decoration
+          .closest('.monaco-editor')
+          ?.querySelector('.view-lines');
+        expect(editorSurface, 'Monaco editor surface').not.to.equal(null);
+        const view = decoration.ownerDocument.defaultView!;
+        editorSurface!.dispatchEvent(
+          new view.MouseEvent('mousemove', {
+            bubbles: true,
+            clientX: bounds.left + bounds.width / 2,
+            clientY: bounds.bottom - 1,
+            view,
+          }),
+        );
+        expect(decoration.ownerDocument.body).to.contain.text(message);
+      });
+    return;
+  }
+
+  editor.contains(text).should($element => {
     const element = $element.get(0);
     const bounds = element.getBoundingClientRect();
     const MouseEvent = element.ownerDocument.defaultView!.MouseEvent;
