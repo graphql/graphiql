@@ -6,14 +6,6 @@
     "rootDir": "./src",
     "outDir": "./dist"
   },
-  "references": [
-    {
-      "path": "../graphql-language-service"
-    },
-    {
-      "path": "../graphql-language-service-server"
-    }
-  ],
   "include": ["src"],
   "exclude": ["**/__tests__/**", "**/*.spec.*"]
 }

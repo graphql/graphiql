@@ -99,7 +99,7 @@ describe('getAutocompleteSuggestions', () => {
       point,
       undefined,
       externalFragments,
-      options,
+      { experimentalFragmentArguments: true, ...options },
     )
       .filter(field => !['__schema', '__type'].includes(field.label))
       .sort((a, b) => a.label.localeCompare(b.label))
@@ -428,6 +428,55 @@ describe('getAutocompleteSuggestions', () => {
       ]);
     });
 
+    it('provides input type suggestions for fragment variables', () => {
+      const result = testSuggestions(
+        'fragment SomeFragment($exampleVariable: ) on Human { name }',
+        new Position(0, 40),
+      );
+      expect(result).toEqual([
+        ...metaArgs,
+        { label: 'Boolean', documentation: GraphQLBoolean.description },
+        { label: 'Episode' },
+        { label: 'InputType' },
+        { label: 'Int', documentation: GraphQLInt.description },
+        { label: 'String', documentation: GraphQLString.description },
+      ]);
+    });
+
+    it('provides argument suggestions for fragment spreads', () => {
+      const query =
+        'fragment CharacterDetails($episode: Episode!, $id: String) on Human { name } query { human(id: "1") { ...CharacterDetails(';
+
+      expect(testSuggestions(query, new Position(0, query.length))).toEqual([
+        {
+          label: 'episode',
+          insertText: 'episode: ',
+          command: suggestionCommand,
+          insertTextFormat: 2,
+          labelDetails: { detail: ' Episode!' },
+        },
+        {
+          label: 'id',
+          insertText: 'id: ',
+          command: suggestionCommand,
+          insertTextFormat: 2,
+          labelDetails: { detail: ' String' },
+        },
+      ]);
+    });
+
+    it('uses fragment variable types for argument value suggestions', () => {
+      const query =
+        'fragment CharacterDetails($episode: Episode!) on Human { name } query { human(id: "1") { ...CharacterDetails(episode: ) } }';
+      const cursor = query.indexOf('episode: )') + 'episode: '.length;
+
+      expect(testSuggestions(query, new Position(0, cursor))).toEqual([
+        { label: 'EMPIRE', detail: 'Episode' },
+        { label: 'JEDI', detail: 'Episode' },
+        { label: 'NEWHOPE', detail: 'Episode' },
+      ]);
+    });
+
     it('provides filtered input type suggestions', () => {
       const result = testSuggestions(
         'query($exampleVariable: In) { ',
@@ -504,6 +553,52 @@ describe('getAutocompleteSuggestions', () => {
       );
       expect(result).toEqual([
         { label: '$ep', insertText: 'ep', detail: 'Episode' },
+      ]);
+    });
+
+    it('does not suggest fragment variables in operation scope', () => {
+      const query =
+        'fragment Frag($fragmentEpisode: Episode!) on Human { name } query($operationEpisode: Episode!){ hero(episode: $ }';
+
+      expect(
+        testSuggestions(query, new Position(0, query.lastIndexOf('$ }') + 1)),
+      ).toEqual([
+        {
+          label: '$operationEpisode',
+          insertText: 'operationEpisode',
+          detail: 'Episode',
+        },
+      ]);
+    });
+
+    it('does not let fragment variables shadow operation variables', () => {
+      const query =
+        'fragment Frag($episode: String!) on Human { name } query($episode: Episode!){ hero(episode: $ }';
+
+      expect(
+        testSuggestions(query, new Position(0, query.lastIndexOf('$ }') + 1)),
+      ).toEqual([
+        { label: '$episode', insertText: 'episode', detail: 'Episode' },
+      ]);
+    });
+
+    it('suggests local and reachable operation variables in fragment scope', () => {
+      const query =
+        'query($operationValue: Boolean!){ human(id: "1") { ...Frag(localValue: $operationValue) } } fragment Frag($localValue: Boolean!) on Human { name @include(if: $ }';
+
+      expect(
+        testSuggestions(query, new Position(0, query.lastIndexOf('$ }') + 1)),
+      ).toEqual([
+        {
+          label: '$localValue',
+          insertText: 'localValue',
+          detail: 'Boolean',
+        },
+        {
+          label: '$operationValue',
+          insertText: 'operationValue',
+          detail: 'Boolean',
+        },
       ]);
     });
 
@@ -601,6 +696,33 @@ describe('getAutocompleteSuggestions', () => {
       ]);
     });
 
+    it.runIf(Number.parseInt(graphQLVersion, 10) >= 17)(
+      'provides argument suggestions for external fragments',
+      () => {
+        const externalFragments = parse(
+          'fragment CharacterDetails($episode: Episode!) on Human { name }',
+          { experimentalFragmentArguments: true },
+        ).definitions as FragmentDefinitionNode[];
+        const query = 'query { human(id: "1") { ...CharacterDetails(';
+
+        expect(
+          testSuggestions(
+            query,
+            new Position(0, query.length),
+            externalFragments,
+          ),
+        ).toEqual([
+          {
+            label: 'episode',
+            insertText: 'episode: ',
+            command: suggestionCommand,
+            insertTextFormat: 2,
+            labelDetails: { detail: ' Episode!' },
+          },
+        ]);
+      },
+    );
+
     it('provides correct directive suggestions', () => {
       expect(testSuggestions('{ test @ }', new Position(0, 8))).toEqual(
         expectedDirectiveSuggestions,
@@ -628,7 +750,7 @@ describe('getAutocompleteSuggestions', () => {
           insertText: 'reason: ',
           documentation: GraphQLDeprecatedDirective.args[0].description,
           labelDetails: {
-            detail: ' String',
+            detail: ` ${GraphQLDeprecatedDirective.args[0].type}`,
           },
         },
       ]);
@@ -1021,5 +1143,98 @@ describe('getAutocompleteSuggestions', () => {
         { label: 'Character' },
         { label: 'TestInterface' },
       ]));
+  });
+});
+
+describe('getAutocompleteSuggestions - list input values (#587)', () => {
+  const listSchema = buildSchema(`
+    enum Episode { NEWHOPE EMPIRE JEDI }
+    input FilterInput {
+      episodes: [Episode]
+      one: Episode
+    }
+    type Query {
+      listEnum(values: [Episode]): String
+      listEnumNonNull(values: [Episode!]!): String
+      listBool(flags: [Boolean]): String
+      singleEnum(value: Episode): String
+      nestedList(values: [[Episode]]): String
+      nested(input: FilterInput): String
+    }
+  `);
+
+  function valueSuggestions(query: string, label: string) {
+    const caret = query.indexOf('|');
+    const text = query.replace('|', '');
+    const before = text.slice(0, caret);
+    const line = before.split('\n').length - 1;
+    const character = before.length - (before.lastIndexOf('\n') + 1);
+    return getAutocompleteSuggestions(
+      listSchema,
+      text,
+      new Position(line, character),
+    )
+      .filter(s => s.label === label)
+      .map(s => ({ label: s.label, insertText: s.insertText }));
+  }
+
+  it('wraps an enum value in brackets at a list argument value position', () => {
+    expect(valueSuggestions('{ listEnum(values: |) }', 'JEDI')).toEqual([
+      { label: 'JEDI', insertText: '[JEDI]' },
+    ]);
+  });
+
+  it('wraps an enum value for a non-null list of non-null items', () => {
+    expect(valueSuggestions('{ listEnumNonNull(values: |) }', 'JEDI')).toEqual([
+      { label: 'JEDI', insertText: '[JEDI]' },
+    ]);
+  });
+
+  it('wraps a boolean value in brackets at a list argument value position', () => {
+    expect(valueSuggestions('{ listBool(flags: |) }', 'true')).toEqual([
+      { label: 'true', insertText: '[true]' },
+    ]);
+  });
+
+  it('wraps an enum value at a list input-object field value position', () => {
+    expect(
+      valueSuggestions('{ nested(input: { episodes: | }) }', 'JEDI'),
+    ).toEqual([{ label: 'JEDI', insertText: '[JEDI]' }]);
+  });
+
+  it('does not wrap when the cursor is already inside the list literal', () => {
+    expect(valueSuggestions('{ listEnum(values: [|]) }', 'JEDI')).toEqual([
+      { label: 'JEDI', insertText: undefined },
+    ]);
+  });
+
+  it('does not wrap a non-list (single) enum argument value', () => {
+    expect(valueSuggestions('{ singleEnum(value: |) }', 'JEDI')).toEqual([
+      { label: 'JEDI', insertText: undefined },
+    ]);
+  });
+
+  it('does not wrap a non-list (single) input-object enum field value', () => {
+    expect(valueSuggestions('{ nested(input: { one: | }) }', 'JEDI')).toEqual([
+      { label: 'JEDI', insertText: undefined },
+    ]);
+  });
+
+  it('wraps a nested list value with the matching number of brackets', () => {
+    expect(valueSuggestions('{ nestedList(values: |) }', 'JEDI')).toEqual([
+      { label: 'JEDI', insertText: '[[JEDI]]' },
+    ]);
+  });
+
+  it('wraps once when inside the outer bracket of a nested list', () => {
+    expect(valueSuggestions('{ nestedList(values: [|]) }', 'JEDI')).toEqual([
+      { label: 'JEDI', insertText: '[JEDI]' },
+    ]);
+  });
+
+  it('does not wrap when inside both brackets of a nested list', () => {
+    expect(valueSuggestions('{ nestedList(values: [[|]]) }', 'JEDI')).toEqual([
+      { label: 'JEDI', insertText: undefined },
+    ]);
   });
 });

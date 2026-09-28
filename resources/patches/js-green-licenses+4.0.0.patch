@@ -1,7 +1,7 @@
-diff --git a/node_modules/js-green-licenses/build/src/checker.js b/node_modules/js-green-licenses/build/src/checker.js
+diff --git a/build/src/checker.js b/build/src/checker.js
 index 79a88a3..2f8a355 100644
---- a/node_modules/js-green-licenses/build/src/checker.js
-+++ b/node_modules/js-green-licenses/build/src/checker.js
+--- a/build/src/checker.js
++++ b/build/src/checker.js
 @@ -229,7 +229,7 @@ class LicenseChecker extends events_1.EventEmitter {
          if (this.failedPackages.has(spec))
              return;

@@ -35,7 +35,10 @@ export const ExecuteButton: FC = () => {
   const runDisabledReason = useGraphiQL(state =>
     getRunBlockReason(
       state.transportMethod,
-      resolveActiveOperation(state.operations, state.operationName),
+      resolveActiveOperation(
+        state.operations,
+        state.overrideOperationName ?? state.operationName,
+      ),
     ),
   );
 
@@ -94,7 +97,10 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
   // While running, the button is a single-purpose stop control; a picker
   // alongside it would offer to start something that can't start yet.
   const showCaret = hasOptions && !isRunning;
-  const activeOperation = resolveActiveOperation(operations, operationName);
+  const activeOperation = resolveActiveOperation(
+    operations,
+    overrideOperationName ?? operationName,
+  );
 
   const selectOperation = (selectedOperationName: string | undefined) => {
     if (selectedOperationName && selectedOperationName !== operationName) {
@@ -112,7 +118,7 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
       )}
       onClick={isRunning ? onStop : onRun}
       disabled={isBlocked}
-      aria-label={isRunning ? 'Stop query' : 'Run query'}
+      aria-label={isRunning ? 'Stop operation' : 'Run operation'}
     >
       {isRunning ? (
         <StopIcon className="graphiql-execute-button-icon" aria-hidden="true" />
@@ -125,7 +131,9 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
       <span className="graphiql-execute-button-sep" aria-hidden="true" />
       <KeycapHint
         keys={[MODIFIER.Meta, MODIFIER.Enter]}
-        ariaLabel={isRunning ? 'Stop query shortcut' : 'Run query shortcut'}
+        ariaLabel={
+          isRunning ? 'Stop operation shortcut' : 'Run operation shortcut'
+        }
       />
     </button>
   );

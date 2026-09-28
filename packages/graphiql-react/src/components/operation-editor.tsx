@@ -120,6 +120,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     ),
   );
   const ref = useRef<HTMLDivElement>(null!);
+  const { monacoGraphQL, monaco } = useMonaco();
   const onClickReferenceRef = useRef<OperationEditorProps['onClickReference']>(
     null!,
   );
@@ -208,13 +209,19 @@ export const OperationEditor: FC<OperationEditorProps> = ({
   }, []);
     */
 
-  function getAndUpdateOperationFacts(editorInstance: MonacoEditor) {
+  function getAndUpdateOperationFacts(
+    editorInstance: monaco.editor.ICodeEditor,
+  ) {
     const currentSchema = schemaRef.current;
     const currentOperations = operationsRef.current;
     const currentOperationName = operationNameRef.current;
     const operationFacts = getOperationFacts(
       currentSchema,
       editorInstance.getValue(),
+      {
+        experimentalFragmentArguments:
+          monacoGraphQL?.experimentalFragmentArguments,
+      },
     );
     // Update the operation name should any query names change.
     const newOperationName = getSelectedOperationName(
@@ -237,17 +244,24 @@ export const OperationEditor: FC<OperationEditorProps> = ({
 
   useEffect(() => {
     runAtCursorRef.current = editor => {
-      if (!operations) {
+      const currentFacts = getAndUpdateOperationFacts(editor);
+      if (!currentFacts || typeof overrideOperationName === 'string') {
         run();
         return;
       }
-      const newOperationName = getOperationNameAtCursor(editor, operations);
-      if (newOperationName && newOperationName !== operationName) {
-        setOperationName(newOperationName);
+      const newOperationName = getOperationNameAtCursor(
+        editor,
+        currentFacts.operations,
+      );
+      if (newOperationName) {
+        updateActiveTabValues({ operationName: newOperationName });
+        if (newOperationName !== operationName) {
+          setOperationName(newOperationName);
+        }
       }
       run();
     };
-  }, [operationName, operations, run, setOperationName]);
+  });
 
   // Keep the active operation in sync with the cursor: as it moves between
   // operations, `operationName` follows it (so the Run button, operation
@@ -268,8 +282,6 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       }
     };
   }, [operationName, operations, overrideOperationName, setOperationName]);
-
-  const { monacoGraphQL, monaco } = useMonaco();
 
   useEffect(() => {
     if (!monaco || !monacoGraphQL) {
@@ -315,9 +327,6 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     // Call once to initially update the values
     getAndUpdateOperationFacts(editor);
 
-    const syncCursorOperationName = debounce(100, () => {
-      syncOperationNameToCursorRef.current(editor);
-    });
     const disposables = [
       model.onDidChangeContent(handleChange),
       editor.onDidChangeCursorPosition(e => {
@@ -325,13 +334,11 @@ export const OperationEditor: FC<OperationEditorProps> = ({
         // programmatic `setPosition` (e.g. from the query builder writing back
         // an edit) must not change the active operation.
         if (e.reason === CURSOR_CHANGE_EXPLICIT) {
-          syncCursorOperationName();
+          syncOperationNameToCursorRef.current(editor);
         }
       }),
-      // Drop pending debounced calls on teardown so neither can fire against a
-      // disposed editor.
+      // Drop pending content updates before disposing the editor.
       { dispose: () => handleChange.cancel() },
-      { dispose: () => syncCursorOperationName.cancel() },
       editor.addAction({
         ...KEY_BINDINGS.runQuery,
         run: (...args) => runAtCursorRef.current(...args),

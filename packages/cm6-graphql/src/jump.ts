@@ -1,9 +1,10 @@
+import type { Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { getTokenAtPosition, getTypeInfo } from 'graphql-language-service';
 import { isMetaKeyPressed, offsetToPos } from './helpers';
 import { getOpts, getSchema } from './state';
 
-export const jump = EditorView.domEventHandlers({
+export const jump: Extension = EditorView.domEventHandlers({
   click(evt, view) {
     const schema = getSchema(view.state);
     if (!schema) {

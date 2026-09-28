@@ -42,6 +42,7 @@ import {
   useMonaco,
   VariableEditor,
   HeaderEditor,
+  type GraphiQLPlugin,
 } from '@graphiql/react';
 import type { Fetcher, Transport } from '@graphiql/toolkit';
 import { HistoryStore, HISTORY_PLUGIN } from '@graphiql/plugin-history';
@@ -50,14 +51,14 @@ import {
   DOC_EXPLORER_PLUGIN,
 } from '@graphiql/plugin-doc-explorer';
 import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
-import { collectionsPlugin } from '@graphiql/plugin-collections';
+import { COLLECTIONS_PLUGIN } from '@graphiql/plugin-collections';
 import { ActivityBar, GraphiQLFooter } from './ui';
 
-const DEFAULT_PLUGINS = [
+export const DEFAULT_PLUGINS: readonly GraphiQLPlugin[] = Object.freeze([
   HISTORY_PLUGIN,
   QUERY_BUILDER_PLUGIN,
-  collectionsPlugin(),
-];
+  COLLECTIONS_PLUGIN,
+]);
 
 /**
  * API docs for this live here:
@@ -72,9 +73,10 @@ export type GraphiQLProps = GraphiQLInterfaceProps &
   Omit<ComponentPropsWithoutRef<typeof HistoryStore>, 'children'> &
   Omit<
     ComponentPropsWithoutRef<typeof GraphiQLProvider>,
-    'children' | 'fetcher' | 'transport'
-  > &
-  (
+    'children' | 'fetcher' | 'plugins' | 'transport'
+  > & {
+    plugins?: readonly GraphiQLPlugin[];
+  } & (
     | { fetcher: Fetcher; transport?: never }
     | { transport: Transport; fetcher?: never }
   );
@@ -208,10 +210,10 @@ type ButtonHandler = MouseEventHandler<HTMLButtonElement>;
 
 const LABEL = {
   newTab: 'New tab',
-  prettify: 'Prettify query',
-  merge: 'Merge fragments into query',
-  copy: 'Copy query',
-  save: 'Save query',
+  prettify: 'Prettify editors',
+  merge: 'Merge fragments',
+  copy: 'Copy operation',
+  save: 'Save operation',
 };
 
 export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
@@ -571,7 +573,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                       </div>
                     </div>
                     <div
-                      role="tabpanel"
+                      role="region"
                       id="graphiql-session" // used by aria-controls="graphiql-session"
                       aria-labelledby={`${TAB_CLASS_PREFIX}${activeTabIndex}`}
                     >

@@ -58,6 +58,8 @@ export type State = {
 export const AdditionalRuleKinds: _AdditionalRuleKinds = {
   ALIASED_FIELD: 'AliasedField',
   ARGUMENTS: 'Arguments',
+  FRAGMENT_ARGUMENTS: 'FragmentArguments',
+  FRAGMENT_ARGUMENT: 'FragmentArgument',
   SHORT_QUERY: 'ShortQuery',
   QUERY: 'Query',
   MUTATION: 'Mutation',
@@ -90,6 +92,8 @@ export const AdditionalRuleKinds: _AdditionalRuleKinds = {
 export type _AdditionalRuleKinds = {
   ALIASED_FIELD: 'AliasedField';
   ARGUMENTS: 'Arguments';
+  FRAGMENT_ARGUMENTS: 'FragmentArguments';
+  FRAGMENT_ARGUMENT: 'FragmentArgument';
   SHORT_QUERY: 'ShortQuery';
   QUERY: 'Query';
   MUTATION: 'Mutation';

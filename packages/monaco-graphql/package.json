@@ -1,7 +1,7 @@
 {
   "name": "monaco-graphql",
   "description": "full service, official monaco mode for GraphQL",
-  "version": "1.8.0",
+  "version": "2.0.0-rc.0",
   "license": "MIT",
   "main": "dist/monaco.contribution.js",
   "module": "esm/monaco.contribution.js",
@@ -65,25 +65,29 @@
   },
   "files": [
     "dist",
-    "esm"
+    "esm",
+    "src"
   ],
   "scripts": {
+    "build": "tsgo -p tsconfig.json && tsgo -p tsconfig.esm.json",
     "types:check": "tsgo --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
-    "graphql-language-service": "^5.5.1",
-    "picomatch-browser": "^2.2.6"
+    "graphql-language-service": "6.0.0-rc.0",
+    "minimatch": "^10.2.6"
   },
   "devDependencies": {
-    "graphql": "^16.9.0",
-    "monaco-editor": "0.52.2",
+    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
+    "graphql": "^16.14.2",
+    "monaco-editor": "0.57.0",
     "prettier": "3.3.2",
+    "vite": "^8.2.2",
     "vscode-languageserver-types": "^3.17.1"
   },
   "peerDependencies": {
-    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
-    "monaco-editor": ">= 0.20.0 < 0.53",
+    "graphql": "^16.11.0 || ^17.0.0",
+    "monaco-editor": ">=0.56.0 <0.58.0",
     "prettier": "^2.8.0 || ^3.0.0"
   }
 }

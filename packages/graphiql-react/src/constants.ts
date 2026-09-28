@@ -1,6 +1,7 @@
 /* eslint-disable no-bitwise */
 import type { DiagnosticSettings } from 'monaco-graphql';
 import type * as monaco from 'monaco-editor';
+import type { DiagnosticsOptions as JSONDiagnosticsOptions } from 'monaco-editor/languages/features/json/register';
 import { KeyCode, KeyMod } from './utility/monaco-ssr';
 import type { EditorSlice } from './stores';
 
@@ -80,11 +81,11 @@ export const DEFAULT_QUERY = `# Welcome to GraphiQL
 #
 # Keyboard shortcuts:
 #
-#   Prettify query:  ${KEY_MAP.prettify.key} (or press the prettify button)
+#   Prettify editors:  ${KEY_MAP.prettify.key} (or press the prettify button)
 #
 #  Merge fragments:  ${KEY_MAP.mergeFragments.key} (or press the merge button)
 #
-#        Run Query:  ${formatShortcutForOS(KEY_MAP.runQuery.key, 'Cmd')} (or press the play button)
+#        Run Operation:  ${formatShortcutForOS(KEY_MAP.runQuery.key, 'Cmd')} (or press the play button)
 #
 #    Auto Complete:  ${KEY_MAP.autoComplete.key} (or just start typing)
 #
@@ -100,7 +101,7 @@ export const KEY_BINDINGS = {
   },
   mergeFragments: {
     id: 'graphql-merge',
-    label: 'Merge Fragments into Query',
+    label: 'Merge Fragments',
     contextMenuGroupId: 'graphql',
     keybindings: KEY_MAP.mergeFragments.keybindings,
   },
@@ -112,13 +113,13 @@ export const KEY_BINDINGS = {
   },
   copyQuery: {
     id: 'graphql-copy',
-    label: 'Copy Query',
+    label: 'Copy Operation',
     contextMenuGroupId: 'graphql',
     keybindings: KEY_MAP.copyQuery.keybindings,
   },
   saveQuery: {
     id: 'graphql-save',
-    label: 'Save Query',
+    label: 'Save Operation',
     contextMenuGroupId: 'graphql',
     keybindings: KEY_MAP.saveQuery.keybindings,
   },
@@ -134,13 +135,12 @@ export const URI_NAME = {
 } as const;
 
 // set these early on so that initial variables with comments don't flash an error
-export const JSON_DIAGNOSTIC_OPTIONS: monaco.languages.json.DiagnosticsOptions =
-  {
-    // Fixes Comments are not permitted in JSON.(521)
-    allowComments: true,
-    // Fixes Trailing comma json(519)
-    trailingCommas: 'ignore',
-  };
+export const JSON_DIAGNOSTIC_OPTIONS: JSONDiagnosticsOptions = {
+  // Fixes Comments are not permitted in JSON.(521)
+  allowComments: true,
+  // Fixes Trailing comma json(519)
+  trailingCommas: 'ignore',
+};
 
 export const MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS: DiagnosticSettings = {
   validateVariablesJSON: {},
@@ -220,6 +220,7 @@ const getBaseColors = (
   const t = TOKEN_COLORS[theme];
   return {
     'editor.background': '#ffffff00', // transparent — editor inherits container bg
+    'editorLineNumber.dimmedForeground': `#${t.fgMuted}`,
     'scrollbar.shadow': '#ffffff00',
     'textLink.foreground': `#${t.accentGreen}`,
     'textLink.activeForeground': `#${t.accentGreen}`,
@@ -273,7 +274,11 @@ const getTokenRules = (
     { token: 'operator.gql', foreground: t.fgMuted },
     { token: 'delimiter.gql', foreground: t.fgMuted },
     // comments
-    { token: 'comment.gql', foreground: t.fgDisabled, fontStyle: 'italic' },
+    {
+      token: 'comment.gql',
+      foreground: theme === 'light' ? t.fgMuted : t.fgDisabled,
+      fontStyle: 'italic',
+    },
     // definition names (identifiers following 'fragment'/'query'/etc.)
     // are caught by key.identifier.gql above, but named fragments benefit
     // from the green-light accent to mirror the design's "name" slot.

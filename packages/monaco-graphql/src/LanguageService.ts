@@ -14,7 +14,8 @@ import {
   DocumentNode,
   Source,
 } from 'graphql';
-import picomatch from 'picomatch-browser';
+import { minimatch } from 'minimatch';
+import type { Diagnostic, Hover } from 'vscode-languageserver-types';
 import type {
   AutocompleteSuggestionOptions,
   IPosition,
@@ -50,6 +51,7 @@ export class LanguageService {
     null;
   private _externalFragmentDefinitionsString: string | null = null;
   private _completionSettings: AutocompleteSuggestionOptions;
+  private _experimentalFragmentArguments = false;
   constructor({
     parser,
     schemas,
@@ -58,6 +60,7 @@ export class LanguageService {
     customValidationRules,
     fillLeafsOnComplete,
     completionSettings,
+    experimentalFragmentArguments,
   }: GraphQLLanguageConfig) {
     this._schemaLoader = defaultSchemaLoader;
     if (schemas) {
@@ -72,6 +75,8 @@ export class LanguageService {
       fillLeafsOnComplete:
         completionSettings?.fillLeafsOnComplete ?? fillLeafsOnComplete,
     };
+    this._experimentalFragmentArguments =
+      experimentalFragmentArguments ?? false;
 
     if (parseOptions) {
       this._parseOptions = parseOptions;
@@ -118,10 +123,7 @@ export class LanguageService {
       if (!schemaConfig.fileMatch) {
         return false;
       }
-      return schemaConfig.fileMatch.some(glob => {
-        const isMatch = picomatch(glob);
-        return isMatch(uri);
-      });
+      return schemaConfig.fileMatch.some(glob => minimatch(uri, glob));
     });
     if (schema) {
       const cacheEntry = this._schemaCache.get(schema.uri);
@@ -140,7 +142,7 @@ export class LanguageService {
     ) {
       const definitionNodes: FragmentDefinitionNode[] = [];
       try {
-        visit(this._parser(this._externalFragmentDefinitionsString), {
+        visit(this.parse(this._externalFragmentDefinitionsString), {
           FragmentDefinition(node) {
             definitionNodes.push(node);
           },
@@ -195,7 +197,11 @@ export class LanguageService {
    * @returns {DocumentNode}
    */
   public parse(text: string | Source, options?: ParseOptions): DocumentNode {
-    return this._parser(text, options || this._parseOptions);
+    return this._parser(text, {
+      ...this._parseOptions,
+      ...options,
+      experimentalFragmentArguments: this._experimentalFragmentArguments,
+    } as ParseOptions);
   }
   /**
    * get completion for the given uri and matching schema
@@ -219,7 +225,11 @@ export class LanguageService {
       position,
       undefined,
       this.getExternalFragmentDefinitions(),
-      { uri, ...this._completionSettings },
+      {
+        uri,
+        ...this._completionSettings,
+        experimentalFragmentArguments: this._experimentalFragmentArguments,
+      },
     );
   };
   /**
@@ -229,7 +239,7 @@ export class LanguageService {
     uri: string,
     documentText: string,
     customRules?: ValidationRule[],
-  ) => {
+  ): Diagnostic[] => {
     const schema = this.getSchemaForFile(uri);
     if (!documentText || documentText.trim().length < 2 || !schema?.schema) {
       return [];
@@ -240,6 +250,9 @@ export class LanguageService {
       customRules ?? this._customValidationRules,
       false,
       this.getExternalFragmentDefinitions(),
+      {
+        experimentalFragmentArguments: this._experimentalFragmentArguments,
+      },
     );
   };
 
@@ -248,7 +261,7 @@ export class LanguageService {
     documentText: string,
     position: IPosition,
     options?: HoverConfig,
-  ) => {
+  ): Hover['contents'] | undefined => {
     const schema = this.getSchemaForFile(uri);
     if (schema && documentText.length > 3) {
       return getHoverInformation(
@@ -258,6 +271,7 @@ export class LanguageService {
         undefined,
         {
           useMarkdown: true,
+          experimentalFragmentArguments: this._experimentalFragmentArguments,
           ...options,
         },
       );

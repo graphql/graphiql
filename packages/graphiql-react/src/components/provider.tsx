@@ -58,6 +58,8 @@ type GraphiQLProviderProps = EditorProps &
   ThemeProps &
   StorageProps & {
     children: ReactNode;
+    /** Enable experimental fragment arguments in the operation editor. */
+    experimentalFragmentArguments?: boolean;
   };
 
 type GraphiQLStore = UseBoundStore<StoreApi<SlicesWithActions>>;
@@ -135,7 +137,10 @@ useEffect(() => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    void actions.initialize();
+    void actions.initialize({
+      experimentalFragmentArguments: props.experimentalFragmentArguments,
+    });
+    // eslint-disable-next-line react-hooks-js/set-state-in-effect -- The client-only rerender avoids hydration mismatches.
     setMounted(true);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -255,6 +260,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
         variables,
       });
 
+      const activeTab = tabs[activeTabIndex];
       const isStored = storage.get(STORAGE_KEY.persistHeaders) !== null;
 
       const $shouldPersistHeaders =
@@ -269,10 +275,9 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
           defaultHeaders,
           defaultQuery,
           externalFragments: getExternalFragments(externalFragments),
-          initialHeaders: headers ?? defaultHeaders ?? '',
-          initialQuery:
-            query ?? (activeTabIndex === 0 ? tabs[0]!.query : null) ?? '',
-          initialVariables: variables ?? '',
+          initialHeaders: headers ?? activeTab?.headers ?? defaultHeaders ?? '',
+          initialQuery: query ?? activeTab?.query ?? '',
+          initialVariables: variables ?? activeTab?.variables ?? '',
           onCopyQuery,
           onSaveQuery,
           onEditOperationName,
@@ -322,7 +327,6 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
         };
       });
       const { actions } = store.getState();
-      actions.storeTabs({ activeTabIndex, tabs });
       actions.setPlugins(plugins);
       actions.setVisiblePlugin(getInitialVisiblePlugin());
       actions.setTheme(getInitialTheme());
@@ -345,6 +349,11 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   //     lastShouldPersistHeadersProp.current = propValue;
   //   }
   // }, [shouldPersistHeaders]);
+
+  useEffect(() => {
+    const { actions, tabs, activeTabIndex } = storeRef.current.getState();
+    actions.storeTabs({ activeTabIndex, tabs });
+  }, []);
 
   // Execution sync — rewrap transport with the hook registry on change
   useDidUpdate(() => {
@@ -435,6 +444,12 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
     </TransportHookContext.Provider>
   );
 };
+
+// Appearance settings also work outside a GraphiQL provider. The mapping is
+// fixed when the provider's store is created, so it needs no subscription.
+export function useEditorTheme() {
+  return useContext(GraphiQLContext)?.current.getState().editorTheme;
+}
 
 export function useGraphiQL<T>(selector: (state: SlicesWithActions) => T): T {
   const store = useContext(GraphiQLContext);

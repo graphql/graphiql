@@ -49,6 +49,7 @@ export const SearchRow: FC = () => {
 
   useEffect(() => {
     debouncedGetSearchResults(searchValue);
+    return debouncedGetSearchResults.cancel;
   }, [debouncedGetSearchResults, searchValue]);
 
   const navItem = explorerNavStack.at(-1)!;

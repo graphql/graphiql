@@ -110,13 +110,6 @@ export const SettingsDialog: FC<SettingsDialogProps> = ({
   const { setShouldPersistHeaders } = useGraphiQLActions();
   const [isDataCleared, setIsDataCleared] = useState(false);
 
-  // Reset the clear-storage confirmation when the dialog closes.
-  useEffect(() => {
-    if (!open) {
-      setIsDataCleared(false);
-    }
-  }, [open]);
-
   // The confirmation is transient: flash the checkmark, then hide it again,
   // mirroring the collections plugin's share confirmation.
   useEffect(() => {
@@ -133,6 +126,13 @@ export const SettingsDialog: FC<SettingsDialogProps> = ({
   function handleClearData() {
     storage.clear();
     setIsDataCleared(true);
+  }
+
+  function handleOpenChange(nextOpen: boolean) {
+    if (!nextOpen) {
+      setIsDataCleared(false);
+    }
+    onOpenChange(nextOpen);
   }
 
   // Keep Monaco editor font size in sync with the active preset.
@@ -163,7 +163,7 @@ export const SettingsDialog: FC<SettingsDialogProps> = ({
   return (
     <Dialog
       open={open}
-      onOpenChange={onOpenChange}
+      onOpenChange={handleOpenChange}
       restoreFocusRef={restoreFocusRef}
     >
       <div className="graphiql-settings-dialog">

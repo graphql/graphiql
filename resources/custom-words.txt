@@ -89,9 +89,11 @@ exfiltrate
 filesfor
 fira
 firecamp
+fsevents
 flowtests
 foldgutter
 foldmarker
+fullpath
 gdezerno
 ghapi
 gillam
@@ -121,6 +123,7 @@ importmap
 inno
 inputarea
 intellij
+interruptible
 invalidchar
 jammu
 jeong
@@ -130,6 +133,7 @@ jsdelivr
 jsgl
 keycap
 keymap
+keytar
 kumar
 languageservice
 leebyron

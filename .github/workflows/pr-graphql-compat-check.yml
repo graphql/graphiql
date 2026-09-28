@@ -26,30 +26,50 @@ jobs:
           # test against the latest 16.x version, which might be newer than what we have
           - '^16'
           # test against the oldest version we support
-          - '^16.0.0'
-          # test against the latest alpha
-          - '^17.0.0-alpha'
+          - '16.11.0'
+          # test against the latest 17.x version
+          - '^17'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
 
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
-          cache: yarn
+          cache: pnpm
       - name: Cache node modules
         uses: actions/cache@v5
         with:
           path: node_modules
-          key: node_modules-${{hashFiles('yarn.lock')}}
+          key: node_modules-${{hashFiles('pnpm-lock.yaml')}}
           restore-keys: node_modules-
-      - name: Force GraphQL ${{ matrix.release }} solution
-        run: yarn repo:resolve graphql@${{ matrix.release }}
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      - run: yarn install --immutable
+      - name: Force GraphQL ${{ matrix.release }} solution
+        run: pnpm repo:resolve graphql@${{ matrix.release }}
+
+      - run: pnpm install --no-frozen-lockfile
+
+      - name: Turbo cache
+        uses: ./.github/actions/turbo-cache
+
+      - name: Build
+        run: pnpm build
 
       - name: Unit Tests
-        run: yarn test
+        run: pnpm test
 
-      - name: Cypress
-        run: yarn e2e
+      - name: Install Cypress
+        run: pnpm --filter graphiql-e2e exec cypress install
+
+      - name: Cypress (GraphQL 16)
+        if: matrix.release != '^17'
+        env:
+          CYPRESS_excludeSpecPattern: cypress/e2e/incremental-delivery.cy.ts
+        run: pnpm e2e
+
+      - name: Cypress (GraphQL 17)
+        if: matrix.release == '^17'
+        run: pnpm e2e

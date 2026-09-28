@@ -45,7 +45,7 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
 
 ## Examples
 
-- [`CDN (ESM-based)`](../../examples/graphiql-cdn) - A single HTML file using [JavaScript modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) from http URLs and a `<script>` tag
+- [`CDN`](../../examples/graphiql-cdn) - A single HTML file that loads GraphiQL directly from a CDN
 - [`Webpack`](../../examples/graphiql-webpack) - A starter for Webpack
 - [`Create React App`](../../examples/graphiql-create-react-app) - An example
   using [Create React App](https://create-react-app.dev)
@@ -61,17 +61,7 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE.
 
 ### CDN usage
 
-#### ESM-based (recommended)
-
-Use the modern, ESM-based CDN approach.
-See the [ESM-based example](../../examples/graphiql-cdn) for setup details.
-
-#### UMD (deprecated)
-
-> [!WARNING]
->
-> The UMD CDN build is **deprecated** and will be removed in a future major release of GraphiQL.
-> Please migrate to the [ESM-based example](../../examples/graphiql-cdn).
+To use GraphiQL without a bundler, follow the [CDN example](../../examples/graphiql-cdn).
 
 ## Usage
 
@@ -125,6 +115,10 @@ const root = createRoot(document.getElementById('root'));
 root.render(<GraphiQL transport={transport} />);
 ```
 
+When the connected server supports GraphQL.js 17 fragment arguments, opt in
+with `<GraphiQL fetcher={fetcher} experimentalFragmentArguments />`. The syntax
+is disabled by default.
+
 ## Customize
 
 GraphiQL supports customization in UI and behavior by accepting React props and
@@ -155,10 +149,10 @@ Branding and toolbar customization moved off the children API in `graphiql@6`:
 Starting with `graphiql@2` there exists a simple plugin API that allows you to
 build your own custom tools right into GraphiQL.
 
-There are two built-in plugins that come with GraphiQL: The documentation
-explorer and the query history. Both can be toggled using icons in the sidebar
-on the left side of the screen. When opened, they appear next to the sidebar in
-a resizable portion of the screen.
+GraphiQL includes the History, Query Builder, and Collections plugins by
+default. The documentation explorer is the default reference plugin. These can
+be toggled using icons in the sidebar on the left side of the screen. When
+opened, they appear next to the sidebar in a resizable portion of the screen.
 
 To define your own plugin, all you need is a JavaScript object with three
 properties:
@@ -171,9 +165,21 @@ properties:
   shown next to the sidebar when opening the plugin
 
 You can pass a list of plugin objects to the `GraphiQL` component using the
-`plugins` prop. You can also control the visibility state of plugins using the
-`visiblePlugin` prop and react to changes of the plugin visibility state using
-the `onTogglePluginVisibility` prop.
+`plugins` prop. Doing so replaces the default list. Start with the immutable
+`DEFAULT_PLUGINS` export when adding or removing a plugin so you don't need to
+import the built-in plugin packages directly:
+
+```jsx
+import { DEFAULT_PLUGINS, GraphiQL } from 'graphiql';
+
+const plugins = [...DEFAULT_PLUGINS, myPlugin];
+
+<GraphiQL plugins={plugins} transport={transport} />;
+```
+
+You can also control the visibility state of plugins using the `visiblePlugin`
+prop and react to changes of the plugin visibility state using the
+`onTogglePluginVisibility` prop.
 
 Inside the component you pass to `content` you can interact with the GraphiQL
 state using the hooks provided by `@graphiql/react`.

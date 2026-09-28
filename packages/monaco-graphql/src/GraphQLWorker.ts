@@ -22,8 +22,15 @@ export class GraphQLWorker {
   private _languageService: LanguageService;
   private _formattingOptions: FormattingOptions | undefined;
 
-  constructor(ctx: monaco.worker.IWorkerContext, createData: ICreateData) {
+  constructor(ctx: monaco.worker.IWorkerContext, createData?: ICreateData) {
     this._ctx = ctx;
+    this._languageService = new LanguageService(
+      createData?.languageConfig ?? {},
+    );
+    this._formattingOptions = createData?.formattingOptions;
+  }
+
+  public initialize(createData: ICreateData) {
     this._languageService = new LanguageService(createData.languageConfig);
     this._formattingOptions = createData.formattingOptions;
   }
@@ -71,7 +78,13 @@ export class GraphQLWorker {
     }
   }
 
-  public async doHover(uri: string, position: monaco.Position) {
+  public async doHover(
+    uri: string,
+    position: monaco.Position,
+  ): Promise<{
+    content: ReturnType<LanguageService['getHover']>;
+    range: monaco.IRange;
+  } | null> {
     try {
       const documentModel = this._getTextModel(uri);
       const document = documentModel?.getValue();

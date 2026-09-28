@@ -2,13 +2,9 @@ import { describe, it, expect, vi } from 'vitest';
 import 'isomorphic-fetch';
 
 import { createTransport } from '../createTransport';
-import type {
-  SubscriptionClient,
-  SubscriptionSink,
-  TransportResponse,
-} from '../types';
+import type { SubscriptionClient, TransportResponse } from '../types';
 import type { Client } from 'graphql-ws';
-import type { ExecutionResult } from 'graphql';
+import type { ExecutionResult, FormattedExecutionResult } from 'graphql';
 
 const URL = 'http://localhost:3000/graphql';
 const SUBSCRIPTION = 'subscription OnTick { tick }';
@@ -40,27 +36,12 @@ describe('createTransport — custom SubscriptionClient', () => {
   });
 
   it('drives subscriptions end-to-end through the real adapter (no graphql-ws)', async () => {
-    const dispose = vi.fn();
     const client: SubscriptionClient = {
-      subscribe(_request, sink) {
-        let active = true;
-        void (async () => {
-          for (const value of [1, 2]) {
-            await tick();
-            if (!active) {
-              return;
-            }
-            sink.next({ data: { tick: value } });
-          }
+      async *iterate() {
+        for (const value of [1, 2]) {
           await tick();
-          if (active) {
-            sink.complete();
-          }
-        })();
-        return () => {
-          active = false;
-          dispose();
-        };
+          yield { data: { tick: value } };
+        }
       },
     };
 
@@ -80,16 +61,12 @@ describe('createTransport — custom SubscriptionClient', () => {
     expect(events[0].size.response).toBeGreaterThan(0);
   });
 
-  it('passes the GraphQL request through to `subscribe`', async () => {
+  it('passes the GraphQL request through to `iterate`', async () => {
     const seen: unknown[] = [];
     const client: SubscriptionClient = {
-      subscribe(request, sink) {
+      async *iterate(request) {
         seen.push(request);
-        void (async () => {
-          await tick();
-          sink.complete();
-        })();
-        return () => {};
+        yield { data: null };
       },
     };
 
@@ -111,16 +88,11 @@ describe('createTransport — custom SubscriptionClient', () => {
 
   it('marks an event carrying `errors` as not ok', async () => {
     const client: SubscriptionClient = {
-      subscribe(_request, sink: SubscriptionSink) {
-        void (async () => {
-          await tick();
-          sink.next({
-            errors: [{ message: 'boom' }],
-          } as unknown as ExecutionResult);
-          await tick();
-          sink.complete();
-        })();
-        return () => {};
+      async *iterate() {
+        await tick();
+        yield {
+          errors: [{ message: 'boom' }],
+        } as unknown as ExecutionResult;
       },
     };
 
@@ -135,22 +107,98 @@ describe('createTransport — custom SubscriptionClient', () => {
     expect(event.body).toMatchObject({ errors: [{ message: 'boom' }] });
   });
 
+  it('disposes the subscription when wrapping an event fails', async () => {
+    const dispose = vi.fn();
+    const data: Record<string, unknown> = {};
+    data.self = data;
+    const source: AsyncIterableIterator<FormattedExecutionResult> = {
+      async next() {
+        return {
+          done: false,
+          value: { data },
+        };
+      },
+      async return() {
+        dispose();
+        return { done: true, value: undefined };
+      },
+      [Symbol.asyncIterator]() {
+        return this;
+      },
+    };
+    const transport = createTransport({
+      url: URL,
+      subscriptionClient: {
+        iterate() {
+          return source;
+        },
+      },
+    });
+    const iterator = (
+      transport.send({
+        query: SUBSCRIPTION,
+      }) as AsyncIterable<TransportResponse>
+    )[Symbol.asyncIterator]();
+
+    await expect(iterator.next()).rejects.toThrow('circular structure');
+    expect(dispose).toHaveBeenCalledTimes(1);
+  });
+
+  it('disposes while the next event is pending and settles pending iteration', async () => {
+    const dispose = vi.fn();
+    let settleNext!: (result: IteratorResult<FormattedExecutionResult>) => void;
+    const source: AsyncIterableIterator<FormattedExecutionResult> = {
+      next: () => new Promise(resolve => (settleNext = resolve)),
+      async return() {
+        dispose();
+        settleNext({ done: true, value: undefined });
+        return { done: true, value: undefined };
+      },
+      [Symbol.asyncIterator]() {
+        return this;
+      },
+    };
+    const transport = createTransport({
+      url: URL,
+      subscriptionClient: {
+        iterate() {
+          return source;
+        },
+      },
+    });
+    const iterator = (
+      transport.send({
+        query: SUBSCRIPTION,
+      }) as AsyncIterable<TransportResponse>
+    )[Symbol.asyncIterator]();
+    const first = iterator.next();
+    settleNext({ done: false, value: { data: { tick: 1 } } });
+    expect((await first).value.body).toMatchObject({ data: { tick: 1 } });
+
+    const pending = iterator.next();
+    const stopped = iterator.return!();
+    await tick();
+    expect(dispose).toHaveBeenCalledTimes(1);
+    await expect(stopped).resolves.toMatchObject({ done: true });
+    await expect(pending).resolves.toMatchObject({ done: true });
+    await iterator.return!();
+    expect(dispose).toHaveBeenCalledTimes(1);
+    await expect(iterator.next()).resolves.toMatchObject({ done: true });
+  });
+
   it('disposes the subscription when the consumer stops iterating early', async () => {
     const dispose = vi.fn();
     const client: SubscriptionClient = {
-      subscribe(_request, sink) {
-        let active = true;
-        void (async () => {
-          await tick();
-          if (active) {
-            sink.next({ data: { tick: 1 } });
+      iterate() {
+        return (async function* () {
+          try {
+            await tick();
+            yield { data: { tick: 1 } };
+            await new Promise(() => {});
+          } finally {
+            dispose();
           }
-          // Never completes; stays open until disposed.
         })();
-        return () => {
-          active = false;
-          dispose();
-        };
       },
     };
 

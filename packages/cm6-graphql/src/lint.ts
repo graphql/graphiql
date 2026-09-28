@@ -39,7 +39,14 @@ export const lint: Extension = linter(
         },
       ];
     }
-    const results = getDiagnostics(view.state.doc.toString(), schema);
+    const results = getDiagnostics(
+      view.state.doc.toString(),
+      schema,
+      undefined,
+      undefined,
+      undefined,
+      options?.autocompleteOptions,
+    );
 
     return results
       .map((item): Diagnostic | null => {

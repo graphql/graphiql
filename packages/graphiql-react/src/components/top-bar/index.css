@@ -98,10 +98,16 @@
 @keyframes graphiql-top-bar-method-pulse {
   0%,
   100% {
-    opacity: 1;
+    box-shadow: 0 0 0 0 oklch(var(--accent-orange) / 0.35);
   }
   50% {
-    opacity: 0.55;
+    box-shadow: 0 0 0 3px oklch(var(--accent-orange) / 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .graphiql-top-bar-method-toggle--attention {
+    animation: none;
   }
 }
 

@@ -18,7 +18,7 @@ import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import * as graphql from 'graphql';
 
-import { createSchema } from '../../../graphiql/test/schema.js';
+import { createSchema } from '../../../graphiql-e2e/test/schema.js';
 
 const graphiqlSchema = createSchema(graphql);
 

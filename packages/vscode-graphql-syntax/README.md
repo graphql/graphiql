@@ -31,9 +31,9 @@ see:
 Whether fixing a bug or adding a new delimiter for your language, here are a few tips for you:
 
 1. TDD approach: add your bug case or new delimiter example to the relevant file in `tests/__fixtures__`
-1. run `yarn test -u` in the syntax extension workspace, and observe whether vscode-textmate tokenizes your example properly
+1. run `pnpm test -- -u` in the syntax extension workspace, and observe whether vscode-textmate tokenizes your example properly
 1. fix/update/add the relevant pattern, and repeat the above to see if the tokenization changes. you should see `meta.embedded.block.graphql`
-1. to test manually, run `yarn vsce:package` in the workspace and right click to install the bundled vsix extension, and open the fixture file
+1. to test manually, run `pnpm vsce:package` in the workspace and right click to install the bundled vsix extension, and open the fixture file
 
 <span id="adding-a-lang"></span>
 
@@ -44,11 +44,11 @@ Whether fixing a bug or adding a new delimiter for your language, here are a few
 1.  use a scope ala `source.{lang}` from a vscode-provided syntax grammar, or a popular, official contributed grammar. To find the name of the scope for any token's highlighting, use `Developer: Inspect Editor Tokens & Scopes` from the vscode command palette.
 1.  name it `inline.graphql.{lang}` for consistency
 1.  add a test file `tests/__fixture__` to document example usage, and a test spec to `__tests__` to assert the snapshot, pointing to the source you created
-1.  run `yarn test -u` in the workspace to add the snapshot
+1.  run `pnpm test -- -u` in the workspace to add the snapshot
 1.  use the snapshots to ensure your capture groups are working and serializing the graphql as expected
 1.  in the test fixture, document all working cases and non working cases with Todo comments for common usage in your language. be sure to think of cases such as string interpolation and generics for typed languages.
 1.  add it to the list above in the readme, with links to your test fixtures as usage documentation
-1.  to manually test it in vscode itself, run `yarn vsce:package` in the syntax extension workspace and right click and install the bundled vsix file, then view the test fixture
+1.  to manually test it in vscode itself, run `pnpm vsce:package` in the syntax extension workspace and right click and install the bundled vsix file, then view the test fixture
 
 ## Usage Note
 

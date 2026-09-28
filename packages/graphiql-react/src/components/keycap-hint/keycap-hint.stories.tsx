@@ -22,6 +22,9 @@ export const ChordWithModifier: Story = {
 
 export const RunShortcut: Story = {
   render: () => (
-    <KeycapHint keys={[MODIFIER.Meta, MODIFIER.Enter]} ariaLabel="Run query" />
+    <KeycapHint
+      keys={[MODIFIER.Meta, MODIFIER.Enter]}
+      ariaLabel="Run operation"
+    />
   ),
 };

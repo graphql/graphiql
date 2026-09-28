@@ -2,7 +2,6 @@ import { visit, OperationTypeNode, GraphQLError } from 'graphql';
 import { fetch } from '@whatwg-node/fetch';
 import { Agent } from 'node:https';
 import * as ws from 'ws';
-// eslint-disable-next-line import-x/no-extraneous-dependencies
 import { pipe, subscribe } from 'wonka';
 
 import { Endpoint } from './extensions';

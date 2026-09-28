@@ -1,5 +1,68 @@
 # @graphiql/react
 
+## 1.0.0-rc.0
+
+### Patch Changes
+
+- [#4594](https://github.com/graphql/graphiql/pull/4594) [`5081f23`](https://github.com/graphql/graphiql/commit/5081f23e1e4e7e505ab2dd9dacea5742f9a3392f) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Load a GraphQL worker from the matching `monaco-graphql` major in the esm.sh worker setup helper. This keeps GraphQL completion and diagnostics compatible with the bundled Monaco Editor.
+
+- [#4595](https://github.com/graphql/graphiql/pull/4595) [`bcd13dc`](https://github.com/graphql/graphiql/commit/bcd13dca46e2bb75837b33fce9f574712c669457) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Move the GraphiQL 6 package family from beta to release candidate versions.
+
+- Updated dependencies [[`bcd13dc`](https://github.com/graphql/graphiql/commit/bcd13dca46e2bb75837b33fce9f574712c669457)]:
+  - @graphiql/toolkit@1.0.0-rc.0
+  - graphql-language-service@6.0.0-rc.0
+  - monaco-graphql@2.0.0-rc.0
+
+## 1.0.0-beta.4
+
+### Minor Changes
+
+- [#4333](https://github.com/graphql/graphiql/pull/4333) [`093cb10`](https://github.com/graphql/graphiql/commit/093cb100a4524b1005b82c1c064bb897416bfc82) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a structured `Transport` API alongside the existing `Fetcher`. `createTransport({...})` performs the GraphQL request and returns a `TransportResponse` carrying the real HTTP wire metadata (status, headers, timing, size) for queries, mutations, subscriptions, and incremental delivery, so the response pane can surface those values directly instead of fabricating them. That metadata is there even when the response body isn't valid JSON (an HTML error page from a proxy, a plain-text 401), so a broken response still shows its real status code instead of a generic error. `<GraphiQL>` accepts a new `transport` prop, mutually exclusive with `fetcher` at the type level.
+
+  Transports support GET, POST, and the [HTTP `QUERY`](https://datatracker.ietf.org/doc/draft-ietf-httpbis-safe-method-w-body/) method per the GraphQL over HTTP spec. Pass `method` / `supportedMethods` to choose; GET encodes the query into the URL with no body, `QUERY` sends a JSON body but is safe and idempotent, and mutations are always sent over POST (or blocked when POST is unavailable). `Transport` exposes `url`, `method`, `supportedMethods`, and an optional `setMethod`, and the top bar shows the active method and endpoint with an inline switcher that cycles through the supported methods. Every request, incremental delivery on or off, sends `application/graphql-response+json` in its `accept` header alongside `application/json`, so spec-compliant servers don't fall back to legacy response semantics. Subscriptions require an explicit `subscriptionClient` satisfying a small `SubscriptionClient` contract: a single `.iterate(request)` method that `graphql-ws` v6 and `graphql-sse` clients meet directly. The low-level `simpleHttpTransport` and `multipartHttpTransport` primitives also accept an optional `method`.
+
+  `TransportRequest` carries `extensions` for GraphQL-over-HTTP extensions such as automatic persisted queries (encoded into the URL for `GET`, included in the JSON body for `POST` and `QUERY`), and `signal`, an `AbortSignal` that cancels an in-flight query or mutation. Stopping a running query or mutation aborts the request; stopping a subscription closes the underlying socket or SSE connection. `TransportResponse.ok` reflects both layers: the HTTP status and the absence of top-level GraphQL errors, so a 401 or 500 is never `ok: true` just because its body happens to parse as JSON with no `errors`.
+
+  Plugins can observe and transform traffic through `transport.onBeforeSend`, `transport.onResponse`, and `transport.onError`, available via `useGraphiQLPluginContext()` (all three return a cleanup function; the `transport` field is `undefined` under the legacy `fetcher` path, so guard with optional chaining). `onError` fires when a request fails outright, such as a network error, so plugins can react to failures the same way they observe successful responses.
+
+  `createGraphiQLFetcher`, the `Fetcher` type and its companions, and `<GraphiQL fetcher={...}>` are deprecated but continue to work unchanged. Consumers on the deprecated path see a one-time dismissible banner in the response pane pointing at `docs/migration/graphiql-6.0.0.md` rather than fabricated status/timing/size values.
+
+### Patch Changes
+
+- Updated dependencies [[`093cb10`](https://github.com/graphql/graphiql/commit/093cb100a4524b1005b82c1c064bb897416bfc82)]:
+  - @graphiql/toolkit@1.0.0-beta.2
+
+## 1.0.0-beta.3
+
+### Patch Changes
+
+- [#4557](https://github.com/graphql/graphiql/pull/4557) [`9d9790d`](https://github.com/graphql/graphiql/commit/9d9790decc93744f6e5c1237a2046fa8f9638d6d) Thanks [@vishwakt](https://github.com/vishwakt)! - Improve the error shown when the Variables or Headers pane contains invalid JSON. The message now uses plain language with a line and column (for example `expected a value at line 1, column 8`) instead of the bare `jsonc-parser` error code (`ValueExpected`), and is prefixed with `Request not sent.` so it is not mistaken for a server response.
+
+- Updated dependencies [[`5affc68`](https://github.com/graphql/graphiql/commit/5affc680b14dc04feb02fc8713a18dfdd56b4a81)]:
+  - graphql-language-service@6.0.0-beta.1
+  - monaco-graphql@2.0.0-beta.1
+
+## 1.0.0-beta.2
+
+### Major Changes
+
+- [#4478](https://github.com/graphql/graphiql/pull/4478) [`066528a`](https://github.com/graphql/graphiql/commit/066528a6bb7706d685536888d7b5549d6fd5a109) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - GraphQL.js 15 and 16.0–16.10 are no longer supported peer dependencies. The supported range is `^16.11.0 || ^17.0.0`. GraphQL.js 16.11 fixes OneOf input validation for nullable variables and tightens input-object coercion to reject arrays, giving GraphiQL 6 a correct baseline for OneOf inputs. Upgrade `graphql` before upgrading these packages.
+
+- [#4566](https://github.com/graphql/graphiql/pull/4566) [`f916fd6`](https://github.com/graphql/graphiql/commit/f916fd6ba17c23cedd459b5bf16c55dea3b826e8) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Upgrade the bundled Monaco Editor to 0.57 and adopt the worker and ESM entry points introduced in 0.56. Published packages accept `monaco-editor` `>=0.56.0 <0.58.0`. If you configure Monaco directly, use Monaco 0.56 or 0.57, replace `monaco-editor/esm/vs/*` imports with exported entry points, and configure `MonacoEnvironment.getWorker` to return the GraphQL worker for the `graphql` label. Custom GraphQL workers must initialize immediately and provide non-cloneable configuration by overriding `GraphQLWorker.initialize`. GraphiQL's worker setup helpers handle these changes automatically. See the [GraphiQL 6 migration guide](../../docs/migration/graphiql-6.0.0.md#monaco-editor-056-and-057-worker-setup) for examples. This update builds on the initial worker migration contributed by @lukasbash.
+
+### Patch Changes
+
+- Updated dependencies [[`066528a`](https://github.com/graphql/graphiql/commit/066528a6bb7706d685536888d7b5549d6fd5a109), [`f916fd6`](https://github.com/graphql/graphiql/commit/f916fd6ba17c23cedd459b5bf16c55dea3b826e8)]:
+  - @graphiql/toolkit@1.0.0-beta.1
+  - graphql-language-service@6.0.0-beta.0
+  - monaco-graphql@2.0.0-beta.0
+
+## 1.0.0-beta.1
+
+### Patch Changes
+
+- [#4471](https://github.com/graphql/graphiql/pull/4471) [`cb2ac2a`](https://github.com/graphql/graphiql/commit/cb2ac2a70fc6cd434cf58af44e20c8f9475153c2) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Pin internal `@graphiql/react` and `@graphiql/toolkit` dependency ranges to exact beta versions, so caret prerelease ranges can no longer resolve to the `1.0.0-next.*` builds published in 2022.
+
 ## 1.0.0-beta.0
 
 ### Major Changes
@@ -63,6 +126,30 @@
 
 - Updated dependencies [[`26ae143`](https://github.com/graphql/graphiql/commit/26ae143ba68004d4a50468ba1feb649ace673f3a), [`093cb10`](https://github.com/graphql/graphiql/commit/093cb100a4524b1005b82c1c064bb897416bfc82)]:
   - @graphiql/toolkit@1.0.0-beta.0
+
+## 0.39.0
+
+### Minor Changes
+
+- [#4462](https://github.com/graphql/graphiql/pull/4462) [`1cb7eba`](https://github.com/graphql/graphiql/commit/1cb7ebad08da7b58dc5120d84cdf009fe1fe6a63) Thanks [@JoviDeCroock](https://github.com/JoviDeCroock)! - Add opt-in GraphQL 17 fragment argument syntax support to parsing, validation,
+  type information, autocomplete, hover, and editor integrations. Enable it with
+  `experimentalFragmentArguments: true`; it defaults to `false` until server
+  capabilities can advertise support.
+
+  Also fix variable autocomplete to respect operation and fragment scope while
+  including variables from operations that spread the current fragment.
+
+### Patch Changes
+
+- [#4468](https://github.com/graphql/graphiql/pull/4468) [`65867b5`](https://github.com/graphql/graphiql/commit/65867b5901f69203310ca568dc9b13d4fa41d479) Thanks [@therealyo](https://github.com/therealyo)! - Keep the active tab selected when a tab to its right is closed. `closeTab` decremented `activeTabIndex` unconditionally, without comparing it to the index of the closed tab.
+  Closing a tab positioned after the active one does not shift the active tab
+  Closing the active tab, or a tab before it, is unchanged.
+
+- [#4476](https://github.com/graphql/graphiql/pull/4476) [`6d57aad`](https://github.com/graphql/graphiql/commit/6d57aad2fc67078bfa96b5edce5c3efdd4172591) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Fix an extra empty tab being created on reload. The `query`/`variables`/`headers` storage keys are only written on edit, so reloading a session that never touched the editors found no stored editor state matching any tab and pushed a new empty one.
+
+- Updated dependencies [[`d0a34f4`](https://github.com/graphql/graphiql/commit/d0a34f4270883b383367734724db01b4b0426b21), [`1cb7eba`](https://github.com/graphql/graphiql/commit/1cb7ebad08da7b58dc5120d84cdf009fe1fe6a63), [`296214d`](https://github.com/graphql/graphiql/commit/296214da85f18520772bd45fc2830631e2a2a847)]:
+  - graphql-language-service@5.7.0
+  - monaco-graphql@1.9.0
 
 ## 0.38.0
 

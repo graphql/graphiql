@@ -4,6 +4,7 @@ import {
   formatError,
   formatResult,
   GetDefaultFieldNamesFn,
+  getSelectedOperationName,
   HttpMethod,
   isAsyncIterable,
   isObservable,
@@ -12,8 +13,14 @@ import {
   Unsubscribable,
 } from '@graphiql/toolkit';
 import { ExecutionResult, GraphQLError, print } from 'graphql';
-import { getFragmentDependenciesForAST } from 'graphql-language-service';
+import {
+  getFragmentDependenciesForAST,
+  getOperationFacts,
+} from 'graphql-language-service';
+import { monacoStore } from './monaco';
 import setValue from 'set-value';
+// The published package types only expose the default export.
+// oxlint-disable-next-line import/no-named-as-default
 import getValue from 'get-value';
 
 import type { StateCreator } from 'zustand';
@@ -376,7 +383,9 @@ export const createExecutionSlice: CreateExecutionSlice =
             actions,
             operationName,
             operations,
-            documentAST,
+            schema,
+            tabs,
+            activeTabIndex,
             subscription,
             overrideOperationName,
             queryId,
@@ -393,11 +402,48 @@ export const createExecutionSlice: CreateExecutionSlice =
             return;
           }
 
+          // Parse the snapshot being sent, rather than content-change facts that
+          // may still be waiting for the editor debounce.
+          const displayedQuery = queryEditor.getValue();
+          let query = getAutoCompleteLeafs() || displayedQuery;
+          const activeTab = tabs[activeTabIndex];
+          const previousSelection =
+            activeTab?.query === displayedQuery
+              ? (activeTab.operationName ?? undefined)
+              : operationName;
+          const facts = getOperationFacts(schema, query, {
+            experimentalFragmentArguments:
+              monacoStore.getState().monacoGraphQL
+                ?.experimentalFragmentArguments,
+          });
+          const selectedOperationName = getSelectedOperationName(
+            operations,
+            previousSelection,
+            facts?.operations,
+          );
+          const documentAST = facts?.documentAST;
+          const opName = overrideOperationName ?? selectedOperationName;
+          actions.setOperationFacts({
+            documentAST,
+            operations: facts?.operations,
+            operationName: selectedOperationName,
+          });
+          if (
+            selectedOperationName &&
+            selectedOperationName !== operationName
+          ) {
+            actions.setOperationName(selectedOperationName);
+          }
+          actions.updateActiveTabValues({
+            query,
+            operationName: selectedOperationName ?? null,
+          });
+
           // Mutations are forbidden over GET. Don't silently fall back to POST —
           // the UI disables Run in this state; bail out for any keyboard path too.
           const blockReason = getRunBlockReason(
             transportMethod,
-            resolveActiveOperation(operations, operationName),
+            resolveActiveOperation(facts?.operations, opName),
           );
           if (blockReason) {
             return;
@@ -414,17 +460,18 @@ export const createExecutionSlice: CreateExecutionSlice =
             }
             const name =
               editor === variableEditor ? 'Variables' : 'Request headers';
-            // Need to format since the response editor uses `json` language
-            setResponse(formatError({ message: `${name} ${error.message}` }));
+            // Need to format since the response editor uses `json` language.
+            // Make it explicit that this is a client-side validation error and
+            // no request was sent, so it is not mistaken for a server response.
+            setResponse(
+              formatError({
+                message: `Request not sent. ${name} ${error.message}`,
+              }),
+            );
           }
 
           const newQueryId = queryId + 1;
           set({ queryId: newQueryId });
-
-          // Use the edited query after autoCompleteLeafs() runs or,
-          // in case autoCompletion fails (the function returns undefined),
-          // the current query from the editor.
-          let query = getAutoCompleteLeafs() || queryEditor.getValue();
 
           let variables: Record<string, unknown> | undefined;
           try {
@@ -501,7 +548,6 @@ export const createExecutionSlice: CreateExecutionSlice =
               });
               setResponse(formattedBody);
             };
-            const opName = overrideOperationName ?? operationName;
 
             if (transport) {
               // Cancel any request a previous run left in flight — its catch

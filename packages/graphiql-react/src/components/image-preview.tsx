@@ -20,6 +20,7 @@ const ImagePreview_: FC<ImagePreviewProps> = ({ path }) => {
 
   useEffect(() => {
     if (!src) {
+      // eslint-disable-next-line react-hooks-js/set-state-in-effect -- Clearing stale metadata must rerender the preview.
       setDimensions({ width: null, height: null });
       setMime(null);
       return;

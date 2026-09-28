@@ -1,4 +1,4 @@
-import type * as monaco from '../monaco-editor';
+import type { DiagnosticsOptions as JSONDiagnosticsOptions } from 'monaco-editor/languages/features/json/register';
 import {
   IntrospectionQuery,
   DocumentNode,
@@ -31,7 +31,7 @@ export type SchemaConfig = {
   uri: string;
   /**
    * An array of URIs or globs to associate with this schema in the language worker
-   * Uses `picomatch` which supports many common expressions except brackets
+   * Uses `minimatch` glob patterns
    * Only necessary if you provide more than one schema, otherwise it defaults to the sole schema
    */
   fileMatch?: string[];
@@ -90,6 +90,8 @@ export type SchemaLoader = (
  * in a custom webworker. see the readme.
  */
 export type GraphQLLanguageConfig = {
+  /** Enable experimental fragment arguments across language features. */
+  experimentalFragmentArguments?: boolean;
   /**
    * Provide a parser that matches `graphql` `parse()` signature
    * Used for internal document parsing operations
@@ -202,7 +204,7 @@ export type DiagnosticSettings = {
    * - `validateSchema: 'warning'`
    * - `trailingComments` is `error` by default, and can be `warning` or `ignore`
    */
-  jsonDiagnosticSettings?: monaco.languages.json.DiagnosticsOptions;
+  jsonDiagnosticSettings?: JSONDiagnosticsOptions;
 };
 
 export type CompletionSettings = AutocompleteSuggestionOptions & {
@@ -219,6 +221,8 @@ export interface MonacoGraphQLInitializeConfig extends Pick<
   GraphQLLanguageConfig,
   'schemas'
 > {
+  /** Enable experimental fragment arguments across language features. */
+  experimentalFragmentArguments?: boolean;
   /**
    * custom (experimental) settings for autocompletion behavior
    */

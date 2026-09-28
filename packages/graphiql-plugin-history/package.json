@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-history",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-rc.0",
   "sideEffects": [
     "*.css"
   ],
@@ -33,28 +33,36 @@
   "scripts": {
     "types:check": "tsgo --noEmit",
     "dev": "vite build --watch --emptyOutDir=false",
-    "build": "vite build",
+    "build": "pnpm types:check && vite build",
     "test": "vitest run"
   },
   "peerDependencies": {
-    "@graphiql/react": "^1.0.0",
+    "@graphiql/react": "^1.0.0-rc.0",
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   },
   "dependencies": {
-    "@graphiql/toolkit": "^1.0.0",
+    "@graphiql/toolkit": "^1.0.0-rc.0",
     "clsx": "^1.2.1",
-    "react-compiler-runtime": "19.1.0-rc.1",
+    "react-compiler-runtime": "19.1.0-rc.3",
     "zustand": "^5"
   },
   "devDependencies": {
-    "@graphiql/react": "^1.0.0",
+    "@graphiql/react": "^1.0.0-rc.0",
+    "@storybook/react-vite": "^10.3.6",
+    "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.1.0",
-    "@vitejs/plugin-react": "^4.4.1",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
+    "@vitejs/plugin-react": "^5.2.0",
+    "@vitest/web-worker": "^4.1.6",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
+    "monaco-editor": ">=0.56.0 <0.58.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "vite": "^6.4.3",
-    "vite-plugin-dts": "^4.5.3"
+    "vite": "^8.2.2",
+    "vite-plugin-dts": "^4.5.3",
+    "vitest-canvas-mock": "^1.1.4"
   }
 }

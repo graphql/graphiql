@@ -10,10 +10,8 @@
 .monaco-editor {
   /* otherwise editor couldn't be resized */
   position: absolute !important;
-  /**
-   * Monaco-editor from v0.52 shows some blue lines for all editors
-   * @see https://github.com/microsoft/monaco-editor/issues/4455
-   */
+  /* Prevent Monaco's focus outline from appearing around every editor.
+   * @see https://github.com/microsoft/monaco-editor/issues/4455 */
   outline-width: 0 !important;
 
   .highlight {

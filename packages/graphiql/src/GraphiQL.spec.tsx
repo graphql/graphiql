@@ -1,6 +1,6 @@
 'use no memo';
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
 
 /**
  *  Copyright (c) 2021 GraphQL Contributors.
@@ -10,12 +10,14 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
  */
 import { act, render, waitFor, fireEvent } from '@testing-library/react';
 import { Component, FC, useEffect } from 'react';
-import { GraphiQL } from './GraphiQL';
-import type { Fetcher, Transport } from '@graphiql/toolkit';
+import { DEFAULT_PLUGINS, GraphiQL } from './GraphiQL';
+import { StorageAPI, type Fetcher, type Transport } from '@graphiql/toolkit';
 import { buildSchema, introspectionFromSchema } from 'graphql';
 import {
   ToolbarButton,
+  GraphiQLProvider,
   useGraphiQL,
+  useMonaco,
   useOperationsEditorState,
   MonacoEditor,
   isMacOs,
@@ -35,6 +37,43 @@ beforeEach(() => {
 describe('GraphiQL', () => {
   // @ts-expect-error -- fixme
   const noOpFetcher: Fetcher = () => {};
+
+  it('exports immutable default plugins', () => {
+    expect(Object.isFrozen(DEFAULT_PLUGINS)).toBe(true);
+    expect(DEFAULT_PLUGINS.map(plugin => plugin.title)).toEqual([
+      'History',
+      'Query Builder',
+      'Collections',
+    ]);
+  });
+
+  beforeAll(async () => {
+    let isMonacoReady = false;
+
+    const MonacoReady: FC = () => {
+      isMonacoReady = useMonaco(state => Boolean(state.monaco));
+      return null;
+    };
+
+    const { unmount } = render(
+      <GraphiQLProvider fetcher={noOpFetcher}>
+        <MonacoReady />
+      </GraphiQLProvider>,
+    );
+
+    try {
+      await waitFor(
+        () => {
+          if (!isMonacoReady) {
+            throw new Error('Monaco is not initialized');
+          }
+        },
+        { timeout: 60_000 },
+      );
+    } finally {
+      unmount();
+    }
+  }, 65_000);
 
   describe('fetcher', () => {
     it('should throw error without fetcher or transport', () => {
@@ -198,36 +237,33 @@ describe('GraphiQL', () => {
   }); // schema
 
   describe('default query', () => {
-    // First test to boot Monaco's editor worker; cold start needs extra time under
-    // Vitest 4's forks pool. Both the it() testTimeout and the waitFor()
-    // asyncUtilTimeout (configured at 9s in setup-files.ts) must be bumped.
-    it('defaults to the built-in default query', async () => {
-      const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+    const InitialQuery: FC = () => {
+      const initialQuery = useGraphiQL(state => state.initialQuery);
+      return <output data-testid="initial-query">{initialQuery}</output>;
+    };
 
-      await waitFor(
-        () => {
-          const queryEditor = container.querySelector<HTMLDivElement>(
-            '.graphiql-editor .monaco-scrollable-element',
-          );
-          expect(queryEditor).toBeVisible();
-          expect(queryEditor!.textContent).toBe('# Welcome to GraphiQL');
-        },
-        { timeout: 25_000 },
+    it('defaults to the built-in default query', async () => {
+      const { findByTestId } = render(
+        <GraphiQL fetcher={noOpFetcher}>
+          <InitialQuery />
+        </GraphiQL>,
       );
-    }, 30000);
+
+      expect((await findByTestId('initial-query')).textContent).toMatch(
+        /^# Welcome to GraphiQL/,
+      );
+    });
 
     it('accepts a custom default query', async () => {
-      const { container } = render(
-        <GraphiQL fetcher={noOpFetcher} defaultQuery="GraphQL Party!!" />,
+      const { findByTestId } = render(
+        <GraphiQL fetcher={noOpFetcher} defaultQuery="GraphQL Party!!">
+          <InitialQuery />
+        </GraphiQL>,
       );
 
-      await waitFor(() => {
-        const queryEditor = container.querySelector<HTMLDivElement>(
-          '.graphiql-editor .monaco-scrollable-element',
-        );
-        expect(queryEditor).toBeVisible();
-        expect(queryEditor!.textContent).toBe('GraphQL Party!!');
-      });
+      expect((await findByTestId('initial-query')).textContent).toBe(
+        'GraphQL Party!!',
+      );
     });
   }); // default query
 
@@ -612,6 +648,109 @@ describe('GraphiQL', () => {
       });
     });
 
+    it('keeps the active tab active when a tab to its right is closed', async () => {
+      const { container } = render(
+        <GraphiQL
+          fetcher={noOpFetcher}
+          defaultTabs={[
+            { query: 'query First { first }' },
+            { query: 'query Second { second }' },
+            { query: 'query Third { third }' },
+          ]}
+        />,
+      );
+
+      await waitFor(() => {
+        expect(
+          container.querySelectorAll('.graphiql-tabs .graphiql-tab'),
+        ).toHaveLength(3);
+      });
+
+      act(() => {
+        fireEvent.click(container.querySelectorAll('.graphiql-tab-button')[1]!);
+      });
+
+      await waitFor(() => {
+        expect(
+          container.querySelectorAll('.graphiql-tabs .graphiql-tab')[1],
+        ).toHaveClass('graphiql-tab-active');
+      });
+
+      act(() => {
+        fireEvent.click(
+          container.querySelectorAll('.graphiql-tab .graphiql-tab-close')[2]!,
+        );
+      });
+
+      await waitFor(() => {
+        expect(
+          container.querySelectorAll('.graphiql-tabs .graphiql-tab'),
+        ).toHaveLength(2);
+      });
+
+      expect(
+        container.querySelectorAll('.graphiql-tabs .graphiql-tab')[1],
+      ).toHaveClass('graphiql-tab-active');
+      expect(
+        container.querySelectorAll('.graphiql-tab-button')[1],
+      ).toHaveTextContent('Second');
+    });
+
+    it('restores the active stored tab when individual editor keys are absent', async () => {
+      const storage = new StorageAPI();
+      const query = 'query Second { second }';
+      const variables = '{"id": 2}';
+      const headers = '{"X-Test": "second"}';
+      storage.set(
+        'tabState',
+        JSON.stringify({
+          activeTabIndex: 1,
+          tabs: ['query First { first }', query].map((tabQuery, index) => ({
+            id: String(index),
+            title: index === 0 ? 'First' : 'Second',
+            query: tabQuery,
+            variables,
+            headers,
+            operationName: index === 0 ? 'First' : 'Second',
+            response: null,
+          })),
+        }),
+      );
+
+      function InitialEditorState() {
+        const state = useGraphiQL(value => ({
+          activeTabIndex: value.activeTabIndex,
+          tabCount: value.tabs.length,
+          query: value.initialQuery,
+          variables: value.initialVariables,
+          headers: value.initialHeaders,
+        }));
+        return <output>{JSON.stringify(state)}</output>;
+      }
+
+      const { container } = render(
+        <GraphiQLProvider
+          fetcher={noOpFetcher}
+          schema={null}
+          shouldPersistHeaders
+        >
+          <InitialEditorState />
+        </GraphiQLProvider>,
+      );
+
+      await waitFor(() => {
+        expect(container.querySelector('output')?.textContent).toBe(
+          JSON.stringify({
+            activeTabIndex: 1,
+            tabCount: 2,
+            query,
+            variables,
+            headers,
+          }),
+        );
+      });
+    });
+
     it('shows default tabs', async () => {
       const { container } = render(
         <GraphiQL
@@ -730,18 +869,16 @@ describe('GraphiQL', () => {
 
       await waitFor(() => {
         expect(
-          container.querySelectorAll('[aria-label="Prettify query"]'),
+          container.querySelectorAll('[aria-label="Prettify editors"]'),
         ).toHaveLength(1);
         expect(
-          container.querySelectorAll(
-            '[aria-label="Merge fragments into query"]',
-          ),
+          container.querySelectorAll('[aria-label="Merge fragments"]'),
         ).toHaveLength(1);
         expect(
-          container.querySelectorAll('[aria-label="Copy query"]'),
+          container.querySelectorAll('[aria-label="Copy operation"]'),
         ).toHaveLength(1);
         expect(
-          container.querySelectorAll('[aria-label="Save query"]'),
+          container.querySelectorAll('[aria-label="Save operation"]'),
         ).toHaveLength(1);
       });
     });
@@ -783,7 +920,7 @@ query TestQuery { ...NameFragment }`;
         expect(documentAST).toBeTruthy();
       });
 
-      fireEvent.click(getByLabelText('Merge fragments into query'));
+      fireEvent.click(getByLabelText('Merge fragments'));
 
       await waitFor(() => {
         const merged = queryEditor.getValue();

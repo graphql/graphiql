@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import type { Preview } from '@storybook/react-vite';
+import '../src/setup-workers/vite';
 import '../src/style/root.css';
 
 const preview: Preview = {

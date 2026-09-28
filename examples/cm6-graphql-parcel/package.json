@@ -8,7 +8,7 @@
   "scripts": {
     "start": "parcel src/index.html -p 8080",
     "build": "parcel build src/index.html --public-url /",
-    "build-demo": "yarn build && mkdirp ../../packages/graphiql/cm6 && cp -r dist ../../packages/graphiql/cm6/"
+    "build-demo": "pnpm build && mkdirp ../../packages/graphiql/cm6 && cp -r dist ../../packages/graphiql/cm6/"
   },
   "browserslist": {
     "production": [
@@ -30,7 +30,7 @@
     "@codemirror/theme-one-dark": "^6",
     "@codemirror/view": "^6",
     "cm6-graphql": "^0.0",
-    "graphql": "^16"
+    "graphql": "^16.14.2"
   },
   "devDependencies": {
     "parcel": "^2",

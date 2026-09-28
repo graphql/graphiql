@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { RefObject } from 'react';
 import { useMonaco } from '../stores';
 import { MONACO_THEME_NAME } from '../constants';
+import { useEditorTheme } from '../components/provider';
 
 export type Theme = 'auto' | 'light' | 'dark';
 export type Density = 'compact' | 'comfortable' | 'spacious';
@@ -59,6 +60,7 @@ export function useGraphiQLSettings(
 ) {
   const [settings, setSettings] = useState<GraphiQLSettings>(readSettings);
   const monaco = useMonaco(state => state.monaco);
+  const editorTheme = useEditorTheme() ?? MONACO_THEME_NAME;
 
   function setTheme(theme: Theme) {
     setSettings(s => ({ ...s, theme }));
@@ -89,8 +91,8 @@ export function useGraphiQLSettings(
       target.setAttribute('data-font-size', settings.fontSize);
     }
 
-    monaco?.editor.setTheme(MONACO_THEME_NAME[resolvedTheme]);
-  }, [settings, containerRef, monaco]);
+    monaco?.editor.setTheme(editorTheme[resolvedTheme]);
+  }, [settings, containerRef, monaco, editorTheme]);
 
   // When theme is 'auto', track system preference changes live.
   useEffect(() => {
@@ -110,14 +112,14 @@ export function useGraphiQLSettings(
         target.setAttribute('data-theme', resolvedTheme);
       }
 
-      monaco?.editor.setTheme(MONACO_THEME_NAME[resolvedTheme]);
+      monaco?.editor.setTheme(editorTheme[resolvedTheme]);
     }
 
     mql.addEventListener('change', onSystemThemeChange);
     return () => {
       mql.removeEventListener('change', onSystemThemeChange);
     };
-  }, [settings.theme, containerRef, monaco]);
+  }, [settings.theme, containerRef, monaco, editorTheme]);
 
   return { ...settings, setTheme, setDensity, setFontSize };
 }

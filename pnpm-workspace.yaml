@@ -1,0 +1,41 @@
+packages:
+  - packages/*
+  - functions
+  - packages/graphiql-e2e/test
+  - examples/monaco-graphql-webpack
+  - examples/monaco-graphql-nextjs
+  - examples/monaco-graphql-react-vite
+  - examples/graphiql-vite
+  - examples/graphiql-vite-react-router
+  - examples/graphiql-webpack
+
+minimumReleaseAge: 4320
+minimumReleaseAgeExclude:
+  - monaco-editor@0.57.0
+engineStrict: true
+nodeLinker: isolated
+linkWorkspacePackages: true
+preferWorkspacePackages: true
+
+allowBuilds:
+  '@vscode/vsce-sign': false
+  core-js: false
+  cypress: true
+  ejs: false
+  esbuild: false
+  fsevents: false
+  keytar: false
+  msw: false
+  sharp: false
+
+overrides:
+  '@babel/traverse': ^7.23.2
+  vscode-languageserver-types: 3.17.3
+  markdown-it: 15.0.1
+  react: 19.2.7
+  react-dom: 19.2.7
+  vite: 8.2.2
+
+patchedDependencies:
+  '@changesets/assemble-release-plan@6.0.3': resources/patches/@changesets+assemble-release-plan+6.0.3.patch
+  js-green-licenses@4.0.0: resources/patches/js-green-licenses+4.0.0.patch

@@ -27,55 +27,7 @@ export const plugins: PluginOption[] = [
   }),
 ];
 
-const umdConfig = defineConfig({
-  define: {
-    // graphql v17
-    'globalThis.process.env.NODE_ENV': 'true',
-    // https://github.com/graphql/graphql-js/blob/16.x.x/website/pages/docs/going-to-production.mdx
-    'globalThis.process': 'true',
-    'process.env.NODE_ENV': '"production"',
-  },
-  plugins,
-  css: {
-    transformer: 'lightningcss',
-  },
-  build: {
-    minify: 'terser', // produce less bundle size
-    sourcemap: true,
-    emptyOutDir: false,
-    lib: {
-      entry: 'src/cdn.ts',
-      /**
-       * The name of the exposed global variable. Required when the `formats` option includes `umd`
-       * or `iife`.
-       */
-      name: 'GraphiQL',
-      fileName: 'index',
-      formats: ['umd'],
-    },
-    rollupOptions: {
-      external: ['react', 'react-dom'],
-      output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-        },
-      },
-    },
-  },
-  worker: {
-    format: 'es',
-    rollupOptions: {
-      output: {
-        entryFileNames: 'workers/[name].js',
-        // Just to group worker assets, add shared/internal chunks too
-        chunkFileNames: 'workers/[name].js',
-      },
-    },
-  },
-});
-
-const esmConfig = defineConfig({
+export default defineConfig({
   build: {
     cssCodeSplit: true,
     minify: false,
@@ -83,7 +35,6 @@ const esmConfig = defineConfig({
     lib: {
       entry: [
         'src/index.ts',
-        'src/e2e.ts',
         'src/setup-workers/webpack.ts',
         'src/setup-workers/vite.ts',
         'src/setup-workers/esm.sh.ts',
@@ -108,21 +59,8 @@ const esmConfig = defineConfig({
       },
     },
   },
-  server: {
-    // Prevent a browser window from opening automatically
-    open: false,
-    proxy: {
-      '/graphql': 'http://localhost:8080',
-      '/subscriptions': {
-        target: 'ws://localhost:8081',
-        ws: true,
-      },
-    },
-  },
   plugins: [
     ...plugins,
-    htmlPlugin(),
-    process.env.NODE_ENV === 'production' && removeImportsFromE2EFile(),
     dts({
       include: ['src/**'],
       outDir: ['dist'],
@@ -133,47 +71,3 @@ const esmConfig = defineConfig({
     format: 'es',
   },
 });
-
-function htmlPlugin(): PluginOption {
-  return {
-    name: 'html-replace-umd-with-src',
-    transformIndexHtml: {
-      order: 'pre',
-      handler(html) {
-        const start = '<!--vite-replace-start-->';
-        const end = '<!--vite-replace-end-->';
-        const contentToReplace = html.slice(
-          html.indexOf(start),
-          html.indexOf(end) + end.length,
-        );
-        return html.replace(
-          contentToReplace,
-          '<script type="module" src="/src/e2e.ts"></script>',
-        );
-      },
-    },
-  };
-}
-
-function removeImportsFromE2EFile(): PluginOption {
-  return {
-    name: 'remove-imports-from-e2e-file',
-    enforce: 'pre', // Ensure it runs before Vite's own transformers
-    transform(code: string, id: string) {
-      if (id.endsWith('e2e.ts')) {
-        const transformedCode = code
-          .split('\n')
-          .filter(line => !line.startsWith('import '))
-          .join('\n');
-        return {
-          code: transformedCode,
-          // Remove source map to clean vite warning:
-          // a plugin (remove-imports-from-e2e-file) was used to transform files, but didn't generate a sourcemap for the transformation
-          map: null,
-        };
-      }
-    },
-  };
-}
-
-export default process.env.UMD === 'true' ? umdConfig : esmConfig;
