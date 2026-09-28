@@ -74,7 +74,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "graphql-language-service": "6.0.0-rc.0",
+    "graphql-language-service": "^6.0.0-rc.0",
     "minimatch": "^10.2.6"
   },
   "devDependencies": {

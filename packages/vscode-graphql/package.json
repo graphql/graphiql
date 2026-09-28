@@ -189,7 +189,7 @@
   },
   "dependencies": {
     "graphql": "^16.14.2",
-    "graphql-language-service-server": "3.0.0-rc.0",
+    "graphql-language-service-server": "^3.0.0-rc.0",
     "typescript": "^5.8.0",
     "vscode-languageclient": "8.0.2"
   }

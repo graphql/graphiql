@@ -22,7 +22,7 @@
   "types": "dist/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "graphql-language-service": "6.0.0-rc.0"
+    "graphql-language-service": "^6.0.0-rc.0"
   },
   "devDependencies": {
     "@codemirror/autocomplete": "^6.0.0",
