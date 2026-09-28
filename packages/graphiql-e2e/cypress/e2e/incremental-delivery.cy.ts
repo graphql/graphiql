@@ -27,12 +27,11 @@ describe('IncrementalDelivery support via fetcher', () => {
 
     it('Expects slower streams to resolve in several increments, and the payloads to patch properly', () => {
       const delay = 100;
-      const timeout = mockStreamSuccess.data.streamable.length * (delay * 1.5);
+      const timeout = mockStreamSuccess.data.streamable.length * delay * 2;
 
       cy.visitGraphiQL({ query: testStreamQuery, variables: { delay } });
       cy.clickExecuteQuery();
-      cy.wait(timeout);
-      cy.assertQueryResult(mockStreamSuccess);
+      cy.assertQueryResult(mockStreamSuccess, { timeout });
     });
 
     it('Expects a quick stream to resolve in a single increment', () => {
@@ -45,7 +44,7 @@ describe('IncrementalDelivery support via fetcher', () => {
   describe('When operating with @defer', () => {
     it('Excepts to see a slow response but path properly', () => {
       const delay = 1000;
-      const timeout = delay * 1.5;
+      const timeout = delay * 2;
 
       const testQuery = /* GraphQL */ `
         query DeferQuery($delay: Int) {
@@ -60,16 +59,18 @@ describe('IncrementalDelivery support via fetcher', () => {
 
       cy.visitGraphiQL({ query: testQuery, variables: { delay } });
       cy.clickExecuteQuery();
-      cy.wait(timeout);
-      cy.assertQueryResult({
-        data: {
-          deferrable: {
-            normalString: 'Nice',
-            deferredString:
-              'Oops, this took 1 seconds longer than I thought it would!',
+      cy.assertQueryResult(
+        {
+          data: {
+            deferrable: {
+              normalString: 'Nice',
+              deferredString:
+                'Oops, this took 1 seconds longer than I thought it would!',
+            },
           },
         },
-      });
+        { timeout },
+      );
     });
 
     it('Expects to merge types when members arrive at different times', () => {
@@ -84,7 +85,7 @@ describe('IncrementalDelivery support via fetcher', () => {
        */
 
       const delay = 1000;
-      const timeout = 4 /* friends */ * (delay * 1.5);
+      const timeout = 4 /* friends */ * delay * 2;
 
       const testQuery = /* GraphQL */ `
         query DeferQuery($delay: Int) {
@@ -107,21 +108,23 @@ describe('IncrementalDelivery support via fetcher', () => {
 
       cy.visitGraphiQL({ query: testQuery, variables: { delay } });
       cy.clickExecuteQuery();
-      cy.wait(timeout);
-      cy.assertQueryResult({
-        data: {
-          person: {
-            name: 'Mark',
-            friends: [
-              { name: 'James', age: 1000 },
-              { name: 'Mary', age: 1000 },
-              { name: 'John', age: 1000 },
-              { name: 'Patrica', age: 1000 },
-            ],
-            age: 1000,
+      cy.assertQueryResult(
+        {
+          data: {
+            person: {
+              name: 'Mark',
+              friends: [
+                { name: 'James', age: 1000 },
+                { name: 'Mary', age: 1000 },
+                { name: 'John', age: 1000 },
+                { name: 'Patrica', age: 1000 },
+              ],
+              age: 1000,
+            },
           },
         },
-      });
+        { timeout },
+      );
     });
   });
 });
