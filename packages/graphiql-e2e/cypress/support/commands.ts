@@ -30,6 +30,7 @@ declare global {
       | { errors: any[] };
 
     type EditorName = 'query' | 'variables' | 'headers';
+    type PluginName = 'Documentation Explorer' | 'History';
 
     interface Chainable {
       /**
@@ -37,6 +38,12 @@ declare global {
        * @example cy.dataCy('greeting')
        */
       dataCy(value: string): Chainable<Element>;
+
+      /** Open a plugin by its accessible name and wait for its panel. */
+      showPlugin(name: PluginName): Chainable<Element>;
+
+      /** Close a plugin by its accessible name and wait for its panel to leave. */
+      hidePlugin(name: PluginName): Chainable<Element>;
 
       /**
        * Type into one of GraphiQL's Monaco editors with trusted keyboard events.
@@ -123,6 +130,16 @@ declare global {
 
 Cypress.Commands.add('dataCy', value => {
   cy.get(`[data-cy="${value}"]`);
+});
+
+Cypress.Commands.add('showPlugin', name => {
+  cy.get(`button[aria-label="Show ${name}"]`).click();
+  return cy.get(`[aria-label="${name}"]`).should('be.visible');
+});
+
+Cypress.Commands.add('hidePlugin', name => {
+  cy.get(`button[aria-label="Hide ${name}"]`).click();
+  return cy.get(`[aria-label="${name}"]`).should('not.exist');
 });
 
 Cypress.Commands.add('typeInEditor', (text, options = {}) => {

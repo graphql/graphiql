@@ -106,16 +106,14 @@ describe('a11y baseline', () => {
 
   it('with docs panel open has no new violations', () => {
     // First sidebar button is the docs explorer toggle (confirmed in docs.cy.ts)
-    cy.get('.graphiql-activity-rail-item').eq(0).click();
-    cy.get('.graphiql-doc-explorer').should('be.visible');
+    cy.showPlugin('Documentation Explorer');
     cy.injectAxe();
     return checkOrCapture('docs-open');
   });
 
   it('with history panel open has no new violations', () => {
     // history.cy.ts uses this exact selector
-    cy.get('button[aria-label="Show History"]').click();
-    cy.get('.graphiql-history').should('be.visible');
+    cy.showPlugin('History');
     cy.injectAxe();
     return checkOrCapture('history-open');
   });
