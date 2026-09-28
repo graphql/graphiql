@@ -410,10 +410,32 @@ function assertHoverShowsMessage(
           .check({ force: true })
           .get('.graphiql-editor-tool .view-lines')
           .eq(0);
-  const target = message.endsWith(' is not allowed.')
-    ? cy.get('.graphiql-editor-tool').find(`.squiggly-${severity}`)
-    : editor.contains(text);
-  target.should($element => {
+
+  if (message.endsWith(' is not allowed.')) {
+    cy.get('.graphiql-editor-tool')
+      .find(`.squiggly-${severity}`)
+      .should($decoration => {
+        const decoration = $decoration.get(0);
+        const bounds = decoration.getBoundingClientRect();
+        const editorSurface = decoration
+          .closest('.monaco-editor')
+          ?.querySelector('.view-lines');
+        expect(editorSurface, 'Monaco editor surface').not.to.equal(null);
+        const view = decoration.ownerDocument.defaultView!;
+        editorSurface!.dispatchEvent(
+          new view.MouseEvent('mousemove', {
+            bubbles: true,
+            clientX: bounds.left + bounds.width / 2,
+            clientY: bounds.bottom - 1,
+            view,
+          }),
+        );
+        expect(decoration.ownerDocument.body).to.contain.text(message);
+      });
+    return;
+  }
+
+  editor.contains(text).should($element => {
     const element = $element.get(0);
     const bounds = element.getBoundingClientRect();
     const MouseEvent = element.ownerDocument.defaultView!.MouseEvent;
