@@ -15,21 +15,38 @@ permissions:
 jobs:
   update-dependencies:
     name: Check and Update CDN Dependencies
+    if: github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: main
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
 
+      - name: Check GraphiQL latest
+        id: version
+        run: |
+          latest=$(npm view graphiql@latest version)
+          if [[ "$latest" == 6.* ]]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "GraphiQL $latest is still latest; keeping the v6 prerelease example"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Generate index.html
         id: generate
+        if: steps.version.outputs.ready == 'true'
         run: |
-          node .github/scripts/update-cdn-versions.mjs > examples/graphiql-cdn/index.html
+          node .github/scripts/update-cdn-versions.mjs > "$RUNNER_TEMP/graphiql-cdn.html"
+          mv "$RUNNER_TEMP/graphiql-cdn.html" examples/graphiql-cdn/index.html
 
       - name: Check for Changes
         id: check-changes
+        if: steps.version.outputs.ready == 'true'
         run: |
           if git diff --quiet; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
@@ -38,7 +55,7 @@ jobs:
           fi
 
       - name: Create Pull Request
-        if: steps.check-changes.outputs.has_changes == 'true'
+        if: steps.version.outputs.ready == 'true' && steps.check-changes.outputs.has_changes == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -49,6 +66,7 @@ jobs:
 
             🤖 This PR was automatically generated automatically, beep boop
           branch: automated/update-cdn-example-dependencies
+          base: main
           delete-branch: true
           labels: |
             dependencies

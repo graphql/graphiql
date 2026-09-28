@@ -34,9 +34,10 @@
       integrity="{{GRAPHIQL_CSS_INTEGRITY}}"
       crossorigin="anonymous"
     />
-    <!-- The Monaco API and language registrations share one bundle. Its scoped
-         process alias preserves browser platform detection and keyboard shortcuts. -->
-    <!-- cspell:ignoreRegExp /data:text\/javascript,[^"]+/g -->
+    <!--
+     * Note:
+     * The ?standalone flag bundles the module along with all of its `dependencies`, excluding `peerDependencies`, into a single JavaScript file.
+    -->
     <script type="importmap">
 {{IMPORTMAP}}
     </script>
@@ -45,10 +46,11 @@
       import ReactDOM from 'react-dom/client';
       import { GraphiQL } from 'graphiql';
       import { createTransport } from '@graphiql/toolkit';
-      import EditorWorker from '{{EditorWorker}}';
-      import JsonWorker from '{{JsonWorker}}';
-      import GraphQLWorker from '{{GraphQLWorker}}';
+      import EditorWorker from '{{MONACO_EDITOR_WORKER_URL}}';
+      import JsonWorker from '{{JSON_WORKER_URL}}';
+      import GraphQLWorker from '{{GRAPHQL_WORKER_URL}}';
 
+      // Match the worker versions to @graphiql/react's published dependencies.
       globalThis.MonacoEnvironment = {
         getWorker(_workerId, label) {
           if (label === 'graphql') return new GraphQLWorker();
@@ -57,16 +59,14 @@
         },
       };
 
-      const parameters = new URLSearchParams(location.search);
       const transport = createTransport({
-        url: parameters.get('endpoint') || 'https://countries.trevorblades.com',
+        url: 'https://countries.trevorblades.com',
       });
 
       function App() {
         return React.createElement(GraphiQL, {
           transport,
-          initialQuery: parameters.get('query') || undefined,
-          defaultEditorToolsVisibility: true,
+          defaultQuery: 'query Countries { countries { code name } }',
         });
       }
 
