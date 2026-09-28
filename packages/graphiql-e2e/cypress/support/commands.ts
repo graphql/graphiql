@@ -184,9 +184,15 @@ Cypress.Commands.add('getEditorModel', (editor = 'query') =>
 );
 
 Cypress.Commands.add('setEditorValue', (value, editor = 'query') =>
-  cy.getEditorModel(editor).then(model => {
-    model.setValue(value);
-  }),
+  cy
+    .getEditorModel(editor)
+    .then(model => {
+      model.setValue(value);
+    })
+    // Model changes notify React synchronously, but their rendered state (for
+    // example a tab's operation name) is not observable until the next paint.
+    .then(() => cy.window())
+    .then(win => afterEditorEffects(win, undefined)),
 );
 
 Cypress.Commands.add('assertEditorValue', (expected, editor = 'query') =>
