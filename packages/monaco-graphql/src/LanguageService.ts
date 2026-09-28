@@ -14,7 +14,7 @@ import {
   DocumentNode,
   Source,
 } from 'graphql';
-import picomatch from 'picomatch-browser';
+import { minimatch } from 'minimatch';
 import type { Diagnostic, Hover } from 'vscode-languageserver-types';
 import type {
   AutocompleteSuggestionOptions,
@@ -123,10 +123,7 @@ export class LanguageService {
       if (!schemaConfig.fileMatch) {
         return false;
       }
-      return schemaConfig.fileMatch.some(glob => {
-        const isMatch = picomatch(glob);
-        return isMatch(uri);
-      });
+      return schemaConfig.fileMatch.some(glob => minimatch(uri, glob));
     });
     if (schema) {
       const cacheEntry = this._schemaCache.get(schema.uri);

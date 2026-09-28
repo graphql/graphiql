@@ -1191,9 +1191,6 @@ importers:
       debounce-promise:
         specifier: ^3.1.2
         version: 3.1.2
-      nullthrows:
-        specifier: ^1.0.0
-        version: 1.1.1
       vscode-languageserver-types:
         specifier: 3.17.3
         version: 3.17.3
@@ -1356,9 +1353,9 @@ importers:
       graphql-language-service:
         specifier: 6.0.0-beta.0
         version: link:../graphql-language-service
-      picomatch-browser:
-        specifier: ^2.2.6
-        version: 2.2.6
+      minimatch:
+        specifier: ^10.2.6
+        version: 10.2.6
     devDependencies:
       '@typescript/native-preview':
         specifier: ^7.0.0-dev.20260707.2
@@ -9618,10 +9615,6 @@ packages:
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
-
-  picomatch-browser@2.2.6:
-    resolution: {integrity: sha512-0ypsOQt9D4e3hziV8O4elD9uN0z/jtUEfxVRtNaAAtXIyUx9m/SzlO020i8YNL2aL/E6blOvvHQcin6HZlFy/w==}
-    engines: {node: '>=8.6'}
 
   picomatch@2.3.2:
     resolution: {integrity: sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==}
@@ -20564,8 +20557,6 @@ snapshots:
   performance-now@2.1.0: {}
 
   picocolors@1.1.1: {}
-
-  picomatch-browser@2.2.6: {}
 
   picomatch@2.3.2: {}
 

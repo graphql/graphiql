@@ -75,7 +75,7 @@
   },
   "dependencies": {
     "graphql-language-service": "6.0.0-beta.0",
-    "picomatch-browser": "^2.2.6"
+    "minimatch": "^10.2.6"
   },
   "devDependencies": {
     "@typescript/native-preview": "^7.0.0-dev.20260707.2",
