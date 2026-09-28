@@ -381,13 +381,12 @@ Cypress.Commands.add(
         expect(marker!.severity).eq(markerSeverity);
       }
     });
-    assertHoverShowsMessage(text, severity, message, uri);
+    assertHoverShowsMessage(text, message, uri);
   },
 );
 
 function assertHoverShowsMessage(
   text: string,
-  severity: 'error' | 'warning',
   message: string,
   uri: 'operation.graphql' | 'variables.json',
 ) {
@@ -399,19 +398,36 @@ function assertHoverShowsMessage(
           .check({ force: true })
           .get('.graphiql-editor-tool .view-lines')
           .eq(0);
-  const target = message.endsWith(' is not allowed.')
-    ? editor.find(`.squiggly-${severity}`)
-    : editor.contains(text);
-  target.should($element => {
+  editor.contains(text).should($element => {
     const element = $element.get(0);
-    const bounds = element.getBoundingClientRect();
-    const MouseEvent = element.ownerDocument.defaultView!.MouseEvent;
+    const view = element.ownerDocument.defaultView!;
+    const walker = element.ownerDocument.createTreeWalker(
+      element,
+      view.NodeFilter.SHOW_TEXT,
+    );
+    let bounds: DOMRect | undefined;
+    let node = walker.nextNode();
+    while (node) {
+      const start = node.textContent?.indexOf(text) ?? -1;
+      if (start !== -1) {
+        const range = element.ownerDocument.createRange();
+        range.setStart(node, start);
+        range.setEnd(node, start + text.length);
+        bounds = range.getBoundingClientRect();
+        break;
+      }
+      node = walker.nextNode();
+    }
+    expect(bounds, `rendered text bounds for "${text}"`).not.to.equal(
+      undefined,
+    );
+    const MouseEvent = view.MouseEvent;
     element.dispatchEvent(
       new MouseEvent('mousemove', {
         bubbles: true,
-        clientX: bounds.right - 1,
-        clientY: bounds.bottom - 1,
-        view: element.ownerDocument.defaultView!,
+        clientX: bounds!.left + bounds!.width / 2,
+        clientY: bounds!.top + bounds!.height / 2,
+        view,
       }),
     );
     expect(element.ownerDocument.body).to.contain.text(message);
