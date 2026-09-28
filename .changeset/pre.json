@@ -1,6 +1,6 @@
 {
   "mode": "pre",
-  "tag": "beta",
+  "tag": "rc",
   "initialVersions": {
     "example-graphiql-vite": "0.0.0",
     "example-graphiql-vite-react-router": "1.0.0",
