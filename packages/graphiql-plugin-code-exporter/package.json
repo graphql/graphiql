@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-code-exporter",
-  "version": "6.0.0-beta.3",
+  "version": "6.0.0-beta.4",
   "sideEffects": [
     "*.css"
   ],
@@ -38,13 +38,13 @@
     "graphiql-code-exporter": "^3.0.3"
   },
   "peerDependencies": {
-    "@graphiql/react": "1.0.0-beta.3",
+    "@graphiql/react": "1.0.0-beta.4",
     "graphql": "^16.11.0 || ^17.0.0",
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@graphiql/react": "1.0.0-beta.3",
+    "@graphiql/react": "1.0.0-beta.4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@typescript/native-preview": "^7.0.0-dev.20260707.2",
