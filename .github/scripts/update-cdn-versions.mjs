@@ -69,11 +69,17 @@ function compareVersions(left, right) {
     if (leftId === undefined || rightId === undefined) {
       return Number(leftId !== undefined) - Number(rightId !== undefined);
     }
-    if (leftId === rightId) continue;
+    if (leftId === rightId) {
+      continue;
+    }
     const leftNumeric = /^\d+$/.test(leftId);
     const rightNumeric = /^\d+$/.test(rightId);
-    if (leftNumeric && rightNumeric) return Number(leftId) - Number(rightId);
-    if (leftNumeric !== rightNumeric) return leftNumeric ? -1 : 1;
+    if (leftNumeric && rightNumeric) {
+      return Number(leftId) - Number(rightId);
+    }
+    if (leftNumeric !== rightNumeric) {
+      return leftNumeric ? -1 : 1;
+    }
     return leftId < rightId ? -1 : 1;
   }
   return 0;
