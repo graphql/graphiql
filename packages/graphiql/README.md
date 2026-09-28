@@ -149,10 +149,10 @@ Branding and toolbar customization moved off the children API in `graphiql@6`:
 Starting with `graphiql@2` there exists a simple plugin API that allows you to
 build your own custom tools right into GraphiQL.
 
-There are two built-in plugins that come with GraphiQL: The documentation
-explorer and the query history. Both can be toggled using icons in the sidebar
-on the left side of the screen. When opened, they appear next to the sidebar in
-a resizable portion of the screen.
+GraphiQL includes the History, Query Builder, and Collections plugins by
+default. The documentation explorer is the default reference plugin. These can
+be toggled using icons in the sidebar on the left side of the screen. When
+opened, they appear next to the sidebar in a resizable portion of the screen.
 
 To define your own plugin, all you need is a JavaScript object with three
 properties:
@@ -165,9 +165,21 @@ properties:
   shown next to the sidebar when opening the plugin
 
 You can pass a list of plugin objects to the `GraphiQL` component using the
-`plugins` prop. You can also control the visibility state of plugins using the
-`visiblePlugin` prop and react to changes of the plugin visibility state using
-the `onTogglePluginVisibility` prop.
+`plugins` prop. Doing so replaces the default list. Start with the immutable
+`DEFAULT_PLUGINS` export when adding or removing a plugin so you don't need to
+import the built-in plugin packages directly:
+
+```jsx
+import { DEFAULT_PLUGINS, GraphiQL } from 'graphiql';
+
+const plugins = [...DEFAULT_PLUGINS, myPlugin];
+
+<GraphiQL plugins={plugins} transport={transport} />;
+```
+
+You can also control the visibility state of plugins using the `visiblePlugin`
+prop and react to changes of the plugin visibility state using the
+`onTogglePluginVisibility` prop.
 
 Inside the component you pass to `content` you can interact with the GraphiQL
 state using the hooks provided by `@graphiql/react`.

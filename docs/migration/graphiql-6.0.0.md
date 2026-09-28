@@ -34,7 +34,15 @@ Other breaking changes include:
 
 ## CSS and retheming
 
-If you don't override GraphiQL's CSS, no action is required. The new styles apply automatically.
+If your application already imports `graphiql/style.css` and doesn't override it, no styling migration is required.
+
+These examples assume your application imports GraphiQL's aggregate stylesheet once at its entry point:
+
+```tsx
+import 'graphiql/style.css';
+```
+
+This stylesheet includes `@graphiql/react` and all default first-party plugin styles. Don't import those plugin styles separately unless you assemble an interface without the `graphiql` meta-package.
 
 If you retheme GraphiQL with CSS custom properties, v6 adds a second token system and deprecates the old one. It does not replace the old variables with new values under the same names.
 
@@ -120,53 +128,61 @@ v5 toggled `body.graphiql-light` / `body.graphiql-dark` classes and used a `pref
 
 ## New first-party plugins
 
-Two new plugins ship in v6 and are **installed by default** in the `graphiql` meta-package: a visual query builder and operation collections. If you pass your own `plugins` array to `<GraphiQL>`, it replaces the default set entirely, so you'll want to include the ones you still want alongside your custom plugins.
+Two new plugins ship in v6 and are **installed by default** in the `graphiql` meta-package: a visual query builder and operation collections. Most integrations don't need to configure `plugins`. If you pass your own array, it replaces the default set entirely; use the exported `DEFAULT_PLUGINS` array as the starting point when you need to add, remove, or configure plugins.
 
 ### `@graphiql/plugin-query-builder`
 
 The query builder is a schema-driven alternative to writing operations by hand. Select fields from a collapsible tree to add them to the current operation, or clear them to remove them. You can also provide field arguments, promote scalar arguments to variables, create named fragments, and select type conditions for unions and interfaces. This resolves the long-standing [#734](https://github.com/graphql/graphiql/issues/734).
 
-```tsx
-import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
-import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
-import '@graphiql/plugin-query-builder/style.css';
+It is available without configuration when you omit the `plugins` prop:
 
-<GraphiQL
-  plugins={[HISTORY_PLUGIN, QUERY_BUILDER_PLUGIN]}
-  transport={transport}
-/>;
+```tsx
+import { GraphiQL } from 'graphiql';
+
+<GraphiQL transport={transport} />;
 ```
 
 ### `@graphiql/plugin-collections`
 
 Save named operations into folder collections and reuse them later: a collapsible tree UI with inline rename, drag-and-drop (or keyboard) reordering, JSON import/export that merges by stable id instead of duplicating, and clipboard copy/share for individual operations or whole collections. Saving is wired to `Cmd`/`Ctrl`+`S` and the tab-strip Save button.
 
-```tsx
-import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
-import { COLLECTIONS_PLUGIN } from '@graphiql/plugin-collections';
-import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
-import '@graphiql/plugin-query-builder/style.css';
-import '@graphiql/plugin-collections/style.css';
+It is also available without configuration. Use `collectionsPlugin(options)` when you need a custom storage backend or want to restrict write, import, export, or replace operations. Replace the default plugin rather than registering both:
 
-const plugins = [HISTORY_PLUGIN, QUERY_BUILDER_PLUGIN, COLLECTIONS_PLUGIN];
+```tsx
+import { COLLECTIONS_PLUGIN, DEFAULT_PLUGINS, GraphiQL } from 'graphiql';
+import { collectionsPlugin } from '@graphiql/plugin-collections';
+
+const configuredCollections = collectionsPlugin({ readOnly: true });
+const plugins = DEFAULT_PLUGINS.map(plugin =>
+  plugin === COLLECTIONS_PLUGIN ? configuredCollections : plugin,
+);
 
 <GraphiQL plugins={plugins} transport={transport} />;
 ```
 
-Use `collectionsPlugin(options)` instead when you need a custom storage backend or want to restrict write, import, export, or replace operations. See the [package README](../../packages/graphiql-plugin-collections/README.md) for the full option list and the import and merge behavior.
+Declare `@graphiql/plugin-collections` as a direct dependency when importing its factory. See the [package README](../../packages/graphiql-plugin-collections/README.md) for the full option list and the import and merge behavior.
 
 ### Opting out
 
-Both plugins are part of the default `plugins` array (`[HISTORY_PLUGIN, QUERY_BUILDER_PLUGIN, COLLECTIONS_PLUGIN]`), alongside history. Pass your own array to drop one or both:
+Both plugins are part of `DEFAULT_PLUGINS`, alongside History. Filter the defaults to drop one or both:
 
 ```tsx
-import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
+import {
+  COLLECTIONS_PLUGIN,
+  DEFAULT_PLUGINS,
+  GraphiQL,
+  QUERY_BUILDER_PLUGIN,
+} from 'graphiql';
+
+const plugins = DEFAULT_PLUGINS.filter(
+  plugin => plugin !== QUERY_BUILDER_PLUGIN && plugin !== COLLECTIONS_PLUGIN,
+);
 
 // History only: no query builder or collections.
-<GraphiQL plugins={[HISTORY_PLUGIN]} transport={transport} />;
+<GraphiQL plugins={plugins} transport={transport} />;
 ```
 
-Declare each imported plugin package as a direct dependency. Create the plugin array outside render to keep its identity stable. If you omit `plugins`, GraphiQL installs History, Query Builder, and Collections for you.
+`DEFAULT_PLUGINS` is immutable. Create a new array with `filter`, `map`, or spread syntax rather than mutating it, and define that array outside render to keep its identity stable.
 
 ## New `transport` API
 
@@ -449,13 +465,10 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  worker: { format: 'es' },
   optimizeDeps: {
     include: [
       'graphiql > @graphiql/react > graphql-language-service > nullthrows',
       'graphiql > @graphiql/react > monaco-graphql > picomatch-browser',
-      'graphiql > @graphiql/react > prettier/parser-graphql',
-      'graphiql > @graphiql/react > prettier/parser-babel',
     ],
     exclude: [
       'graphiql/setup-workers/vite',
@@ -465,7 +478,7 @@ export default defineConfig({
 });
 ```
 
-The worker dependencies (`nullthrows` and `picomatch-browser`) and formatter parsers (`prettier/parser-graphql` and `prettier/parser-babel`) need CommonJS optimization during development. [Vite's nested dependency syntax](https://vite.dev/config/dep-optimization-options#optimizedeps-include) locates them through GraphiQL's dependencies, including with pnpm's isolated package layout. This requirement also applies to v5 integrations; it is separate from the v6 worker-path changes. Restart Vite after updating the configuration, using `--force` if its dependency cache is stale. A successful production build does not verify development workers: check schema completion, an unknown-field diagnostic, JSON validation, and Prettify in the browser. See the [Vite example](../../examples/graphiql-vite).
+The worker dependencies `nullthrows` and `picomatch-browser` need CommonJS optimization during development. [Vite's nested dependency syntax](https://vite.dev/config/dep-optimization-options#optimizedeps-include) locates them through GraphiQL's dependencies, including with pnpm's isolated package layout. The worker setup modules are excluded because Vite must process their worker imports instead of pre-bundling them. Vite discovers the formatter modules without explicit entries, and its default worker format is sufficient. These worker dependency entries also apply to affected v5 integrations; they are separate from the v6 worker-path changes. Restart Vite after updating the configuration, using `--force` if its dependency cache is stale. A successful production build does not verify development workers: check schema completion, an unknown-field diagnostic, JSON validation, and Prettify in the browser. See the [Vite example](../../examples/graphiql-vite).
 
 Custom GraphQL workers must call Monaco's `initialize` function as soon as the worker module loads. Don't wrap it in an additional `onmessage` handler. To pass functions or other values that structured cloning can't transfer to the worker, subclass `GraphQLWorker` and override its `initialize` method. See the [`monaco-graphql` custom worker example](../../packages/monaco-graphql/README.md#custom-webworker-for-passing-non-static-config-to-worker) for the complete worker and bundler configuration.
 
@@ -500,18 +513,20 @@ const plugins = [HISTORY_PLUGIN, explorerPlugin()];
 **After (v6):**
 
 ```tsx
-import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
-import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
-import { COLLECTIONS_PLUGIN } from '@graphiql/plugin-collections';
-import '@graphiql/plugin-query-builder/style.css';
-import '@graphiql/plugin-collections/style.css';
+import { GraphiQL } from 'graphiql';
 
-const plugins = [HISTORY_PLUGIN, QUERY_BUILDER_PLUGIN, COLLECTIONS_PLUGIN];
+<GraphiQL transport={transport} />;
+```
+
+Remove `@graphiql/plugin-explorer` from your dependencies. If Explorer was the only reason you passed `plugins`, remove that prop to use the v6 defaults. If your array also contains custom plugins, preserve them alongside the defaults:
+
+```tsx
+import { DEFAULT_PLUGINS, GraphiQL } from 'graphiql';
+
+const plugins = [...DEFAULT_PLUGINS, myPlugin];
 
 <GraphiQL plugins={plugins} transport={transport} />;
 ```
-
-Add the imported Query Builder and Collections packages to your app's dependencies and remove `@graphiql/plugin-explorer`. Create the plugin array outside render. To use all default plugins, omit the `plugins` prop entirely. Removing Explorer from an existing array does not add the v6 defaults to that array.
 
 If you cannot migrate the Explorer integration, stay on GraphiQL 5 and its matching plugin release.
 
@@ -641,17 +656,13 @@ function App() {
 **After:**
 
 ```tsx
-import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
-import { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
-import { COLLECTIONS_PLUGIN } from '@graphiql/plugin-collections';
+import { DEFAULT_PLUGINS, GraphiQL } from 'graphiql';
 import {
   ToolbarButton,
   useGraphiQL,
   useGraphiQLActions,
   type GraphiQLPlugin,
 } from '@graphiql/react';
-import '@graphiql/plugin-query-builder/style.css';
-import '@graphiql/plugin-collections/style.css';
 
 function ExampleAction() {
   const queryEditor = useGraphiQL(state => state.queryEditor);
@@ -679,12 +690,7 @@ const myActionsPlugin: GraphiQLPlugin = {
   content: () => <p>Load example replaces and formats the active operation.</p>,
   sessionActions: ExampleAction,
 };
-const plugins = [
-  HISTORY_PLUGIN,
-  QUERY_BUILDER_PLUGIN,
-  COLLECTIONS_PLUGIN,
-  myActionsPlugin,
-];
+const plugins = [...DEFAULT_PLUGINS, myActionsPlugin];
 
 function App() {
   return <GraphiQL transport={transport} plugins={plugins} />;
@@ -693,7 +699,7 @@ function App() {
 
 Assign the component itself to `sessionActions`. GraphiQL renders one action component for each registered plugin, including when its pane is hidden. Give every plugin a unique title. `ToolbarButton` needs a `label` for its accessible name and children for its visible content. The editor can be absent while Monaco initializes, so disable the action or guard access until it exists. Await `prettifyEditors()` after replacing its value.
 
-Prettify, merge, and copy are built into the tab strip. The explicit plugin array above keeps History, Query Builder, and Collections alongside the custom action. Install imported plugin packages directly; `graphiql/style.css` includes the standard GraphiQL styles.
+Prettify, merge, and copy are built into the tab strip. Starting with `DEFAULT_PLUGINS` keeps History, Query Builder, and Collections alongside the custom action.
 
 ### `GraphiQL.Logo` → the top bar's `brand` prop
 
