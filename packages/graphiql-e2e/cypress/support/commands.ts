@@ -94,6 +94,8 @@ declare global {
 
       waitForQueryEditor(expectedValue?: string): Chainable<AUTWindow>;
 
+      waitForQueryCommit(expectedValue: string): Chainable<AUTWindow>;
+
       assertHasValues(op: Op): Chainable<Element>;
 
       assertQueryResult(
@@ -289,6 +291,15 @@ Cypress.Commands.add('waitForQueryEditor', expectedValue =>
   }),
 );
 
+Cypress.Commands.add('waitForQueryCommit', expectedValue =>
+  cy.window().should(win => {
+    expect(
+      win.localStorage.getItem('graphiql:query'),
+      'committed query',
+    ).to.equal(expectedValue);
+  }),
+);
+
 function waitForSchema() {
   return cy.get('.graphiql-status-bar-conn-connected');
 }
@@ -314,12 +325,6 @@ Cypress.Commands.add(
   'assertHasValues',
   ({ query, variables, variablesString, headersString, response }: Op) => {
     cy.assertEditorValue(query);
-    // A tab switch updates Monaco immediately, then commits the query through
-    // the editor's debounced change handler. Wait for that observable commit
-    // so a subsequent switch cannot apply the pending update to the next tab.
-    cy.window().should(win => {
-      expect(win.localStorage.getItem('graphiql:query')).to.equal(query);
-    });
     if (variables !== undefined) {
       cy.assertEditorValue(JSON.stringify(variables, null, 2), 'variables');
     }
