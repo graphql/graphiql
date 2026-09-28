@@ -1,5 +1,14 @@
 # Change Log
 
+## 2.0.0-beta.1
+
+### Patch Changes
+
+- [#4590](https://github.com/graphql/graphiql/pull/4590) [`5affc68`](https://github.com/graphql/graphiql/commit/5affc680b14dc04feb02fc8713a18dfdd56b4a81) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Remove the CommonJS-only `nullthrows` dependency and replace `picomatch-browser` with an ESM-compatible glob matcher.
+
+- Updated dependencies [[`5affc68`](https://github.com/graphql/graphiql/commit/5affc680b14dc04feb02fc8713a18dfdd56b4a81)]:
+  - graphql-language-service@6.0.0-beta.1
+
 ## 2.0.0-beta.0
 
 ### Major Changes
