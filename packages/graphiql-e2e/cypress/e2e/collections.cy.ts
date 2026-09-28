@@ -1,10 +1,5 @@
 function setQuery(query: string) {
-  cy.window().then(win => {
-    const model = win.__MONACO.editor
-      .getModels()
-      .find(candidate => candidate.uri.path.endsWith('operation.graphql'))!;
-    model.setValue(query);
-  });
+  cy.setEditorValue(query);
 }
 
 function saveNewOperation() {
@@ -33,20 +28,10 @@ function expectPersistedQuery(query: string) {
 function reopenSavedOperation(query: string) {
   cy.reload();
   cy.waitForQueryEditor();
-  cy.window().should(win => {
-    const model = win.__MONACO.editor
-      .getModels()
-      .find(candidate => candidate.uri.path.endsWith('operation.graphql'))!;
-    expect(model.getValue()).to.equal(query);
-  });
+  cy.assertEditorValue(query);
   cy.get('[aria-label="Show Collections"]').click();
   cy.contains('.graphiql-collection-item-row', 'Saved operation').click();
-  cy.window().then(win => {
-    const model = win.__MONACO.editor
-      .getModels()
-      .find(candidate => candidate.uri.path.endsWith('operation.graphql'))!;
-    expect(model.getValue()).to.equal(query);
-  });
+  cy.assertEditorValue(query);
 }
 
 describe('Collections saves', () => {
@@ -80,11 +65,6 @@ describe('Collections saves', () => {
     const unsavedQuery = 'query Unsaved { id image }';
     setQuery(unsavedQuery);
     cy.contains('.graphiql-collection-item-row', 'Saved operation').click();
-    cy.window().then(win => {
-      const model = win.__MONACO.editor
-        .getModels()
-        .find(candidate => candidate.uri.path.endsWith('operation.graphql'))!;
-      expect(model.getValue()).to.equal(unsavedQuery);
-    });
+    cy.assertEditorValue(unsavedQuery);
   });
 });
