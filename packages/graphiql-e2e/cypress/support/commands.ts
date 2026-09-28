@@ -415,40 +415,8 @@ function assertHoverShowsMessage(
           .check({ force: true })
           .get('.graphiql-editor-tool .view-lines')
           .eq(0);
-  editor.contains(text).should($element => {
-    const element = $element.get(0);
-    const view = element.ownerDocument.defaultView!;
-    const walker = element.ownerDocument.createTreeWalker(
-      element,
-      view.NodeFilter.SHOW_TEXT,
-    );
-    let bounds: DOMRect | undefined;
-    let node = walker.nextNode();
-    while (node) {
-      const start = node.textContent?.indexOf(text) ?? -1;
-      if (start !== -1) {
-        const range = element.ownerDocument.createRange();
-        range.setStart(node, start);
-        range.setEnd(node, start + text.length);
-        bounds = range.getBoundingClientRect();
-        break;
-      }
-      node = walker.nextNode();
-    }
-    expect(bounds, `rendered text bounds for "${text}"`).not.to.equal(
-      undefined,
-    );
-    const MouseEvent = view.MouseEvent;
-    element.dispatchEvent(
-      new MouseEvent('mousemove', {
-        bubbles: true,
-        clientX: bounds!.left + bounds!.width / 2,
-        clientY: bounds!.top + bounds!.height / 2,
-        view,
-      }),
-    );
-    expect(element.ownerDocument.body).to.contain.text(message);
-  });
+  editor.contains(text).realHover();
+  cy.get('body').should('contain.text', message);
 }
 
 Cypress.Commands.add(
