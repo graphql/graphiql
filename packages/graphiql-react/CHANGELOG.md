@@ -1,5 +1,18 @@
 # @graphiql/react
 
+## 1.0.0-rc.0
+
+### Patch Changes
+
+- [#4594](https://github.com/graphql/graphiql/pull/4594) [`5081f23`](https://github.com/graphql/graphiql/commit/5081f23e1e4e7e505ab2dd9dacea5742f9a3392f) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Load a GraphQL worker from the matching `monaco-graphql` major in the esm.sh worker setup helper. This keeps GraphQL completion and diagnostics compatible with the bundled Monaco Editor.
+
+- [#4595](https://github.com/graphql/graphiql/pull/4595) [`bcd13dc`](https://github.com/graphql/graphiql/commit/bcd13dca46e2bb75837b33fce9f574712c669457) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Move the GraphiQL 6 package family from beta to release candidate versions.
+
+- Updated dependencies [[`bcd13dc`](https://github.com/graphql/graphiql/commit/bcd13dca46e2bb75837b33fce9f574712c669457)]:
+  - @graphiql/toolkit@1.0.0-rc.0
+  - graphql-language-service@6.0.0-rc.0
+  - monaco-graphql@2.0.0-rc.0
+
 ## 1.0.0-beta.4
 
 ### Minor Changes
