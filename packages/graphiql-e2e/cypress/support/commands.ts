@@ -149,12 +149,16 @@ function findAttachedEditorModel(
   return editor?.getModel() ?? undefined;
 }
 
-function afterEditorEffects<T>(win: Cypress.AUTWindow, value: T) {
-  return new Cypress.Promise<T>(resolve => {
+function waitForEditorEffects(win: Cypress.AUTWindow) {
+  return new Cypress.Promise<void>(resolve => {
     win.requestAnimationFrame(() => {
-      win.requestAnimationFrame(() => resolve(value));
+      win.requestAnimationFrame(() => resolve());
     });
   });
+}
+
+function afterEditorEffects<T>(win: Cypress.AUTWindow, value: T) {
+  return waitForEditorEffects(win).then(() => value);
 }
 
 Cypress.Commands.add('getEditorModel', (editor = 'query') =>
@@ -183,7 +187,7 @@ Cypress.Commands.add('setEditorValue', (value, editor = 'query') =>
     // Model changes notify React synchronously, but their rendered state (for
     // example a tab's operation name) is not observable until the next paint.
     .then(() => cy.window())
-    .then(win => afterEditorEffects(win, undefined)),
+    .then(waitForEditorEffects),
 );
 
 Cypress.Commands.add('assertEditorValue', (expected, editor = 'query') =>
