@@ -1,0 +1,68 @@
+.graphiql-segmented-control {
+  display: inline-flex;
+  padding: 1px;
+  margin: 0;
+  border: 1px solid oklch(var(--border-muted));
+  border-radius: var(--radius-md);
+  background: oklch(var(--bg-subtle));
+  gap: 1px;
+}
+
+.graphiql-segmented-control-legend {
+  position: absolute;
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.graphiql-segmented-control-input {
+  position: absolute;
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.graphiql-segmented-control-option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-6);
+  padding: 3px var(--px-8);
+  border-radius: var(--radius-sm);
+  color: oklch(var(--fg-subtle));
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  letter-spacing: var(--letter-spacing-ui);
+  cursor: pointer;
+}
+
+.graphiql-segmented-control-option:hover:not([data-checked]):not(
+    [data-disabled]
+  ) {
+  color: oklch(var(--fg-default));
+}
+
+.graphiql-segmented-control-option[data-checked] {
+  background: oklch(var(--bg-overlay));
+  color: oklch(var(--fg-strong));
+}
+
+.graphiql-segmented-control-option[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.graphiql-segmented-control-option:has(
+  .graphiql-segmented-control-input:focus-visible
+) {
+  outline: 2px solid oklch(var(--accent-blue));
+  outline-offset: 1px;
+}
+
+.graphiql-segmented-control-icon {
+  display: inline-flex;
+}

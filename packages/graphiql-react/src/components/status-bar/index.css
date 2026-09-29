@@ -1,0 +1,45 @@
+.graphiql-status-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--px-12);
+  height: var(--status-bar-height);
+  flex-shrink: 0;
+  padding: 0 var(--px-12);
+  background: oklch(var(--bg-elevated));
+  border-top: 1px solid oklch(var(--border-default));
+  /* Mono + eyebrow + --fg-subtle is intentional here — the status bar
+     reads as a quiet metadata strip, unlike the top bar's primary-content
+     type scale. Leave this as-is. */
+  color: oklch(var(--fg-subtle));
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-eyebrow);
+}
+
+.graphiql-status-bar-conn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-6);
+  font-weight: 500;
+}
+
+.graphiql-status-bar-conn-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.graphiql-status-bar-conn-idle .graphiql-status-bar-conn-dot {
+  background: oklch(var(--fg-dim));
+}
+
+.graphiql-status-bar-conn-connecting .graphiql-status-bar-conn-dot {
+  background: oklch(var(--accent-yellow));
+}
+
+.graphiql-status-bar-conn-connected .graphiql-status-bar-conn-dot {
+  background: oklch(var(--accent-green));
+}
+
+.graphiql-status-bar-conn-error .graphiql-status-bar-conn-dot {
+  background: oklch(var(--accent-red));
+}

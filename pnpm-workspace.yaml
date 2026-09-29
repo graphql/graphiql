@@ -1,7 +1,7 @@
 packages:
   - packages/*
   - functions
-  - packages/graphiql/test
+  - packages/graphiql-e2e/test
   - examples/monaco-graphql-webpack
   - examples/monaco-graphql-nextjs
   - examples/monaco-graphql-react-vite
@@ -10,9 +10,12 @@ packages:
   - examples/graphiql-webpack
 
 minimumReleaseAge: 4320
+minimumReleaseAgeExclude:
+  - monaco-editor@0.57.0
 engineStrict: true
 nodeLinker: isolated
 linkWorkspacePackages: true
+preferWorkspacePackages: true
 
 allowBuilds:
   '@vscode/vsce-sign': false
@@ -23,6 +26,7 @@ allowBuilds:
   fsevents: false
   keytar: false
   msw: false
+  sharp: false
 
 overrides:
   '@babel/traverse': ^7.23.2

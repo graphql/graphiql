@@ -1,7 +1,7 @@
 .graphiql-dialog-overlay {
   position: fixed;
   inset: 0;
-  background-color: hsla(var(--color-neutral), var(--alpha-background-heavy));
+  background-color: oklch(0% 0 0 / 0.5);
   /**
    * CodeMirror has a `z-index` set for the container of the scrollbar of the
    * editor, so we have to add one here to make sure that the dialog is shown
@@ -11,10 +11,12 @@
 }
 
 .graphiql-dialog {
-  background-color: hsl(var(--color-base));
-  border: var(--popover-border);
-  border-radius: var(--border-radius-12);
-  box-shadow: var(--popover-box-shadow);
+  background: oklch(var(--bg-elevated));
+  border: 1px solid oklch(var(--border-default));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-popover);
+  color: oklch(var(--fg-default));
+  font-family: var(--font-family);
   margin: 0;
   max-height: 80vh;
   max-width: 80vw;
@@ -28,10 +30,58 @@
   z-index: 10;
 }
 
+.graphiql-dialog-close {
+  border-radius: var(--radius-sm);
+  color: oklch(var(--fg-muted));
+  padding: var(--px-4);
+
+  &:hover {
+    background: oklch(var(--bg-overlay));
+    color: oklch(var(--fg-default));
+  }
+}
+
 .graphiql-dialog-close > svg {
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
   display: block;
-  height: var(--px-12);
-  padding: var(--px-12);
-  width: var(--px-12);
+  height: var(--icon-size-md);
+  width: var(--icon-size-md);
+}
+
+.graphiql-dialog-header {
+  align-items: center;
+  border-bottom: 1px solid oklch(var(--border-default));
+  display: flex;
+  justify-content: space-between;
+  /* Keep the title and close button apart even when the dialog is only as wide
+     as its content (e.g. a short title), where `space-between` adds no room. */
+  gap: var(--px-16);
+  /* Less padding on the close-button side so the icon optically aligns with the
+     title (button padding + this ≈ --dialog-padding-x); the button carries its
+     own padding for the hit target. */
+  padding: var(--dialog-bar-padding-y) var(--px-12) var(--dialog-bar-padding-y)
+    var(--dialog-padding-x);
+}
+
+.graphiql-dialog-title {
+  color: oklch(var(--fg-strong));
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  font-weight: 600;
+  line-height: var(--line-height-body);
+  margin: 0;
+}
+
+.graphiql-dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dialog-gap);
+  padding: var(--dialog-padding-y) var(--dialog-padding-x);
+}
+
+.graphiql-dialog-footer {
+  border-top: 1px solid oklch(var(--border-default));
+  display: flex;
+  gap: var(--px-8);
+  justify-content: flex-end;
+  padding: var(--dialog-bar-padding-y) var(--dialog-padding-x);
 }

@@ -120,6 +120,26 @@ export interface EditorSlice extends TabsState {
   onCopyQuery?: (query: string) => void;
 
   /**
+   * Invoked when the current operation is saved, via the Save toolbar button or
+   * ⌘S. Receives the active tab (with the latest operation contents) so hosts
+   * can persist it — e.g. the collections plugin saves or updates a stored
+   * operation.
+   *
+   * Return `true` if the save was committed synchronously, so the dirty-state
+   * dot is cleared. Return `false`/nothing if the save was deferred (e.g. a
+   * dialog opened); the host should then call `markTabSaved` once it commits.
+   * @param tab - The active tab at the time of saving.
+   */
+  onSaveQuery?: (tab: TabState) => boolean | void;
+
+  /**
+   * Registered save handlers. Plugins call `registerSaveHandler` to add a
+   * handler here. The dirty-state dot and Save button appear only when at least
+   * one handler (or the `onSaveQuery` prop) is registered.
+   */
+  saveHandlers: Set<(tab: TabState) => boolean | void>;
+
+  /**
    * Invoked when the prettify callback is invoked.
    * @param query - The current value of the operation editor.
    * @default
@@ -214,6 +234,28 @@ export interface EditorActions {
   }): void;
 
   /**
+   * Save the current query. Triggered by the Save toolbar button or ⌘S.
+   * Delegates to all registered save handlers and the `onSaveQuery` prop.
+   * The dirty-state dot is cleared only when a handler returns `true`.
+   */
+  saveQuery(): void;
+
+  /**
+   * Mark a tab as saved, clearing its dirty-state dot. Hosts call this after a
+   * deferred save (e.g. a save dialog) commits.
+   * @param tabId - The id of the tab that was saved.
+   */
+  markTabSaved(tabId: string): void;
+
+  /**
+   * Registers a save handler. Plugins call this on mount to participate in
+   * ⌘S / Save. The dirty-state dot and Save button appear only when at least
+   * one handler (or the `onSaveQuery` prop) is registered.
+   * @returns An unregister function to call on unmount.
+   */
+  registerSaveHandler(handler: (tab: TabState) => boolean | void): () => void;
+
+  /**
    * Copy a query to clipboard.
    */
   copyQuery: () => Promise<void>;
@@ -236,6 +278,7 @@ export interface EditorProps extends Pick<
   | 'defaultHeaders'
   | 'defaultQuery'
   | 'onCopyQuery'
+  | 'onSaveQuery'
 > {
   /**
    * With this prop you can pass so-called "external" fragments that will be
@@ -291,6 +334,7 @@ type CreateEditorSlice = (
     | 'defaultHeaders'
     | 'onPrettifyQuery'
     | 'onCopyQuery'
+    | 'onSaveQuery'
     | 'uriInstanceId'
   >,
 ) => StateCreator<
@@ -333,14 +377,25 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       responseEditor,
       operationName,
     } = get();
+    const activeTab = tabsState.tabs[tabsState.activeTabIndex]!;
     return setPropertiesInActiveTab(tabsState, {
-      query: queryEditor?.getValue() ?? null,
-      variables: variableEditor?.getValue() ?? null,
-      headers: headerEditor?.getValue() ?? null,
-      response: responseEditor?.getValue() ?? null,
+      query: queryEditor?.getValue() ?? activeTab.query,
+      variables: variableEditor?.getValue() ?? activeTab.variables,
+      headers: headerEditor?.getValue() ?? activeTab.headers,
+      response: responseEditor?.getValue() ?? activeTab.response,
       operationName: operationName ?? null,
     });
   }
+
+  function persistTabs(tabsState: TabsState) {
+    const { shouldPersistHeaders, storage } = get();
+    storage.set(
+      STORAGE_KEY.tabs,
+      serializeTabState(tabsState, shouldPersistHeaders),
+    );
+  }
+
+  const scheduleTabPersistence = debounce(500, persistTabs);
 
   const $actions: EditorActions = {
     addTab() {
@@ -361,10 +416,13 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       });
     },
     changeTab(index) {
-      set(({ actions, onTabChange, tabs }) => {
+      set(({ actions, onTabChange, tabs, activeTabIndex }) => {
+        if (index === activeTabIndex) {
+          return {};
+        }
         actions.stop();
         const updated = {
-          tabs,
+          ...synchronizeActiveTabValues({ tabs, activeTabIndex }),
           activeTabIndex: index,
         };
         actions.storeTabs(updated);
@@ -448,18 +506,103 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       storage.set(STORAGE_KEY.persistHeaders, persist.toString());
       set({ shouldPersistHeaders: persist });
     },
-    storeTabs({ tabs, activeTabIndex }) {
-      const { shouldPersistHeaders, storage } = get();
-      const store = debounce(500, (value: string) => {
-        storage.set(STORAGE_KEY.tabs, value);
-      });
-      store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
+    storeTabs(tabsState) {
+      scheduleTabPersistence(tabsState);
     },
     setOperationFacts({ documentAST, operationName, operations }) {
       set({
         documentAST,
         operationName,
         operations,
+      });
+    },
+    /**
+     * Save the current query. Delegates to all registered save handlers and
+     * the `onSaveQuery` prop. The dirty dot clears only when a handler commits
+     * synchronously (returns `true`).
+     */
+    saveQuery() {
+      const {
+        queryEditor,
+        variableEditor,
+        headerEditor,
+        onSaveQuery,
+        saveHandlers,
+        tabs,
+        activeTabIndex,
+        actions,
+      } = get();
+      const activeTab = tabs[activeTabIndex];
+      if (!activeTab) {
+        return;
+      }
+      const handlers = [...saveHandlers];
+      if (onSaveQuery) {
+        handlers.push(onSaveQuery);
+      }
+      if (handlers.length === 0) {
+        return;
+      }
+      const tabArg = {
+        ...activeTab,
+        query: queryEditor?.getValue() ?? activeTab.query,
+        variables: variableEditor?.getValue() ?? activeTab.variables,
+        headers: headerEditor?.getValue() ?? activeTab.headers,
+      };
+      let committed = false;
+      for (const handler of handlers) {
+        if (handler(tabArg) === true) {
+          committed = true;
+        }
+      }
+      if (committed) {
+        actions.markTabSaved(activeTab.id);
+      }
+    },
+    markTabSaved(tabId) {
+      set(state => {
+        const {
+          activeTabIndex,
+          tabs,
+          onTabChange,
+          queryEditor,
+          variableEditor,
+          headerEditor,
+          storage,
+          shouldPersistHeaders,
+        } = state;
+        const activeTab = tabs[activeTabIndex];
+        const updated =
+          activeTab?.id === tabId
+            ? setPropertiesInActiveTab(
+                { tabs, activeTabIndex },
+                {
+                  query: queryEditor?.getValue() ?? activeTab.query,
+                  variables: variableEditor?.getValue() ?? activeTab.variables,
+                  headers: headerEditor?.getValue() ?? activeTab.headers,
+                  lastSavedQuery: queryEditor?.getValue() ?? activeTab.query,
+                },
+              )
+            : {
+                tabs: tabs.map(tab =>
+                  tab.id === tabId
+                    ? { ...tab, lastSavedQuery: tab.query }
+                    : tab,
+                ),
+                activeTabIndex,
+              };
+        scheduleTabPersistence.cancel();
+        persistTabs(updated);
+        if (activeTab?.id === tabId) {
+          const saved = updated.tabs[activeTabIndex]!;
+          storage.set(STORAGE_KEY.query, saved.query ?? '');
+          storage.set(STORAGE_KEY.variables, saved.variables ?? '');
+          if (shouldPersistHeaders) {
+            storage.set(STORAGE_KEY.headers, saved.headers ?? '');
+          }
+        }
+        onTabChange?.(updated);
+        return updated;
       });
     },
     async copyQuery() {
@@ -535,9 +678,24 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       }
       queryEditor!.setValue(print(mergeAst(documentAST, schema)));
     },
+    registerSaveHandler(handler) {
+      set(s => {
+        const next = new Set(s.saveHandlers);
+        next.add(handler);
+        return { saveHandlers: next };
+      });
+      return () => {
+        set(s => {
+          const next = new Set(s.saveHandlers);
+          next.delete(handler);
+          return { saveHandlers: next };
+        });
+      };
+    },
   };
   return {
     ...initial,
+    saveHandlers: new Set(),
     actions: $actions,
   };
 };

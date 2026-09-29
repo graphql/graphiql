@@ -11,18 +11,21 @@ import {
   MONACO_THEME_DATA,
 } from '../constants';
 
+type InitializeOptions = Pick<
+  MonacoGraphQLInitializeConfig,
+  'experimentalFragmentArguments'
+>;
+
 interface MonacoStoreType {
-  monaco?: typeof import('monaco-editor');
+  monaco?: typeof import('monaco-graphql/monaco-editor');
   monacoGraphQL?: MonacoGraphQLAPI;
   actions: {
-    initialize: (
-      options?: Pick<
-        MonacoGraphQLInitializeConfig,
-        'experimentalFragmentArguments'
-      >,
-    ) => Promise<void>;
+    initialize: (options?: InitializeOptions) => Promise<void>;
   };
 }
+
+type InitializedMonaco = Pick<MonacoStoreType, 'monaco' | 'monacoGraphQL'>;
+type LoadMonaco = (options?: InitializeOptions) => Promise<InitializedMonaco>;
 
 /**
  * Patch for Firefox compatibility:
@@ -41,7 +44,7 @@ interface MonacoStoreType {
 async function patchFirefox() {
   const { MouseTargetFactory } = await import(
     // @ts-expect-error -- no types
-    'monaco-editor/esm/vs/editor/browser/controller/mouseTarget.js'
+    'monaco-editor/editor/browser/controller/mouseTarget.js'
   );
   const originalFn = MouseTargetFactory._doHitTestWithCaretPositionFromPoint;
 
@@ -64,6 +67,46 @@ async function patchFirefox() {
   };
 }
 
+async function loadMonaco(
+  options?: InitializeOptions,
+): Promise<InitializedMonaco> {
+  const [monaco, { initializeMode }, { jsonDefaults }] = await Promise.all([
+    import('monaco-graphql/esm/monaco-editor.js'),
+    import('monaco-graphql/esm/lite.js'),
+    import('monaco-editor/languages/features/json/register'),
+  ]);
+  globalThis.__MONACO = monaco;
+  jsonDefaults.setDiagnosticsOptions(JSON_DIAGNOSTIC_OPTIONS);
+  monaco.editor.defineTheme(MONACO_THEME_NAME.dark, MONACO_THEME_DATA.dark);
+  monaco.editor.defineTheme(MONACO_THEME_NAME.light, MONACO_THEME_DATA.light);
+  if (navigator.userAgent.includes('Firefox/')) {
+    void patchFirefox();
+  }
+  const monacoGraphQL = initializeMode({
+    diagnosticSettings: MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
+    ...options,
+  });
+  return { monaco, monacoGraphQL };
+}
+
+export function createMonacoInitializer(load: LoadMonaco = loadMonaco) {
+  let initialization: Promise<InitializedMonaco> | undefined;
+
+  return async (options?: InitializeOptions) => {
+    const current = (initialization ??= load(options));
+    try {
+      return await current;
+    } catch (error) {
+      if (initialization === current) {
+        initialization = undefined;
+      }
+      throw error;
+    }
+  };
+}
+
+const initializeMonaco = createMonacoInitializer();
+
 /**
  * Dynamically load `monaco-editor` and `monaco-graphql` in `useEffect` after component renders.
  *
@@ -78,27 +121,7 @@ export const monacoStore = createStore<MonacoStoreType>((set, get) => ({
       if (isInitialized) {
         return;
       }
-      const [monaco, { initializeMode }] = await Promise.all([
-        import('monaco-graphql/esm/monaco-editor.js'),
-        import('monaco-graphql/esm/lite.js'),
-      ]);
-      globalThis.__MONACO = monaco;
-      monaco.languages.json.jsonDefaults.setDiagnosticsOptions(
-        JSON_DIAGNOSTIC_OPTIONS,
-      );
-      monaco.editor.defineTheme(MONACO_THEME_NAME.dark, MONACO_THEME_DATA.dark);
-      monaco.editor.defineTheme(
-        MONACO_THEME_NAME.light,
-        MONACO_THEME_DATA.light,
-      );
-      if (navigator.userAgent.includes('Firefox/')) {
-        void patchFirefox();
-      }
-      const monacoGraphQL = initializeMode({
-        diagnosticSettings: MONACO_GRAPHQL_DIAGNOSTIC_SETTINGS,
-        ...options,
-      });
-      set({ monaco, monacoGraphQL });
+      set(await initializeMonaco(options));
     },
   },
 }));

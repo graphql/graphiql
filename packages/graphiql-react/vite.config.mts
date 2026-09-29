@@ -58,7 +58,12 @@ export const plugins: PluginOption[] = [
   dts({
     include: ['src/**'],
     outDir: ['dist'],
-    exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],
+    exclude: [
+      '**/*.spec.{ts,tsx}',
+      '**/*.test.{ts,tsx}',
+      '**/*.stories.{ts,tsx}',
+      '**/__tests__/',
+    ],
   }),
   {
     name: 'copy-original-setup-workers-file',

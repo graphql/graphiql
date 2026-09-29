@@ -45,9 +45,6 @@ const resultConfig = {
     extensions: ['.ts', '.js'],
   },
   plugins: [
-    // in order to prevent async modules for CDN builds
-    // until we can guarantee it will work with the CDN properly
-    // and so that `index.umd.js` can retain parity
     new HtmlWebpackPlugin({
       template: relPath('src/index.html.ejs'),
       filename: 'index.html',

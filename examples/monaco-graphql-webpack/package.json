@@ -10,12 +10,12 @@
     "build-demo": "node ../../scripts/stage-demo.mts monaco"
   },
   "dependencies": {
-    "graphql": "^16",
-    "graphql-language-service": "^5.7.0",
+    "graphql": "^16.14.2",
+    "graphql-language-service": "^6.0.0-rc.0",
     "json-schema": "^0.4",
     "jsonc-parser": "^3",
-    "monaco-editor": "^0.52",
-    "monaco-graphql": "^1.9.0",
+    "monaco-editor": "0.57.0",
+    "monaco-graphql": "^2.0.0-rc.0",
     "prettier": "^3"
   },
   "devDependencies": {

@@ -1,4 +1,8 @@
-import { parse } from 'graphql';
+import {
+  parse,
+  type DocumentNode,
+  type OperationDefinitionNode,
+} from 'graphql';
 
 import { StorageAPI } from './base';
 import { QueryStore, QueryStoreItem } from './query';
@@ -25,28 +29,23 @@ export class HistoryStore {
     this.queries = [...this.history.fetchAll(), ...this.favorite.fetchAll()];
   }
 
-  private shouldSaveQuery(
-    query?: string,
-    variables?: string,
-    headers?: string,
-    lastQuerySaved?: QueryStoreItem,
-  ) {
-    if (!query) {
-      return false;
+  private parseForHistory(
+    query: string | undefined,
+    variables: string | undefined,
+    headers: string | undefined,
+    lastQuerySaved: QueryStoreItem | undefined,
+  ): DocumentNode | null {
+    if (!query || query.length > MAX_QUERY_SIZE) {
+      return null;
     }
-
+    let document: DocumentNode;
     try {
-      parse(query);
+      document = parse(query);
     } catch {
-      return false;
-    }
-
-    // Don't try to save giant queries
-    if (query.length > MAX_QUERY_SIZE) {
-      return false;
+      return null;
     }
     if (!lastQuerySaved) {
-      return true;
+      return document;
     }
     if (JSON.stringify(query) === JSON.stringify(lastQuerySaved.query)) {
       if (
@@ -55,17 +54,17 @@ export class HistoryStore {
         if (
           JSON.stringify(headers) === JSON.stringify(lastQuerySaved.headers)
         ) {
-          return false;
+          return null;
         }
         if (headers && !lastQuerySaved.headers) {
-          return false;
+          return null;
         }
       }
       if (variables && !lastQuerySaved.variables) {
-        return false;
+        return null;
       }
     }
-    return true;
+    return document;
   }
 
   updateHistory = ({
@@ -74,21 +73,24 @@ export class HistoryStore {
     headers,
     operationName,
   }: QueryStoreItem) => {
-    if (
-      !this.shouldSaveQuery(
-        query,
-        variables,
-        headers,
-        this.history.fetchRecent(),
-      )
-    ) {
+    const document = this.parseForHistory(
+      query,
+      variables,
+      headers,
+      this.history.fetchRecent(),
+    );
+    if (!document) {
       return;
     }
+    const operation = document.definitions.find(
+      (d): d is OperationDefinitionNode => d.kind === 'OperationDefinition',
+    )?.operation;
     this.history.push({
       query,
       variables,
       headers,
       operationName,
+      operation,
     });
     const historyQueries = this.history.items;
     const favoriteQueries = this.favorite.items;
@@ -100,6 +102,7 @@ export class HistoryStore {
     variables,
     headers,
     operationName,
+    operation,
     label,
     favorite,
   }: QueryStoreItem) {
@@ -108,6 +111,7 @@ export class HistoryStore {
       variables,
       headers,
       operationName,
+      operation,
       label,
     };
     if (favorite) {
@@ -128,6 +132,7 @@ export class HistoryStore {
       variables,
       headers,
       operationName,
+      operation,
       label,
       favorite,
     }: QueryStoreItem,
@@ -138,6 +143,7 @@ export class HistoryStore {
       variables,
       headers,
       operationName,
+      operation,
       label,
     };
     if (favorite) {

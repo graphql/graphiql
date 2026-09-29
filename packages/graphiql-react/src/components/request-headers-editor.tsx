@@ -7,7 +7,8 @@ import {
   createEditor,
   onEditorContainerKeyDown,
 } from '../utility/create-editor';
-import { useChangeHandler, pick, cleanupDisposables, cn } from '../utility';
+import { clsx } from 'clsx';
+import { useChangeHandler, pick, cleanupDisposables } from '../utility';
 import { useMonaco } from '../stores';
 
 interface RequestHeadersEditorProps extends EditorProps {
@@ -59,7 +60,7 @@ export const RequestHeadersEditor: FC<RequestHeadersEditorProps> = ({
       tabIndex={0}
       onKeyDown={onEditorContainerKeyDown}
       {...props}
-      className={cn('graphiql-editor', props.className)}
+      className={clsx('graphiql-editor', props.className)}
     />
   );
 };

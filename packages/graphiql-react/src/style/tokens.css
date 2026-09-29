@@ -1,0 +1,314 @@
+/*
+ * v6 design tokens.
+ *
+ * Color tokens are stored as OKLCH component triplets (L% C H) so callers
+ * can combine them with alpha at the use site:
+ *
+ *     background: oklch(var(--bg-canvas));
+ *     color: oklch(var(--fg-default) / 0.6);
+ *
+ * Variable names defined here are the supported retheming surface; class
+ * names and internal selectors are not public API.
+ */
+
+:root,
+[data-theme='dark'] {
+  /* Backgrounds */
+  --bg-canvas: 17.63% 0.014 258; /* #0D1117 */
+  --bg-elevated: 10.39% 0.019 248; /* #010409 */
+  --bg-subtle: 22.02% 0.016 257; /* #161B22 */
+  --bg-overlay: 26.66% 0.015 257; /* #21262D */
+
+  /* Borders */
+  --border-default: 24.58% 0.015 257; /* #1C2128 */
+  --border-muted: 26.66% 0.015 257; /* #21262D */
+  --border-strong: 33% 0.015 252; /* #30363D */
+
+  /* Foreground */
+  --fg-default: 85.69% 0.014 248; /* #C9D1D9 */
+  --fg-strong: 97.03% 0.01 248; /* #F0F6FC */
+  --fg-muted: 66.25% 0.018 251; /* #8B949E */
+  --fg-subtle: 61.37% 0.019 256; /* #7D8590 */
+  --fg-disabled: 56.29% 0.02 256; /* #6E7681 */
+  --fg-dim: 42.47% 0.017 255; /* #484F58 */
+
+  /* Accents
+   *
+   * GraphQL identifier coloring is shared across the first-party plugins
+   * (doc explorer, history, query builder) so a given kind reads the same
+   * color everywhere:
+   *   - type names             -> by category, via --type-* (see below)
+   *   - field names            -> --accent-green-light
+   *   - argument names         -> --accent-purple
+   *   - directives             -> --accent-purple
+   *   - enum / default values  -> --accent-green-light / --accent-green
+   *
+   * Type names are further split by category. These --type-* tokens are the
+   * supported public surface for retheming type coloring; plugins reference
+   * them (never the raw --accent-* below) and third-party plugins may too:
+   *   - object / interface / union -> --type-composite
+   *   - scalar                     -> --type-scalar
+   *   - enum                       -> --type-enum
+   *   - input object               -> --type-input
+   */
+  --accent-blue: 78.57% 0.115 247; /* #79C0FF */
+  --accent-green: 69.51% 0.181 146; /* #3FB950 */
+  --accent-green-light: 84.16% 0.164 146; /* #7EE787 */
+  --accent-yellow: 85.74% 0.133 90; /* #F2CC60 */
+  --accent-orange: 79.91% 0.141 60; /* #FFA657 */
+  --accent-red: 66.51% 0.205 27; /* #F85149 */
+  --accent-purple: 80.05% 0.127 306; /* #D2A8FF */
+  --accent-pink: 73.45% 0.163 26; /* #FF7B72 */
+
+  /* Type-name categories (see Accents comment). Public retheming surface. */
+  --type-composite: var(--accent-orange);
+  --type-scalar: var(--accent-blue);
+  --type-enum: var(--accent-green);
+  --type-input: var(--accent-yellow);
+
+  /* Action button (Run) */
+  --btn-primary: 54.6% 0.147 146; /* #238636 */
+  --btn-primary-border: 62.22% 0.166 146; /* #2EA043 */
+
+  /* Typography */
+  --font-family: 'Roboto', ui-sans-serif, system-ui, sans-serif;
+  --font-family-mono: 'Fira Code', ui-monospace, monospace;
+  --letter-spacing-ui: -0.005em;
+
+  /* Spacing scale */
+  --px-4: 4px;
+  --px-6: 6px;
+  --px-8: 8px;
+  --px-10: 10px;
+  --px-12: 12px;
+  --px-14: 14px;
+  --px-16: 16px;
+  --px-24: 24px;
+  --px-32: 32px;
+
+  /* Layout dimensions (fixed; density-controlled dimensions live below) */
+  --side-panel-width: 340px;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* Shadows */
+  --shadow-popover:
+    0 4px 12px oklch(0% 0 0 / 0.3), 0 1px 3px oklch(0% 0 0 / 0.15);
+
+  /* Motion */
+  --transition-fast: 120ms ease;
+}
+
+[data-theme='light'] {
+  /* Backgrounds */
+  --bg-canvas: 99% 0.005 248;
+  --bg-elevated: 100% 0 248;
+  --bg-subtle: 96% 0.008 248;
+  --bg-overlay: 92% 0.01 248;
+
+  /* Borders — higher chroma than the dark theme so dividers hold up against
+   * the brighter backgrounds. */
+  --border-default: 86% 0.016 248;
+  --border-muted: 80% 0.018 248;
+  --border-strong: 72% 0.02 248;
+
+  /* Foreground */
+  --fg-default: 20% 0.013 248;
+  --fg-strong: 12% 0.011 248;
+  --fg-muted: 40% 0.013 248;
+  --fg-subtle: 50% 0.012 248;
+  --fg-disabled: 46% 0.012 248;
+  --fg-dim: 55% 0.011 248;
+
+  /* Accents — slightly darker / more saturated for AA contrast on light bg */
+  --accent-blue: 50% 0.193 248;
+  --accent-green: 50% 0.176 145;
+  /* Used as text (field/enum names), so on a light background it has to sit
+   * darker than `--accent-green` to clear AA — despite the "light" name, which
+   * describes its dark-theme appearance. Don't lighten it. */
+  --accent-green-light: 42% 0.19 145;
+  --accent-yellow: 70% 0.15 86;
+  --accent-orange: 48% 0.165 60;
+  --accent-red: 55% 0.224 27;
+  --accent-purple: 45% 0.18 295;
+  --accent-pink: 58% 0.22 17;
+
+  /* Type-name categories. Composite/scalar/enum alias the AA-tuned light
+   * accents; input gets its own darker gold because --accent-yellow is only
+   * AA-safe as a background fill, not as text. */
+  --type-composite: var(--accent-orange);
+  --type-scalar: var(--accent-blue);
+  --type-enum: var(--accent-green-light);
+  --type-input: 48% 0.115 92;
+
+  /* Action button (Run) — keeps the green; inverted bg lets it stand out */
+  --btn-primary: 51% 0.15 145;
+  --btn-primary-border: 45% 0.17 145;
+
+  /* Shadows — lighter to read on light surfaces */
+  --shadow-popover:
+    0 4px 12px oklch(0% 0 0 / 0.08), 0 1px 3px oklch(0% 0 0 / 0.04);
+
+  /* Typography, spacing, dimensions, and radii are inherited from :root. */
+}
+
+/* -------------------------------------------------------------------------
+ * Density presets
+ *
+ * `comfortable` is the default; the combined selector makes it the fallback
+ * when the attribute is absent.
+ * ---------------------------------------------------------------------- */
+
+:root,
+[data-density='comfortable'] {
+  --row-padding-y: 5px;
+  --row-padding-x: 14px;
+  --button-padding-y: 4px;
+  --button-padding-x: 10px;
+  --top-bar-height: 40px;
+  --status-bar-height: 24px;
+  --rail-width: 48px;
+  --tab-strip-height: 32px;
+  --dialog-padding-x: 16px;
+  --dialog-padding-y: 16px;
+  --dialog-bar-padding-y: 6px;
+  --dialog-gap: 16px;
+
+  /* Icon-button hit-target sizes. -sm/-md/-lg cover the three sizes icon
+     buttons render at today (response header / activity rail / top-bar
+     toolbar), so all three can read one scale instead of each hardcoding
+     its own pixel value. */
+  --icon-button-size-sm: 28px;
+  --icon-button-size-md: 32px;
+  --icon-button-size-lg: 40px;
+}
+
+[data-density='compact'] {
+  --row-padding-y: 2px;
+  --row-padding-x: 10px;
+  --button-padding-y: 2px;
+  --button-padding-x: 7px;
+  --top-bar-height: 34px;
+  --status-bar-height: 20px;
+  --rail-width: 42px;
+  --tab-strip-height: 26px;
+  --dialog-padding-x: 12px;
+  --dialog-padding-y: 12px;
+  --dialog-bar-padding-y: 4px;
+  --dialog-gap: 12px;
+  --icon-button-size-sm: 24px;
+  --icon-button-size-md: 26px;
+  --icon-button-size-lg: 34px;
+}
+
+[data-density='spacious'] {
+  --row-padding-y: 9px;
+  --row-padding-x: 19px;
+  --button-padding-y: 7px;
+  --button-padding-x: 14px;
+  --top-bar-height: 48px;
+  --status-bar-height: 30px;
+  --rail-width: 56px;
+  --tab-strip-height: 40px;
+  --dialog-padding-x: 20px;
+  --dialog-padding-y: 20px;
+  --dialog-bar-padding-y: 10px;
+  --dialog-gap: 20px;
+  --icon-button-size-sm: 34px;
+  --icon-button-size-md: 40px;
+  --icon-button-size-lg: 48px;
+}
+
+/* -------------------------------------------------------------------------
+ * Font-size presets
+ *
+ * `default` doubles as the fallback via the combined selector.
+ * ---------------------------------------------------------------------- */
+
+:root,
+[data-font-size='default'] {
+  --font-size-body: 13px;
+  --font-size-small: 11px;
+  --font-size-mono: 12px;
+  --font-size-eyebrow: 10.5px;
+  --line-height-body: 18px;
+  --icon-size-sm: 10px;
+  --icon-size-md: 12px;
+  --icon-size-lg: 16px;
+}
+
+[data-font-size='compact'] {
+  --font-size-body: 12px;
+  --font-size-small: 11px;
+  --font-size-mono: 11.5px;
+  --font-size-eyebrow: 10px;
+  --line-height-body: 16px;
+  --icon-size-sm: 9px;
+  --icon-size-md: 11px;
+  --icon-size-lg: 15px;
+}
+
+[data-font-size='large'] {
+  --font-size-body: 14px;
+  --font-size-small: 12px;
+  --font-size-mono: 13px;
+  --font-size-eyebrow: 11.5px;
+  --line-height-body: 20px;
+  --icon-size-sm: 11px;
+  --icon-size-md: 13px;
+  --icon-size-lg: 18px;
+}
+
+[data-font-size='xl'] {
+  --font-size-body: 16px;
+  --font-size-small: 14px;
+  --font-size-mono: 14px;
+  --font-size-eyebrow: 13px;
+  --line-height-body: 22px;
+  --icon-size-sm: 12px;
+  --icon-size-md: 15px;
+  --icon-size-lg: 20px;
+}
+
+/*
+ * Apply light overrides automatically when the system prefers light and the
+ * user has not pinned dark. The values are duplicated rather than relying on
+ * inheritance into a media query, which can resolve inconsistently across
+ * browsers when the source rule is keyed off a different selector.
+ */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    --bg-canvas: 99% 0.005 248;
+    --bg-elevated: 100% 0 248;
+    --bg-subtle: 96% 0.008 248;
+    --bg-overlay: 92% 0.01 248;
+    --border-default: 86% 0.016 248;
+    --border-muted: 80% 0.018 248;
+    --border-strong: 72% 0.02 248;
+    --fg-default: 20% 0.013 248;
+    --fg-strong: 12% 0.011 248;
+    --fg-muted: 40% 0.013 248;
+    --fg-subtle: 50% 0.012 248;
+    --fg-disabled: 46% 0.012 248;
+    --fg-dim: 55% 0.011 248;
+    --accent-blue: 50% 0.193 248;
+    --accent-green: 50% 0.176 145;
+    --accent-green-light: 42% 0.19 145;
+    --accent-yellow: 70% 0.15 86;
+    --accent-orange: 48% 0.165 60;
+    --accent-red: 55% 0.224 27;
+    --accent-purple: 45% 0.18 295;
+    --accent-pink: 58% 0.22 17;
+    --type-composite: var(--accent-orange);
+    --type-scalar: var(--accent-blue);
+    --type-enum: var(--accent-green-light);
+    --type-input: 48% 0.115 92;
+    --btn-primary: 51% 0.15 145;
+    --btn-primary-border: 45% 0.17 145;
+    --shadow-popover:
+      0 4px 12px oklch(0% 0 0 / 0.08), 0 1px 3px oklch(0% 0 0 / 0.04);
+  }
+}

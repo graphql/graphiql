@@ -118,16 +118,16 @@ describe('createGraphiQLFetcher', () => {
     expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([]);
   });
 
-  it('returns fetcher with custom legacyClient', () => {
+  it('returns fetcher with custom legacyWsClient', () => {
     // @ts-expect-error
     createClient.mockReturnValue('WSClient');
     // @ts-expect-error
     createLegacyWebsocketsFetcher.mockReturnValue('CustomWSSFetcher');
 
-    const legacyClient = new SubscriptionClient(wssURL);
+    const legacyWsClient = new SubscriptionClient(wssURL);
     const args = {
       url: serverURL,
-      legacyClient,
+      legacyWsClient,
       enableIncrementalDelivery: true,
     };
 

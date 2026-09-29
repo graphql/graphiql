@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-history",
-  "version": "0.4.4",
+  "version": "1.0.0-rc.0",
   "sideEffects": [
     "*.css"
   ],
@@ -37,17 +37,19 @@
     "test": "vitest run"
   },
   "peerDependencies": {
-    "@graphiql/react": "^0.39.0",
+    "@graphiql/react": "^1.0.0-rc.0",
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   },
   "dependencies": {
-    "@graphiql/toolkit": "^0.12.0",
+    "@graphiql/toolkit": "^1.0.0-rc.0",
+    "clsx": "^1.2.1",
     "react-compiler-runtime": "19.1.0-rc.3",
     "zustand": "^5"
   },
   "devDependencies": {
-    "@graphiql/react": "^0.39.0",
+    "@graphiql/react": "^1.0.0-rc.0",
+    "@storybook/react-vite": "^10.3.6",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.1.0",
     "@types/react": "^19",
@@ -56,7 +58,7 @@
     "@vitejs/plugin-react": "^5.2.0",
     "@vitest/web-worker": "^4.1.6",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
-    "monaco-editor": "0.52.2",
+    "monaco-editor": ">=0.56.0 <0.58.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "vite": "^8.2.2",

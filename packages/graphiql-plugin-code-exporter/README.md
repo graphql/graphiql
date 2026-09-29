@@ -26,12 +26,12 @@ Example integration:
 
 ```jsx
 import { GraphiQL } from 'graphiql';
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { createTransport } from '@graphiql/toolkit';
 import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
 import 'graphiql/style.css';
 import '@graphiql/plugin-code-exporter/style.css';
 
-const fetcher = createGraphiQLFetcher({
+const transport = createTransport({
   url: 'https://countries.trevorblades.com',
 });
 function getQuery(arg, spaceCount = 2) {
@@ -70,7 +70,7 @@ const codeExporter = codeExporterPlugin({
   ],
 });
 function App() {
-  return <GraphiQL fetcher={fetcher} plugins={[codeExporter]} />;
+  return <GraphiQL transport={transport} plugins={[codeExporter]} />;
 }
 ```
 

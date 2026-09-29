@@ -1,13 +1,13 @@
 .graphiql-dropdown-content {
-  background-color: hsl(var(--color-base));
-  border: var(--popover-border);
-  border-radius: var(--border-radius-8);
-  box-shadow: var(--popover-box-shadow);
-  font-size: inherit;
+  background: oklch(var(--bg-elevated));
+  border: 1px solid oklch(var(--border-default));
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-popover);
+  color: oklch(var(--fg-default));
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
   max-width: 250px;
   padding: var(--px-4);
-  font-family: var(--font-family);
-  color: hsl(var(--color-neutral));
   max-height: min(
     calc(var(--radix-dropdown-menu-content-available-height) - 10px),
     400px
@@ -16,25 +16,37 @@
 }
 
 .graphiql-dropdown-item {
-  border-radius: var(--border-radius-4);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
   font-size: inherit;
+  line-height: var(--line-height-body);
   margin: var(--px-4);
+  outline: none;
   overflow: hidden;
-  padding: var(--px-6) var(--px-8);
+  padding: var(--row-padding-y) var(--row-padding-x);
   text-overflow: ellipsis;
   white-space: nowrap;
-  outline: none;
-  cursor: pointer;
-  line-height: var(--line-height);
 
-  &[data-selected],
-  &[data-current-nav],
+  &[data-highlighted],
   &:hover {
-    background-color: hsla(var(--color-neutral), var(--alpha-background-light));
-    color: inherit;
+    background: oklch(var(--bg-overlay));
+    color: oklch(var(--fg-strong));
+    outline: none;
+  }
+
+  &[data-disabled] {
+    color: oklch(var(--fg-disabled));
+    cursor: default;
+    pointer-events: none;
   }
 
   &:not(:first-child) {
     margin-top: 0;
   }
+}
+
+.graphiql-dropdown-separator {
+  border: none;
+  border-top: 1px solid oklch(var(--border-muted));
+  margin: var(--px-4) 0;
 }

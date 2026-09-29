@@ -1,7 +1,7 @@
 /* eslint-disable import-x/default -- false positive */
-import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker.js?worker';
+import JsonWorker from 'monaco-editor/languages/features/json/json.worker.js?worker';
 import GraphQLWorker from 'monaco-graphql/esm/graphql.worker.js?worker';
-import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker.js?worker';
+import EditorWorker from 'monaco-editor/editor/editor.worker.js?worker';
 
 /**
  * Setup Monaco Editor workers for Vite.
@@ -9,7 +9,7 @@ import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker.js?worker';
  * Vite doesn’t support instantiating web workers directly from bare module imports like:
  *
  * ```js
- * new Worker(new URL('monaco-editor/esm/vs/language/json/json.worker.js', import.meta.url))
+ * new Worker(new URL('monaco-editor/languages/features/json/json.worker.js', import.meta.url))
  * ```
  */
 globalThis.MonacoEnvironment = {

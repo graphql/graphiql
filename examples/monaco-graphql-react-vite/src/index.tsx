@@ -1,8 +1,8 @@
 /* eslint-disable import-x/default */
 import { createRoot } from 'react-dom/client';
-import JsonWorker from 'monaco-editor/esm/vs/language/json/json.worker.js?worker';
-import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker.js?worker';
-import TSWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker.js?worker';
+import JsonWorker from 'monaco-editor/languages/features/json/json.worker.js?worker';
+import EditorWorker from 'monaco-editor/editor/editor.worker.js?worker';
+import TSWorker from 'monaco-editor/languages/features/typescript/ts.worker.js?worker';
 import GraphQLWorker from 'monaco-graphql/esm/graphql.worker.js?worker';
 import Editor from './editor';
 import './globals.css';
@@ -12,7 +12,7 @@ import './globals.css';
  *
  * Vite doesn’t support instantiating web workers directly from bare module imports like this:
  * ```
- * new Worker(new URL('monaco-editor/esm/vs/language/json/json.worker.js', import.meta.url))
+ * new Worker(new URL('monaco-editor/languages/features/json/json.worker.js', import.meta.url))
  * ```
  * Vite needs to know ahead of time that you are loading a web worker.
  */

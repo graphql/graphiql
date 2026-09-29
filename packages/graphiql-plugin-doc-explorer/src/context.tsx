@@ -18,6 +18,7 @@ import { FC, ReactElement, ReactNode, useEffect } from 'react';
 import {
   SchemaReference,
   useGraphiQL,
+  useGraphiQLActions,
   pick,
   createBoundedUseStore,
   GraphiQLPlugin,
@@ -96,177 +97,201 @@ export type DocExplorerStoreType = {
   };
 };
 
-const INITIAL_NAV_STACK: DocExplorerNavStack = [{ name: 'Docs' }];
+const INITIAL_NAV_STACK: DocExplorerNavStack = [{ name: 'Root' }];
 
-export const docExplorerStore = createStore<DocExplorerStoreType>(
-  (set, get) => ({
-    explorerNavStack: INITIAL_NAV_STACK,
-    actions: {
-      push(item) {
-        set(state => {
-          const curr = state.explorerNavStack;
-          const lastItem = curr.at(-1)!;
-          const explorerNavStack: DocExplorerNavStack =
-            // Avoid pushing duplicate items
-            lastItem.def === item.def ? curr : [...curr, item];
+export const docExplorerStore = createStore<DocExplorerStoreType>(set => ({
+  explorerNavStack: INITIAL_NAV_STACK,
+  actions: {
+    push(item) {
+      set(state => {
+        const curr = state.explorerNavStack;
+        const lastItem = curr.at(-1)!;
+        const explorerNavStack: DocExplorerNavStack =
+          // Avoid pushing duplicate items
+          lastItem.def === item.def ? curr : [...curr, item];
 
-          return { explorerNavStack };
-        });
-      },
-      pop() {
-        set(state => {
-          const curr = state.explorerNavStack;
+        return { explorerNavStack };
+      });
+    },
+    pop() {
+      set(state => {
+        const curr = state.explorerNavStack;
 
-          const explorerNavStack =
-            curr.length > 1 ? (curr.slice(0, -1) as DocExplorerNavStack) : curr;
+        const explorerNavStack =
+          curr.length > 1 ? (curr.slice(0, -1) as DocExplorerNavStack) : curr;
 
-          return { explorerNavStack };
-        });
-      },
-      reset() {
-        set(state => {
-          const curr = state.explorerNavStack;
-          const explorerNavStack = curr.length === 1 ? curr : INITIAL_NAV_STACK;
-          return { explorerNavStack };
-        });
-      },
-      resolveSchemaReferenceToNavItem(schemaReference) {
-        if (!schemaReference) {
-          return;
+        return { explorerNavStack };
+      });
+    },
+    reset() {
+      set(state => {
+        const curr = state.explorerNavStack;
+        const explorerNavStack = curr.length === 1 ? curr : INITIAL_NAV_STACK;
+        return { explorerNavStack };
+      });
+    },
+    resolveSchemaReferenceToNavItem(schemaReference) {
+      if (!schemaReference) {
+        return;
+      }
+      const { kind, typeInfo } = schemaReference;
+      const ref = getSchemaReference(kind, typeInfo);
+      if (!ref) {
+        return;
+      }
+
+      // Replace the current path with the path to the referenced item,
+      // rather than appending to it; repeatedly clicking the same reference
+      // must not grow the stack.
+      const items: DocExplorerNavStackItem[] = [];
+      switch (ref.kind) {
+        case 'Type': {
+          items.push({
+            name: ref.type.name,
+            def: ref.type,
+          });
+          break;
         }
-        const { kind, typeInfo } = schemaReference;
-        const ref = getSchemaReference(kind, typeInfo);
-        if (!ref) {
-          return;
-        }
-
-        const { push } = get().actions;
-        switch (ref.kind) {
-          case 'Type': {
-            push({
+        case 'Field': {
+          // Show a field type on stack
+          if (ref.type) {
+            items.push({
               name: ref.type.name,
               def: ref.type,
             });
-            break;
           }
-          case 'Field': {
-            // Show a field type on stack
-            if (ref.type) {
-              push({
-                name: ref.type.name,
-                def: ref.type,
-              });
-            }
-            push({
+          items.push({
+            name: ref.field.name,
+            def: ref.field,
+          });
+          break;
+        }
+        case 'Argument': {
+          if (ref.field) {
+            items.push({
               name: ref.field.name,
               def: ref.field,
             });
-            break;
           }
-          case 'Argument': {
-            if (ref.field) {
-              push({
-                name: ref.field.name,
-                def: ref.field,
-              });
-            }
-            break;
+          break;
+        }
+        case 'EnumValue': {
+          if (ref.type) {
+            items.push({
+              name: ref.type.name,
+              def: ref.type,
+            });
           }
-          case 'EnumValue': {
-            if (ref.type) {
-              push({
-                name: ref.type.name,
-                def: ref.type,
-              });
+          break;
+        }
+      }
+      if (items.length > 0) {
+        set({ explorerNavStack: [INITIAL_NAV_STACK[0], ...items] });
+      }
+    },
+    rebuildNavStackWithSchema(schema: GraphQLSchema) {
+      set(state => {
+        const oldNavStack = state.explorerNavStack;
+        if (oldNavStack.length === 1) {
+          return state;
+        }
+        // Spread is needed
+        const newNavStack: DocExplorerNavStack = [...INITIAL_NAV_STACK];
+        let lastEntity:
+          | GraphQLNamedType
+          | GraphQLField<unknown, unknown>
+          | null = null;
+        for (const item of oldNavStack) {
+          if (item === INITIAL_NAV_STACK[0]) {
+            // No need to copy the initial item
+            continue;
+          }
+          if (item.def) {
+            // If item.def isn't a named type, it must be a field, inputField, or argument
+            if (isNamedType(item.def)) {
+              // The type needs to be replaced with the new schema type of the same name
+              const newType = schema.getType(item.def.name);
+              if (newType) {
+                newNavStack.push({
+                  name: item.name,
+                  def: newType,
+                });
+                lastEntity = newType;
+              } else {
+                // This type no longer exists; the stack cannot be built beyond here
+                break;
+              }
+            } else if (lastEntity === null) {
+              // We can't have a sub-entity if we have no entity; stop rebuilding the nav stack
+              break;
+            } else if (
+              isObjectType(lastEntity) ||
+              isInputObjectType(lastEntity)
+            ) {
+              // item.def must be a Field / input field; replace with the new field of the same name
+              const field = lastEntity.getFields()[item.name];
+              if (field) {
+                newNavStack.push({
+                  name: item.name,
+                  def: field,
+                });
+              } else {
+                // This field no longer exists; the stack cannot be built beyond here
+                break;
+              }
+            } else if (
+              isScalarType(lastEntity) ||
+              isEnumType(lastEntity) ||
+              isInterfaceType(lastEntity) ||
+              isUnionType(lastEntity)
+            ) {
+              // These don't (currently) have non-type sub-entries; something has gone wrong.
+              // Handle gracefully by discontinuing rebuilding the stack.
+              break;
+            } else {
+              // lastEntity must be a field (because it's not a named type)
+              const field: GraphQLField<unknown, unknown> = lastEntity;
+              // Thus item.def must be an argument, so find the same named argument in the new schema
+              if (field.args.some(a => a.name === item.name)) {
+                newNavStack.push({
+                  name: item.name,
+                  def: field,
+                });
+              } else {
+                // This argument no longer exists; the stack cannot be built beyond here
+                break;
+              }
             }
-            break;
+          } else {
+            lastEntity = null;
+            newNavStack.push(item);
           }
         }
-      },
-      rebuildNavStackWithSchema(schema: GraphQLSchema) {
-        set(state => {
-          const oldNavStack = state.explorerNavStack;
-          if (oldNavStack.length === 1) {
-            return state;
-          }
-          // Spread is needed
-          const newNavStack: DocExplorerNavStack = [...INITIAL_NAV_STACK];
-          let lastEntity:
-            | GraphQLNamedType
-            | GraphQLField<unknown, unknown>
-            | null = null;
-          for (const item of oldNavStack) {
-            if (item === INITIAL_NAV_STACK[0]) {
-              // No need to copy the initial item
-              continue;
-            }
-            if (item.def) {
-              // If item.def isn't a named type, it must be a field, inputField, or argument
-              if (isNamedType(item.def)) {
-                // The type needs to be replaced with the new schema type of the same name
-                const newType = schema.getType(item.def.name);
-                if (newType) {
-                  newNavStack.push({
-                    name: item.name,
-                    def: newType,
-                  });
-                  lastEntity = newType;
-                } else {
-                  // This type no longer exists; the stack cannot be built beyond here
-                  break;
-                }
-              } else if (lastEntity === null) {
-                // We can't have a sub-entity if we have no entity; stop rebuilding the nav stack
-                break;
-              } else if (
-                isObjectType(lastEntity) ||
-                isInputObjectType(lastEntity)
-              ) {
-                // item.def must be a Field / input field; replace with the new field of the same name
-                const field = lastEntity.getFields()[item.name];
-                if (field) {
-                  newNavStack.push({
-                    name: item.name,
-                    def: field,
-                  });
-                } else {
-                  // This field no longer exists; the stack cannot be built beyond here
-                  break;
-                }
-              } else if (
-                isScalarType(lastEntity) ||
-                isEnumType(lastEntity) ||
-                isInterfaceType(lastEntity) ||
-                isUnionType(lastEntity)
-              ) {
-                // These don't (currently) have non-type sub-entries; something has gone wrong.
-                // Handle gracefully by discontinuing rebuilding the stack.
-                break;
-              } else {
-                // lastEntity must be a field (because it's not a named type)
-                const field: GraphQLField<unknown, unknown> = lastEntity;
-                // Thus item.def must be an argument, so find the same named argument in the new schema
-                if (field.args.some(a => a.name === item.name)) {
-                  newNavStack.push({
-                    name: item.name,
-                    def: field,
-                  });
-                } else {
-                  // This argument no longer exists; the stack cannot be built beyond here
-                  break;
-                }
-              }
-            } else {
-              lastEntity = null;
-              newNavStack.push(item);
-            }
-          }
-          return { explorerNavStack: newNavStack };
-        });
-      },
+        return { explorerNavStack: newNavStack };
+      });
     },
-  }),
-);
+  },
+}));
+
+// The doc-explorer panel (and its search input) mounts asynchronously after
+// `setVisiblePlugin` commits, which isn't guaranteed to land within a single
+// animation frame, so poll across a few frames rather than assuming one is
+// enough.
+function focusSearchInputWhenMounted(framesLeft: number) {
+  if (framesLeft <= 0) {
+    return;
+  }
+  requestAnimationFrame(() => {
+    const el = document.querySelector<HTMLDivElement>(
+      '.graphiql-doc-explorer-search-row-input',
+    );
+    if (el) {
+      el.click();
+    } else {
+      focusSearchInputWhenMounted(framesLeft - 1);
+    }
+  });
+}
 
 export const DocExplorerStore: FC<{
   children: ReactNode;
@@ -274,6 +299,7 @@ export const DocExplorerStore: FC<{
   const { schema, validationErrors, schemaReference } = useGraphiQL(
     pick('schema', 'validationErrors', 'schemaReference'),
   );
+  const { setVisiblePlugin } = useGraphiQLActions();
 
   useEffect(() => {
     const { resolveSchemaReferenceToNavItem } =
@@ -295,35 +321,31 @@ export const DocExplorerStore: FC<{
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      const shouldFocusInput =
-        // Use an additional `Alt` key instead of `Cmd/Ctrl+K` because monaco-editor has a built-in
-        // shortcut for `Cmd/Ctrl+K`
-        event.altKey &&
+      const shouldOpenSearch =
         event[isMacOs ? 'metaKey' : 'ctrlKey'] &&
         // Using `event.code` because `event.key` will trigger different character
         // in English `˚` and in French `È`
         event.code === 'KeyK';
-      if (!shouldFocusInput) {
+      if (!shouldOpenSearch) {
         return;
       }
-      const button = document.querySelector<HTMLButtonElement>(
-        '.graphiql-sidebar button[aria-label="Show Documentation Explorer"]',
-      );
-      button?.click();
-      // Execute on next tick when doc explorer is opened and input exists in DOM
-      requestAnimationFrame(() => {
-        const el = document.querySelector<HTMLDivElement>(
-          '.graphiql-doc-explorer-search-input',
-        );
-        el?.click();
-      });
+      // Take priority over monaco-editor's built-in `Cmd/Ctrl+K` binding even
+      // when an editor pane has focus.
+      event.preventDefault();
+      event.stopPropagation();
+
+      setVisiblePlugin(DOC_EXPLORER_PLUGIN);
+      // The panel (and its search input) mounts after this state update
+      // commits, which isn't guaranteed to land within a single animation
+      // frame, so poll across a few frames rather than assuming one is enough.
+      focusSearchInputWhenMounted(10);
     }
 
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown, true);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keydown', handleKeyDown, true);
     };
-  }, []);
+  }, [setVisiblePlugin]);
 
   return children as ReactElement;
 };

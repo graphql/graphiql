@@ -6,6 +6,7 @@ module.exports = {
   ],
   plugins: [
     require.resolve('@babel/plugin-proposal-class-properties'),
+    require.resolve('@babel/plugin-transform-private-methods'),
     require.resolve('@babel/plugin-transform-class-static-block'),
   ],
 };

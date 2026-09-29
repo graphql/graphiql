@@ -7,11 +7,11 @@ by adding `.client` to the file name.
 ```tsx
 // graphiql.client.tsx
 import { GraphiQL } from 'graphiql';
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { createTransport } from '@graphiql/toolkit';
 
-const fetcher = createGraphiQLFetcher({ url: 'https://my.backend/graphql' });
+const transport = createTransport({ url: 'https://my.backend/graphql' });
 
-export const graphiql = <GraphiQL fetcher={fetcher} />;
+export const graphiql = <GraphiQL transport={transport} />;
 ```
 
 ```ts

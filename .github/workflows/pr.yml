@@ -80,6 +80,7 @@ jobs:
         uses: ./.github/actions/turbo-cache
         with:
           restore-build: true
+      - run: pnpm --filter @graphiql/react exec playwright install --with-deps chromium
       - run: pnpm test
 
   graphql-17-fragment-arguments:
@@ -159,23 +160,27 @@ jobs:
           path: |
             ~/.cache/Cypress
           key: cypress-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-      - run: pnpm --filter graphiql exec cypress install
+      - run: pnpm --filter graphiql-e2e exec cypress install
       - name: Cypress run
         uses: cypress-io/github-action@v7
         with:
           install: false
           command: pnpm e2e
+        env:
+          # GitHub runners have no usable GPU; Electron's GPU process can
+          # crash (dawn/Vulkan) and wedge the browser mid-run
+          ELECTRON_EXTRA_LAUNCH_ARGS: --disable-gpu
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: cypress-screenshots
-          path: packages/graphiql/cypress/screenshots
+          path: packages/graphiql-e2e/cypress/screenshots
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: cypress-videos
-          path: packages/graphiql/cypress/videos
+          path: packages/graphiql-e2e/cypress/videos
           if-no-files-found: ignore
 
   pkg-pr-new:
