@@ -439,3 +439,38 @@ describe('saved tab persistence', () => {
     });
   });
 });
+
+describe('save completion', () => {
+  it('lets the host own Save when a plugin also registers', () => {
+    const hostSave = vi.fn().mockReturnValue(true);
+    const pluginSave = vi.fn().mockReturnValue(true);
+    const store = makeStore({ onSaveQuery: hostSave });
+    store.getState().actions.registerSaveHandler(pluginSave);
+
+    store.getState().actions.saveQuery();
+
+    expect(hostSave).toHaveBeenCalledOnce();
+    expect(pluginSave).not.toHaveBeenCalled();
+  });
+
+  it('marks only the submitted snapshot saved after an asynchronous save', async () => {
+    let complete!: (saved: boolean) => void;
+    const save = vi.fn().mockImplementation(
+      () => new Promise<boolean>(resolve => (complete = resolve)),
+    );
+    const store = makeStore({ onSaveQuery: save });
+    const editor = { getValue: vi.fn().mockReturnValue('query A {}') };
+    store.getState().actions.setEditor({ queryEditor: editor as any });
+
+    store.getState().actions.saveQuery();
+    editor.getValue.mockReturnValue('query B {}');
+    store.getState().actions.updateActiveTabValues({ query: 'query B {}' });
+    complete(true);
+    await vi.waitFor(() =>
+      expect(store.getState().tabs[0]).toMatchObject({
+        query: 'query B {}',
+        lastSavedQuery: 'query A {}',
+      }),
+    );
+  });
+});
