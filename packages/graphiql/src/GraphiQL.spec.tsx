@@ -9,7 +9,7 @@ import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
  *  LICENSE file in the root directory of this source tree.
  */
 import { act, render, waitFor, fireEvent } from '@testing-library/react';
-import { Component, FC, useEffect } from 'react';
+import { Component, FC, useEffect, useState } from 'react';
 import { DEFAULT_PLUGINS, GraphiQL } from './GraphiQL';
 import { StorageAPI, type Fetcher, type Transport } from '@graphiql/toolkit';
 import { buildSchema, introspectionFromSchema } from 'graphql';
@@ -1038,19 +1038,22 @@ query TestQuery { ...NameFragment }`;
     const fetcher = vi.fn(async () => ({ data: {} }));
     const onEditOperationName = vi.fn();
     let queryEditor: MonacoEditor;
+    let responseEditor: MonacoEditor;
     let editingOperationName: string | null | undefined;
 
     const ObserveSelection: FC = () => {
       const editor = useGraphiQL(state => state.queryEditor);
+      const response = useGraphiQL(state => state.responseEditor);
       const name = useGraphiQL(state => state.operationName);
       useEffect(() => {
         queryEditor = editor!;
+        responseEditor = response!;
         editingOperationName = name;
-      }, [editor, name]);
+      }, [editor, response, name]);
       return null;
     };
 
-    const { getByRole } = render(
+    const { getByRole, rerender } = render(
       <GraphiQL
         fetcher={fetcher}
         initialQuery={query}
@@ -1061,7 +1064,10 @@ query TestQuery { ...NameFragment }`;
       </GraphiQL>,
     );
 
-    await waitFor(() => expect(queryEditor).toBeTruthy());
+    await waitFor(() => {
+      expect(queryEditor).toBeTruthy();
+      expect(responseEditor).toBeTruthy();
+    });
     act(() => {
       queryEditor.setPosition({ lineNumber: 2, column: 10 });
       queryEditor.trigger('keyboard', 'cursorRight', {});
@@ -1071,12 +1077,176 @@ query TestQuery { ...NameFragment }`;
       expect(onEditOperationName).toHaveBeenCalledWith('Beta');
     });
 
-    fireEvent.click(getByRole('button', { name: 'Run operation' }));
+    expect(getByRole('button', { name: 'Run Alpha' })).not.toBeDisabled();
+    expect(getByRole('button', { name: 'Run Alpha' })).toHaveTextContent(
+      'Run Alpha',
+    );
+    fireEvent.click(getByRole('button', { name: 'Run Alpha' }));
     await waitFor(() => {
       expect(fetcher).toHaveBeenCalledWith(
         expect.objectContaining({ operationName: 'Alpha' }),
         expect.anything(),
       );
     });
+
+    act(() => {
+      queryEditor.setPosition({ lineNumber: 1, column: 10 });
+      queryEditor.trigger('keyboard', 'cursorRight', {});
+    });
+    await waitFor(() => expect(editingOperationName).toBe('Alpha'));
+    fetcher.mockClear();
+    await act(async () => {
+      queryEditor.setPosition({ lineNumber: 2, column: 10 });
+      await queryEditor.getAction('graphql-run')!.run();
+    });
+    await waitFor(() => {
+      expect(editingOperationName).toBe('Beta');
+      expect(fetcher).toHaveBeenCalledWith(
+        expect.objectContaining({ operationName: 'Alpha' }),
+        expect.anything(),
+      );
+    });
+
+    fetcher.mockClear();
+    rerender(
+      <GraphiQL
+        fetcher={fetcher}
+        initialQuery={query}
+        operationName="Beta"
+        onEditOperationName={onEditOperationName}
+      >
+        <ObserveSelection />
+      </GraphiQL>,
+    );
+    await waitFor(() =>
+      expect(getByRole('button', { name: 'Run Beta' })).toHaveTextContent(
+        'Run Beta',
+      ),
+    );
+    fireEvent.click(getByRole('button', { name: 'Run Beta' }));
+    await waitFor(() =>
+      expect(fetcher).toHaveBeenCalledWith(
+        expect.objectContaining({ operationName: 'Beta' }),
+        expect.anything(),
+      ),
+    );
+
+    fetcher.mockClear();
+    rerender(
+      <GraphiQL
+        fetcher={fetcher}
+        initialQuery={query}
+        onEditOperationName={onEditOperationName}
+      >
+        <ObserveSelection />
+      </GraphiQL>,
+    );
+    await waitFor(() =>
+      expect(getByRole('button', { name: 'Run operation' })).toHaveTextContent(
+        'Run',
+      ),
+    );
+    fireEvent.click(getByRole('button', { name: 'Run operation' }));
+    await waitFor(() =>
+      expect(fetcher).toHaveBeenCalledWith(
+        expect.objectContaining({ operationName: 'Beta' }),
+        expect.anything(),
+      ),
+    );
+  }, 15_000);
+
+  it('edits the cursor operation in Query Builder while another operation is pinned to run', async () => {
+    const onEditOperationName = vi.fn();
+    const fetcher = vi.fn(async () => ({ data: {} }));
+    let queryEditor: MonacoEditor;
+    let responseEditor: MonacoEditor;
+    let editingOperationName: string | null | undefined;
+    const ObserveSelection: FC = () => {
+      const editor = useGraphiQL(state => state.queryEditor);
+      const response = useGraphiQL(state => state.responseEditor);
+      const name = useGraphiQL(state => state.operationName);
+      useEffect(() => {
+        queryEditor = editor!;
+        responseEditor = response!;
+        editingOperationName = name;
+      }, [editor, response, name]);
+      return null;
+    };
+
+    const { getByRole } = render(
+      <GraphiQL
+        fetcher={fetcher}
+        schema={buildSchema('type Query { q: String r: String }')}
+        initialQuery={'query Alpha { q }\nquery Beta { q }'}
+        operationName="Alpha"
+        onEditOperationName={onEditOperationName}
+      >
+        <ObserveSelection />
+      </GraphiQL>,
+    );
+
+    await waitFor(() => {
+      expect(queryEditor).toBeTruthy();
+      expect(responseEditor).toBeTruthy();
+    });
+    act(() => {
+      queryEditor.setPosition({ lineNumber: 2, column: 10 });
+      queryEditor.trigger('keyboard', 'cursorRight', {});
+    });
+    await waitFor(() => expect(editingOperationName).toBe('Beta'));
+
+    fireEvent.click(getByRole('button', { name: 'Show Query Builder' }));
+    fireEvent.click(
+      await waitFor(() => getByRole('checkbox', { name: 'Toggle r' })),
+    );
+    await waitFor(() => {
+      expect(queryEditor.getValue()).toMatch(/query Alpha \{\s*q\s*\}/);
+      expect(queryEditor.getValue()).toMatch(/query Beta \{\s*q\s*r\s*\}/);
+    });
+  }, 15_000);
+
+  it('keeps following the cursor when the host mirrors onEditOperationName into operationName', async () => {
+    let queryEditor: MonacoEditor;
+    const CaptureEditor: FC = () => {
+      const editor = useGraphiQL(state => state.queryEditor);
+      useEffect(() => {
+        queryEditor = editor!;
+      }, [editor]);
+      return null;
+    };
+    const Host: FC = () => {
+      const [operationName, setOperationName] = useState('Alpha');
+      return (
+        <GraphiQL
+          fetcher={noOpFetcher}
+          initialQuery={'query Alpha { q }\nquery Beta { q }'}
+          operationName={operationName}
+          onEditOperationName={setOperationName}
+        >
+          <CaptureEditor />
+        </GraphiQL>
+      );
+    };
+
+    const { getByRole } = render(<Host />);
+    await waitFor(() => expect(queryEditor).toBeTruthy());
+    act(() => {
+      queryEditor.setPosition({ lineNumber: 2, column: 10 });
+      queryEditor.trigger('keyboard', 'cursorRight', {});
+    });
+    await waitFor(() =>
+      expect(getByRole('button', { name: 'Run Beta' })).toHaveTextContent(
+        'Run Beta',
+      ),
+    );
+    act(() => {
+      queryEditor.setPosition({ lineNumber: 1, column: 10 });
+      queryEditor.trigger('keyboard', 'cursorRight', {});
+    });
+    await waitFor(() =>
+      expect(getByRole('button', { name: 'Run Alpha' })).toHaveTextContent(
+        'Run Alpha',
+      ),
+    );
   }, 15_000);
 });

@@ -219,7 +219,8 @@ export interface ExecutionActions {
 
 type BaseExecutionProps = {
   /**
-   * This prop sets the operation name that is passed with a GraphQL request.
+   * Overrides the operation name passed with a GraphQL request. The editor and
+   * operation-aware plugins still follow the operation being edited.
    */
   operationName?: string;
   getDefaultFieldNames?: GetDefaultFieldNamesFn;

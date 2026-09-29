@@ -187,6 +187,9 @@ describe('ExecuteButtonView', () => {
       expect(
         screen.queryByRole('button', { name: 'Choose operation to run' }),
       ).not.toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Run Alpha' }),
+      ).toHaveTextContent('Run Alpha');
     });
 
     it('shows a caret with more than one operation', () => {

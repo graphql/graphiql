@@ -101,6 +101,10 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
     operations,
     overrideOperationName ?? operationName,
   );
+  const runLabel =
+    typeof overrideOperationName === 'string'
+      ? `Run ${overrideOperationName}`
+      : 'Run';
 
   const selectOperation = (selectedOperationName: string | undefined) => {
     if (selectedOperationName && selectedOperationName !== operationName) {
@@ -118,7 +122,13 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
       )}
       onClick={isRunning ? onStop : onRun}
       disabled={isBlocked}
-      aria-label={isRunning ? 'Stop operation' : 'Run operation'}
+      aria-label={
+        isRunning
+          ? 'Stop operation'
+          : typeof overrideOperationName === 'string'
+            ? runLabel
+            : 'Run operation'
+      }
     >
       {isRunning ? (
         <StopIcon className="graphiql-execute-button-icon" aria-hidden="true" />
@@ -126,7 +136,7 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
         <PlayIcon className="graphiql-execute-button-icon" aria-hidden="true" />
       )}
       <span className="graphiql-execute-button-label">
-        {isRunning ? 'Stop' : 'Run'}
+        {isRunning ? 'Stop' : runLabel}
       </span>
       <span className="graphiql-execute-button-sep" aria-hidden="true" />
       <KeycapHint

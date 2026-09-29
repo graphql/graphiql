@@ -101,7 +101,6 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     referencePlugin,
     operations,
     operationName,
-    overrideOperationName,
     externalFragments,
     uriInstanceId,
     storage,
@@ -113,7 +112,6 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       'referencePlugin',
       'operations',
       'operationName',
-      'overrideOperationName',
       'externalFragments',
       'uriInstanceId',
       'storage',
@@ -245,7 +243,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
   useEffect(() => {
     runAtCursorRef.current = editor => {
       const currentFacts = getAndUpdateOperationFacts(editor);
-      if (!currentFacts || typeof overrideOperationName === 'string') {
+      if (!currentFacts) {
         run();
         return;
       }
@@ -263,17 +261,15 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     };
   });
 
-  // Keep the active operation in sync with the cursor: as it moves between
-  // operations, `operationName` follows it (so the Run button, operation
-  // dropdown, and operation-aware plugins all reflect where you are editing).
+  // Keep the operation being edited in sync with the cursor, even when an
+  // external operation name overrides which operation runs.
   const syncOperationNameToCursorRef = useRef<(editor: MonacoEditor) => void>(
     null!,
   );
 
   useEffect(() => {
     syncOperationNameToCursorRef.current = editor => {
-      // When an operation is pinned via the `operationName` prop, leave it be.
-      if (!operations || typeof overrideOperationName === 'string') {
+      if (!operations) {
         return;
       }
       const newOperationName = getOperationNameAtCursor(editor, operations);
@@ -281,7 +277,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
         setOperationName(newOperationName);
       }
     };
-  }, [operationName, operations, overrideOperationName, setOperationName]);
+  }, [operationName, operations, setOperationName]);
 
   useEffect(() => {
     if (!monaco || !monacoGraphQL) {
