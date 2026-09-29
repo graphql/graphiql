@@ -180,7 +180,7 @@ importers:
   examples/graphiql-vite-react-router:
     dependencies:
       '@graphiql/react':
-        specifier: ^0.39.0
+        specifier: ^0.39.1
         version: link:../../packages/graphiql-react
       '@react-router/fs-routes':
         specifier: ^8.3.1
@@ -232,7 +232,7 @@ importers:
         specifier: ^5.1.5
         version: link:../../packages/graphiql-plugin-explorer
       '@graphiql/react':
-        specifier: ^0.39.0
+        specifier: ^0.39.1
         version: link:../../packages/graphiql-react
       '@graphiql/toolkit':
         specifier: ^0.12.1

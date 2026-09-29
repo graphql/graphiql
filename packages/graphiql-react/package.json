@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/react",
-  "version": "0.39.0",
+  "version": "0.39.1",
   "sideEffects": [
     "dist/setup-workers/*",
     "*.css"
