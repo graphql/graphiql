@@ -181,6 +181,26 @@ describe('useGraphiQLSettings — reads from localStorage', () => {
 });
 
 describe('useGraphiQLSettings — setters persist to localStorage', () => {
+  it('shares updates between mounted consumers without overwriting other preferences', () => {
+    const first = renderHook(() => useGraphiQLSettings());
+    const second = renderHook(() => useGraphiQLSettings());
+
+    act(() => first.result.current.setTheme('dark'));
+    expect(second.result.current.theme).toBe('dark');
+
+    act(() => second.result.current.setDensity('compact'));
+    expect(first.result.current.density).toBe('compact');
+    expect(first.result.current.theme).toBe('dark');
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!)).toMatchObject({
+      theme: 'dark',
+      density: 'compact',
+    });
+
+    const third = renderHook(() => useGraphiQLSettings());
+    expect(third.result.current.theme).toBe('dark');
+    expect(third.result.current.density).toBe('compact');
+  });
+
   it('setTheme persists the new theme', () => {
     const { result } = renderHook(() => useGraphiQLSettings());
     act(() => {
