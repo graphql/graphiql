@@ -1032,4 +1032,51 @@ query TestQuery { ...NameFragment }`;
       expect(hookResult[0]).toBe(newValue);
     });
   });
+
+  it('keeps the editing operation separate from an execution override', async () => {
+    const query = 'query Alpha { q }\nquery Beta { q }';
+    const fetcher = vi.fn(async () => ({ data: {} }));
+    const onEditOperationName = vi.fn();
+    let queryEditor: MonacoEditor;
+    let editingOperationName: string | null | undefined;
+
+    const ObserveSelection: FC = () => {
+      const editor = useGraphiQL(state => state.queryEditor);
+      const name = useGraphiQL(state => state.operationName);
+      useEffect(() => {
+        queryEditor = editor!;
+        editingOperationName = name;
+      }, [editor, name]);
+      return null;
+    };
+
+    const { getByRole } = render(
+      <GraphiQL
+        fetcher={fetcher}
+        initialQuery={query}
+        operationName="Alpha"
+        onEditOperationName={onEditOperationName}
+      >
+        <ObserveSelection />
+      </GraphiQL>,
+    );
+
+    await waitFor(() => expect(queryEditor).toBeTruthy());
+    act(() => {
+      queryEditor.setPosition({ lineNumber: 2, column: 10 });
+      queryEditor.trigger('keyboard', 'cursorRight', {});
+    });
+    await waitFor(() => {
+      expect(editingOperationName).toBe('Beta');
+      expect(onEditOperationName).toHaveBeenCalledWith('Beta');
+    });
+
+    fireEvent.click(getByRole('button', { name: 'Run operation' }));
+    await waitFor(() => {
+      expect(fetcher).toHaveBeenCalledWith(
+        expect.objectContaining({ operationName: 'Alpha' }),
+        expect.anything(),
+      );
+    });
+  }, 15_000);
 });
