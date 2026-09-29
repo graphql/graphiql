@@ -322,6 +322,7 @@ const fetcher: Fetcher = async params => {
 
 ```ts
 import type { Transport } from '@graphiql/toolkit';
+import { GraphQLError } from 'graphql';
 import type { ExecutionResult } from 'graphql';
 
 const transport: Transport = {
@@ -343,7 +344,18 @@ const transport: Transport = {
       signal: request.signal,
     });
     const responseText = await response.text();
-    const body = JSON.parse(responseText) as ExecutionResult;
+    let body: ExecutionResult;
+    try {
+      body = JSON.parse(responseText) as ExecutionResult;
+    } catch {
+      body = {
+        errors: [
+          new GraphQLError(
+            `HTTP ${response.status}: The response was not valid JSON.`,
+          ),
+        ],
+      };
+    }
     const headers: Record<string, string> = {};
     response.headers.forEach((value, key) => {
       headers[key] = value;
@@ -363,6 +375,8 @@ const transport: Transport = {
   },
 };
 ```
+
+The fallback error is created by the client when the HTTP response is not JSON; it is not a GraphQL error returned by the server. This lets `send()` retain the actual HTTP status, headers, timing, and response size. Network failures and aborted requests still reject.
 
 ### CDN usage
 
