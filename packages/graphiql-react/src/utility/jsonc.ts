@@ -15,6 +15,7 @@ export async function formatJSONC(content: string): Promise<string> {
   return prettier.format(content, {
     parser: 'jsonc',
     plugins: [estreePlugin, babelPlugin],
+    trailingComma: 'none',
     // always split into new lines, e.g. {"foo":true} => {\n  "foo": true\n}
     printWidth: 0,
   });
