@@ -43,11 +43,11 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@graphiql/plugin-collections": "1.0.0-rc.0",
-    "@graphiql/plugin-doc-explorer": "1.0.0-rc.0",
-    "@graphiql/plugin-history": "1.0.0-rc.0",
-    "@graphiql/plugin-query-builder": "1.0.0-rc.0",
-    "@graphiql/react": "1.0.0-rc.0",
+    "@graphiql/plugin-collections": "^1.0.0-rc.0",
+    "@graphiql/plugin-doc-explorer": "^1.0.0-rc.0",
+    "@graphiql/plugin-history": "^1.0.0-rc.0",
+    "@graphiql/plugin-query-builder": "^1.0.0-rc.0",
+    "@graphiql/react": "^1.0.0-rc.0",
     "clsx": "^1.2.1",
     "react-compiler-runtime": "19.1.0-rc.3"
   },
@@ -57,7 +57,7 @@
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@graphiql/toolkit": "1.0.0-rc.0",
+    "@graphiql/toolkit": "^1.0.0-rc.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.0",
