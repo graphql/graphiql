@@ -83,7 +83,7 @@
     "turbo": "^2.9.14",
     "typedoc": "^0.28.20",
     "typescript": "^5.8.0",
-    "vitest": "^4.1.11",
+    "vitest": "4.1.11",
     "wgutils": "^1.2.5"
   },
   "devDependencies": {
