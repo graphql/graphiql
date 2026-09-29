@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 import type { RefObject } from 'react';
 import { useMonaco } from '../stores';
 import { MONACO_THEME_NAME } from '../constants';
@@ -22,15 +22,19 @@ const DEFAULTS: GraphiQLSettings = {
   fontSize: 'default',
 };
 
-function readSettings(): GraphiQLSettings {
-  if (typeof window === 'undefined') {
+function readStoredValue(): string | null {
+  try {
+    return localStorage.getItem(SETTINGS_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function parseSettings(raw: string | null): GraphiQLSettings {
+  if (!raw) {
     return DEFAULTS;
   }
   try {
-    const raw = localStorage.getItem(SETTINGS_STORAGE_KEY);
-    if (!raw) {
-      return DEFAULTS;
-    }
     const parsed = JSON.parse(raw) as Partial<GraphiQLSettings>;
     return { ...DEFAULTS, ...parsed };
   } catch {
@@ -38,12 +42,49 @@ function readSettings(): GraphiQLSettings {
   }
 }
 
-function writeSettings(settings: GraphiQLSettings) {
-  try {
-    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
-  } catch {
-    // noop — quota or privacy mode
+let storedValue: string | null | undefined;
+let currentSettings = DEFAULTS;
+const subscribers = new Set<() => void>();
+
+function getSettings(): GraphiQLSettings {
+  const raw = readStoredValue();
+  if (raw !== storedValue) {
+    storedValue = raw;
+    currentSettings = parseSettings(raw);
   }
+  return currentSettings;
+}
+
+function onStorage(event: StorageEvent) {
+  if (event.key === SETTINGS_STORAGE_KEY || event.key === null) {
+    subscribers.forEach(notify => notify());
+  }
+}
+
+function subscribeSettings(notify: () => void) {
+  if (subscribers.size === 0) {
+    window.addEventListener('storage', onStorage);
+  }
+  subscribers.add(notify);
+  return () => {
+    subscribers.delete(notify);
+    if (subscribers.size === 0) {
+      window.removeEventListener('storage', onStorage);
+    }
+  };
+}
+
+function updateSettings(patch: Partial<GraphiQLSettings>) {
+  const next = { ...getSettings(), ...patch };
+  const raw = JSON.stringify(next);
+  currentSettings = next;
+  storedValue = raw;
+  try {
+    localStorage.setItem(SETTINGS_STORAGE_KEY, raw);
+  } catch {
+    storedValue = readStoredValue();
+  }
+  subscribers.forEach(notify => notify());
 }
 
 function resolveTheme(theme: Theme): 'light' | 'dark' {
@@ -58,28 +99,28 @@ function resolveTheme(theme: Theme): 'light' | 'dark' {
 export function useGraphiQLSettings(
   containerRef?: RefObject<HTMLElement | null>,
 ) {
-  const [settings, setSettings] = useState<GraphiQLSettings>(readSettings);
+  const settings = useSyncExternalStore(
+    subscribeSettings,
+    getSettings,
+    () => DEFAULTS,
+  );
   const monaco = useMonaco(state => state.monaco);
   const editorTheme = useEditorTheme() ?? MONACO_THEME_NAME;
 
   function setTheme(theme: Theme) {
-    setSettings(s => ({ ...s, theme }));
+    updateSettings({ theme });
   }
 
   function setDensity(density: Density) {
-    setSettings(s => ({ ...s, density }));
+    updateSettings({ density });
   }
 
   function setFontSize(fontSize: FontSize) {
-    setSettings(s => ({ ...s, fontSize }));
+    updateSettings({ fontSize });
   }
 
-  // Persist and apply data-* attributes whenever settings change. This is
-  // also the single place that drives the Monaco editors' theme, so the
-  // chrome and the editors never fall out of sync.
+  // Apply appearance to this container whenever shared settings change.
   useEffect(() => {
-    writeSettings(settings);
-
     const resolvedTheme = resolveTheme(settings.theme);
 
     const target =

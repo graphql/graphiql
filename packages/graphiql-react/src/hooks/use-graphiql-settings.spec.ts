@@ -201,6 +201,42 @@ describe('useGraphiQLSettings — setters persist to localStorage', () => {
     expect(third.result.current.density).toBe('compact');
   });
 
+  it('keeps consumers synchronized when storage rejects a write', () => {
+    const first = renderHook(() => useGraphiQLSettings());
+    const second = renderHook(() => useGraphiQLSettings());
+    const setItem = vi.spyOn(localStorage, 'setItem').mockImplementation(() => {
+      throw new Error('Storage unavailable');
+    });
+
+    try {
+      act(() => first.result.current.setTheme('dark'));
+      expect(second.result.current.theme).toBe('dark');
+      expect(renderHook(() => useGraphiQLSettings()).result.current.theme).toBe(
+        'dark',
+      );
+    } finally {
+      setItem.mockRestore();
+    }
+
+    act(() => second.result.current.setDensity('compact'));
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!)).toMatchObject({
+      theme: 'dark',
+      density: 'compact',
+    });
+  });
+
+  it('restores preferences after all consumers unmount', () => {
+    const first = renderHook(() => useGraphiQLSettings());
+    act(() => first.result.current.setFontSize('large'));
+    first.unmount();
+
+    const second = renderHook(() => useGraphiQLSettings());
+    expect(second.result.current.fontSize).toBe('large');
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!)).toMatchObject({
+      fontSize: 'large',
+    });
+  });
+
   it('setTheme persists the new theme', () => {
     const { result } = renderHook(() => useGraphiQLSettings());
     act(() => {
