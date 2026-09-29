@@ -467,4 +467,17 @@ describe('useGraphiQLSettings — registered editor themes', () => {
     rerender();
     expect(mockMonaco.editor.setTheme).toHaveBeenLastCalledWith('company-dark');
   });
+
+  it('uses a theme selected by another consumer before Monaco initializes', () => {
+    mockMonaco = undefined;
+    const shell = renderHook(() => useGraphiQLSettings());
+    const dialog = renderHook(() => useGraphiQLSettings());
+
+    act(() => dialog.result.current.setTheme('dark'));
+    expect(shell.result.current.theme).toBe('dark');
+
+    mockMonaco = { editor: { setTheme: vi.fn() } };
+    shell.rerender();
+    expect(mockMonaco.editor.setTheme).toHaveBeenLastCalledWith('company-dark');
+  });
 });
