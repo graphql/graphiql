@@ -61,3 +61,4 @@ query = '''#graphql query getContinents {
         name
     }
 }"""
+
