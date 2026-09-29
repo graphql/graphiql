@@ -6,19 +6,15 @@ import {
 
 export async function formatJSONC(content: string): Promise<string> {
   // We don't need to load Prettier initially; it's only used when the 'Format Query' button or shortcut is triggered
-  const [prettier, { printers }, { parsers }] = await Promise.all([
+  const [prettier, estreePlugin, babelPlugin] = await Promise.all([
     import('prettier/standalone'),
     import('prettier/plugins/estree'),
-    import('prettier/parser-babel'),
+    import('prettier/plugins/babel'),
   ]);
 
   return prettier.format(content, {
     parser: 'jsonc',
-    plugins: [
-      // Fix: Couldn't find plugin for AST format "estree"
-      { printers },
-      { parsers },
-    ],
+    plugins: [estreePlugin, babelPlugin],
     // always split into new lines, e.g. {"foo":true} => {\n  "foo": true\n}
     printWidth: 0,
   });
