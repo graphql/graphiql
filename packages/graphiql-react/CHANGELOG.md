@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.39.1
+
+### Patch Changes
+
+- [#4557](https://github.com/graphql/graphiql/pull/4557) [`9d9790d`](https://github.com/graphql/graphiql/commit/9d9790decc93744f6e5c1237a2046fa8f9638d6d) Thanks [@vishwakt](https://github.com/vishwakt)! - Improve the error shown when the Variables or Headers pane contains invalid JSON. The message now uses plain language with a line and column (for example `expected a value at line 1, column 8`) instead of the bare `jsonc-parser` error code (`ValueExpected`), and is prefixed with `Request not sent.` so it is not mistaken for a server response.
+
 ## 0.39.0
 
 ### Minor Changes
