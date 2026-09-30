@@ -302,7 +302,7 @@ function RequestHeaderHook() {
 
 Set `sessionActions: RequestHeaderHook` on your `GraphiQLPlugin`. `onBeforeSend` must return the request, with any changes, and can do so asynchronously. Each registration returns a cleanup function; returning it from the effect removes the hook when the component unmounts or its context changes.
 
-Use `onResponse(response => { ... })` to observe each `TransportResponse`, including HTTP or GraphQL error results and each streamed chunk. Use `onError((error, request) => { ... })` for a rejected request or stream, such as a network failure or a thrown `onBeforeSend` hook. A resolved error response goes to `onResponse`, not `onError`. These hooks are for observation; exceptions they throw are logged and do not replace the response or original error.
+Use `onResponse(response => { ... })` to observe each `TransportResponse`, including HTTP or GraphQL error results and each streamed chunk. Use `onError((error, request) => { ... })` for a rejected request or stream, such as a network failure or a thrown `onBeforeSend` hook. A resolved error response goes to `onResponse`, not `onError`. The `onResponse` and `onError` hooks are for observation only; exceptions they throw are logged and do not replace the response or original error.
 
 ### Request methods
 
