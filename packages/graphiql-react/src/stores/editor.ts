@@ -126,24 +126,15 @@ export interface EditorSlice extends TabsState {
   onCopyQuery?: (query: string) => void;
 
   /**
-   * Invoked when the current operation is saved, via the Save toolbar button or
-   * ⌘S. Receives the active tab (with the latest operation contents) so hosts
-   * can persist it — e.g. the collections plugin saves or updates a stored
-   * operation.
-   *
-   * Return `true` if the save was committed synchronously, so the dirty-state
-   * dot is cleared. Return `false`/nothing if the save was deferred (e.g. a
-   * dialog opened); the host should then call `markTabSaved` once it commits.
-   * @param tab - The active tab at the time of saving.
+   * Registered save handler. The dirty-state dot and Save button appear only
+   * when a plugin registers one.
    */
-  onSaveQuery?: (tab: TabState) => boolean | void;
+  saveHandlers: Set<SaveHandler>;
 
-  /**
-   * Registered save handlers. Plugins call `registerSaveHandler` to add a
-   * handler here. The dirty-state dot and Save button appear only when at least
-   * one handler (or the `onSaveQuery` prop) is registered.
-   */
-  saveHandlers: Set<(tab: TabState) => boolean | void>;
+  /** IDs of tabs whose save handler has not finished. */
+  savingTabIds: Set<string>;
+  /** The most recent save failure, shown beside the Save action. */
+  saveError: string | null;
 
   /**
    * Invoked when the prettify callback is invoked.
@@ -241,25 +232,25 @@ export interface EditorActions {
 
   /**
    * Save the current query. Triggered by the Save toolbar button or ⌘S.
-   * Delegates to all registered save handlers and the `onSaveQuery` prop.
-   * The dirty-state dot is cleared only when a handler returns `true`.
+   * Delegates to the registered plugin handler. Repeated saves of one tab run
+   * in order.
    */
   saveQuery(): void;
 
   /**
-   * Mark a tab as saved, clearing its dirty-state dot. Hosts call this after a
-   * deferred save (e.g. a save dialog) commits.
+   * Mark a tab as saved outside the registered save handler. The handler should
+   * instead resolve to `true` so GraphiQL records the submitted snapshot.
    * @param tabId - The id of the tab that was saved.
+   * @param savedQuery - The query that was committed. Without this argument,
+   * the current editor contents are used for the active tab.
    */
-  markTabSaved(tabId: string): void;
+  markTabSaved(tabId: string, savedQuery?: string | null): void;
 
   /**
-   * Registers a save handler. Plugins call this on mount to participate in
-   * ⌘S / Save. The dirty-state dot and Save button appear only when at least
-   * one handler (or the `onSaveQuery` prop) is registered.
+   * Registers the save handler. A second registration throws.
    * @returns An unregister function to call on unmount.
    */
-  registerSaveHandler(handler: (tab: TabState) => boolean | void): () => void;
+  registerSaveHandler(handler: SaveHandler): () => void;
 
   /**
    * Copy a query to clipboard.
@@ -284,7 +275,6 @@ export interface EditorProps extends Pick<
   | 'defaultHeaders'
   | 'defaultQuery'
   | 'onCopyQuery'
-  | 'onSaveQuery'
 > {
   /**
    * With this prop you can pass so-called "external" fragments that will be
@@ -324,6 +314,9 @@ export interface EditorProps extends Pick<
   initialHeaders?: EditorSlice['initialHeaders'];
 }
 
+/** Resolve to true after the write commits, false on cancellation, or reject on failure. */
+export type SaveHandler = (tab: TabState) => Promise<boolean>;
+
 type CreateEditorSlice = (
   initial: Pick<
     EditorSlice,
@@ -340,7 +333,6 @@ type CreateEditorSlice = (
     | 'defaultHeaders'
     | 'onPrettifyQuery'
     | 'onCopyQuery'
-    | 'onSaveQuery'
     | 'uriInstanceId'
   >,
 ) => StateCreator<
@@ -351,6 +343,36 @@ type CreateEditorSlice = (
 >;
 
 export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
+  const pendingSaves = new Set<string>();
+  const queuedSaves = new Map<
+    string,
+    { tab: TabState; handler: SaveHandler }
+  >();
+
+  async function runSave(tab: TabState, handler: SaveHandler) {
+    pendingSaves.add(tab.id);
+    set({ savingTabIds: new Set(pendingSaves), saveError: null });
+
+    try {
+      if (await handler(tab)) {
+        get().actions.markTabSaved(tab.id, tab.query);
+      }
+    } catch (error) {
+      set({
+        saveError: error instanceof Error ? error.message : String(error),
+      });
+    } finally {
+      const next = queuedSaves.get(tab.id);
+      queuedSaves.delete(tab.id);
+      if (next) {
+        void runSave(next.tab, next.handler);
+      } else {
+        pendingSaves.delete(tab.id);
+        set({ savingTabIds: new Set(pendingSaves) });
+      }
+    }
+  }
+
   function setEditorValues({
     query,
     variables,
@@ -547,31 +569,21 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         operations,
       });
     },
-    /**
-     * Save the current query. Delegates to all registered save handlers and
-     * the `onSaveQuery` prop. The dirty dot clears only when a handler commits
-     * synchronously (returns `true`).
-     */
     saveQuery() {
       const {
         queryEditor,
         variableEditor,
         headerEditor,
-        onSaveQuery,
         saveHandlers,
         tabs,
         activeTabIndex,
-        actions,
       } = get();
       const activeTab = tabs[activeTabIndex];
       if (!activeTab) {
         return;
       }
-      const handlers = [...saveHandlers];
-      if (onSaveQuery) {
-        handlers.push(onSaveQuery);
-      }
-      if (handlers.length === 0) {
+      const handler = saveHandlers.values().next().value;
+      if (!handler) {
         return;
       }
       const tabArg = {
@@ -580,17 +592,13 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         variables: variableEditor?.getValue() ?? activeTab.variables,
         headers: headerEditor?.getValue() ?? activeTab.headers,
       };
-      let committed = false;
-      for (const handler of handlers) {
-        if (handler(tabArg) === true) {
-          committed = true;
-        }
-      }
-      if (committed) {
-        actions.markTabSaved(activeTab.id);
+      if (pendingSaves.has(tabArg.id)) {
+        queuedSaves.set(tabArg.id, { tab: tabArg, handler });
+      } else {
+        void runSave(tabArg, handler);
       }
     },
-    markTabSaved(tabId) {
+    markTabSaved(tabId, savedQuery) {
       set(state => {
         const {
           activeTabIndex,
@@ -602,6 +610,9 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
           storage,
           shouldPersistHeaders,
         } = state;
+        if (!tabs.some(tab => tab.id === tabId)) {
+          return state;
+        }
         const activeTab = tabs[activeTabIndex];
         const updated =
           activeTab?.id === tabId
@@ -611,13 +622,20 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
                   query: queryEditor?.getValue() ?? activeTab.query,
                   variables: variableEditor?.getValue() ?? activeTab.variables,
                   headers: headerEditor?.getValue() ?? activeTab.headers,
-                  lastSavedQuery: queryEditor?.getValue() ?? activeTab.query,
+                  lastSavedQuery:
+                    savedQuery === undefined
+                      ? (queryEditor?.getValue() ?? activeTab.query)
+                      : savedQuery,
                 },
               )
             : {
                 tabs: tabs.map(tab =>
                   tab.id === tabId
-                    ? { ...tab, lastSavedQuery: tab.query }
+                    ? {
+                        ...tab,
+                        lastSavedQuery:
+                          savedQuery === undefined ? tab.query : savedQuery,
+                      }
                     : tab,
                 ),
                 activeTabIndex,
@@ -711,6 +729,9 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
     },
     registerSaveHandler(handler) {
       set(s => {
+        if (s.saveHandlers.size > 0) {
+          throw new Error('Only one plugin save handler can be registered');
+        }
         const next = new Set(s.saveHandlers);
         next.add(handler);
         return { saveHandlers: next };
@@ -727,6 +748,8 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
   return {
     ...initial,
     saveHandlers: new Set(),
+    savingTabIds: new Set(),
+    saveError: null,
     actions: $actions,
   };
 };

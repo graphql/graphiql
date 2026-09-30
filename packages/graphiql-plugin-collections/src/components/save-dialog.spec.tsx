@@ -1,5 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { SaveDialog } from './save-dialog';
 import { collectionsStore } from '../store';
 
@@ -23,20 +29,27 @@ describe('SaveDialog description field', () => {
     expect(screen.getByPlaceholderText('Description (optional)')).toBeTruthy();
   });
 
-  it('includes description in the saved item when provided', () => {
+  it('includes description in the saved item when provided', async () => {
     openDialog('DescOp');
     const descInput = screen.getByPlaceholderText('Description (optional)');
     fireEvent.change(descInput, { target: { value: 'Fetches the user' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
-    const { collections } = collectionsStore.getState();
-    expect(collections[0]?.items[0]?.description).toBe('Fetches the user');
+    await waitFor(() =>
+      expect(
+        collectionsStore.getState().collections[0]?.items[0]?.description,
+      ).toBe('Fetches the user'),
+    );
   });
 
-  it('saves item without description when the description field is empty', () => {
+  it('saves item without description when the description field is empty', async () => {
     openDialog('NoDescOp');
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
-    const { collections } = collectionsStore.getState();
-    expect(collections[0]?.items[0]?.description).toBeUndefined();
+    await waitFor(() =>
+      expect(collectionsStore.getState().collections).toHaveLength(1),
+    );
+    expect(
+      collectionsStore.getState().collections[0]?.items[0]?.description,
+    ).toBeUndefined();
   });
 
   it('resets description field when dialog reopens', () => {

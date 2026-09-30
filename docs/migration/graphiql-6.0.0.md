@@ -166,6 +166,61 @@ const plugins = DEFAULT_PLUGINS.map(plugin =>
 
 Declare `@graphiql/plugin-collections` as a direct dependency when importing its factory. See the [package README](../../packages/graphiql-plugin-collections/README.md) for the full option list and the import and merge behavior.
 
+#### Saving with your own plugin
+
+The Save button and `Cmd`/`Ctrl`+`S` call the handler registered with `useGraphiQLActions().registerSaveHandler`. A plugin can register that handler from its `sessionActions` component, which stays mounted even when its panel is hidden. Only one handler can be registered. Collections registers one by default, so omit `COLLECTIONS_PLUGIN` when adding a plugin that owns Save:
+
+```tsx
+import { useEffect } from 'react';
+import { useGraphiQLActions, type GraphiQLPlugin } from '@graphiql/react';
+import { COLLECTIONS_PLUGIN, DEFAULT_PLUGINS, GraphiQL } from 'graphiql';
+
+function RegisterSave() {
+  const { registerSaveHandler } = useGraphiQLActions();
+
+  useEffect(
+    () =>
+      registerSaveHandler(async tab => {
+        const response = await fetch('/api/operations', {
+          method: 'PUT',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            id: tab.id,
+            query: tab.query,
+            variables: tab.variables,
+            headers: tab.headers,
+          }),
+        });
+        if (!response.ok) {
+          throw new Error(`Save failed (${response.status})`);
+        }
+        return true;
+      }),
+    [registerSaveHandler],
+  );
+
+  return null;
+}
+
+const customSavePlugin: GraphiQLPlugin = {
+  title: 'Saved operations',
+  icon: () => <span aria-hidden="true">★</span>,
+  content: () => <p>Operations are saved to this application's server.</p>,
+  sessionActions: RegisterSave,
+};
+
+const plugins = [
+  ...DEFAULT_PLUGINS.filter(plugin => plugin !== COLLECTIONS_PLUGIN),
+  customSavePlugin,
+];
+
+<GraphiQL transport={transport} plugins={plugins} />;
+```
+
+A handler receives the tab and editor contents captured when Save was invoked and returns a `Promise<boolean>`. Resolve to `true` after the write commits, or `false` when the user cancels. Reject on failure; GraphiQL shows the error and leaves the tab unsaved. A dialog can return a promise that settles when the user saves or cancels. The tab's saved marker tracks the submitted query snapshot, so edits made while a save is pending remain dirty. Saves requested again for the same tab run in order. The dirty indicator compares query text; variables and headers are included in the handler input but do not independently change that indicator. If a save must reach several backends, coordinate those writes in one handler and return success only when your chosen commit policy is met.
+
+If you want Collections to remain the save owner with a different persistence backend, use `collectionsPlugin({ storage })`. The adapter's `save(collections)` promise must resolve after its write commits and reject on failure. See [custom storage](../../packages/graphiql-plugin-collections/README.md#custom-storage) for the complete adapter shape and setup.
+
 ### Opting out
 
 Both plugins are part of `DEFAULT_PLUGINS`, alongside History. Filter the defaults to drop one or both:

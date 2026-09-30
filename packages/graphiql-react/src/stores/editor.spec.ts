@@ -247,7 +247,7 @@ describe('dirty state', () => {
 describe('save-handler registry', () => {
   it('registerSaveHandler adds a handler; saveQuery invokes it with the active tab and current query', () => {
     const store = makeStore();
-    const handler = vi.fn().mockReturnValue(true);
+    const handler = vi.fn().mockResolvedValue(true);
     store.getState().actions.registerSaveHandler(handler);
 
     store.getState().actions.saveQuery();
@@ -261,7 +261,7 @@ describe('save-handler registry', () => {
 
   it('unregister function removes the handler so it is not called on subsequent saveQuery', () => {
     const store = makeStore();
-    const handler = vi.fn().mockReturnValue(true);
+    const handler = vi.fn().mockResolvedValue(true);
     const unregister = store.getState().actions.registerSaveHandler(handler);
 
     unregister();
@@ -270,38 +270,39 @@ describe('save-handler registry', () => {
     expect(handler).not.toHaveBeenCalled();
   });
 
-  it('multiple registered handlers are all invoked on a single saveQuery', () => {
+  it('rejects a second plugin save owner and keeps the first owner active', () => {
     const store = makeStore();
-    const handlerA = vi.fn().mockReturnValue(false);
-    const handlerB = vi.fn().mockReturnValue(false);
-    const handlerC = vi.fn().mockReturnValue(false);
+    const handlerA = vi.fn().mockResolvedValue(false);
+    const handlerB = vi.fn().mockResolvedValue(false);
     store.getState().actions.registerSaveHandler(handlerA);
-    store.getState().actions.registerSaveHandler(handlerB);
-    store.getState().actions.registerSaveHandler(handlerC);
+    expect(() =>
+      store.getState().actions.registerSaveHandler(handlerB),
+    ).toThrow('Only one plugin save handler');
 
     store.getState().actions.saveQuery();
 
     expect(handlerA).toHaveBeenCalledOnce();
-    expect(handlerB).toHaveBeenCalledOnce();
-    expect(handlerC).toHaveBeenCalledOnce();
+    expect(handlerB).not.toHaveBeenCalled();
   });
 
-  it('uses stored contents when marking a tab saved before its editor mounts', () => {
+  it('uses stored contents when marking a tab saved before its editor mounts', async () => {
     const store = makeStore();
     store.getState().actions.updateActiveTabValues({ query: 'query Saved {}' });
-    store.getState().actions.registerSaveHandler(() => true);
+    store.getState().actions.registerSaveHandler(async () => true);
 
     store.getState().actions.saveQuery();
 
-    expect(store.getState().tabs[0]!.lastSavedQuery).toBe('query Saved {}');
+    await vi.waitFor(() =>
+      expect(store.getState().tabs[0]!.lastSavedQuery).toBe('query Saved {}'),
+    );
   });
 
-  it('tab is NOT marked saved when every handler returns void/false', () => {
+  it('does not mark a later edit saved when its handler resolves false', async () => {
     const store = makeStore();
-    // Give the tab a non-null lastSavedQuery so we can detect if markTabSaved ran.
-    // We do this by registering a true-returning handler, saving, then changing.
-    const trueHandler = vi.fn().mockReturnValue(true);
-    store.getState().actions.registerSaveHandler(trueHandler);
+    const trueHandler = vi.fn().mockResolvedValue(true);
+    const unregister = store
+      .getState()
+      .actions.registerSaveHandler(trueHandler);
 
     // Provide a mock queryEditor so markTabSaved records a real string value.
     const mockQueryEditor = {
@@ -310,20 +311,20 @@ describe('save-handler registry', () => {
     store.getState().actions.setEditor({ queryEditor: mockQueryEditor });
 
     store.getState().actions.saveQuery();
-    expect(store.getState().tabs[0]!.lastSavedQuery).toBe('query First {}');
+    await vi.waitFor(() =>
+      expect(store.getState().tabs[0]!.lastSavedQuery).toBe('query First {}'),
+    );
 
-    // Now change the editor content and register only a void-returning handler.
     mockQueryEditor.getValue.mockReturnValue('query Second {}');
-    store.getState().actions.registerSaveHandler(() => {});
-    // Remove the true-returning handler.
-    trueHandler.mockReturnValue(null);
+    unregister();
+    store.getState().actions.registerSaveHandler(async () => false);
 
     store.getState().actions.saveQuery();
-    // lastSavedQuery should still be 'query First {}' — markTabSaved was NOT called.
+    await vi.waitFor(() => expect(store.getState().savingTabIds.size).toBe(0));
     expect(store.getState().tabs[0]!.lastSavedQuery).toBe('query First {}');
   });
 
-  it('saveQuery is a no-op when no handlers and no onSaveQuery prop are registered', () => {
+  it('saveQuery is a no-op when no handler is registered', () => {
     const store = makeStore();
     // Provide a mock editor so we can distinguish "saved" from "never saved".
     const mockQueryEditor = {
@@ -342,50 +343,18 @@ describe('save-handler registry', () => {
     expect(mockQueryEditor.getValue).not.toHaveBeenCalled();
   });
 
-  it('onSaveQuery prop participates: returning true marks the tab saved', () => {
-    const onSaveQuery = vi.fn().mockReturnValue(true);
-    const store = makeStore({ onSaveQuery });
-
-    const mockQueryEditor = {
-      getValue: vi.fn().mockReturnValue('query PropSaved {}'),
-    } as any;
-    store.getState().actions.setEditor({ queryEditor: mockQueryEditor });
-
-    store.getState().actions.saveQuery();
-
-    expect(onSaveQuery).toHaveBeenCalledOnce();
-    expect(store.getState().tabs[0]!.lastSavedQuery).toBe('query PropSaved {}');
-  });
-
-  it('onSaveQuery prop that returns void does not mark the tab saved', () => {
-    const onSaveQuery = vi.fn();
-    const store = makeStore({ onSaveQuery });
-
-    const mockQueryEditor = {
-      getValue: vi.fn().mockReturnValue('query Deferred {}'),
-    } as any;
-    store.getState().actions.setEditor({ queryEditor: mockQueryEditor });
-
-    store.getState().actions.saveQuery();
-
-    expect(onSaveQuery).toHaveBeenCalledOnce();
-    // Handler returned void, so markTabSaved was not called.
-    expect(store.getState().tabs[0]!.lastSavedQuery).toBeNull();
-  });
-
-  it('saveHandlers.size reflects register and unregister', () => {
+  it('cleans up a registered handler so a new owner can mount', () => {
     const store = makeStore();
     expect(store.getState().saveHandlers.size).toBe(0);
 
-    const handlerA = vi.fn();
-    const handlerB = vi.fn();
+    const handlerA = vi.fn().mockResolvedValue(true);
+    const handlerB = vi.fn().mockResolvedValue(true);
     const unregisterA = store.getState().actions.registerSaveHandler(handlerA);
     expect(store.getState().saveHandlers.size).toBe(1);
 
-    store.getState().actions.registerSaveHandler(handlerB);
-    expect(store.getState().saveHandlers.size).toBe(2);
-
     unregisterA();
+    expect(store.getState().saveHandlers.size).toBe(0);
+    store.getState().actions.registerSaveHandler(handlerB);
     expect(store.getState().saveHandlers.size).toBe(1);
   });
 });
@@ -484,5 +453,104 @@ describe('saved tab persistence', () => {
       query,
       lastSavedQuery: query,
     });
+  });
+});
+
+describe('save completion', () => {
+  it('marks only the submitted snapshot saved after an asynchronous save', async () => {
+    let complete!: (saved: boolean) => void;
+    const save = vi
+      .fn()
+      .mockImplementation(
+        () => new Promise<boolean>(resolve => (complete = resolve)),
+      );
+    const store = makeStore();
+    store.getState().actions.registerSaveHandler(save);
+    const editor = { getValue: vi.fn().mockReturnValue('query A {}') };
+    store.getState().actions.setEditor({ queryEditor: editor as any });
+
+    store.getState().actions.saveQuery();
+    editor.getValue.mockReturnValue('query B {}');
+    store.getState().actions.updateActiveTabValues({ query: 'query B {}' });
+    complete(true);
+    await vi.waitFor(() =>
+      expect(store.getState().tabs[0]).toMatchObject({
+        query: 'query B {}',
+        lastSavedQuery: 'query A {}',
+      }),
+    );
+  });
+
+  it('leaves the tab dirty after cancellation or a rejected save', async () => {
+    const save = vi
+      .fn()
+      .mockResolvedValueOnce(false)
+      .mockRejectedValueOnce(new Error('offline'));
+    const store = makeStore();
+    store.getState().actions.registerSaveHandler(save);
+    store
+      .getState()
+      .actions.updateActiveTabValues({ query: 'query Unsaved {}' });
+
+    store.getState().actions.saveQuery();
+    await vi.waitFor(() => expect(store.getState().savingTabIds.size).toBe(0));
+    expect(store.getState().tabs[0]!.lastSavedQuery).toBeNull();
+    expect(store.getState().saveError).toBeNull();
+
+    store.getState().actions.saveQuery();
+    await vi.waitFor(() => expect(store.getState().saveError).toBe('offline'));
+    expect(store.getState().tabs[0]!.lastSavedQuery).toBeNull();
+  });
+
+  it('serializes repeated saves of one tab and keeps the latest snapshot', async () => {
+    const resolvers: Array<(saved: boolean) => void> = [];
+    const save = vi
+      .fn()
+      .mockImplementation(
+        () => new Promise<boolean>(resolve => resolvers.push(resolve)),
+      );
+    const store = makeStore();
+    store.getState().actions.registerSaveHandler(save);
+    const editor = { getValue: vi.fn().mockReturnValue('query A {}') };
+    store.getState().actions.setEditor({ queryEditor: editor as any });
+
+    store.getState().actions.saveQuery();
+    editor.getValue.mockReturnValue('query B {}');
+    store.getState().actions.saveQuery();
+    expect(save).toHaveBeenCalledOnce();
+    resolvers[0]!(true);
+    await vi.waitFor(() => expect(save).toHaveBeenCalledTimes(2));
+    expect(save.mock.calls[1]![0].query).toBe('query B {}');
+    resolvers[1]!(true);
+    await vi.waitFor(() =>
+      expect(store.getState().tabs[0]!.lastSavedQuery).toBe('query B {}'),
+    );
+  });
+
+  it('applies completion to the originating tab after a switch and ignores a closed tab', async () => {
+    let resolve!: (saved: boolean) => void;
+    const first = createTab({ query: 'query First {}' });
+    const second = createTab({ query: 'query Second {}' });
+    const store = makeStore({ tabs: [first, second] });
+    store
+      .getState()
+      .actions.registerSaveHandler(
+        () => new Promise<boolean>(r => (resolve = r)),
+      );
+    store.getState().actions.saveQuery();
+    store.getState().actions.changeTab(1);
+    resolve(true);
+    await vi.waitFor(() =>
+      expect(store.getState().tabs[0]!.lastSavedQuery).toBe(first.query),
+    );
+    expect(store.getState().tabs[1]!.lastSavedQuery).toBeNull();
+
+    store.getState().actions.changeTab(0);
+    store.getState().actions.saveQuery();
+    store.getState().actions.closeTab(0);
+    resolve(true);
+    await vi.waitFor(() => expect(store.getState().savingTabIds.size).toBe(0));
+    expect(store.getState().tabs[0]!.id).toBe(second.id);
+    expect(store.getState().tabs[0]!.lastSavedQuery).toBeNull();
   });
 });

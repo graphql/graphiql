@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { Button, Dialog, useGraphiQLActions } from '@graphiql/react';
+import { Button, Dialog } from '@graphiql/react';
 import { useCollectionsStore, collectionsStore } from '../store';
 
 const NEW_COLLECTION = '__new__';
@@ -13,7 +13,7 @@ export const SaveDialog: FC = () => {
   const collections = useCollectionsStore(s => s.collections);
   const actions = useCollectionsStore(s => s.actions);
   const { open, name: initialName } = useCollectionsStore(s => s.saveDialog);
-  const { markTabSaved } = useGraphiQLActions();
+  const [saving, setSaving] = useState(false);
 
   const [name, setName] = useState(initialName);
   const [description, setDescription] = useState('');
@@ -29,29 +29,27 @@ export const SaveDialog: FC = () => {
       setDescription('');
       setSelectedCollectionId(current[0]?.id ?? NEW_COLLECTION);
       setNewCollectionName('New Collection');
+      setSaving(false);
     }
   }, [open, initialName]);
 
-  const handleSave = () => {
-    const { saveDialog, actions: a } = collectionsStore.getState();
-    let collectionId = selectedCollectionId;
-    if (selectedCollectionId === NEW_COLLECTION) {
-      collectionId = a.createCollection(
-        newCollectionName || 'New Collection',
-      ).id;
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await collectionsStore.getState().actions.commitSaveDialog({
+        name: name || 'Unnamed operation',
+        description: description || undefined,
+        collectionId:
+          selectedCollectionId === NEW_COLLECTION
+            ? undefined
+            : selectedCollectionId,
+        newCollectionName,
+      });
+    } catch {
+      // The editor displays the rejected save; it retains the dirty state.
+    } finally {
+      setSaving(false);
     }
-    const item = a.addItem(collectionId, {
-      name: name || 'Unnamed operation',
-      description: description || undefined,
-      query: saveDialog.query,
-      variables: saveDialog.variables,
-      headers: saveDialog.headers,
-    });
-    if (saveDialog.tabId) {
-      a.linkTab(saveDialog.tabId, collectionId, item.id);
-      markTabSaved(saveDialog.tabId);
-    }
-    a.closeSaveDialog();
   };
 
   return (
@@ -60,7 +58,7 @@ export const SaveDialog: FC = () => {
       <form
         onSubmit={e => {
           e.preventDefault();
-          handleSave();
+          void handleSave();
         }}
       >
         <Dialog.Body>
@@ -114,11 +112,15 @@ export const SaveDialog: FC = () => {
           )}
         </Dialog.Body>
         <Dialog.Footer>
-          <Button type="button" onClick={() => actions.closeSaveDialog()}>
+          <Button
+            type="button"
+            disabled={saving}
+            onClick={() => actions.closeSaveDialog()}
+          >
             Cancel
           </Button>
-          <Button type="submit" variant="primary">
-            Save
+          <Button type="submit" variant="primary" disabled={saving}>
+            {saving ? 'Saving…' : 'Save'}
           </Button>
         </Dialog.Footer>
       </form>

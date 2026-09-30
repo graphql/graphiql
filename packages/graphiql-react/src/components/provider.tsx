@@ -161,7 +161,6 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   onTabChange,
   shouldPersistHeaders = false,
   onCopyQuery,
-  onSaveQuery,
   onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
 
   customScalarSchemas,
@@ -278,7 +277,6 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
           initialQuery: query ?? activeTab?.query ?? '',
           initialVariables: variables ?? activeTab?.variables ?? '',
           onCopyQuery,
-          onSaveQuery,
           onEditOperationName,
           onPrettifyQuery,
           onTabChange,
