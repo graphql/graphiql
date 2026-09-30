@@ -133,12 +133,6 @@ useEffect(() => {
 }, [response])`,
     );
   }
-  // @ts-expect-error -- runtime check for a removed prop
-  if (typeof props.operationName === 'string') {
-    throw new TypeError(
-      'The `operationName` prop has been removed. Select an operation in the active tab using the Run picker or `useGraphiQLActions().setOperationName()`.',
-    );
-  }
   const { actions } = useMonaco();
   const [mounted, setMounted] = useState(false);
 

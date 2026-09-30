@@ -47,20 +47,6 @@ describe('GraphiQL', () => {
     ]);
   });
 
-  it('rejects the removed operationName prop', () => {
-    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    try {
-      expect(() =>
-        render(
-          // @ts-expect-error -- the prop was removed from GraphiQLProps
-          <GraphiQL fetcher={noOpFetcher} operationName="Pinned" />,
-        ),
-      ).toThrow('The `operationName` prop has been removed.');
-    } finally {
-      spy.mockRestore();
-    }
-  });
-
   beforeAll(async () => {
     let isMonacoReady = false;
 
