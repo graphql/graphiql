@@ -37,6 +37,7 @@
     "drop-legacy-client-alias",
     "esm-worker-dependencies",
     "explorer-removal",
+    "fix-vite-prettify",
     "friendly-jsonc-parse-errors",
     "keycap-hint",
     "matching-graphql-worker",
@@ -49,10 +50,13 @@
     "query-builder",
     "remove-cn-reexport",
     "remove-deprecated-hooks",
+    "remove-operation-name-prop",
     "response-pane",
+    "restore-caret-internal-ranges",
     "retire-toolbar-logo-slots",
     "segmented-control",
     "settings",
+    "shared-graphiql-settings",
     "transport-api",
     "v6-redesign"
   ]

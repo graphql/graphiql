@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-doc-explorer",
-  "version": "1.0.0-rc.0",
+  "version": "1.0.0-rc.1",
   "sideEffects": [
     "*.css"
   ],
@@ -51,7 +51,7 @@
     "zustand": "^5"
   },
   "devDependencies": {
-    "@graphiql/react": "^1.0.0-rc.0",
+    "@graphiql/react": "^1.0.0-rc.1",
     "@storybook/addon-a11y": "^10.3.6",
     "@storybook/addon-vitest": "^10.3.6",
     "@storybook/react-vite": "^10.3.6",
