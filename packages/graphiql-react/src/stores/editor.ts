@@ -5,8 +5,13 @@ import type {
   DocumentNode,
 } from 'graphql';
 import type { OperationFacts } from 'graphql-language-service';
-import { MaybePromise, mergeAst } from '@graphiql/toolkit';
+import {
+  getSelectedOperationName,
+  MaybePromise,
+  mergeAst,
+} from '@graphiql/toolkit';
 import { print } from 'graphql';
+import { getOperationFacts } from 'graphql-language-service';
 import {
   createTab,
   setPropertiesInActiveTab,
@@ -19,6 +24,7 @@ import {
 import type { SlicesWithActions, MonacoEditor } from '../types';
 import { debounce, formatJSONC } from '../utility';
 import { STORAGE_KEY } from '../constants';
+import { monacoStore } from './monaco';
 
 export interface EditorSlice extends TabsState {
   /**
@@ -350,11 +356,13 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
     variables,
     headers,
     response,
+    operationName,
   }: {
     query: string | null;
     variables?: string | null;
     headers?: string | null;
     response: string | null;
+    operationName?: string | null;
   }) {
     const {
       queryEditor,
@@ -362,11 +370,26 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       headerEditor,
       responseEditor,
       defaultHeaders,
+      schema,
+      operations,
     } = get();
     queryEditor?.setValue(query ?? '');
     variableEditor?.setValue(variables ?? '');
     headerEditor?.setValue(headers ?? defaultHeaders ?? '');
     responseEditor?.setValue(response ?? '');
+    const facts = getOperationFacts(schema, query, {
+      experimentalFragmentArguments:
+        monacoStore.getState().monacoGraphQL?.experimentalFragmentArguments,
+    });
+    return {
+      documentAST: facts?.documentAST,
+      operations: facts?.operations,
+      operationName: getSelectedOperationName(
+        operations,
+        operationName ?? undefined,
+        facts?.operations,
+      ),
+    };
   }
 
   function synchronizeActiveTabValues(tabsState: TabsState): TabsState {
@@ -410,9 +433,11 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
           activeTabIndex: updatedValues.tabs.length,
         };
         actions.storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]!);
+        const operationFacts = setEditorValues(
+          updated.tabs[updated.activeTabIndex]!,
+        );
         onTabChange?.(updated);
-        return updated;
+        return { ...updated, ...operationFacts };
       });
     },
     changeTab(index) {
@@ -426,9 +451,11 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
           activeTabIndex: index,
         };
         actions.storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]!);
+        const operationFacts = setEditorValues(
+          updated.tabs[updated.activeTabIndex]!,
+        );
         onTabChange?.(updated);
-        return updated;
+        return { ...updated, ...operationFacts };
       });
     },
     moveTab(newOrder) {
@@ -439,9 +466,11 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
           activeTabIndex: newOrder.indexOf(activeTab),
         };
         actions.storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]!);
+        const operationFacts = setEditorValues(
+          updated.tabs[updated.activeTabIndex]!,
+        );
         onTabChange?.(updated);
-        return updated;
+        return { ...updated, ...operationFacts };
       });
     },
     closeTab(index) {
@@ -457,9 +486,11 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
               : Math.max(activeTabIndex - 1, 0),
         };
         actions.storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]!);
+        const operationFacts = setEditorValues(
+          updated.tabs[updated.activeTabIndex]!,
+        );
         onTabChange?.(updated);
-        return updated;
+        return { ...updated, ...operationFacts };
       });
     },
     updateActiveTabValues(partialTab) {

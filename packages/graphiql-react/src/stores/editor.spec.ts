@@ -3,9 +3,14 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { create } from 'zustand';
 import { StorageAPI } from '@graphiql/toolkit';
+import { OperationTypeNode } from 'graphql';
 import { createEditorSlice } from './editor';
 import { createStorageSlice } from './storage';
 import { createTab, getDefaultTabState } from '../utility/tabs';
+import {
+  getRunBlockReason,
+  resolveActiveOperation,
+} from '../utility/run-block';
 import { STORAGE_KEY } from '../constants';
 import type { SlicesWithActions } from '../types';
 
@@ -84,6 +89,48 @@ describe('tab management', () => {
 
     expect(store.getState().tabs[0]?.query).toBe(query);
     expect(store.getState().tabs[0]?.lastSavedQuery).toBeNull();
+  });
+
+  it('updates operation facts immediately when tabs share an operation name', () => {
+    const firstTab = createTab({ query: 'query Shared { hello }' });
+    const secondTab = createTab({ query: 'mutation Shared { update }' });
+    const store = makeStore({ tabs: [firstTab, secondTab] });
+    let editorValue = firstTab.query;
+    store.getState().actions.setEditor({
+      queryEditor: {
+        getValue: () => editorValue,
+        setValue(value: string) {
+          editorValue = value;
+        },
+      } as any,
+    });
+
+    store.getState().actions.changeTab(1);
+    const mutationState = store.getState();
+    expect(mutationState.operationName).toBe('Shared');
+    expect(mutationState.operations?.[0]?.operation).toBe(
+      OperationTypeNode.MUTATION,
+    );
+    expect(
+      getRunBlockReason(
+        'GET',
+        resolveActiveOperation(
+          mutationState.operations,
+          mutationState.operationName,
+        ),
+      ),
+    ).not.toBeNull();
+
+    store.getState().actions.changeTab(0);
+    const queryState = store.getState();
+    expect(queryState.operationName).toBe('Shared');
+    expect(queryState.operations?.[0]?.operation).toBe(OperationTypeNode.QUERY);
+    expect(
+      getRunBlockReason(
+        'GET',
+        resolveActiveOperation(queryState.operations, queryState.operationName),
+      ),
+    ).toBeNull();
   });
 
   it('addTab adds a new tab', () => {
