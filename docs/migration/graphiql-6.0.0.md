@@ -13,10 +13,11 @@ GraphiQL 6 ships with a complete visual overhaul, new first-party features and A
 7. [GraphQL.js minimum version](#graphqljs-minimum-version)
 8. [`@graphiql/plugin-explorer` removal](#graphiqlplugin-explorer-removal)
 9. [Removed hooks](#removed-hooks)
-10. [Removed `GraphiQL.Toolbar` and `GraphiQL.Logo`](#removed-graphiqltoolbar-and-graphiqllogo)
-11. [Deprecated APIs](#deprecated-apis)
-12. [Other notes](#other-notes)
-13. [Other new features](#other-new-features)
+10. [Removed `operationName` prop](#removed-operationname-prop)
+11. [Removed `GraphiQL.Toolbar` and `GraphiQL.Logo`](#removed-graphiqltoolbar-and-graphiqllogo)
+12. [Deprecated APIs](#deprecated-apis)
+13. [Other notes](#other-notes)
+14. [Other new features](#other-new-features)
 
 ## Overview
 
@@ -31,6 +32,7 @@ Other breaking changes include:
 - The hooks deprecated in v5, including `useEditorContext` and `usePluginContext`, are removed. Use the new store selectors and actions instead.
 - The `GraphiQL.Toolbar` and `GraphiQL.Logo` children are removed. Use plugin `sessionActions` and the top bar's `brand` prop instead.
 - `GraphiQLProps` is now a union that accepts either `fetcher` or `transport`, but not both. If your wrapper uses `interface AppProps extends GraphiQLProps`, switch to a type intersection such as `type AppProps = GraphiQLProps & { applicationName: string }`, even if you keep using `fetcher`.
+- The `operationName` prop is removed from `<GraphiQL>` and `<GraphiQLProvider>`. Requests use the operation selected in the active tab.
 - Applications that configure Monaco workers directly must update to Monaco's exported worker entry points.
 - The `graphql` peer dependency now requires `^16.11.0 || ^17.0.0`.
 
@@ -662,6 +664,12 @@ const { addToHistory } = useHistoryActions();
 
 See the [`@graphiql/react` README](../../packages/graphiql-react/README.md#available-stores) for the full list of available store selectors and actions.
 
+## Removed `operationName` prop
+
+Remove the `operationName` prop from `<GraphiQL>` or `<GraphiQLProvider>`. It predated tabs and overrode the operation sent with every request, regardless of which tab was active. Across tabs, the same name could refer to different operations or be absent from the current document. Each tab now keeps its own selection; moving the cursor within a document, choosing an operation from the Run picker, or calling `useGraphiQLActions().setOperationName(name)` selects the operation to run in the active tab. The request sent through your `transport` or `fetcher` still includes `operationName` when appropriate.
+
+The `onEditOperationName` callback remains available if you need to observe selection changes or update a URL. If you previously fed that value back through the prop, stop passing it to GraphiQL. There is no longer a way to pin execution to one name across every tab.
+
 ## Removed `GraphiQL.Toolbar` and `GraphiQL.Logo`
 
 `<GraphiQL.Toolbar>` and `<GraphiQL.Logo>` are removed. Use a plugin's `sessionActions` for custom editor actions and the `brand` prop for branding. `<GraphiQL.Footer>` still works as before.
@@ -778,8 +786,8 @@ The v5 `--color-*` variables are also deprecated. They remain defined at their v
 
 ## Other notes
 
-- **Active operation follows the cursor.** In a document with more than one operation, moving the cursor into a different named operation updates `operationName`. The Run button, operation dropdown, and operation-aware plugins therefore reflect the operation you are editing. Previously, `operationName` changed only on run-at-cursor (`Cmd`/`Ctrl`+`Enter`) or when selected from the operation dropdown.
-  - The `onEditOperationName` callback now fires when the cursor crosses into a different named operation, not only on edit or run. If you mirror `operationName` into your URL or app state, expect it to update as the user navigates between operations.
+- **Active operation follows the cursor.** In a document with more than one operation, moving the cursor into a different named operation updates the active tab's selection. The Run button, operation dropdown, and operation-aware plugins therefore reflect the operation you are editing. Previously, the selection changed only on run-at-cursor (`Cmd`/`Ctrl`+`Enter`) or when selected from the operation dropdown.
+  - The `onEditOperationName` callback now fires when the cursor crosses into a different named operation, not only on edit or run. If you mirror the selected name into your URL or app state, expect it to update as the user navigates between operations.
   - A tab holding multiple operations shows the active operation name followed by a `+N` count of the others (for example, `GetUser +2`).
 - **Browserslist.** v6 replaces the project's custom `.browserslistrc` contents with the single `defaults` browserslist preset (`> 0.5%, last 2 versions, Firefox ESR, not dead`). That range covers the modern browsers that support the OKLCH color functions the new token system relies on. If your previous bespoke config deliberately targeted very old browsers, check `defaults` against your support matrix.
 - **Monaco editor theme registration.** The built-in Monaco themes (`graphiql-DARK` and `graphiql-LIGHT`) use the v6 accent palette. GraphQL tokens and the surrounding editor interface now use the same palette as the rest of GraphiQL. Register custom themes with `monaco.editor.defineTheme` on the same Monaco instance GraphiQL uses, then pass their names as `editorTheme={{ dark: 'company-dark', light: 'company-light' }}`. The prop accepts names, not inline theme definitions. If a screenshot test depends on the previous built-in theme values, update its expected colors.

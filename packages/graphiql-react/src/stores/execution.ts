@@ -142,12 +142,6 @@ export interface ExecutionSlice {
   abortController: AbortController | null;
 
   /**
-   * The operation name that will be sent with all GraphQL requests.
-   * @default null
-   */
-  overrideOperationName: string | null;
-
-  /**
    * A function to determine which field leafs are automatically added when
    * trying to execute a query with missing selection sets. It will be called
    * with the `GraphQLType` for which fields need to be added.
@@ -218,10 +212,6 @@ export interface ExecutionActions {
 }
 
 type BaseExecutionProps = {
-  /**
-   * This prop sets the operation name that is passed with a GraphQL request.
-   */
-  operationName?: string;
   getDefaultFieldNames?: GetDefaultFieldNamesFn;
 };
 
@@ -249,7 +239,7 @@ export type ExecutionProps = BaseExecutionProps &
 type CreateExecutionSlice = (
   initial: Pick<
     ExecutionSlice,
-    'overrideOperationName' | 'getDefaultFieldNames' | 'fetcher' | 'transport'
+    'getDefaultFieldNames' | 'fetcher' | 'transport'
   >,
 ) => StateCreator<
   SlicesWithActions,
@@ -387,7 +377,6 @@ export const createExecutionSlice: CreateExecutionSlice =
             tabs,
             activeTabIndex,
             subscription,
-            overrideOperationName,
             queryId,
             fetcher,
             transport,
@@ -422,7 +411,6 @@ export const createExecutionSlice: CreateExecutionSlice =
             facts?.operations,
           );
           const documentAST = facts?.documentAST;
-          const opName = overrideOperationName ?? selectedOperationName;
           actions.setOperationFacts({
             documentAST,
             operations: facts?.operations,
@@ -443,7 +431,7 @@ export const createExecutionSlice: CreateExecutionSlice =
           // the UI disables Run in this state; bail out for any keyboard path too.
           const blockReason = getRunBlockReason(
             transportMethod,
-            resolveActiveOperation(facts?.operations, opName),
+            resolveActiveOperation(facts?.operations, selectedOperationName),
           );
           if (blockReason) {
             return;
@@ -558,7 +546,7 @@ export const createExecutionSlice: CreateExecutionSlice =
               const result = transport.send({
                 query,
                 variables,
-                operationName: opName,
+                operationName: selectedOperationName,
                 headers: headers as Record<string, string> | undefined,
                 signal: controller.signal,
               });
@@ -599,7 +587,7 @@ export const createExecutionSlice: CreateExecutionSlice =
               }
             } else if (fetcher) {
               const fetch = fetcher(
-                { query, variables, operationName: opName },
+                { query, variables, operationName: selectedOperationName },
                 { headers, documentAST },
               );
 
