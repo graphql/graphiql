@@ -29,7 +29,7 @@ Other breaking changes include:
 
 - The hooks deprecated in v5, including `useEditorContext` and `usePluginContext`, are removed. Use the new store selectors and actions instead.
 - The `GraphiQL.Toolbar` and `GraphiQL.Logo` children are removed. Use plugin `sessionActions` and the top bar's `brand` prop instead.
-- `GraphiQLProps` is now a union that accepts either `fetcher` or `transport`, but not both. If a wrapper declares `interface AppProps extends GraphiQLProps`, TypeScript reports `TS2312`. Use `type AppProps = GraphiQLProps & { applicationName: string }` instead, even if you keep using `fetcher`.
+- If your wrapper uses `interface AppProps extends GraphiQLProps`, switch to a type intersection such as `type AppProps = GraphiQLProps & { applicationName: string }`.
 - Applications that configure Monaco workers directly must update to Monaco's exported worker entry points.
 - The `graphql` peer dependency now requires `^16.11.0 || ^17.0.0`.
 
