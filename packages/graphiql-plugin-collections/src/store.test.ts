@@ -787,22 +787,36 @@ describe('createLocalStorageAdapter', () => {
 });
 
 describe('requestSave', () => {
-  it('opens the save dialog for an unlinked tab', () => {
-    const savedInPlace = getActions().requestSave({
+  it('opens the save dialog for an unlinked tab', async () => {
+    const completion = getActions().requestSave({
       id: 'tab-1',
       query: 'query GetUser { user { id } }',
       variables: '{}',
       headers: '',
     });
-    expect(savedInPlace).toBe(false);
     const { saveDialog } = collectionsStore.getState();
     expect(saveDialog.open).toBe(true);
     expect(saveDialog.tabId).toBe('tab-1');
     expect(saveDialog.name).toBe('GetUser');
     expect(saveDialog.query).toBe('query GetUser { user { id } }');
+    getActions().closeSaveDialog();
+    expect(await completion).toBe(false);
   });
 
-  it('updates the linked item in place without opening the dialog', () => {
+  it('does not replace an open dialog with a save from another tab', async () => {
+    const first = getActions().requestSave({ id: 'first', query: '{ first }' });
+    expect(
+      getActions().requestSave({ id: 'second', query: '{ second }' }),
+    ).toBe(false);
+    expect(collectionsStore.getState().saveDialog).toMatchObject({
+      tabId: 'first',
+      query: '{ first }',
+    });
+    getActions().closeSaveDialog();
+    expect(await first).toBe(false);
+  });
+
+  it('updates the linked item in place without opening the dialog', async () => {
     const collection = getActions().createCollection('My collection');
     const item = getActions().addItem(collection.id, {
       name: 'GetUser',
@@ -812,7 +826,7 @@ describe('requestSave', () => {
     });
     getActions().linkTab('tab-1', collection.id, item.id);
 
-    const savedInPlace = getActions().requestSave({
+    const savedInPlace = await getActions().requestSave({
       id: 'tab-1',
       query: 'query GetUser { user { id name } }',
       variables: '{"x":1}',
@@ -828,6 +842,121 @@ describe('requestSave', () => {
     expect(saved?.variables).toBe('{"x":1}');
     expect(saved?.headers).toBe('{"h":"v"}');
     expect(collections[0]?.items).toHaveLength(1);
+  });
+
+  it('waits for the storage adapter before completing a linked save', async () => {
+    let finishSave!: () => void;
+    let saved: Collection[] | undefined;
+    const storage: CollectionsStorage = {
+      async load() {
+        return [];
+      },
+      save(collections) {
+        return new Promise<void>(resolve => {
+          finishSave = () => {
+            saved = collections;
+            resolve();
+          };
+        });
+      },
+    };
+    await getActions().init(storage);
+    const collection = makeCol('col', 'Collection');
+    const item = makeItem({ id: 'item', name: 'Operation', query: '{ old }' });
+    getActions().setCollections([{ ...collection, items: [item] }]);
+    getActions().linkTab('tab', collection.id, item.id);
+
+    const completion = getActions().requestSave({
+      id: 'tab',
+      query: '{ new }',
+    });
+    await vi.waitFor(() => expect(finishSave).toBeTypeOf('function'));
+    expect(collectionsStore.getState().collections[0]?.items[0]?.query).toBe(
+      '{ old }',
+    );
+    finishSave();
+    expect(await completion).toBe(true);
+    expect(saved?.[0]?.items[0]?.query).toBe('{ new }');
+  });
+
+  it('rejects a failed linked save without changing the stored item', async () => {
+    const storage: CollectionsStorage = {
+      async load() {
+        return [];
+      },
+      async save() {
+        throw new Error('storage unavailable');
+      },
+    };
+    await getActions().init(storage);
+    const collection = makeCol('col', 'Collection');
+    const item = makeItem({ id: 'item', name: 'Operation', query: '{ old }' });
+    getActions().setCollections([{ ...collection, items: [item] }]);
+    getActions().linkTab('tab', collection.id, item.id);
+
+    await expect(
+      getActions().requestSave({ id: 'tab', query: '{ new }' }),
+    ).rejects.toThrow('storage unavailable');
+    expect(collectionsStore.getState().collections[0]?.items[0]?.query).toBe(
+      '{ old }',
+    );
+  });
+
+  it('completes a dialog save only after storage commits the captured content', async () => {
+    let finishSave!: () => void;
+    const storage: CollectionsStorage = {
+      async load() {
+        return [];
+      },
+      save() {
+        return new Promise<void>(resolve => {
+          finishSave = resolve;
+        });
+      },
+    };
+    await getActions().init(storage);
+    const completion = getActions().requestSave({
+      id: 'tab',
+      query: '{ submitted }',
+    });
+    const committed = getActions().commitSaveDialog({
+      name: 'Saved',
+      newCollectionName: 'Mine',
+    });
+    await vi.waitFor(() => expect(finishSave).toBeTypeOf('function'));
+    expect(collectionsStore.getState().links.tab).toBeUndefined();
+    finishSave();
+    await committed;
+    expect(await completion).toBe(true);
+    expect(collectionsStore.getState().collections[0]?.items[0]?.query).toBe(
+      '{ submitted }',
+    );
+    expect(collectionsStore.getState().links.tab).toBeDefined();
+  });
+
+  it('rejects a dialog save when the adapter fails and leaves no new item', async () => {
+    await getActions().init({
+      async load() {
+        return [];
+      },
+      async save() {
+        throw new Error('storage unavailable');
+      },
+    });
+    const completion = getActions().requestSave({
+      id: 'tab',
+      query: '{ submitted }',
+    });
+    const outcome = Promise.allSettled([completion]);
+
+    await expect(
+      getActions().commitSaveDialog({ name: 'Saved' }),
+    ).rejects.toThrow('storage unavailable');
+    expect(await outcome).toMatchObject([
+      { status: 'rejected', reason: new Error('storage unavailable') },
+    ]);
+    expect(collectionsStore.getState().collections).toEqual([]);
+    expect(collectionsStore.getState().links.tab).toBeUndefined();
   });
 
   it('returns false and does not open the dialog when config.readOnly is true', () => {
@@ -909,7 +1038,7 @@ describe('tab-link persistence', () => {
     await getActions().init(storage);
 
     // The restored link makes ⌘S update in place — no dialog.
-    const savedInPlace = getActions().requestSave({
+    const savedInPlace = await getActions().requestSave({
       id: 'tab-1',
       query: '{ new }',
     });
