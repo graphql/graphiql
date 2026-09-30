@@ -458,17 +458,7 @@ globalThis.MonacoEnvironment = {
 
 ### Vite development and production
 
-Vite 7.3.1's default IIFE worker format fails when these Monaco workers use code splitting. With that version, set `worker.format` to `'es'` for production builds with either worker setup. The Vite 8 example builds and runs with the default worker format. The explicit Vite worker factories above don't require dependency optimization:
-
-```js
-import { defineConfig } from 'vite';
-
-export default defineConfig({
-  worker: { format: 'es' },
-});
-```
-
-If you use `graphiql/setup-workers/vite` instead, also exclude its two setup modules from pre-bundling:
+The explicit Vite worker factories above don't require dependency optimization. If you use `graphiql/setup-workers/vite` instead, exclude its two setup modules from pre-bundling:
 
 ```js
 import { defineConfig } from 'vite';
@@ -485,7 +475,7 @@ export default defineConfig({
 });
 ```
 
-For Vite 7.3.1, also add the `worker` setting shown above to this helper configuration. The setup modules are excluded because Vite must process their `?worker` imports instead of pre-bundling them. The `graphiql` helper delegates to the `@graphiql/react` helper, so both entries must remain visible to Vite. No dependencies need to be forced into optimization. Restart Vite after updating the configuration, using `--force` if its dependency cache is stale. A successful production build does not verify development workers: check schema completion, an unknown-field diagnostic, JSON validation, and Prettify in the browser. See the [Vite example](../../examples/graphiql-vite).
+The setup modules are excluded because Vite must process their `?worker` imports instead of pre-bundling them. The `graphiql` helper delegates to the `@graphiql/react` helper, so both entries must remain visible to Vite. No dependencies need to be forced into optimization, and Vite's default worker format is sufficient. Restart Vite after updating the configuration, using `--force` if its dependency cache is stale. A successful production build does not verify development workers: check schema completion, an unknown-field diagnostic, JSON validation, and Prettify in the browser. See the [Vite example](../../examples/graphiql-vite).
 
 Custom GraphQL workers must call Monaco's `initialize` function as soon as the worker module loads. Don't wrap it in an additional `onmessage` handler. To pass functions or other values that structured cloning can't transfer to the worker, subclass `GraphQLWorker` and override its `initialize` method. See the [`monaco-graphql` custom worker example](../../packages/monaco-graphql/README.md#custom-webworker-for-passing-non-static-config-to-worker) for the complete worker and bundler configuration.
 
