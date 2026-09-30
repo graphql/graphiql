@@ -162,6 +162,41 @@ const plugins = DEFAULT_PLUGINS.map(plugin =>
 
 Declare `@graphiql/plugin-collections` as a direct dependency when importing its factory. See the [package README](../../packages/graphiql-plugin-collections/README.md) for the full option list and the import and merge behavior.
 
+### Custom save handlers
+
+The Save button and `Cmd`/`Ctrl`+`S` have one owner. Collections owns Save by default. If you pass `onSaveQuery`, GraphiQL calls that host handler instead of the Collections handler. You can leave Collections installed for browsing while your handler saves elsewhere, or remove `COLLECTIONS_PLUGIN` from `DEFAULT_PLUGINS` when your host supplies the entire save experience. Registering two plugin save handlers throws an error. If a save must reach several backends, coordinate those writes in one handler and return success only when your chosen commit policy is met.
+
+```tsx
+import { COLLECTIONS_PLUGIN, DEFAULT_PLUGINS, GraphiQL } from 'graphiql';
+
+const plugins = DEFAULT_PLUGINS.filter(plugin => plugin !== COLLECTIONS_PLUGIN);
+
+<GraphiQL
+  transport={transport}
+  plugins={plugins}
+  onSaveQuery={async tab => {
+    const response = await fetch('/api/operations', {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        id: tab.id,
+        query: tab.query,
+        variables: tab.variables,
+        headers: tab.headers,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error(`Save failed (${response.status})`);
+    }
+    return true;
+  }}
+/>;
+```
+
+A handler receives the tab and editor contents captured when Save was invoked. Return `true`, or a promise resolving to `true`, after the write commits. Return `false` when the user cancels. Throw or reject on failure; GraphiQL shows the error and leaves the tab unsaved. A dialog can return a promise that resolves only when its Save or Cancel action finishes. Returning nothing preserves the earlier deferred-save behavior, but GraphiQL cannot infer whether or what it committed. The tab's saved marker tracks the submitted query snapshot, so edits made while a save is pending remain dirty. Saves requested again for the same tab run in order. The dirty indicator compares query text; variables and headers are included in the handler input but do not independently change that indicator.
+
+If you want Collections to remain the save owner with a different persistence backend, use `collectionsPlugin({ storage })` instead of `onSaveQuery`. The adapter's `save(collections)` promise must resolve after its write commits and reject on failure. See [custom storage](../../packages/graphiql-plugin-collections/README.md#custom-storage) for the complete adapter shape and setup.
+
 ### Opting out
 
 Both plugins are part of `DEFAULT_PLUGINS`, alongside History. Filter the defaults to drop one or both:

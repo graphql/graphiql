@@ -104,18 +104,21 @@ const apiStorage: CollectionsStorage = {
     return (await res.json()) as Collection[];
   },
   async save(collections) {
-    await fetch('/api/collections', {
+    const response = await fetch('/api/collections', {
       method: 'PUT',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(collections),
     });
+    if (!response.ok) {
+      throw new Error(`Saving collections failed (${response.status})`);
+    }
   },
 };
 
 const collections = collectionsPlugin({ storage: apiStorage });
 ```
 
-`load()` runs once when the panel first mounts. `save()` runs after every mutation with the full collection list.
+`load()` runs once when the panel first mounts. `save()` receives the full collection list after mutations. For toolbar or keyboard saves, its promise must resolve only after the write commits. A rejection keeps the operation dirty and shows an error in GraphiQL. Other collection editing actions still update the UI immediately.
 
 ### Team-shared backends and sync
 
