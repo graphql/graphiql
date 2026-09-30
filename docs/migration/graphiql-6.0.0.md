@@ -120,7 +120,7 @@ To retint the accent color and canvas background for dark mode:
 }
 ```
 
-Because the selector is `[data-theme='dark']`, this overrides the built-in values regardless of load order, as long as it's not undone by a later stylesheet.
+Load your custom stylesheet after `graphiql/style.css`. The `[data-theme='dark']` selector has the same specificity as the built-in token selector, so the later declaration wins. If you can't control stylesheet order, use a more specific selector targeting your GraphiQL container.
 
 ### Theme is now an attribute, not just a class
 
@@ -393,6 +393,8 @@ Use the [CDN example](../../examples/graphiql-cdn) as a starting point. To add s
 ## Theme, density, and font-size settings
 
 v6 adds a settings dialog (the gear icon in the activity rail) with controls for theme, density, and font size. The new `useGraphiQLSettings()` hook in `@graphiql/react` exposes the active values and setters. GraphiQL saves these settings to `localStorage` and reflects them as `data-*` attributes on its container. Custom integrations can use those attributes to adjust their own spacing, typography, or colors when a user changes a setting.
+
+These preferences use the `graphiql:settings` key in `localStorage`, shared by GraphiQL instances on the same origin. They aren't scoped to individual instances and don't use GraphiQL's `storage` prop. Providing a custom storage adapter therefore doesn't change where these preferences are saved.
 
 ```ts
 import { useGraphiQLSettings } from '@graphiql/react';
