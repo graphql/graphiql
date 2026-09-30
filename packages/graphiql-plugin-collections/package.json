@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-collections",
-  "version": "1.0.0-rc.0",
+  "version": "1.0.0-rc.1",
   "sideEffects": [
     "*.css"
   ],
@@ -48,7 +48,7 @@
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@graphiql/react": "^1.0.0-rc.0",
+    "@graphiql/react": "^1.0.0-rc.1",
     "@storybook/react-vite": "^10.3.6",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^7.0.1",

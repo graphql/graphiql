@@ -15,7 +15,7 @@
     "json-schema": "^0.4",
     "jsonc-parser": "^3",
     "monaco-editor": "0.57.0",
-    "monaco-graphql": "^2.0.0-rc.0",
+    "monaco-graphql": "^2.0.0-rc.1",
     "prettier": "^3"
   },
   "devDependencies": {

@@ -1,5 +1,22 @@
 # @graphiql/react
 
+## 1.0.0-rc.1
+
+### Major Changes
+
+- [#4610](https://github.com/graphql/graphiql/pull/4610) [`b40d7fe`](https://github.com/graphql/graphiql/commit/b40d7feec9a26451402efd93cba046b8bd947509) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Remove the `operationName` prop from `GraphiQL` and `GraphiQLProvider`. Each request now uses the operation selected in the active tab. Use the cursor, Run picker, or `useGraphiQLActions().setOperationName(name)` to select an operation; `onEditOperationName` still reports selection changes.
+
+### Patch Changes
+
+- [#4606](https://github.com/graphql/graphiql/pull/4606) [`541682b`](https://github.com/graphql/graphiql/commit/541682ba18c9614976991dc230b9da7c502bcebf) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Load Prettier's ESM plugins so GraphQL queries and JSONC variables and headers can be prettified in Vite development builds without forced dependency optimization.
+
+- [#4474](https://github.com/graphql/graphiql/pull/4474) [`a539b83`](https://github.com/graphql/graphiql/commit/a539b83cac07d3987a8098346b1647a0ddec67f4) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Restore caret ranges for internal GraphiQL dependencies. The RC versions sort after the stale canary and `next` versions that beta ranges selected, so the exact pins from the beta cycle are no longer necessary.
+
+- [#4601](https://github.com/graphql/graphiql/pull/4601) [`abf1c84`](https://github.com/graphql/graphiql/commit/abf1c84476ac4d4907f9caf7bbee66f21bf452fb) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Keep appearance settings synchronized between `useGraphiQLSettings` consumers, including the built-in Settings dialog and plugins.
+
+- Updated dependencies [[`a539b83`](https://github.com/graphql/graphiql/commit/a539b83cac07d3987a8098346b1647a0ddec67f4)]:
+  - monaco-graphql@2.0.0-rc.1
+
 ## 1.0.0-rc.0
 
 ### Patch Changes

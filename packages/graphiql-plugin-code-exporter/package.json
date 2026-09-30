@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-code-exporter",
-  "version": "6.0.0-rc.0",
+  "version": "6.0.0-rc.1",
   "sideEffects": [
     "*.css"
   ],
@@ -44,7 +44,7 @@
     "react-dom": "^18 || ^19"
   },
   "devDependencies": {
-    "@graphiql/react": "^1.0.0-rc.0",
+    "@graphiql/react": "^1.0.0-rc.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@typescript/native-preview": "^7.0.0-dev.20260707.2",
