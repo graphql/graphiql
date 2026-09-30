@@ -121,6 +121,27 @@ button.graphiql-tab-strip-action {
   }
 }
 
+.graphiql-tab-save-spinner {
+  height: var(--icon-size-lg);
+  width: var(--icon-size-lg);
+  margin: 0;
+
+  &::after {
+    height: var(--icon-size-lg);
+    width: var(--icon-size-lg);
+    border-width: 2px;
+    border-top-width: 2px;
+  }
+}
+
+.graphiql-save-error {
+  color: oklch(var(--accent-red));
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* The editor of the session */
 .graphiql-container #graphiql-session {
   display: flex;
