@@ -120,22 +120,8 @@ export interface EditorSlice extends TabsState {
   onCopyQuery?: (query: string) => void;
 
   /**
-   * Invoked when the current operation is saved, via the Save toolbar button or
-   * ⌘S. Receives the active tab with the latest operation, variables, and
-   * headers. When provided, this host handler replaces the plugin save owner.
-   *
-   * Return `true` (or a promise resolving to `true`) only after the operation
-   * has been committed. Return `false` for a cancelled save. A dialog can
-   * return a promise that resolves when the user saves or cancels. A void
-   * return leaves dirty state unchanged for compatibility with older hosts.
-   * @param tab - The active tab at the time of saving.
-   */
-  onSaveQuery?: SaveHandler;
-
-  /**
-   * Registered save handlers. Plugins call `registerSaveHandler` to add a
-   * handler here. The dirty-state dot and Save button appear only when at least
-   * one handler (or the `onSaveQuery` prop) is registered.
+   * Registered save handler. The dirty-state dot and Save button appear only
+   * when a plugin registers one.
    */
   saveHandlers: Set<SaveHandler>;
 
@@ -240,8 +226,8 @@ export interface EditorActions {
 
   /**
    * Save the current query. Triggered by the Save toolbar button or ⌘S.
-   * Delegates to `onSaveQuery` if present, otherwise to the registered plugin
-   * handler. Repeated saves of one tab run in order.
+   * Delegates to the registered plugin handler. Repeated saves of one tab run
+   * in order.
    */
   saveQuery(): void;
 
@@ -255,8 +241,7 @@ export interface EditorActions {
   markTabSaved(tabId: string, savedQuery?: string | null): void;
 
   /**
-   * Registers the plugin save owner. A second plugin registration throws.
-   * The host `onSaveQuery` prop takes precedence when present.
+   * Registers the save handler. A second registration throws.
    * @returns An unregister function to call on unmount.
    */
   registerSaveHandler(handler: SaveHandler): () => void;
@@ -284,7 +269,6 @@ export interface EditorProps extends Pick<
   | 'defaultHeaders'
   | 'defaultQuery'
   | 'onCopyQuery'
-  | 'onSaveQuery'
 > {
   /**
    * With this prop you can pass so-called "external" fragments that will be
@@ -344,7 +328,6 @@ type CreateEditorSlice = (
     | 'defaultHeaders'
     | 'onPrettifyQuery'
     | 'onCopyQuery'
-    | 'onSaveQuery'
     | 'uriInstanceId'
   >,
 ) => StateCreator<
@@ -587,7 +570,6 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         queryEditor,
         variableEditor,
         headerEditor,
-        onSaveQuery,
         saveHandlers,
         tabs,
         activeTabIndex,
@@ -596,7 +578,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       if (!activeTab) {
         return;
       }
-      const handler = onSaveQuery ?? saveHandlers.values().next().value;
+      const handler = saveHandlers.values().next().value;
       if (!handler) {
         return;
       }

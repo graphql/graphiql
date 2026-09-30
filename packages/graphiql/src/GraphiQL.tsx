@@ -141,7 +141,6 @@ const GraphiQL_: FC<GraphiQLProps> = ({
       plugins={[...(referencePlugin ? [referencePlugin] : []), ...plugins]}
       referencePlugin={referencePlugin}
       {...props}
-      onSaveQuery={props.onSaveQuery}
     >
       <HistoryToUse {...(hasHistoryPlugin && { maxHistoryLength })}>
         <DocExplorerToUse>
@@ -250,7 +249,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     operations,
     plugins,
     saveHandlers,
-    onSaveQuery,
     savingTabIds,
     saveError,
   } = useGraphiQL(
@@ -263,12 +261,11 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       'operations',
       'plugins',
       'saveHandlers',
-      'onSaveQuery',
       'savingTabIds',
       'saveError',
     ),
   );
-  const canSave = saveHandlers.size > 0 || Boolean(onSaveQuery);
+  const canSave = saveHandlers.size > 0;
   const isSaving = Boolean(
     tabs[activeTabIndex] && savingTabIds.has(tabs[activeTabIndex]!.id),
   );
