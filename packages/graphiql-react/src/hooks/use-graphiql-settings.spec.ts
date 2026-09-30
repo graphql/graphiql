@@ -181,6 +181,62 @@ describe('useGraphiQLSettings — reads from localStorage', () => {
 });
 
 describe('useGraphiQLSettings — setters persist to localStorage', () => {
+  it('shares updates between mounted consumers without overwriting other preferences', () => {
+    const first = renderHook(() => useGraphiQLSettings());
+    const second = renderHook(() => useGraphiQLSettings());
+
+    act(() => first.result.current.setTheme('dark'));
+    expect(second.result.current.theme).toBe('dark');
+
+    act(() => second.result.current.setDensity('compact'));
+    expect(first.result.current.density).toBe('compact');
+    expect(first.result.current.theme).toBe('dark');
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!)).toMatchObject({
+      theme: 'dark',
+      density: 'compact',
+    });
+
+    const third = renderHook(() => useGraphiQLSettings());
+    expect(third.result.current.theme).toBe('dark');
+    expect(third.result.current.density).toBe('compact');
+  });
+
+  it('keeps consumers synchronized when storage rejects a write', () => {
+    const first = renderHook(() => useGraphiQLSettings());
+    const second = renderHook(() => useGraphiQLSettings());
+    const setItem = vi.spyOn(localStorage, 'setItem').mockImplementation(() => {
+      throw new Error('Storage unavailable');
+    });
+
+    try {
+      act(() => first.result.current.setTheme('dark'));
+      expect(second.result.current.theme).toBe('dark');
+      expect(renderHook(() => useGraphiQLSettings()).result.current.theme).toBe(
+        'dark',
+      );
+    } finally {
+      setItem.mockRestore();
+    }
+
+    act(() => second.result.current.setDensity('compact'));
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!)).toMatchObject({
+      theme: 'dark',
+      density: 'compact',
+    });
+  });
+
+  it('restores preferences after all consumers unmount', () => {
+    const first = renderHook(() => useGraphiQLSettings());
+    act(() => first.result.current.setFontSize('large'));
+    first.unmount();
+
+    const second = renderHook(() => useGraphiQLSettings());
+    expect(second.result.current.fontSize).toBe('large');
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!)).toMatchObject({
+      fontSize: 'large',
+    });
+  });
+
   it('setTheme persists the new theme', () => {
     const { result } = renderHook(() => useGraphiQLSettings());
     act(() => {
@@ -409,6 +465,19 @@ describe('useGraphiQLSettings — registered editor themes', () => {
     const { rerender } = renderHook(() => useGraphiQLSettings());
     mockMonaco = { editor: { setTheme: vi.fn() } };
     rerender();
+    expect(mockMonaco.editor.setTheme).toHaveBeenLastCalledWith('company-dark');
+  });
+
+  it('uses a theme selected by another consumer before Monaco initializes', () => {
+    mockMonaco = undefined;
+    const shell = renderHook(() => useGraphiQLSettings());
+    const dialog = renderHook(() => useGraphiQLSettings());
+
+    act(() => dialog.result.current.setTheme('dark'));
+    expect(shell.result.current.theme).toBe('dark');
+
+    mockMonaco = { editor: { setTheme: vi.fn() } };
+    shell.rerender();
     expect(mockMonaco.editor.setTheme).toHaveBeenLastCalledWith('company-dark');
   });
 });
