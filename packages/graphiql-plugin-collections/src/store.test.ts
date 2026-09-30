@@ -806,7 +806,7 @@ describe('requestSave', () => {
   it('does not replace an open dialog with a save from another tab', async () => {
     const first = getActions().requestSave({ id: 'first', query: '{ first }' });
     expect(
-      getActions().requestSave({ id: 'second', query: '{ second }' }),
+      await getActions().requestSave({ id: 'second', query: '{ second }' }),
     ).toBe(false);
     expect(collectionsStore.getState().saveDialog).toMatchObject({
       tabId: 'first',
@@ -959,7 +959,7 @@ describe('requestSave', () => {
     expect(collectionsStore.getState().links.tab).toBeUndefined();
   });
 
-  it('returns false and does not open the dialog when config.readOnly is true', () => {
+  it('returns false and does not open the dialog when config.readOnly is true', async () => {
     collectionsStore.setState({
       config: {
         readOnly: true,
@@ -967,7 +967,7 @@ describe('requestSave', () => {
         allowReplace: true,
       },
     });
-    const savedInPlace = getActions().requestSave({
+    const savedInPlace = await getActions().requestSave({
       id: 'tab-1',
       query: 'query GetUser { user { id } }',
     });

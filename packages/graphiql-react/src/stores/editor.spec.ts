@@ -200,7 +200,7 @@ describe('dirty state', () => {
 describe('save-handler registry', () => {
   it('registerSaveHandler adds a handler; saveQuery invokes it with the active tab and current query', () => {
     const store = makeStore();
-    const handler = vi.fn().mockReturnValue(true);
+    const handler = vi.fn().mockResolvedValue(true);
     store.getState().actions.registerSaveHandler(handler);
 
     store.getState().actions.saveQuery();
@@ -214,7 +214,7 @@ describe('save-handler registry', () => {
 
   it('unregister function removes the handler so it is not called on subsequent saveQuery', () => {
     const store = makeStore();
-    const handler = vi.fn().mockReturnValue(true);
+    const handler = vi.fn().mockResolvedValue(true);
     const unregister = store.getState().actions.registerSaveHandler(handler);
 
     unregister();
@@ -225,8 +225,8 @@ describe('save-handler registry', () => {
 
   it('rejects a second plugin save owner and keeps the first owner active', () => {
     const store = makeStore();
-    const handlerA = vi.fn().mockReturnValue(false);
-    const handlerB = vi.fn().mockReturnValue(false);
+    const handlerA = vi.fn().mockResolvedValue(false);
+    const handlerB = vi.fn().mockResolvedValue(false);
     store.getState().actions.registerSaveHandler(handlerA);
     expect(() =>
       store.getState().actions.registerSaveHandler(handlerB),
@@ -238,21 +238,21 @@ describe('save-handler registry', () => {
     expect(handlerB).not.toHaveBeenCalled();
   });
 
-  it('uses stored contents when marking a tab saved before its editor mounts', () => {
+  it('uses stored contents when marking a tab saved before its editor mounts', async () => {
     const store = makeStore();
     store.getState().actions.updateActiveTabValues({ query: 'query Saved {}' });
-    store.getState().actions.registerSaveHandler(() => true);
+    store.getState().actions.registerSaveHandler(async () => true);
 
     store.getState().actions.saveQuery();
 
-    expect(store.getState().tabs[0]!.lastSavedQuery).toBe('query Saved {}');
+    await vi.waitFor(() =>
+      expect(store.getState().tabs[0]!.lastSavedQuery).toBe('query Saved {}'),
+    );
   });
 
-  it('tab is NOT marked saved when every handler returns void/false', () => {
+  it('does not mark a later edit saved when its handler resolves false', async () => {
     const store = makeStore();
-    // Give the tab a non-null lastSavedQuery so we can detect if markTabSaved ran.
-    // We do this by registering a true-returning handler, saving, then changing.
-    const trueHandler = vi.fn().mockReturnValue(true);
+    const trueHandler = vi.fn().mockResolvedValue(true);
     const unregister = store
       .getState()
       .actions.registerSaveHandler(trueHandler);
@@ -264,15 +264,16 @@ describe('save-handler registry', () => {
     store.getState().actions.setEditor({ queryEditor: mockQueryEditor });
 
     store.getState().actions.saveQuery();
-    expect(store.getState().tabs[0]!.lastSavedQuery).toBe('query First {}');
+    await vi.waitFor(() =>
+      expect(store.getState().tabs[0]!.lastSavedQuery).toBe('query First {}'),
+    );
 
-    // Now change the editor content and register only a void-returning handler.
     mockQueryEditor.getValue.mockReturnValue('query Second {}');
     unregister();
-    store.getState().actions.registerSaveHandler(() => {});
+    store.getState().actions.registerSaveHandler(async () => false);
 
     store.getState().actions.saveQuery();
-    // lastSavedQuery should still be 'query First {}' — markTabSaved was NOT called.
+    await vi.waitFor(() => expect(store.getState().savingTabIds.size).toBe(0));
     expect(store.getState().tabs[0]!.lastSavedQuery).toBe('query First {}');
   });
 
@@ -299,8 +300,8 @@ describe('save-handler registry', () => {
     const store = makeStore();
     expect(store.getState().saveHandlers.size).toBe(0);
 
-    const handlerA = vi.fn();
-    const handlerB = vi.fn();
+    const handlerA = vi.fn().mockResolvedValue(true);
+    const handlerB = vi.fn().mockResolvedValue(true);
     const unregisterA = store.getState().actions.registerSaveHandler(handlerA);
     expect(store.getState().saveHandlers.size).toBe(1);
 

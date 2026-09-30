@@ -232,8 +232,8 @@ export interface EditorActions {
   saveQuery(): void;
 
   /**
-   * Mark a tab as saved after a legacy deferred save. Prefer returning a
-   * promise from the save handler so GraphiQL records the submitted snapshot.
+   * Mark a tab as saved outside the registered save handler. The handler should
+   * instead resolve to `true` so GraphiQL records the submitted snapshot.
    * @param tabId - The id of the tab that was saved.
    * @param savedQuery - The query that was committed. Without this argument,
    * the current editor contents are used for the active tab.
@@ -308,9 +308,8 @@ export interface EditorProps extends Pick<
   initialHeaders?: EditorSlice['initialHeaders'];
 }
 
-export type SaveHandler = (
-  tab: TabState,
-) => boolean | void | Promise<boolean | void>;
+/** Resolve to true after the write commits, false on cancellation, or reject on failure. */
+export type SaveHandler = (tab: TabState) => Promise<boolean>;
 
 type CreateEditorSlice = (
   initial: Pick<
@@ -344,53 +343,27 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
     { tab: TabState; handler: SaveHandler }
   >();
 
-  function runSave(tab: TabState, handler: SaveHandler) {
+  async function runSave(tab: TabState, handler: SaveHandler) {
     pendingSaves.add(tab.id);
     set({ savingTabIds: new Set(pendingSaves), saveError: null });
 
-    const finish = (
-      committed: boolean | void,
-      error?: unknown,
-      failed = false,
-    ) => {
-      if (failed) {
-        set({
-          saveError: error instanceof Error ? error.message : String(error),
-        });
-      } else if (committed === true) {
-        try {
-          get().actions.markTabSaved(tab.id, tab.query);
-        } catch (saveError) {
-          set({
-            saveError:
-              saveError instanceof Error
-                ? saveError.message
-                : String(saveError),
-          });
-        }
+    try {
+      if (await handler(tab)) {
+        get().actions.markTabSaved(tab.id, tab.query);
       }
+    } catch (error) {
+      set({
+        saveError: error instanceof Error ? error.message : String(error),
+      });
+    } finally {
       const next = queuedSaves.get(tab.id);
       queuedSaves.delete(tab.id);
       if (next) {
-        runSave(next.tab, next.handler);
+        void runSave(next.tab, next.handler);
       } else {
         pendingSaves.delete(tab.id);
         set({ savingTabIds: new Set(pendingSaves) });
       }
-    };
-
-    try {
-      const result = handler(tab);
-      if (result && typeof (result as Promise<unknown>).then === 'function') {
-        void Promise.resolve(result).then(
-          committed => finish(committed),
-          error => finish(false, error, true),
-        );
-      } else {
-        finish(result as boolean | void);
-      }
-    } catch (error) {
-      finish(false, error, true);
     }
   }
 
@@ -591,7 +564,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       if (pendingSaves.has(tabArg.id)) {
         queuedSaves.set(tabArg.id, { tab: tabArg, handler });
       } else {
-        runSave(tabArg, handler);
+        void runSave(tabArg, handler);
       }
     },
     markTabSaved(tabId, savedQuery) {

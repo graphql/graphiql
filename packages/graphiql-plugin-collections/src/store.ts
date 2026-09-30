@@ -93,7 +93,7 @@ type CollectionsActions = {
    * already tied to a collection item, otherwise open the save dialog. The
    * returned promise settles after storage commits or the dialog is cancelled.
    */
-  requestSave(operation: ActiveOperation): boolean | Promise<boolean>;
+  requestSave(operation: ActiveOperation): Promise<boolean>;
   commitSaveDialog(input: {
     name: string;
     description?: string;
@@ -568,7 +568,7 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
         }));
         saveTabLinks(get().links);
       },
-      requestSave(operation) {
+      async requestSave(operation) {
         // Authoritative gate: saving is disabled in read-only mode regardless
         // of how it was triggered (⌘S, save button, etc.).
         if (get().config.readOnly) {
@@ -583,38 +583,36 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
           const collection = collections.find(c => c.id === link.collectionId);
           const item = collection?.items.find(i => i.id === link.itemId);
           if (item) {
-            return (async () => {
-              await queueWrite(async () => {
-                const target = get()
-                  .collections.find(c => c.id === link.collectionId)
-                  ?.items.find(i => i.id === link.itemId);
-                if (!target) {
-                  throw new Error('Saved collection item no longer exists');
-                }
-                const next = get().collections.map(c =>
-                  c.id === link.collectionId
-                    ? {
-                        ...c,
-                        updatedAt: Date.now(),
-                        items: c.items.map(i =>
-                          i.id === link.itemId
-                            ? {
-                                ...i,
-                                query: operation.query ?? '',
-                                variables: operation.variables ?? '',
-                                headers: operation.headers ?? '',
-                                updatedAt: Date.now(),
-                              }
-                            : i,
-                        ),
-                      }
-                    : c,
-                );
-                await get().storage.save(next);
-                set({ collections: next });
-              });
-              return true;
-            })();
+            await queueWrite(async () => {
+              const target = get()
+                .collections.find(c => c.id === link.collectionId)
+                ?.items.find(i => i.id === link.itemId);
+              if (!target) {
+                throw new Error('Saved collection item no longer exists');
+              }
+              const next = get().collections.map(c =>
+                c.id === link.collectionId
+                  ? {
+                      ...c,
+                      updatedAt: Date.now(),
+                      items: c.items.map(i =>
+                        i.id === link.itemId
+                          ? {
+                              ...i,
+                              query: operation.query ?? '',
+                              variables: operation.variables ?? '',
+                              headers: operation.headers ?? '',
+                              updatedAt: Date.now(),
+                            }
+                          : i,
+                      ),
+                    }
+                  : c,
+              );
+              await get().storage.save(next);
+              set({ collections: next });
+            });
+            return true;
           }
         }
         actions.openSaveDialog({
