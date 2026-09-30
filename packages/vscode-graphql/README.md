@@ -78,8 +78,10 @@ same for .json, .toml, etc
 Multi-project can be used for both local files, URL defined schema, or both
 
 ```js
+import path from 'path';
 import dotenv from 'dotenv';
-dotenv.config();
+
+dotenv.config({ path: path.resolve(import.meta.dirname, '.env') });
 
 // .graphqlrc.ts or graphql.config.ts
 export default {
@@ -108,6 +110,16 @@ export default {
 
 Notice that `documents` key supports glob pattern and hence `["**/*.graphql"]`
 is also valid.
+
+Always pass an explicit `.env` path resolved from the config file (as above, or
+`require('dotenv').config({ path: require('path').resolve(__dirname, '.env') })`
+in CommonJS configs). The config file runs with the language server's working
+directory, which is not your workspace folder (it can be `/` when VS Code is
+started from the Dock), so a bare `dotenv.config()` may not find your `.env`.
+See [#4562](https://github.com/graphql/graphiql/discussions/4562). YAML and JSON
+configs can't run code, so use the `graphql-config.dotEnvPath` setting instead.
+It only applies to the language server in this extension, not to
+`vscode-graphql-execution`.
 
 ## Frequently Asked Questions
 
