@@ -276,6 +276,35 @@ With a `Transport`, the response pane header shows the HTTP status code, elapsed
 
 The `Fetcher` contract returns only the parsed GraphQL result, so GraphiQL can't show this HTTP metadata when you use `fetcher`.
 
+### Plugin transport hooks
+
+Plugins can use `useGraphiQLPluginContext().transport` to register hooks when the host passes a `transport` prop. The `transport` field is absent when the host uses the legacy `fetcher` prop. For a request header that remains active even when the plugin pane is closed, register the hook from the plugin's `sessionActions` component:
+
+```tsx
+import { useEffect } from 'react';
+import { useGraphiQLPluginContext } from '@graphiql/react';
+
+function RequestHeaderHook() {
+  const { transport } = useGraphiQLPluginContext();
+
+  useEffect(() => {
+    if (!transport) {
+      return;
+    }
+    return transport.onBeforeSend(request => ({
+      ...request,
+      headers: { ...request.headers, 'X-GraphiQL-Plugin': 'example' },
+    }));
+  }, [transport]);
+
+  return null;
+}
+```
+
+Set `sessionActions: RequestHeaderHook` on your `GraphiQLPlugin`. `onBeforeSend` must return the request, with any changes, and can do so asynchronously. Each registration returns a cleanup function; returning it from the effect removes the hook when the component unmounts or its context changes.
+
+Use `onResponse(response => { ... })` to observe each `TransportResponse`, including HTTP or GraphQL error results and each streamed chunk. Use `onError((error, request) => { ... })` for a rejected request or stream, such as a network failure or a thrown `onBeforeSend` hook. A resolved error response goes to `onResponse`, not `onError`. The `onResponse` and `onError` hooks are for observation only; exceptions they throw are logged and do not replace the response or original error.
+
 ### Request methods
 
 `createTransport` supports three HTTP methods:
