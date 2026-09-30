@@ -28,17 +28,11 @@ export const ExecuteButton: FC = () => {
   const isSubscribed = useGraphiQL(state => Boolean(state.subscription));
   const operations = useGraphiQL(state => state.operations);
   const operationName = useGraphiQL(state => state.operationName);
-  const overrideOperationName = useGraphiQL(
-    state => state.overrideOperationName,
-  );
   const transportMethod = useGraphiQL(state => state.transportMethod);
   const runDisabledReason = useGraphiQL(state =>
     getRunBlockReason(
       state.transportMethod,
-      resolveActiveOperation(
-        state.operations,
-        state.overrideOperationName ?? state.operationName,
-      ),
+      resolveActiveOperation(state.operations, state.operationName),
     ),
   );
 
@@ -48,7 +42,6 @@ export const ExecuteButton: FC = () => {
       isSubscribed={isSubscribed}
       operations={operations}
       operationName={operationName}
-      overrideOperationName={overrideOperationName}
       transportMethod={transportMethod}
       runDisabledReason={runDisabledReason}
       onRun={run}
@@ -67,8 +60,6 @@ export type ExecuteButtonViewProps = {
   /** The document's operations. A caret + picker only appears for more than one. */
   operations?: OperationDefinitionNode[];
   operationName?: string | null;
-  /** When set, an external caller has pinned the operation; the picker is hidden. */
-  overrideOperationName?: string | null;
   transportMethod?: HttpMethod | null;
   onRun: () => void;
   onStop: () => void;
@@ -81,7 +72,6 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
   runDisabledReason = null,
   operations = [],
   operationName = null,
-  overrideOperationName = null,
   transportMethod = null,
   onRun,
   onStop,
@@ -90,17 +80,11 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
   const isRunning = isFetching || isSubscribed;
   // Never block the stop affordance; only a fresh run can be blocked.
   const isBlocked = !isRunning && runDisabledReason !== null;
-  // A picker only makes sense when there's a choice to make, and only when
-  // nothing outside the editor has already pinned the operation to run.
-  const hasOptions =
-    operations.length > 1 && typeof overrideOperationName !== 'string';
+  const hasOptions = operations.length > 1;
   // While running, the button is a single-purpose stop control; a picker
   // alongside it would offer to start something that can't start yet.
   const showCaret = hasOptions && !isRunning;
-  const activeOperation = resolveActiveOperation(
-    operations,
-    overrideOperationName ?? operationName,
-  );
+  const activeOperation = resolveActiveOperation(operations, operationName);
 
   const selectOperation = (selectedOperationName: string | undefined) => {
     if (selectedOperationName && selectedOperationName !== operationName) {

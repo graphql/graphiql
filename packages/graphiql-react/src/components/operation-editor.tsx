@@ -101,7 +101,6 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     referencePlugin,
     operations,
     operationName,
-    overrideOperationName,
     externalFragments,
     uriInstanceId,
     storage,
@@ -113,7 +112,6 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       'referencePlugin',
       'operations',
       'operationName',
-      'overrideOperationName',
       'externalFragments',
       'uriInstanceId',
       'storage',
@@ -245,7 +243,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
   useEffect(() => {
     runAtCursorRef.current = editor => {
       const currentFacts = getAndUpdateOperationFacts(editor);
-      if (!currentFacts || typeof overrideOperationName === 'string') {
+      if (!currentFacts) {
         run();
         return;
       }
@@ -272,8 +270,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
 
   useEffect(() => {
     syncOperationNameToCursorRef.current = editor => {
-      // When an operation is pinned via the `operationName` prop, leave it be.
-      if (!operations || typeof overrideOperationName === 'string') {
+      if (!operations) {
         return;
       }
       const newOperationName = getOperationNameAtCursor(editor, operations);
@@ -281,7 +278,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
         setOperationName(newOperationName);
       }
     };
-  }, [operationName, operations, overrideOperationName, setOperationName]);
+  }, [operationName, operations, setOperationName]);
 
   useEffect(() => {
     if (!monaco || !monacoGraphQL) {

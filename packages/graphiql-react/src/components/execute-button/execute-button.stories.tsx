@@ -57,16 +57,6 @@ export const MultipleOperationsWithPicker: Story = {
   },
 };
 
-/** An override pins the operation, so no picker appears despite several operations. */
-export const OverriddenOperation: Story = {
-  args: {
-    operations: opsOf(
-      'query Alpha { widget { id } }\nquery Beta { gadget { id } }',
-    ),
-    overrideOperationName: 'Alpha',
-  },
-};
-
 /** GET selected with a mutation active: the button is disabled and explains why on hover. */
 export const BlockedOverGet: Story = {
   args: {
