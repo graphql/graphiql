@@ -880,6 +880,6 @@ Declare `monaco-graphql` as a direct dependency when importing it here. For serv
 These additions are optional. You don't need to adopt them solely to migrate to v6, but they may be useful after upgrading:
 
 - **Response views.** The response pane offers JSON, Tree, and Table views and remembers the selected view through GraphiQL's storage. The views work with both `fetcher` and `transport`.
-- **Custom saving.** If you save operations to your own backend, see [Custom save handlers](#custom-save-handlers) for host and plugin save hooks, including asynchronous saves.
+- **Custom saving.** If you save operations to your own backend, see [Saving with your own plugin](#saving-with-your-own-plugin) to register a custom save handler, including asynchronous saves.
 - **Plugin transport hooks.** Plugins can change outgoing requests and observe responses or transport failures. See [Plugin transport hooks](#plugin-transport-hooks).
 - **Display settings.** Users can change theme, density, and font size; integrations can read and set them with `useGraphiQLSettings()`. See [Theme, density, and font-size settings](#theme-density-and-font-size-settings).
