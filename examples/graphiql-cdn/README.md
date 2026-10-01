@@ -2,22 +2,14 @@
 
 This is a simple example of using **GraphiQL** directly from a CDN.
 
-It loads the latest GraphiQL version from [esm.sh](https://esm.sh), an ESM-based CDN that serves npm packages as ES modules.
+It loads GraphiQL from [esm.sh](https://esm.sh), an ESM-based CDN that serves npm packages as ES modules.
 
 ## Setup
 
-No installation or build step is required — just open the `index.html` file in your browser:
+No installation or build step is required. Serve the example from the repository root so its Monaco workers can load:
 
-- macOS:
+```sh
+python3 -m http.server 8000 --directory examples/graphiql-cdn
+```
 
-  ```sh
-  open index.html
-  ```
-
-- Linux:
-
-  ```sh
-  firefox index.html
-  # or
-  chromium index.html
-  ```
+Open [the example](http://localhost:8000/) in your browser.

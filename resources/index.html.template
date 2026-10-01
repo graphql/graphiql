@@ -10,7 +10,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GraphiQL 5 with React 19 and GraphiQL Explorer</title>
+    <title>GraphiQL 6 with React 19</title>
     <style>
       body {
         margin: 0;
@@ -45,20 +45,17 @@
     <script type="module">
       import React from 'react';
       import ReactDOM from 'react-dom/client';
-      import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
-      import { createGraphiQLFetcher } from '@graphiql/toolkit';
-      import { explorerPlugin } from '@graphiql/plugin-explorer';
+      import { GraphiQL } from 'graphiql';
+      import { createTransport } from '@graphiql/toolkit';
       import 'graphiql/setup-workers/esm.sh';
 
-      const fetcher = createGraphiQLFetcher({
+      const transport = createTransport({
         url: 'https://countries.trevorblades.com',
       });
-      const plugins = [HISTORY_PLUGIN, explorerPlugin()];
 
       function App() {
         return React.createElement(GraphiQL, {
-          fetcher,
-          plugins,
+          transport,
           defaultEditorToolsVisibility: true,
         });
       }
