@@ -964,6 +964,9 @@ importers:
       graphql:
         specifier: ^16.9.0
         version: 16.13.2
+      graphql-sse:
+        specifier: ^2.6.0
+        version: 2.6.1(graphql@16.13.2)
       graphql-ws:
         specifier: ^6.0.8
         version: 6.0.8(graphql@16.13.2)(ws@8.21.0)
@@ -7227,6 +7230,12 @@ packages:
     resolution: {integrity: sha512-cqDKMoRywKjnL0ZWCTB0GOiBgsH6d3nU4JGDF6RuzAyd35tmalzKpSxkx3NNp4H5RvnKWnrukWzR51wUq277ng==}
     peerDependencies:
       graphql: ^15.3.0 || ^16.0.0
+
+  graphql-sse@2.6.1:
+    resolution: {integrity: sha512-0KbuzZlrSx2a3BlnyaL0Rf6nHd/giVUGpo8MZiEEugeQIwitnKk5RVWkriXUpuPKxMw1p4GfxYLlEmR9DR21dQ==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      graphql: '>=0.11 <=17'
 
   graphql-ws@6.0.8:
     resolution: {integrity: sha512-m3EOaNsUBXwAnkBWbzPfe0Nq8pXUfxsWnolC54sru3FzHvhTZL0Ouf/BoQsaGAXqM+YPerXOJ47BUnmgmoupCw==}
@@ -17656,6 +17665,10 @@ snapshots:
   graphql-helix@1.13.0(graphql@17.0.2):
     dependencies:
       graphql: 17.0.2
+
+  graphql-sse@2.6.1(graphql@16.13.2):
+    dependencies:
+      graphql: 16.13.2
 
   graphql-ws@6.0.8(graphql@16.13.2)(ws@8.21.0):
     dependencies:

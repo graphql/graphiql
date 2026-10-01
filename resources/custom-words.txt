@@ -187,6 +187,7 @@ qlapi
 qlid
 qlide
 qljson
+qlsse
 quasis
 ractive
 randomthing
