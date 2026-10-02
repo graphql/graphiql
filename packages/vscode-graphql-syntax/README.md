@@ -12,6 +12,7 @@ matching.
 - PHP (example: [test.php](https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-syntax/tests/__fixtures__/test.php))
 - Markdown (examples: [test.md](https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-syntax/tests/__fixtures__/test.md) & [test-py.md](https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-syntax/tests/__fixtures__/test-py.md))
 - Scala (example: [test.scala](https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-syntax/tests/__fixtures__/test.scala))
+- Hack (example: [test.hack](https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-syntax/tests/__fixtures__/test.hack))
 
 You'll want to install this if you do not use `graphql-config`, or want to use
 the highlighting with other extensions than `vscode-graphql`
