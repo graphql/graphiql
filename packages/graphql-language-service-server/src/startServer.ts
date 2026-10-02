@@ -234,9 +234,8 @@ export async function addHandlers({
     },
   );
 
-  connection.onNotification(
-    DidCloseTextDocumentNotification.type,
-    messageProcessor.handleDidCloseNotification,
+  connection.onNotification(DidCloseTextDocumentNotification.type, params =>
+    messageProcessor.handleDidCloseNotification(params),
   );
   connection.onRequest(ShutdownRequest.type, () =>
     messageProcessor.handleShutdownRequest(),
