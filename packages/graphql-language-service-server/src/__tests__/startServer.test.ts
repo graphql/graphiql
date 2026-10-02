@@ -107,4 +107,21 @@ describe('addHandlers', () => {
       'workspace/symbol',
     ]);
   });
+  it('should call the didClose handler with the message processor bound', async () => {
+    const connection = {
+      onNotification: vi.fn(),
+      onRequest: vi.fn(),
+    };
+
+    await addHandlers({
+      connection,
+      options: { loadConfigOptions: { rootDir: '/root' } },
+    });
+    const [, didCloseHandler] = connection.onNotification.mock.calls.find(
+      c => c[0].method === 'textDocument/didClose',
+    );
+    expect(() =>
+      didCloseHandler({ textDocument: { uri: 'file:///root/a.graphql' } }),
+    ).not.toThrow();
+  });
 });
