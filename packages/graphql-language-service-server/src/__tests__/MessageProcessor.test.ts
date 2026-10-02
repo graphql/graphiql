@@ -718,6 +718,20 @@ describe('MessageProcessor', () => {
       // here we have a non-config file, so we don't want to skip, because we need to run diagnostics etc
       expect(result).toEqual(false);
     });
+    it('runs a single initialization for concurrent file changes', async () => {
+      messageProcessor._isInitialized = false;
+      messageProcessor._initializeGraphQLCaches = vi.fn(
+        () => new Promise<void>(resolve => setImmediate(resolve)),
+      );
+
+      await Promise.all([
+        messageProcessor._loadConfigOrSkip(`${pathToFileURL('.')}/file.ts`),
+        messageProcessor._loadConfigOrSkip(`${pathToFileURL('.')}/other.ts`),
+      ]);
+      expect(messageProcessor._initializeGraphQLCaches).toHaveBeenCalledTimes(
+        1,
+      );
+    });
     it('config file change updates server config even if the server is already initialized', async () => {
       messageProcessor._isInitialized = true;
       const result = await messageProcessor._loadConfigOrSkip(
