@@ -63,7 +63,7 @@
     "@typescript/native": "npm:typescript@^7.0.2",
     "@vitejs/plugin-react": "^5.2.0",
     "babel-plugin-react-compiler": "1.0.0",
-    "graphql": "^16.14.2",
+    "graphql": "^17.0.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "storybook": "^10.3.6",
