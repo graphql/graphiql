@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/react",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0-rc.2",
   "sideEffects": [
     "dist/setup-workers/*",
     "*.css"
@@ -60,7 +60,7 @@
     "clsx": "^2.1.1",
     "framer-motion": "^14.0.0",
     "get-value": "^4.1.0",
-    "graphql-language-service": "^6.0.0-rc.0",
+    "graphql-language-service": "^6.0.0-rc.1",
     "jsonc-parser": "^3.3.1",
     "markdown-it": "^15.0.1",
     "monaco-editor": ">=0.56.0 <0.58.0",

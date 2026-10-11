@@ -1,5 +1,11 @@
 # graphql-language-service
 
+## 6.0.0-rc.1
+
+### Major Changes
+
+- [#4635](https://github.com/graphql/graphiql/pull/4635) [`3d368ba`](https://github.com/graphql/graphiql/commit/3d368ba8747ac2ad0bd73c8bf6f46f952122cfc8) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Remove the deprecated `graphql` executable. Install `graphql-language-service-cli` and use `graphql-lsp` for the language server CLI.
+
 ## 6.0.0-rc.0
 
 ### Patch Changes

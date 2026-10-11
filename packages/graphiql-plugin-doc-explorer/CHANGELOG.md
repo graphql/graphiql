@@ -1,5 +1,11 @@
 # @graphiql/plugin-doc-explorer
 
+## 1.0.0-rc.2
+
+### Patch Changes
+
+- [#4623](https://github.com/graphql/graphiql/pull/4623) [`ecedd76`](https://github.com/graphql/graphiql/commit/ecedd76452c31637745bd509174f6eab5d0aebc5) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Build with the stable React Compiler and use its stable runtime for React 18 compatibility.
+
 ## 1.0.0-rc.1
 
 ### Patch Changes

@@ -156,7 +156,7 @@ importers:
         specifier: ^1.0.0-rc.0
         version: link:../../packages/graphiql-toolkit
       graphiql:
-        specifier: ^6.0.0-rc.1
+        specifier: ^6.0.0-rc.2
         version: link:../../packages/graphiql
       graphql:
         specifier: ^16.14.2
@@ -181,13 +181,13 @@ importers:
         specifier: ^1.0.0-rc.1
         version: link:../../packages/graphiql-plugin-collections
       '@graphiql/plugin-history':
-        specifier: ^1.0.0-rc.1
+        specifier: ^1.0.0-rc.2
         version: link:../../packages/graphiql-plugin-history
       '@graphiql/plugin-query-builder':
-        specifier: ^1.0.0-rc.1
+        specifier: ^1.0.0-rc.2
         version: link:../../packages/graphiql-plugin-query-builder
       '@graphiql/react':
-        specifier: ^1.0.0-rc.1
+        specifier: ^1.0.0-rc.2
         version: link:../../packages/graphiql-react
       '@graphiql/toolkit':
         specifier: ^1.0.0-rc.0
@@ -202,7 +202,7 @@ importers:
         specifier: ^8.3.1
         version: 8.3.1(react-router@8.3.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(typescript@5.9.3)
       graphiql:
-        specifier: ^6.0.0-rc.1
+        specifier: ^6.0.0-rc.2
         version: link:../../packages/graphiql
       isbot:
         specifier: ^5
@@ -239,13 +239,13 @@ importers:
         specifier: ^6.0.0-rc.1
         version: link:../../packages/graphiql-plugin-code-exporter
       '@graphiql/react':
-        specifier: ^1.0.0-rc.1
+        specifier: ^1.0.0-rc.2
         version: link:../../packages/graphiql-react
       '@graphiql/toolkit':
         specifier: ^1.0.0-rc.0
         version: link:../../packages/graphiql-toolkit
       graphiql:
-        specifier: ^6.0.0-rc.1
+        specifier: ^6.0.0-rc.2
         version: link:../../packages/graphiql
       graphql:
         specifier: ^16.14.2
@@ -358,7 +358,7 @@ importers:
         specifier: ^16.14.2
         version: 16.14.2
       graphql-language-service:
-        specifier: ^6.0.0-rc.0
+        specifier: ^6.0.0-rc.1
         version: link:../../packages/graphql-language-service
       jsonc-parser:
         specifier: ^3
@@ -389,7 +389,7 @@ importers:
         specifier: ^16.14.2
         version: 16.14.2
       graphql-language-service:
-        specifier: ^6.0.0-rc.0
+        specifier: ^6.0.0-rc.1
         version: link:../../packages/graphql-language-service
       json-schema:
         specifier: ^0.4
@@ -529,7 +529,7 @@ importers:
         specifier: ^0.0.90
         version: 0.0.90
       graphql-language-service:
-        specifier: 6.0.0-rc.0
+        specifier: 6.0.0-rc.1
         version: link:../graphql-language-service
     devDependencies:
       '@codemirror/language':
@@ -551,16 +551,16 @@ importers:
         specifier: ^1.0.0-rc.1
         version: link:../graphiql-plugin-collections
       '@graphiql/plugin-doc-explorer':
-        specifier: ^1.0.0-rc.1
+        specifier: ^1.0.0-rc.2
         version: link:../graphiql-plugin-doc-explorer
       '@graphiql/plugin-history':
-        specifier: ^1.0.0-rc.1
+        specifier: ^1.0.0-rc.2
         version: link:../graphiql-plugin-history
       '@graphiql/plugin-query-builder':
-        specifier: ^1.0.0-rc.1
+        specifier: ^1.0.0-rc.2
         version: link:../graphiql-plugin-query-builder
       '@graphiql/react':
-        specifier: ^1.0.0-rc.1
+        specifier: ^1.0.0-rc.2
         version: link:../graphiql-react
       clsx:
         specifier: ^2.1.1
@@ -633,13 +633,13 @@ importers:
   packages/graphiql-e2e:
     dependencies:
       '@graphiql/react':
-        specifier: 1.0.0-rc.1
+        specifier: 1.0.0-rc.2
         version: link:../graphiql-react
       '@graphiql/toolkit':
         specifier: 1.0.0-rc.0
         version: link:../graphiql-toolkit
       graphiql:
-        specifier: 6.0.0-rc.1
+        specifier: 6.0.0-rc.2
         version: link:../graphiql
       graphql:
         specifier: ^17.0.2
@@ -826,7 +826,7 @@ importers:
         version: 5.0.4(@types/react@19.2.14)(react@19.2.7)(use-sync-external-store@1.5.0(react@19.2.7))
     devDependencies:
       '@graphiql/react':
-        specifier: ^1.0.0-rc.1
+        specifier: ^1.0.0-rc.2
         version: link:../graphiql-react
       '@storybook/addon-a11y':
         specifier: ^10.3.6
@@ -908,7 +908,7 @@ importers:
         version: 5.0.4(@types/react@19.2.14)(react@19.2.7)(use-sync-external-store@1.5.0(react@19.2.7))
     devDependencies:
       '@graphiql/react':
-        specifier: ^1.0.0-rc.1
+        specifier: ^1.0.0-rc.2
         version: link:../graphiql-react
       '@storybook/react-vite':
         specifier: ^10.3.6
@@ -966,7 +966,7 @@ importers:
         version: 1.0.0(react@19.2.7)
     devDependencies:
       '@graphiql/react':
-        specifier: ^1.0.0-rc.1
+        specifier: ^1.0.0-rc.2
         version: link:../graphiql-react
       '@storybook/addon-a11y':
         specifier: ^10.3.6
@@ -1053,7 +1053,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0
       graphql-language-service:
-        specifier: ^6.0.0-rc.0
+        specifier: ^6.0.0-rc.1
         version: link:../graphql-language-service
       jsonc-parser:
         specifier: ^3.3.1
@@ -1239,10 +1239,10 @@ importers:
         specifier: 16.0.5
         version: 16.0.5
       graphql-language-service:
-        specifier: ^6.0.0-rc.0
+        specifier: ^6.0.0-rc.1
         version: link:../graphql-language-service
       graphql-language-service-server:
-        specifier: ^3.0.0-rc.1
+        specifier: ^3.0.0-rc.2
         version: link:../graphql-language-service-server
       yargs:
         specifier: ^16.2.0
@@ -1291,7 +1291,7 @@ importers:
         specifier: ^5.1.6
         version: 5.1.6(@types/node@24.12.2)(cosmiconfig-toml-loader@1.0.0)(graphql@17.0.2)
       graphql-language-service:
-        specifier: ^6.0.0-rc.0
+        specifier: ^6.0.0-rc.1
         version: link:../graphql-language-service
       lru-cache:
         specifier: ^11.5.2

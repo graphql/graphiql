@@ -1,5 +1,19 @@
 # Change Log
 
+## 6.0.0-rc.2
+
+### Patch Changes
+
+- [#4636](https://github.com/graphql/graphiql/pull/4636) [`45a81d7`](https://github.com/graphql/graphiql/commit/45a81d76849c0be2622fd97adf75e3dab3aa0e06) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Use `clsx` 2 for class name composition.
+
+- [#4623](https://github.com/graphql/graphiql/pull/4623) [`ecedd76`](https://github.com/graphql/graphiql/commit/ecedd76452c31637745bd509174f6eab5d0aebc5) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Build with the stable React Compiler and use its stable runtime for React 18 compatibility.
+
+- Updated dependencies [[`45a81d7`](https://github.com/graphql/graphiql/commit/45a81d76849c0be2622fd97adf75e3dab3aa0e06), [`ecedd76`](https://github.com/graphql/graphiql/commit/ecedd76452c31637745bd509174f6eab5d0aebc5), [`cc33695`](https://github.com/graphql/graphiql/commit/cc33695caf063f64c85febd7f9013cef8b94e051)]:
+  - @graphiql/react@1.0.0-rc.2
+  - @graphiql/plugin-history@1.0.0-rc.2
+  - @graphiql/plugin-doc-explorer@1.0.0-rc.2
+  - @graphiql/plugin-query-builder@1.0.0-rc.2
+
 ## 6.0.0-rc.1
 
 ### Major Changes
