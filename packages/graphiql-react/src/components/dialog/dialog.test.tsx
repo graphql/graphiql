@@ -10,6 +10,7 @@ describe('Dialog — portal container', () => {
     render(
       <Dialog open>
         <Dialog.Header>Title</Dialog.Header>
+        <Dialog.Description>Dialog description</Dialog.Description>
       </Dialog>,
     );
     const dialog = document.querySelector('.graphiql-dialog');
@@ -28,6 +29,7 @@ describe('Dialog — portal container', () => {
       <PortalProvider container={container}>
         <Dialog open>
           <Dialog.Header>Title</Dialog.Header>
+          <Dialog.Description>Dialog description</Dialog.Description>
         </Dialog>
       </PortalProvider>,
     );

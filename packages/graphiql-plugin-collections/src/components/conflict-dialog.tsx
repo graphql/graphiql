@@ -120,7 +120,7 @@ export const ConflictDialog: FC<ConflictDialogProps> = ({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <Dialog.Header>Import conflicts</Dialog.Header>
       <Dialog.Body>
-        <p className="graphiql-conflict-summary">
+        <Dialog.Description className="graphiql-conflict-summary">
           Importing <strong>{sourceLabel}</strong>: {summary} operation
           {analysis.newItems.length +
             analysis.changedItems.length +
@@ -131,7 +131,7 @@ export const ConflictDialog: FC<ConflictDialogProps> = ({
           {newCollectionCount > 0 &&
             `, ${newCollectionCount} new collection${newCollectionCount !== 1 ? 's' : ''}`}
           .
-        </p>
+        </Dialog.Description>
 
         {!reviewing ? (
           <div className="graphiql-conflict-actions">
