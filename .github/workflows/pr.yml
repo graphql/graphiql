@@ -21,7 +21,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Turbo cache
         uses: ./.github/actions/turbo-cache
-      - run: pnpm build
+      - run: pnpm build --output-logs=new-only
 
   cspell:
     name: CSpell
@@ -81,7 +81,7 @@ jobs:
         with:
           restore-build: true
       - run: pnpm --filter @graphiql/react exec playwright install --with-deps chromium
-      - run: pnpm test
+      - run: pnpm test --output-logs=new-only
 
   graphql-16-compatibility:
     name: GraphQL 16 Compatibility
@@ -98,14 +98,13 @@ jobs:
       - run: pnpm install --no-frozen-lockfile
       - name: Turbo cache
         uses: ./.github/actions/turbo-cache
-      - run: pnpm build
+      - run: pnpm build --output-logs=new-only
       - run: pnpm --filter @graphiql/react exec playwright install --with-deps chromium
-      - run: pnpm test
+      - run: pnpm test --output-logs=new-only
 
   lint:
     name: Lint
     runs-on: ubuntu-latest
-    needs: [build]
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
@@ -114,11 +113,6 @@ jobs:
           node-version-file: '.node-version'
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Turbo cache
-        uses: ./.github/actions/turbo-cache
-        with:
-          restore-build: true
-      - run: pnpm build
       - run: pnpm oxlint
 
   types-check:
@@ -137,7 +131,9 @@ jobs:
         uses: ./.github/actions/turbo-cache
         with:
           restore-build: true
-      - run: pnpm types:check
+      - run: |
+          pnpm exec turbo run types:check --output-logs=new-only
+          pnpm exec tsc --noEmit -p scripts/tsconfig.json
 
   e2e:
     name: Cypress
@@ -155,7 +151,7 @@ jobs:
         uses: ./.github/actions/turbo-cache
         with:
           restore-build: true
-      - run: pnpm build
+      - run: pnpm build:graphiql --output-logs=new-only
       - uses: actions/cache@v5
         with:
           path: |
@@ -166,7 +162,7 @@ jobs:
         uses: cypress-io/github-action@v7
         with:
           install: false
-          command: pnpm e2e
+          command: pnpm --filter graphiql-e2e e2e:built
         env:
           # GitHub runners have no usable GPU; Electron's GPU process can
           # crash (dawn/Vulkan) and wedge the browser mid-run
@@ -200,7 +196,7 @@ jobs:
         uses: ./.github/actions/turbo-cache
         with:
           restore-build: true
-      - run: pnpm build
+      - run: pnpm build --output-logs=new-only
       - run: pnpm dlx pkg-pr-new publish --comment=off './packages/*'
 
   license-check:
