@@ -8,6 +8,7 @@
  */
 
 import {
+  GraphQLArgument,
   GraphQLDirective,
   GraphQLEnumType,
   GraphQLEnumValue,
@@ -225,6 +226,7 @@ function renderDescription(
   into: HTMLElement,
   options: GraphQLInfoOptions,
   def:
+    | GraphQLArgument
     | GraphQLInputField
     | GraphQLEnumType
     | GraphQLDirective
@@ -250,6 +252,7 @@ function renderDeprecation(
   into: HTMLElement,
   options: GraphQLInfoOptions,
   def:
+    | GraphQLArgument
     | GraphQLInputField
     | GraphQLEnumType
     | GraphQLDirective

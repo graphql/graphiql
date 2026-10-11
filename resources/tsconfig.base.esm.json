@@ -3,6 +3,8 @@
   "compilerOptions": {
     "module": "esnext",
     "moduleResolution": "bundler",
+    // GraphQL 17's CJS and ESM declarations have incompatible private class fields.
+    "customConditions": ["node"],
     "target": "es6"
   }
 }

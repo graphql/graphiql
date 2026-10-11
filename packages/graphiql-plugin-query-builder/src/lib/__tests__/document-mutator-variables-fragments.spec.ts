@@ -1,4 +1,4 @@
-import { Kind, parse, print } from 'graphql';
+import { Kind, parse, print, type StringValueNode } from 'graphql';
 import { describe, expect, it } from 'vitest';
 import {
   fieldSegment,
@@ -301,7 +301,7 @@ describe('demoteVariable', () => {
     // The new promote flow writes no default on the variable definition;
     // the caller passes the original literal as inlineValue for demotion.
     const d = doc('query A($v: String) { f(a: $v) }');
-    const inlineValue = { kind: Kind.STRING as const, value: 'hello' };
+    const inlineValue: StringValueNode = { kind: Kind.STRING, value: 'hello' };
     const result = demoteVariable(d, 'v', undefined, inlineValue);
     const printed = print(result);
     expect(printed).toMatch(/f\(a: "hello"\)/);
@@ -311,7 +311,10 @@ describe('demoteVariable', () => {
 
   it('inlineValue takes precedence over the stored default', () => {
     const d = doc('query A($v: String = "stored") { f(a: $v) }');
-    const inlineValue = { kind: Kind.STRING as const, value: 'override' };
+    const inlineValue: StringValueNode = {
+      kind: Kind.STRING,
+      value: 'override',
+    };
     const result = demoteVariable(d, 'v', undefined, inlineValue);
     const printed = print(result);
     expect(printed).toMatch(/f\(a: "override"\)/);
