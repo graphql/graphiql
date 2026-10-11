@@ -27,10 +27,10 @@ module.exports = {
     },
   },
   plugins: [
-    require.resolve('@babel/plugin-proposal-class-properties'),
+    require.resolve('@babel/plugin-transform-class-properties'),
 
-    require.resolve('@babel/plugin-proposal-nullish-coalescing-operator'),
-    require.resolve('@babel/plugin-proposal-optional-chaining'),
+    require.resolve('@babel/plugin-transform-nullish-coalescing-operator'),
+    require.resolve('@babel/plugin-transform-optional-chaining'),
     require.resolve('@babel/plugin-transform-private-methods'),
     ['babel-plugin-transform-import-meta', { module: 'ES6' }],
   ],
