@@ -599,10 +599,10 @@ export const CollectionsPanel: FC<CollectionsPanelProps> = ({
       >
         <Dialog.Header>Replace all collections?</Dialog.Header>
         <Dialog.Body>
-          <p className="graphiql-conflict-summary">
+          <Dialog.Description className="graphiql-conflict-summary">
             This will remove all existing collections and replace them with the
             imported data. This cannot be undone.
-          </p>
+          </Dialog.Description>
           <div className="graphiql-conflict-actions">
             <Button
               type="button"

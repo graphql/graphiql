@@ -3,8 +3,6 @@
  */
 globalThis.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
-    // eslint-disable-next-line no-console
-    console.info('setup-workers/webpack', { label });
     switch (label) {
       case 'json':
         return new Worker(
