@@ -9,38 +9,29 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 
 import main from '../client';
 
-describe('process.stderr.write', () => {
+describe('error output', () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  it('is passed information on error of string type', () => {
-    const argv = {
-      schemaPath: '...',
-      text: 'foo',
-    };
-    const mockStdErrWrite = vi
-      .spyOn(process.stderr, 'write')
-      .mockImplementation();
-    vi.spyOn(process, 'exit').mockImplementation(() => {});
-    const undefinedWithNewLine = /^undefined\n$/;
+  it.each(['autocomplete', 'outline', 'validate'])(
+    'writes the %s error to stderr',
+    command => {
+      const argv = {
+        schemaPath: '...',
+        text: 'foo',
+      };
+      const mockStdErrWrite = vi
+        .spyOn(process.stderr, 'write')
+        .mockImplementation(() => true);
+      const mockExit = vi.spyOn(process, 'exit').mockImplementation(() => {});
+      main(command, argv);
 
-    main('autocomplete', argv);
-    expect(mockStdErrWrite).toHaveBeenLastCalledWith(expect.any(String));
-    expect(mockStdErrWrite).toHaveBeenLastCalledWith(
-      expect.not.stringMatching(undefinedWithNewLine),
-    );
-
-    main('outline', argv);
-    expect(mockStdErrWrite).toHaveBeenLastCalledWith(expect.any(String));
-    expect(mockStdErrWrite).toHaveBeenLastCalledWith(
-      expect.not.stringMatching(undefinedWithNewLine),
-    );
-
-    main('validate', argv);
-    expect(mockStdErrWrite).toHaveBeenLastCalledWith(expect.any(String));
-    expect(mockStdErrWrite).toHaveBeenLastCalledWith(
-      expect.not.stringMatching(undefinedWithNewLine),
-    );
-  });
+      expect(mockStdErrWrite).toHaveBeenCalledOnce();
+      expect(mockStdErrWrite).toHaveBeenCalledWith(
+        expect.stringMatching(/^(?!undefined\n$).+\n$/s),
+      );
+      expect(mockExit).toHaveBeenCalledWith(1);
+    },
+  );
 });

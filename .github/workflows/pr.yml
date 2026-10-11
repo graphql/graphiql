@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
@@ -21,14 +21,14 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Turbo cache
         uses: ./.github/actions/turbo-cache
-      - run: pnpm build
+      - run: pnpm build --output-logs=new-only
 
   cspell:
     name: CSpell
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
@@ -70,7 +70,7 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
@@ -81,14 +81,14 @@ jobs:
         with:
           restore-build: true
       - run: pnpm --filter @graphiql/react exec playwright install --with-deps chromium
-      - run: pnpm test
+      - run: pnpm test --output-logs=new-only
 
   graphql-16-compatibility:
     name: GraphQL 16 Compatibility
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
@@ -98,27 +98,21 @@ jobs:
       - run: pnpm install --no-frozen-lockfile
       - name: Turbo cache
         uses: ./.github/actions/turbo-cache
-      - run: pnpm build
+      - run: pnpm build --output-logs=new-only
       - run: pnpm --filter @graphiql/react exec playwright install --with-deps chromium
-      - run: pnpm test
+      - run: pnpm test --output-logs=new-only
 
   lint:
     name: Lint
     runs-on: ubuntu-latest
-    needs: [build]
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Turbo cache
-        uses: ./.github/actions/turbo-cache
-        with:
-          restore-build: true
-      - run: pnpm build
       - run: pnpm oxlint
 
   types-check:
@@ -127,7 +121,7 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
@@ -137,7 +131,9 @@ jobs:
         uses: ./.github/actions/turbo-cache
         with:
           restore-build: true
-      - run: pnpm types:check
+      - run: |
+          pnpm exec turbo run types:check --output-logs=new-only
+          pnpm exec tsc --noEmit -p scripts/tsconfig.json
 
   e2e:
     name: Cypress
@@ -145,7 +141,7 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
@@ -155,7 +151,7 @@ jobs:
         uses: ./.github/actions/turbo-cache
         with:
           restore-build: true
-      - run: pnpm build
+      - run: pnpm build:graphiql --output-logs=new-only
       - uses: actions/cache@v5
         with:
           path: |
@@ -166,7 +162,7 @@ jobs:
         uses: cypress-io/github-action@v7
         with:
           install: false
-          command: pnpm e2e
+          command: pnpm --filter graphiql-e2e e2e:built
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
@@ -186,7 +182,7 @@ jobs:
     needs: [build, lint, vitest, e2e]
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
@@ -196,7 +192,7 @@ jobs:
         uses: ./.github/actions/turbo-cache
         with:
           restore-build: true
-      - run: pnpm build
+      - run: pnpm build --output-logs=new-only
       - run: pnpm dlx pkg-pr-new publish --comment=off './packages/*'
 
   license-check:
@@ -204,7 +200,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
