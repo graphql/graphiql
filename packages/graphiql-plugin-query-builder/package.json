@@ -52,7 +52,7 @@
   "devDependencies": {
     "@graphiql/react": "^1.0.0-rc.1",
     "@storybook/addon-a11y": "^10.3.6",
-    "@storybook/addon-vitest": "^10.3.6",
+    "@storybook/addon-vitest": "^10.6.1",
     "@storybook/react-vite": "^10.3.6",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^7.0.1",
@@ -66,7 +66,7 @@
     "graphql": "^17.0.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "storybook": "^10.3.6",
+    "storybook": "^10.6.1",
     "vite": "^8.2.2",
     "vite-plugin-dts": "^4.5.3",
     "typescript": "^5.8.0"

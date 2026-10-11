@@ -44,7 +44,7 @@ describe('GraphiQL keyboard interactions', () => {
 
 // `cy.realPress` dispatches trusted key events, unlike `.type()`/`.trigger()`,
 // so it's the only way to exercise actual Tab-order and focus-trap behavior
-// here. It needs the Electron window to have real OS-level focus first, which
+// here. It needs the browser window to have real OS-level focus first, which
 // a `cy.visitGraphiQL()` alone doesn't guarantee — each test below clicks a neutral,
 // non-interactive area before the first `realPress` to establish it.
 describe('keyboard navigation', () => {
