@@ -15,7 +15,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@graphiql/react': path.resolve(
-        __dirname,
+        import.meta.dirname,
         'src/__mocks__/@graphiql/react.ts',
       ),
     },
