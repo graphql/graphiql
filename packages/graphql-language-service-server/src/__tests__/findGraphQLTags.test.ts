@@ -619,5 +619,6 @@ export function Example(arg: string) {}`;
     <p>Year: {film.releaseDate}</p>`;
     const contents = await findGraphQLTags(text, '.astro');
     expect(contents.length).toEqual(1);
+    expect(contents[0].range.start.line).toEqual(8);
   });
 });
