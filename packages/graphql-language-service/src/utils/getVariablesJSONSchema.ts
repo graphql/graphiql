@@ -286,6 +286,7 @@ function getJSONSchemaFromGraphQLType(
     }
   }
 
+  // GraphQL 17 uses `default`; remove the `defaultValue` fallback with GraphQL 16 support.
   if ('default' in fieldOrType && fieldOrType.default != null) {
     const defaultInput = fieldOrType.default as {
       literal?: ConstValueNode;
