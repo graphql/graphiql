@@ -163,10 +163,6 @@ jobs:
         with:
           install: false
           command: pnpm --filter graphiql-e2e e2e:built
-        env:
-          # GitHub runners have no usable GPU; Electron's GPU process can
-          # crash (dawn/Vulkan) and wedge the browser mid-run
-          ELECTRON_EXTRA_LAUNCH_ARGS: --disable-gpu
       - uses: actions/upload-artifact@v7
         if: failure()
         with:

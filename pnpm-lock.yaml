@@ -696,8 +696,8 @@ importers:
         specifier: ^1
         version: 1.7.0(axe-core@4.13.0)(cypress@16.0.0)
       cypress-real-events:
-        specifier: ^1.15.0
-        version: 1.15.0(cypress@16.0.0)
+        specifier: ^1.15.1
+        version: 1.15.1(cypress@16.0.0)
       start-server-and-test:
         specifier: ^1.10.11
         version: 1.12.1
@@ -6852,10 +6852,10 @@ packages:
       axe-core: ^3 || ^4
       cypress: ^10 || ^11 || ^12 || ^13 || ^14 || ^15
 
-  cypress-real-events@1.15.0:
-    resolution: {integrity: sha512-in98xxTnnM9Z7lZBvvVozm99PBT2eEOjXRG5LKWyYvQnj9mGWXMiPNpfw7e7WiraBFh7XlXIxnE9Cu5o+52kQQ==}
+  cypress-real-events@1.15.1:
+    resolution: {integrity: sha512-BiTyqYcNHiIFWfSLRn3H+TgTvpnTGOKfl4Brz51yeSGKMxBbD60wtRQw31nII00yQ67Xg3C18mU8lqUxDN3OUA==}
     peerDependencies:
-      cypress: ^4.x || ^5.x || ^6.x || ^7.x || ^8.x || ^9.x || ^10.x || ^11.x || ^12.x || ^13.x || ^14.x || ^15.x
+      cypress: ^4.x || ^5.x || ^6.x || ^7.x || ^8.x || ^9.x || ^10.x || ^11.x || ^12.x || ^13.x || ^14.x || ^15.x || ^16.x
 
   cypress@16.0.0:
     resolution: {integrity: sha512-/H3zsayGwIGboFIiLWaXxy6ADmCdWy5QjjDBZgslCvjIgYAf1DkZerwAM7wXMPSpfpQ4w+lGjFlmwneRBpg27g==}
@@ -17745,7 +17745,7 @@ snapshots:
       axe-core: 4.13.0
       cypress: 16.0.0
 
-  cypress-real-events@1.15.0(cypress@16.0.0):
+  cypress-real-events@1.15.1(cypress@16.0.0):
     dependencies:
       cypress: 16.0.0
 
