@@ -90,7 +90,6 @@
   },
   "devDependencies": {
     "@types/capitalize": "2.0.0",
-    "@types/dotenv": "8.2.0",
     "@types/node": "^24",
     "@types/vscode": "1.62.0",
     "@types/ws": "8.2.2",

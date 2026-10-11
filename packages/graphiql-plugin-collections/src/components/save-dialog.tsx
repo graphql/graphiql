@@ -55,6 +55,9 @@ export const SaveDialog: FC = () => {
   return (
     <Dialog open={open} onOpenChange={o => !o && actions.closeSaveDialog()}>
       <Dialog.Header>Save to collection</Dialog.Header>
+      <Dialog.Description className="graphiql-sr-only">
+        Save the current operation to a collection.
+      </Dialog.Description>
       <form
         onSubmit={e => {
           e.preventDefault();

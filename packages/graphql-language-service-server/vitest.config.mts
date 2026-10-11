@@ -26,7 +26,7 @@ export default defineConfig({
       {
         find: /^graphql-language-service$/,
         replacement: path.resolve(
-          __dirname,
+          import.meta.dirname,
           '../graphql-language-service/src/index.ts',
         ),
       },
