@@ -30,8 +30,8 @@
   },
   "devDependencies": {
     "@typescript/native": "npm:typescript@^7.0.2",
-    "graphql": "^16.14.2",
-    "graphql-ws": "^6.0.8",
+    "graphql": "^17.0.2",
+    "graphql-ws": "^6.3.0",
     "isomorphic-fetch": "^3.0.0",
     "subscriptions-transport-ws": "0.11.0",
     "tsup": "^8.2.4",

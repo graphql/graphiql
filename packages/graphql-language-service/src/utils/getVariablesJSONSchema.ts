@@ -6,6 +6,7 @@
  */
 
 import {
+  type ConstValueNode,
   GraphQLInputField,
   GraphQLInputType,
   isEnumType,
@@ -13,6 +14,7 @@ import {
   isListType,
   isNonNullType,
   isScalarType,
+  valueFromAST,
 } from 'graphql';
 
 import type {
@@ -284,10 +286,22 @@ function getJSONSchemaFromGraphQLType(
     }
   }
 
-  if ('defaultValue' in fieldOrType && fieldOrType.defaultValue !== undefined) {
-    definition.default = fieldOrType.defaultValue as
-      | JSONSchema4Type
-      | undefined;
+  // GraphQL 17 uses `default`; remove the `defaultValue` fallback with GraphQL 16 support.
+  if ('default' in fieldOrType && fieldOrType.default != null) {
+    const defaultInput = fieldOrType.default as {
+      literal?: ConstValueNode;
+      value?: unknown;
+    };
+    definition.default = (
+      defaultInput.literal
+        ? valueFromAST(defaultInput.literal, type)
+        : defaultInput.value
+    ) as JSONSchema4Type | undefined;
+  } else if (
+    'defaultValue' in fieldOrType &&
+    fieldOrType.defaultValue !== undefined
+  ) {
+    definition.default = fieldOrType.defaultValue as JSONSchema4Type;
   }
 
   // append to type descriptions, or schema description

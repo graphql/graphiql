@@ -83,8 +83,8 @@ jobs:
       - run: pnpm --filter @graphiql/react exec playwright install --with-deps chromium
       - run: pnpm test
 
-  graphql-17-fragment-arguments:
-    name: GraphQL 17 Fragment Arguments
+  graphql-16-compatibility:
+    name: GraphQL 16 Compatibility
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -94,12 +94,13 @@ jobs:
           node-version-file: '.node-version'
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter graphql-language-service add --save-dev graphql@17.0.2
-      - name: Build and typecheck graphql-language-service
-        run: pnpm --filter graphql-language-service exec tsc
-      - name: Test fragment argument integration
-        run: >-
-          pnpm exec vitest run packages/graphql-language-service/src/parser/__tests__/OnlineParser.test.ts packages/graphql-language-service/src/interface/__tests__/getAutocompleteSuggestions.test.ts packages/graphql-language-service/src/interface/__tests__/getDiagnostics.test.ts packages/graphql-language-service/src/interface/__tests__/getHoverInformation.test.ts
+      - run: pnpm repo:resolve graphql@16.14.2
+      - run: pnpm install --no-frozen-lockfile
+      - name: Turbo cache
+        uses: ./.github/actions/turbo-cache
+      - run: pnpm build
+      - run: pnpm --filter @graphiql/react exec playwright install --with-deps chromium
+      - run: pnpm test
 
   lint:
     name: Lint

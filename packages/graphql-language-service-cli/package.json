@@ -48,6 +48,6 @@
   },
   "devDependencies": {
     "@typescript/native": "npm:typescript@^7.0.2",
-    "graphql": "^16.14.2"
+    "graphql": "^17.0.2"
   }
 }
