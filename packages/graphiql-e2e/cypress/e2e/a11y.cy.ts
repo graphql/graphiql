@@ -42,7 +42,7 @@ function checkOrCapture(checkpoint: string) {
         const baselineEntries: ViolationSummary[] =
           (baseline as Baseline)[checkpoint] ?? [];
         // Compare by violation id only — node counts drift between local
-        // (Electron on macOS) and CI (headless Chromium on Linux) for the
+        // (Chrome on macOS) and CI (headless Chrome on Linux) for the
         // same underlying issues, so they're not a reliable key.
         const baselineKeys = new Set(baselineEntries.map(v => v.id));
         const newViolations = violations.filter(v => !baselineKeys.has(v.id));

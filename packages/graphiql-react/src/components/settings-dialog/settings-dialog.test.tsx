@@ -108,7 +108,11 @@ function renderDialog(open = true, props: Partial<SettingsDialogProps> = {}) {
 describe('SettingsDialog — renders', () => {
   it('shows the Settings title when open', () => {
     renderDialog();
-    expect(screen.getByText('Settings')).toBeInTheDocument();
+    const dialog = screen.getByRole('dialog', {
+      name: 'Settings',
+      description: 'Customize the appearance and behavior of GraphiQL.',
+    });
+    expect(dialog).toBeInTheDocument();
   });
 
   it('shows Theme, Density, and Font size section headings', () => {
