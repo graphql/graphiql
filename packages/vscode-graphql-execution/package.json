@@ -82,8 +82,8 @@
   },
   "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-execution/README.md",
   "scripts": {
-    "build": "tsgo -p tsconfig.json",
-    "types:check": "tsgo --noEmit",
+    "build": "tsc -p tsconfig.json",
+    "types:check": "tsc --noEmit",
     "compile": "node esbuild.js",
     "build-bundles": "pnpm compile",
     "vsce:package": "pnpm compile && vsce package --no-dependencies"
@@ -94,7 +94,7 @@
     "@types/node": "^24",
     "@types/vscode": "1.62.0",
     "@types/ws": "8.2.2",
-    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "@vscode/vsce": "^3.9.2",
     "esbuild": "0.28.2",
     "ovsx": "0.8.3"
@@ -112,6 +112,7 @@
     "nullthrows": "1.1.1",
     "svelte": "^5.55.7",
     "svelte2tsx": "^0.7.61",
+    "typescript": "^5.8.0",
     "wonka": "^6.3.6",
     "ws": "8.21.0"
   }

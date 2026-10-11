@@ -6,7 +6,7 @@
   "packageManager": "pnpm@10.34.5",
   "scripts": {
     "check:lockfile": "node scripts/check-pnpm-lockfile.mts",
-    "types:check": "turbo run types:check && tsgo --noEmit -p scripts/tsconfig.json",
+    "types:check": "turbo run types:check && tsc --noEmit -p scripts/tsconfig.json",
     "dev:graphiql": "turbo watch dev --filter=graphiql-e2e",
     "dev:example-nextjs": "turbo run dev --filter=example-graphiql-nextjs...",
     "dev:example-vite": "turbo watch dev --filter=example-graphiql-vite",
@@ -70,7 +70,7 @@
     "@types/copy": "^0.3.1",
     "@types/node": "^24",
     "@types/ws": "8.2.2",
-    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "babel-plugin-macros": "^3.1.0",
     "babel-plugin-transform-import-meta": "^2.3.3",
     "concurrently": "^10.0.5",
