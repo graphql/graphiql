@@ -44,7 +44,7 @@
   "dependencies": {
     "@graphiql/toolkit": "^1.0.0-rc.0",
     "clsx": "^1.2.1",
-    "react-compiler-runtime": "19.1.0-rc.3",
+    "react-compiler-runtime": "^1.0.0",
     "zustand": "^5"
   },
   "devDependencies": {
@@ -57,7 +57,7 @@
     "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "@vitejs/plugin-react": "^5.2.0",
     "@vitest/web-worker": "^4.1.6",
-    "babel-plugin-react-compiler": "19.1.0-rc.3",
+    "babel-plugin-react-compiler": "1.0.0",
     "monaco-editor": ">=0.56.0 <0.58.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

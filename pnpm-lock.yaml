@@ -339,7 +339,7 @@ importers:
         version: link:../../packages/monaco-graphql
       next:
         specifier: ^15
-        version: 15.5.25(@babel/core@7.29.7)(@types/node@24.12.2)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 15.5.25(@babel/core@7.29.7)(@types/node@24.12.2)(babel-plugin-macros@3.1.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react:
         specifier: 19.2.7
         version: 19.2.7
@@ -577,8 +577,8 @@ importers:
         specifier: ^1.2.1
         version: 1.2.1
       react-compiler-runtime:
-        specifier: 19.1.0-rc.3
-        version: 19.1.0-rc.3(react@19.2.7)
+        specifier: ^1.0.0
+        version: 1.0.0(react@19.2.7)
     devDependencies:
       '@graphiql/toolkit':
         specifier: ^1.0.0-rc.0
@@ -608,8 +608,8 @@ importers:
         specifier: ^4.1.11
         version: 4.1.11(vitest@4.1.11)
       babel-plugin-react-compiler:
-        specifier: 19.1.0-rc.3
-        version: 19.1.0-rc.3
+        specifier: 1.0.0
+        version: 1.0.0
       graphql:
         specifier: ^16.14.2
         version: 16.14.2
@@ -681,8 +681,8 @@ importers:
         specifier: ^4
         version: 4.13.0
       babel-plugin-react-compiler:
-        specifier: 19.1.0-rc.3
-        version: 19.1.0-rc.3
+        specifier: 1.0.0
+        version: 1.0.0
       concurrently:
         specifier: ^10.0.5
         version: 10.0.5
@@ -827,8 +827,8 @@ importers:
         specifier: ^2.2
         version: 2.2.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react-compiler-runtime:
-        specifier: 19.1.0-rc.3
-        version: 19.1.0-rc.3(react@19.2.7)
+        specifier: ^1.0.0
+        version: 1.0.0(react@19.2.7)
       zustand:
         specifier: ^5
         version: 5.0.4(@types/react@19.2.14)(react@19.2.7)(use-sync-external-store@1.5.0(react@19.2.7))
@@ -870,8 +870,8 @@ importers:
         specifier: ^4.1.6
         version: 4.1.11(vitest@4.1.11)
       babel-plugin-react-compiler:
-        specifier: 19.1.0-rc.3
-        version: 19.1.0-rc.3
+        specifier: 1.0.0
+        version: 1.0.0
       graphql:
         specifier: ^16.14.2
         version: 16.14.2
@@ -906,8 +906,8 @@ importers:
         specifier: ^1.2.1
         version: 1.2.1
       react-compiler-runtime:
-        specifier: 19.1.0-rc.3
-        version: 19.1.0-rc.3(react@19.2.7)
+        specifier: ^1.0.0
+        version: 1.0.0(react@19.2.7)
       zustand:
         specifier: ^5
         version: 5.0.4(@types/react@19.2.14)(react@19.2.7)(use-sync-external-store@1.5.0(react@19.2.7))
@@ -940,8 +940,8 @@ importers:
         specifier: ^4.1.6
         version: 4.1.11(vitest@4.1.11)
       babel-plugin-react-compiler:
-        specifier: 19.1.0-rc.3
-        version: 19.1.0-rc.3
+        specifier: 1.0.0
+        version: 1.0.0
       monaco-editor:
         specifier: '>=0.56.0 <0.58.0'
         version: 0.57.0
@@ -964,8 +964,8 @@ importers:
   packages/graphiql-plugin-query-builder:
     dependencies:
       react-compiler-runtime:
-        specifier: 19.1.0-rc.3
-        version: 19.1.0-rc.3(react@19.2.7)
+        specifier: ^1.0.0
+        version: 1.0.0(react@19.2.7)
     devDependencies:
       '@graphiql/react':
         specifier: ^1.0.0-rc.1
@@ -1004,8 +1004,8 @@ importers:
         specifier: ^5.2.0
         version: 5.2.0(vite@8.2.2(@types/node@24.12.2)(esbuild@0.28.2)(jiti@2.6.1)(terser@5.46.2)(yaml@2.9.0))
       babel-plugin-react-compiler:
-        specifier: 19.1.0-rc.3
-        version: 19.1.0-rc.3
+        specifier: 1.0.0
+        version: 1.0.0
       graphql:
         specifier: ^16.14.2
         version: 16.14.2
@@ -1070,8 +1070,8 @@ importers:
         specifier: ^3.5.3
         version: 3.8.3
       react-compiler-runtime:
-        specifier: 19.1.0-rc.3
-        version: 19.1.0-rc.3(react@19.2.7)
+        specifier: ^1.0.0
+        version: 1.0.0(react@19.2.7)
       set-value:
         specifier: ^4.1.0
         version: 4.1.0
@@ -1125,8 +1125,8 @@ importers:
         specifier: ^4.1.6
         version: 4.1.11(vitest@4.1.11)
       babel-plugin-react-compiler:
-        specifier: 19.1.0-rc.3
-        version: 19.1.0-rc.3
+        specifier: 1.0.0
+        version: 1.0.0
       graphql:
         specifier: ^16.14.2
         version: 16.14.2
@@ -6120,8 +6120,8 @@ packages:
     peerDependencies:
       '@babel/core': ^7.4.0 || ^8.0.0-0 <8.0.0
 
-  babel-plugin-react-compiler@19.1.0-rc.3:
-    resolution: {integrity: sha512-mjRn69WuTz4adL0bXGx8Rsyk1086zFJeKmes6aK0xPuK3aaXmDJdLHqwKKMrpm6KAI1MCoUK72d2VeqQbu8YIA==}
+  babel-plugin-react-compiler@1.0.0:
+    resolution: {integrity: sha512-Ixm8tFfoKKIPYdCCKYTsqv+Fd4IJ0DQqMyEimo+pxUOMUR9cVPlwTrFt9Avu+3cb6Zp3mAzl+t1MrG2fxxKsxw==}
 
   babel-plugin-transform-import-meta@2.3.3:
     resolution: {integrity: sha512-bbh30qz1m6ZU1ybJoNOhA2zaDvmeXMnGNBMVMDOJ1Fni4+wMBoy/j7MTRVmqAUCIcy54/rEnr9VEBsfcgbpm3Q==}
@@ -9886,8 +9886,8 @@ packages:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
     hasBin: true
 
-  react-compiler-runtime@19.1.0-rc.3:
-    resolution: {integrity: sha512-Cssogys2XZu6SqxRdX2xd8cQAf57BBvFbLEBlIa77161lninbKUn/EqbecCe7W3eqDQfg3rIoOwzExzgCh7h/g==}
+  react-compiler-runtime@1.0.0:
+    resolution: {integrity: sha512-rRfjYv66HlG8896yPUDONgKzG5BxZD1nV9U6rkm+7VCuvQc903C4MjcoZR4zPw53IKSOX9wMQVpA1IAbRtzQ7w==}
     peerDependencies:
       react: 19.2.7
 
@@ -16695,7 +16695,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  babel-plugin-react-compiler@19.1.0-rc.3:
+  babel-plugin-react-compiler@1.0.0:
     dependencies:
       '@babel/types': 7.29.8
 
@@ -20067,7 +20067,7 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  next@15.5.25(@babel/core@7.29.7)(@types/node@24.12.2)(babel-plugin-macros@3.1.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  next@15.5.25(@babel/core@7.29.7)(@types/node@24.12.2)(babel-plugin-macros@3.1.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
       '@next/env': 15.5.25
       '@swc/helpers': 0.5.15
@@ -20085,6 +20085,7 @@ snapshots:
       '@next/swc-linux-x64-musl': 15.5.25
       '@next/swc-win32-arm64-msvc': 15.5.25
       '@next/swc-win32-x64-msvc': 15.5.25
+      babel-plugin-react-compiler: 1.0.0
       sharp: 0.35.4(@types/node@24.12.2)
     transitivePeerDependencies:
       - '@babel/core'
@@ -20808,7 +20809,7 @@ snapshots:
       minimist: 1.2.8
       strip-json-comments: 2.0.1
 
-  react-compiler-runtime@19.1.0-rc.3(react@19.2.7):
+  react-compiler-runtime@1.0.0(react@19.2.7):
     dependencies:
       react: 19.2.7
 
