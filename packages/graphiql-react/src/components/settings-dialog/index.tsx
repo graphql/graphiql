@@ -168,6 +168,9 @@ export const SettingsDialog: FC<SettingsDialogProps> = ({
     >
       <div className="graphiql-settings-dialog">
         <Dialog.Header>Settings</Dialog.Header>
+        <Dialog.Description className="graphiql-settings-sr-only">
+          Customize the appearance and behavior of GraphiQL.
+        </Dialog.Description>
 
         <div className="graphiql-settings-dialog-body">
           {!forcedThemeSetting && (

@@ -51,7 +51,6 @@
     "@codemirror/language": "^6.0.0",
     "@typescript/native": "npm:typescript@^7.0.2",
     "codemirror": "^5.65.3",
-    "graphql": "^17.0.2",
-    "sane": "2.0.0"
+    "graphql": "^17.0.2"
   }
 }

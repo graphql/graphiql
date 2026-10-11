@@ -37,6 +37,9 @@ export const ExportDialog: FC<ExportDialogProps> = ({ open, onClose }) => {
   return (
     <Dialog open={open} onOpenChange={o => !o && onClose()}>
       <Dialog.Header>Export collections</Dialog.Header>
+      <Dialog.Description className="graphiql-sr-only">
+        Copy or download all collections as JSON.
+      </Dialog.Description>
       <Dialog.Body>
         <div className="graphiql-import-export-section">
           <textarea

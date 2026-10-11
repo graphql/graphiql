@@ -60,6 +60,9 @@ export const ImportDialog: FC<ImportDialogProps> = ({
   return (
     <Dialog open={open} onOpenChange={o => !o && onClose()}>
       <Dialog.Header>Import collections</Dialog.Header>
+      <Dialog.Description className="graphiql-sr-only">
+        Import collections from a JSON export.
+      </Dialog.Description>
       <Dialog.Body>
         <div className="graphiql-import-export-section">
           <textarea
