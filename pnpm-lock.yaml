@@ -577,7 +577,7 @@ importers:
         specifier: ^1.2.1
         version: 1.2.1
       react-compiler-runtime:
-        specifier: 1.0.0
+        specifier: ^1.0.0
         version: 1.0.0(react@19.2.7)
     devDependencies:
       '@graphiql/toolkit':
@@ -827,7 +827,7 @@ importers:
         specifier: ^2.2
         version: 2.2.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react-compiler-runtime:
-        specifier: 1.0.0
+        specifier: ^1.0.0
         version: 1.0.0(react@19.2.7)
       zustand:
         specifier: ^5
@@ -906,7 +906,7 @@ importers:
         specifier: ^1.2.1
         version: 1.2.1
       react-compiler-runtime:
-        specifier: 1.0.0
+        specifier: ^1.0.0
         version: 1.0.0(react@19.2.7)
       zustand:
         specifier: ^5
@@ -964,7 +964,7 @@ importers:
   packages/graphiql-plugin-query-builder:
     dependencies:
       react-compiler-runtime:
-        specifier: 1.0.0
+        specifier: ^1.0.0
         version: 1.0.0(react@19.2.7)
     devDependencies:
       '@graphiql/react':
@@ -1070,7 +1070,7 @@ importers:
         specifier: ^3.5.3
         version: 3.8.3
       react-compiler-runtime:
-        specifier: 1.0.0
+        specifier: ^1.0.0
         version: 1.0.0(react@19.2.7)
       set-value:
         specifier: ^4.1.0

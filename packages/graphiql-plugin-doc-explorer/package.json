@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2",
-    "react-compiler-runtime": "1.0.0",
+    "react-compiler-runtime": "^1.0.0",
     "zustand": "^5"
   },
   "devDependencies": {

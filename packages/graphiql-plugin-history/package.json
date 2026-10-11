@@ -44,7 +44,7 @@
   "dependencies": {
     "@graphiql/toolkit": "^1.0.0-rc.0",
     "clsx": "^1.2.1",
-    "react-compiler-runtime": "1.0.0",
+    "react-compiler-runtime": "^1.0.0",
     "zustand": "^5"
   },
   "devDependencies": {

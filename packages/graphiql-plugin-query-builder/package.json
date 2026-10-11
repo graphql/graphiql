@@ -47,7 +47,7 @@
     "react-dom": "^18 || ^19"
   },
   "dependencies": {
-    "react-compiler-runtime": "1.0.0"
+    "react-compiler-runtime": "^1.0.0"
   },
   "devDependencies": {
     "@graphiql/react": "^1.0.0-rc.1",
