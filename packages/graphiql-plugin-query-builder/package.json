@@ -33,7 +33,7 @@
     "dist"
   ],
   "scripts": {
-    "types:check": "tsgo --noEmit",
+    "types:check": "tsc --noEmit",
     "dev": "vite build --watch --emptyOutDir=false",
     "build": "pnpm types:check && vite build",
     "test": "vitest run",
@@ -60,7 +60,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "@vitejs/plugin-react": "^5.2.0",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
     "graphql": "^16.14.2",
@@ -68,6 +68,7 @@
     "react-dom": "^19.1.0",
     "storybook": "^10.3.6",
     "vite": "^8.2.2",
-    "vite-plugin-dts": "^4.5.3"
+    "vite-plugin-dts": "^4.5.3",
+    "typescript": "^5.8.0"
   }
 }

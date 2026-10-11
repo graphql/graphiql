@@ -38,7 +38,7 @@
     }
   },
   "scripts": {
-    "types:check": "tsgo --noEmit",
+    "types:check": "tsc --noEmit",
     "build": "pnpm types:check && vite build",
     "test": "vitest run"
   },
@@ -63,7 +63,7 @@
     "@testing-library/react": "^16.3.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "@vitejs/plugin-react": "^5.2.0",
     "@vitest/web-worker": "^4.1.11",
     "babel-plugin-react-compiler": "19.1.0-rc.3",

@@ -29,7 +29,7 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "types:check": "tsgo --noEmit",
+    "types:check": "tsc --noEmit",
     "dev": "vite build --watch --emptyOutDir=false",
     "build": "pnpm types:check && vite build && pnpm postbuild",
     "postbuild": "cp src/graphiql-code-exporter.d.ts dist/graphiql-code-exporter.d.ts"
@@ -47,7 +47,7 @@
     "@graphiql/react": "^1.0.0-rc.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "@vitejs/plugin-react": "^5.2.0",
     "graphql": "^16.14.2",
     "react": "^19.1.0",
