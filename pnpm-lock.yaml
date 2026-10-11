@@ -277,9 +277,6 @@ importers:
       '@babel/preset-react':
         specifier: ^7
         version: 7.28.5(@babel/core@7.29.7)
-      ajv-formats:
-        specifier: ^3
-        version: 3.0.1(ajv@6.15.0)
       babel-loader:
         specifier: ^9
         version: 9.2.1(@babel/core@7.29.7)(webpack@5.106.2)
@@ -316,9 +313,6 @@ importers:
       workbox-webpack-plugin:
         specifier: ^7
         version: 7.4.0(@types/babel__core@7.20.5)(webpack@5.106.2)
-      worker-loader:
-        specifier: ^2
-        version: 2.0.0(webpack@5.106.2)
 
   examples/monaco-graphql-nextjs:
     dependencies:
@@ -8575,10 +8569,6 @@ packages:
   json-stringify-safe@5.0.1:
     resolution: {integrity: sha512-ZClg6AaYvamvYEE82d3Iyd3vSSIjQ+odgjaTzRuO3s7toCdFKczob2i0zCh7JE8kWn17yvAWhUVxvqGwUalsRA==}
 
-  json5@1.0.2:
-    resolution: {integrity: sha512-g1MWMLBiz8FKi1e4w0UyVL3w+iJceWAFBAaBnnGKOpNa5f8TLktkbre1+s6oICydWAm+HRUGTmI+//xv2hvXYA==}
-    hasBin: true
-
   json5@2.2.3:
     resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
     engines: {node: '>=6'}
@@ -8766,10 +8756,6 @@ packages:
   loader-runner@4.3.1:
     resolution: {integrity: sha512-IWqP2SCPhyVFTBtRcgMHdzlf9ul25NwaFx4wCEH/KjAXuuHY4yNjvPXsBokp8jCB936PyWRaPKUNh8NvylLp2Q==}
     engines: {node: '>=6.11.5'}
-
-  loader-utils@1.4.2:
-    resolution: {integrity: sha512-I5d00Pd/jwMD2QCduo657+YM/6L3KZu++pmX9VFncxaxvHcru9jx1lBaFft+r4Mt2jK0Yhp41XlRAihzPxHNCg==}
-    engines: {node: '>=4.0.0'}
 
   loader-utils@2.0.4:
     resolution: {integrity: sha512-xXqpXoINfFhgua9xiqD8fPFHgkoq1mmmpE92WlDbm9rNRd/EbRb+Gqf908T2DMfuHjjJlksiK2RbHVOdD/MqSw==}
@@ -10166,10 +10152,6 @@ packages:
 
   scheduler@0.27.0:
     resolution: {integrity: sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==}
-
-  schema-utils@0.4.7:
-    resolution: {integrity: sha512-v/iwU6wvwGK8HbU9yi3/nhGzP0yGSuhQMzL6ySiec1FSrZZDkhm4noOSWzrNFo/jEc+SJY6jRTwuwbSXJPDUnQ==}
-    engines: {node: '>= 4'}
 
   schema-utils@3.3.0:
     resolution: {integrity: sha512-pN/yOAvcC+5rQ5nERGuwrjLlYvLTbCibnZ1I7B1LaiAz9BRBlE9GMgE/eqV30P7aJQUf7Ddimy/RsbYO/GrVGg==}
@@ -11609,12 +11591,6 @@ packages:
 
   workbox-window@7.4.0:
     resolution: {integrity: sha512-/bIYdBLAVsNR3v7gYGaV4pQW3M3kEPx5E8vDxGvxo6khTrGtSSCS7QiFKv9ogzBgZiy0OXLP9zO28U/1nF1mfw==}
-
-  worker-loader@2.0.0:
-    resolution: {integrity: sha512-tnvNp4K3KQOpfRnD20m8xltE3eWh89Ye+5oj7wXEEHKac1P4oZ6p9oTj8/8ExqoSBnk9nu5Pr4nKfQ1hn2APJw==}
-    engines: {node: '>= 6.9.0 || >= 8.9.0'}
-    peerDependencies:
-      webpack: ^3.0.0 || ^4.0.0-alpha.0 || ^4.0.0
 
   workerpool@6.2.1:
     resolution: {integrity: sha512-ILEIE97kDZvF9Wb9f6h5aXK4swSlKGUcOEGiIYb2OOu/IrDU9iwj0fD//SsA6E5ibwJxpEvhullJY4Sl4GcpAw==}
@@ -16594,10 +16570,6 @@ snapshots:
     optionalDependencies:
       ajv: 8.13.0
 
-  ajv-formats@3.0.1(ajv@6.15.0):
-    optionalDependencies:
-      ajv: 6.15.0
-
   ajv-formats@3.0.1(ajv@8.13.0):
     optionalDependencies:
       ajv: 8.13.0
@@ -19521,10 +19493,6 @@ snapshots:
 
   json-stringify-safe@5.0.1: {}
 
-  json5@1.0.2:
-    dependencies:
-      minimist: 1.2.8
-
   json5@2.2.3: {}
 
   jsonc-parser@3.3.1: {}
@@ -19710,12 +19678,6 @@ snapshots:
       strip-bom: 3.0.0
 
   loader-runner@4.3.1: {}
-
-  loader-utils@1.4.2:
-    dependencies:
-      big.js: 5.2.2
-      emojis-list: 3.0.0
-      json5: 1.0.2
 
   loader-utils@2.0.4:
     dependencies:
@@ -21250,11 +21212,6 @@ snapshots:
       xmlchars: 2.2.0
 
   scheduler@0.27.0: {}
-
-  schema-utils@0.4.7:
-    dependencies:
-      ajv: 6.15.0
-      ajv-keywords: 3.5.2(ajv@6.15.0)
 
   schema-utils@3.3.0:
     dependencies:
@@ -22928,12 +22885,6 @@ snapshots:
     dependencies:
       '@types/trusted-types': 2.0.7
       workbox-core: 7.4.0
-
-  worker-loader@2.0.0(webpack@5.106.2):
-    dependencies:
-      loader-utils: 1.4.2
-      schema-utils: 0.4.7
-      webpack: 5.106.2(esbuild@0.28.2)(webpack-cli@7.2.3)
 
   workerpool@6.2.1: {}
 
