@@ -1,5 +1,14 @@
 # graphql-language-service-server
 
+## 3.0.0-rc.2
+
+### Patch Changes
+
+- [#4632](https://github.com/graphql/graphiql/pull/4632) [`4225e29`](https://github.com/graphql/graphiql/commit/4225e29ebea023591aeb5c54a84cf98b226f6df7) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Update Astro parsing to compiler 4 while preserving GraphQL query locations.
+
+- Updated dependencies [[`3d368ba`](https://github.com/graphql/graphiql/commit/3d368ba8747ac2ad0bd73c8bf6f46f952122cfc8)]:
+  - graphql-language-service@6.0.0-rc.1
+
 ## 3.0.0-rc.1
 
 ### Patch Changes

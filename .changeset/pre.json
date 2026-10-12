@@ -30,6 +30,8 @@
   "changesets": [
     "a11y-keyboard-audit",
     "a11y-labels-focus-rings",
+    "astro-compiler-four",
+    "clsx-two",
     "collections-plugin-constant",
     "collections",
     "default-plugins",
@@ -43,6 +45,7 @@
     "matching-graphql-worker",
     "method-pill",
     "modern-monaco-workers",
+    "modernize-cli-runtime",
     "operation-name-follows-cursor",
     "panel-header",
     "pin-internal-beta-deps",
@@ -50,6 +53,7 @@
     "query-builder",
     "remove-cn-reexport",
     "remove-deprecated-hooks",
+    "remove-graphql-bin",
     "remove-operation-name-prop",
     "response-pane",
     "restore-caret-internal-ranges",
@@ -57,7 +61,9 @@
     "segmented-control",
     "settings",
     "shared-graphiql-settings",
+    "stable-react-compiler",
     "transport-api",
+    "update-motion-14",
     "v6-redesign"
   ]
 }

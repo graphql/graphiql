@@ -1,5 +1,15 @@
 # graphql-language-service-cli
 
+## 4.0.0-rc.2
+
+### Patch Changes
+
+- [#4642](https://github.com/graphql/graphiql/pull/4642) [`009944b`](https://github.com/graphql/graphiql/commit/009944b0cf4968aa1f9e49cbc24bc3e7ccc3d02f) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Stop loading the deprecated `@babel/polyfill` package. The CLI output targets ES2018 and runs on Node versions with native support for the required runtime features.
+
+- Updated dependencies [[`4225e29`](https://github.com/graphql/graphiql/commit/4225e29ebea023591aeb5c54a84cf98b226f6df7), [`3d368ba`](https://github.com/graphql/graphiql/commit/3d368ba8747ac2ad0bd73c8bf6f46f952122cfc8)]:
+  - graphql-language-service-server@3.0.0-rc.2
+  - graphql-language-service@6.0.0-rc.1
+
 ## 4.0.0-rc.1
 
 ### Patch Changes
