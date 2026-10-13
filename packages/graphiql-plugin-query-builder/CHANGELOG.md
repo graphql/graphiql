@@ -1,5 +1,13 @@
 # @graphiql/plugin-query-builder
 
+## 1.0.0-rc.3
+
+### Patch Changes
+
+- [#4650](https://github.com/graphql/graphiql/pull/4650) [`7e31f1e`](https://github.com/graphql/graphiql/commit/7e31f1ee897e6004417f5d148c4749faf834d639) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Return the query builder to the selected operation when the active fragment is deleted in the editor.
+
+- [#4651](https://github.com/graphql/graphiql/pull/4651) [`7f19588`](https://github.com/graphql/graphiql/commit/7f195889566e2c770b3c6f79d7da34a63badd857) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Select the operation under the cursor when a new operation is typed in the editor.
+
 ## 1.0.0-rc.2
 
 ### Patch Changes
