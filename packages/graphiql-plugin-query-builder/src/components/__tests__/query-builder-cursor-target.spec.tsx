@@ -60,6 +60,7 @@ function makeFakeEditor(getText: () => string) {
         cursorCb = cb;
         return { dispose() {} };
       },
+      onDidChangeModelContent: () => ({ dispose() {} }),
     },
     moveCursorTo(next: number) {
       offset = next;
