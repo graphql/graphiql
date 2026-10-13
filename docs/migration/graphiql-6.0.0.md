@@ -501,8 +501,15 @@ These preferences use the `graphiql:settings` key in `localStorage`, shared by G
 ```ts
 import { useGraphiQLSettings } from '@graphiql/react';
 
-const { theme, density, fontSize, setTheme, setDensity, setFontSize } =
-  useGraphiQLSettings();
+const {
+  theme,
+  resolvedTheme,
+  density,
+  fontSize,
+  setTheme,
+  setDensity,
+  setFontSize,
+} = useGraphiQLSettings();
 ```
 
 | Setting    | Values                                            | Default         |
@@ -512,6 +519,7 @@ const { theme, density, fontSize, setTheme, setDensity, setFontSize } =
 | `fontSize` | `'compact'` \| `'default'` \| `'large'` \| `'xl'` | `'default'`     |
 
 `'auto'` theme follows `prefers-color-scheme` and updates live if the OS setting changes while GraphiQL is open.
+`resolvedTheme` is always `'light'` or `'dark'` and updates when either the saved theme or the OS preference changes. Use it when rendering JavaScript-driven UI such as charts. The `theme` field retains the user's `'auto'` selection.
 
 ### CSS attribute selectors
 

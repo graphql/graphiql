@@ -325,8 +325,9 @@ describe('useGraphiQLSettings — auto theme', () => {
     container.className = 'graphiql-container';
     document.body.append(container);
 
-    renderHook(() => useGraphiQLSettings());
+    const { result } = renderHook(() => useGraphiQLSettings());
 
+    expect(result.current.resolvedTheme).toBe('dark');
     expect(container.getAttribute('data-theme')).toBe('dark');
 
     container.remove();
@@ -338,11 +339,56 @@ describe('useGraphiQLSettings — auto theme', () => {
     container.className = 'graphiql-container';
     document.body.append(container);
 
-    renderHook(() => useGraphiQLSettings());
+    const { result } = renderHook(() => useGraphiQLSettings());
 
+    expect(result.current.resolvedTheme).toBe('light');
     expect(container.getAttribute('data-theme')).toBe('light');
 
     container.remove();
+  });
+
+  it('updates every consumer, the container, and Monaco when the system theme changes', () => {
+    const container = document.createElement('div');
+    const first = renderHook(() => useGraphiQLSettings({ current: container }));
+    const second = renderHook(() => useGraphiQLSettings());
+
+    expect(first.result.current.resolvedTheme).toBe('light');
+    expect(second.result.current.resolvedTheme).toBe('light');
+
+    changeSystemTheme(true);
+    expect(first.result.current.resolvedTheme).toBe('dark');
+    expect(second.result.current.resolvedTheme).toBe('dark');
+    expect(container).toHaveAttribute('data-theme', 'dark');
+    expect(mockMonaco!.editor.setTheme).toHaveBeenLastCalledWith(
+      MONACO_THEME_NAME.dark,
+    );
+
+    changeSystemTheme(false);
+    expect(first.result.current.resolvedTheme).toBe('light');
+    expect(second.result.current.resolvedTheme).toBe('light');
+    expect(container).toHaveAttribute('data-theme', 'light');
+    expect(mockMonaco!.editor.setTheme).toHaveBeenLastCalledWith(
+      MONACO_THEME_NAME.light,
+    );
+  });
+
+  it('uses the explicit theme and resumes system updates when switched back to auto', () => {
+    const { result } = renderHook(() => useGraphiQLSettings());
+
+    act(() => result.current.setTheme('dark'));
+    expect(result.current.resolvedTheme).toBe('dark');
+    expect(systemThemeListeners.size).toBe(0);
+
+    changeSystemTheme(true);
+    act(() => result.current.setTheme('light'));
+    expect(result.current.resolvedTheme).toBe('light');
+
+    act(() => result.current.setTheme('auto'));
+    expect(result.current.resolvedTheme).toBe('dark');
+    expect(systemThemeListeners.size).toBe(1);
+
+    changeSystemTheme(false);
+    expect(result.current.resolvedTheme).toBe('light');
   });
 });
 
