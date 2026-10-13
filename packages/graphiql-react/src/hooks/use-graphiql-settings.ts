@@ -96,6 +96,16 @@ function resolveTheme(theme: Theme): 'light' | 'dark' {
     : 'light';
 }
 
+function subscribeSystemTheme(notify: () => void) {
+  const mql = window.matchMedia('(prefers-color-scheme: dark)');
+  mql.addEventListener('change', notify);
+  return () => mql.removeEventListener('change', notify);
+}
+
+function noSystemThemeSubscription() {
+  return () => {};
+}
+
 export function useGraphiQLSettings(
   containerRef?: RefObject<HTMLElement | null>,
 ) {
@@ -103,6 +113,13 @@ export function useGraphiQLSettings(
     subscribeSettings,
     getSettings,
     () => DEFAULTS,
+  );
+  const resolvedTheme = useSyncExternalStore(
+    settings.theme === 'auto'
+      ? subscribeSystemTheme
+      : noSystemThemeSubscription,
+    () => resolveTheme(settings.theme),
+    () => (settings.theme === 'auto' ? 'light' : settings.theme),
   );
   const monaco = useMonaco(state => state.monaco);
   const editorTheme = useEditorTheme() ?? MONACO_THEME_NAME;
@@ -121,8 +138,6 @@ export function useGraphiQLSettings(
 
   // Apply appearance to this container whenever shared settings change.
   useEffect(() => {
-    const resolvedTheme = resolveTheme(settings.theme);
-
     const target =
       containerRef?.current ??
       document.querySelector<HTMLElement>('.graphiql-container');
@@ -133,34 +148,7 @@ export function useGraphiQLSettings(
     }
 
     monaco?.editor.setTheme(editorTheme[resolvedTheme]);
-  }, [settings, containerRef, monaco, editorTheme]);
+  }, [settings, resolvedTheme, containerRef, monaco, editorTheme]);
 
-  // When theme is 'auto', track system preference changes live.
-  useEffect(() => {
-    if (settings.theme !== 'auto') {
-      return;
-    }
-
-    const mql = window.matchMedia('(prefers-color-scheme: dark)');
-
-    function onSystemThemeChange() {
-      const resolvedTheme = resolveTheme('auto');
-
-      const target =
-        containerRef?.current ??
-        document.querySelector<HTMLElement>('.graphiql-container');
-      if (target) {
-        target.setAttribute('data-theme', resolvedTheme);
-      }
-
-      monaco?.editor.setTheme(editorTheme[resolvedTheme]);
-    }
-
-    mql.addEventListener('change', onSystemThemeChange);
-    return () => {
-      mql.removeEventListener('change', onSystemThemeChange);
-    };
-  }, [settings.theme, containerRef, monaco, editorTheme]);
-
-  return { ...settings, setTheme, setDensity, setFontSize };
+  return { ...settings, resolvedTheme, setTheme, setDensity, setFontSize };
 }
