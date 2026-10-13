@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql",
-  "version": "1.0.0-rc.0",
+  "version": "1.0.0-rc.1",
   "private": true,
   "license": "MIT",
   "displayName": "GraphQL: Language Feature Support",
@@ -171,8 +171,8 @@
     ]
   },
   "scripts": {
-    "build": "tsgo -p tsconfig.json",
-    "types:check": "tsgo --noEmit",
+    "build": "tsc -p tsconfig.json",
+    "types:check": "tsc --noEmit",
     "vscode:prepublish": "npm run compile -- --minify",
     "compile": "node esbuild",
     "build-bundles": "pnpm compile",
@@ -182,14 +182,14 @@
   "devDependencies": {
     "@types/capitalize": "2.0.0",
     "@types/vscode": "1.62.0",
-    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "@vscode/vsce": "^3.9.2",
     "esbuild": "0.28.2",
     "ovsx": "0.8.3"
   },
   "dependencies": {
     "graphql": "^16.14.2",
-    "graphql-language-service-server": "^3.0.0-rc.0",
+    "graphql-language-service-server": "^3.0.0-rc.1",
     "typescript": "^5.8.0",
     "vscode-languageclient": "8.0.2"
   }

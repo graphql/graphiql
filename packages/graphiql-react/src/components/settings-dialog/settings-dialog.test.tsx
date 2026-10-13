@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from 'vitest';
 import {
   render,
+  renderHook,
   screen,
   within,
   waitFor,
@@ -9,7 +10,10 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SettingsDialog, type SettingsDialogProps } from './index';
-import { SETTINGS_STORAGE_KEY } from '../../hooks/use-graphiql-settings';
+import {
+  SETTINGS_STORAGE_KEY,
+  useGraphiQLSettings,
+} from '../../hooks/use-graphiql-settings';
 
 // The Monaco store performs dynamic imports of monaco-editor / monaco-graphql
 // that don't resolve in jsdom. Stub it out so the dialog can render without
@@ -104,7 +108,11 @@ function renderDialog(open = true, props: Partial<SettingsDialogProps> = {}) {
 describe('SettingsDialog — renders', () => {
   it('shows the Settings title when open', () => {
     renderDialog();
-    expect(screen.getByText('Settings')).toBeInTheDocument();
+    const dialog = screen.getByRole('dialog', {
+      name: 'Settings',
+      description: 'Customize the appearance and behavior of GraphiQL.',
+    });
+    expect(dialog).toBeInTheDocument();
   });
 
   it('shows Theme, Density, and Font size section headings', () => {
@@ -123,6 +131,26 @@ describe('SettingsDialog — renders', () => {
 });
 
 describe('SettingsDialog — theme control', () => {
+  it('stays synchronized with an external settings consumer', async () => {
+    const user = userEvent.setup();
+    const external = renderHook(() => useGraphiQLSettings());
+    renderDialog();
+
+    await user.click(screen.getByRole('radio', { name: 'Dark' }));
+    expect(external.result.current.theme).toBe('dark');
+
+    act(() => external.result.current.setDensity('compact'));
+    expect(
+      within(screen.getByRole('group', { name: 'Density' })).getByRole(
+        'radio',
+        {
+          name: 'Compact',
+        },
+      ),
+    ).toBeChecked();
+    expect(screen.getByRole('radio', { name: 'Dark' })).toBeChecked();
+  });
+
   it('renders Auto / Light / Dark options', () => {
     renderDialog();
     const fieldset = screen.getByRole('group', { name: 'Theme' });

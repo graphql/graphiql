@@ -18,8 +18,8 @@ const EMPTY_CONTEXT: CursorContext = { target: undefined, path: [] };
  * cursor. The builder follows this: the cursor's definition is the one being
  * edited, and the path expands the tree down to the cursor. Subscribes to the
  * query editor directly (debounced to avoid thrashing while typing), reacting
- * only to explicit user cursor moves — not the cursor resets our own writes
- * cause.
+ * to explicit cursor moves and edits, but not content flushes from the
+ * builder's own writes.
  */
 export function useCursorContext(): CursorContext {
   const queryEditor = useGraphiQL(state => state.queryEditor);
@@ -53,16 +53,24 @@ export function useCursorContext(): CursorContext {
       clearTimeout(timer);
       timer = setTimeout(recompute, 80);
     };
-    const disposable = queryEditor.onDidChangeCursorPosition(e => {
+    const cursorDisposable = queryEditor.onDidChangeCursorPosition(e => {
       // Only react to explicit (user) cursor moves, not content-flush/programmatic ones.
       if (e.reason === monaco?.editor.CursorChangeReason.Explicit) {
+        schedule();
+      }
+    });
+    const contentDisposable = queryEditor.onDidChangeModelContent(e => {
+      // Typing moves the cursor with reason NotSet. setValue from the builder
+      // also moves it, but its content event is a flush.
+      if (!e.isFlush) {
         schedule();
       }
     });
     recompute();
     return () => {
       clearTimeout(timer);
-      disposable.dispose();
+      cursorDisposable.dispose();
+      contentDisposable.dispose();
     };
   }, [queryEditor, monaco]);
 

@@ -161,7 +161,6 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   onTabChange,
   shouldPersistHeaders = false,
   onCopyQuery,
-  onSaveQuery,
   onPrettifyQuery = DEFAULT_PRETTIFY_QUERY,
 
   customScalarSchemas,
@@ -175,7 +174,6 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
   schemaDescription = false,
 
   getDefaultFieldNames,
-  operationName = null,
 
   onTogglePluginVisibility,
   plugins = [],
@@ -279,7 +277,6 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
           initialQuery: query ?? activeTab?.query ?? '',
           initialVariables: variables ?? activeTab?.variables ?? '',
           onCopyQuery,
-          onSaveQuery,
           onEditOperationName,
           onPrettifyQuery,
           onTabChange,
@@ -296,7 +293,6 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
           transport:
             transport && registry ? registry.wrap(transport) : transport,
           getDefaultFieldNames,
-          overrideOperationName: operationName,
         })(...args);
         const pluginSlice = createPluginSlice({
           onTogglePluginVisibility,
@@ -372,15 +368,6 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
     actions.setPlugins(plugins);
     actions.setVisiblePlugin(visiblePlugin);
   }, [plugins, visiblePlugin]);
-
-  // Operation-name pin sync — keep the cursor-tracking override in step with the
-  // `operationName` prop. Without this the override is fixed at store creation,
-  // so pinning an operation by setting `operationName` after mount (e.g. from a
-  // URL or app state) would not take effect, and clearing it would not restore
-  // cursor tracking.
-  useDidUpdate(() => {
-    storeRef.current.setState({ overrideOperationName: operationName ?? null });
-  }, [operationName]);
 
   /**
    * Synchronize prop changes with state

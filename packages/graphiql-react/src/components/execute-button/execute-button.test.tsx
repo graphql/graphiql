@@ -176,19 +176,6 @@ describe('ExecuteButtonView', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('shows no caret when an operation name is pinned via overrideOperationName', () => {
-      render(
-        <ExecuteButtonView
-          {...DEFAULTS}
-          operations={TWO_OPS}
-          overrideOperationName="Alpha"
-        />,
-      );
-      expect(
-        screen.queryByRole('button', { name: 'Choose operation to run' }),
-      ).not.toBeInTheDocument();
-    });
-
     it('shows a caret with more than one operation', () => {
       render(<ExecuteButtonView {...DEFAULTS} operations={TWO_OPS} />);
       expect(

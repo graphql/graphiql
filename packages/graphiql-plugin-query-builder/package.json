@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-query-builder",
-  "version": "1.0.0-rc.0",
+  "version": "1.0.0-rc.3",
   "sideEffects": [
     "*.css"
   ],
@@ -33,7 +33,7 @@
     "dist"
   ],
   "scripts": {
-    "types:check": "tsgo --noEmit",
+    "types:check": "tsc --noEmit",
     "dev": "vite build --watch --emptyOutDir=false",
     "build": "pnpm types:check && vite build",
     "test": "vitest run",
@@ -47,12 +47,12 @@
     "react-dom": "^18 || ^19"
   },
   "dependencies": {
-    "react-compiler-runtime": "19.1.0-rc.3"
+    "react-compiler-runtime": "^1.0.0"
   },
   "devDependencies": {
-    "@graphiql/react": "^1.0.0-rc.0",
+    "@graphiql/react": "^1.0.0-rc.3",
     "@storybook/addon-a11y": "^10.3.6",
-    "@storybook/addon-vitest": "^10.3.6",
+    "@storybook/addon-vitest": "^10.6.1",
     "@storybook/react-vite": "^10.3.6",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^7.0.1",
@@ -60,14 +60,15 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "@vitejs/plugin-react": "^5.2.0",
-    "babel-plugin-react-compiler": "19.1.0-rc.3",
-    "graphql": "^16.14.2",
+    "babel-plugin-react-compiler": "1.0.0",
+    "graphql": "^17.0.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "storybook": "^10.3.6",
+    "storybook": "^10.6.1",
     "vite": "^8.2.2",
-    "vite-plugin-dts": "^4.5.3"
+    "vite-plugin-dts": "^4.5.3",
+    "typescript": "^5.8.0"
   }
 }

@@ -141,7 +141,6 @@ const GraphiQL_: FC<GraphiQLProps> = ({
       plugins={[...(referencePlugin ? [referencePlugin] : []), ...plugins]}
       referencePlugin={referencePlugin}
       {...props}
-      onSaveQuery={props.onSaveQuery}
     >
       <HistoryToUse {...(hasHistoryPlugin && { maxHistoryLength })}>
         <DocExplorerToUse>
@@ -250,7 +249,8 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     operations,
     plugins,
     saveHandlers,
-    onSaveQuery,
+    savingTabIds,
+    saveError,
   } = useGraphiQL(
     pick(
       'initialVariables',
@@ -261,10 +261,14 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
       'operations',
       'plugins',
       'saveHandlers',
-      'onSaveQuery',
+      'savingTabIds',
+      'saveError',
     ),
   );
-  const canSave = saveHandlers.size > 0 || Boolean(onSaveQuery);
+  const canSave = saveHandlers.size > 0;
+  const isSaving = Boolean(
+    tabs[activeTabIndex] && savingTabIds.has(tabs[activeTabIndex]!.id),
+  );
   const hasMonaco = useMonaco(state => Boolean(state.monaco));
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -554,16 +558,37 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
                           </UnStyledButton>
                         </Tooltip>
                         {canSave && (
-                          <Tooltip label={LABEL.save}>
+                          <Tooltip
+                            label={isSaving ? 'Saving operation' : LABEL.save}
+                          >
                             <UnStyledButton
                               type="button"
                               className="graphiql-tab-strip-action"
                               onClick={saveQuery}
-                              aria-label={LABEL.save}
+                              aria-label={
+                                isSaving ? 'Saving operation' : LABEL.save
+                              }
+                              aria-busy={isSaving}
                             >
-                              <SaveIcon aria-hidden="true" />
+                              {isSaving ? (
+                                <Spinner
+                                  className="graphiql-tab-save-spinner"
+                                  aria-hidden="true"
+                                />
+                              ) : (
+                                <SaveIcon aria-hidden="true" />
+                              )}
                             </UnStyledButton>
                           </Tooltip>
+                        )}
+                        {saveError && (
+                          <span
+                            className="graphiql-save-error"
+                            role="alert"
+                            title={saveError}
+                          >
+                            Save failed: {saveError}
+                          </span>
                         )}
                         {plugins.map(plugin =>
                           plugin.sessionActions ? (

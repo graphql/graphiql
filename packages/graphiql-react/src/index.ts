@@ -36,5 +36,5 @@ export type {
   Theme,
 } from './types';
 export type { GraphiQLPlugin } from './stores/plugin';
-export type { ResponseView } from './stores';
+export type { ResponseView, SaveHandler } from './stores';
 export { KEY_MAP, formatShortcutForOS, isMacOs } from './constants';

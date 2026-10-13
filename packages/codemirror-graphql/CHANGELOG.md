@@ -1,5 +1,12 @@
 # Change Log
 
+## 3.0.0-rc.1
+
+### Patch Changes
+
+- Updated dependencies [[`3d368ba`](https://github.com/graphql/graphiql/commit/3d368ba8747ac2ad0bd73c8bf6f46f952122cfc8)]:
+  - graphql-language-service@6.0.0-rc.1
+
 ## 3.0.0-rc.0
 
 ### Patch Changes

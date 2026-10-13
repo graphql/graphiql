@@ -3,6 +3,7 @@ export {
   type EditorSlice,
   type EditorActions,
   type EditorProps,
+  type SaveHandler,
 } from './editor';
 export {
   createExecutionSlice,

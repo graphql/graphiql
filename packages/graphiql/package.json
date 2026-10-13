@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "6.0.0-rc.0",
+  "version": "6.0.0-rc.2",
   "sideEffects": [
     "dist/setup-workers/*",
     "*.css"
@@ -38,18 +38,18 @@
     }
   },
   "scripts": {
-    "types:check": "tsgo --noEmit",
+    "types:check": "tsc --noEmit",
     "build": "pnpm types:check && vite build",
     "test": "vitest run"
   },
   "dependencies": {
-    "@graphiql/plugin-collections": "^1.0.0-rc.0",
-    "@graphiql/plugin-doc-explorer": "^1.0.0-rc.0",
-    "@graphiql/plugin-history": "^1.0.0-rc.0",
-    "@graphiql/plugin-query-builder": "^1.0.0-rc.0",
-    "@graphiql/react": "^1.0.0-rc.0",
-    "clsx": "^1.2.1",
-    "react-compiler-runtime": "19.1.0-rc.3"
+    "@graphiql/plugin-collections": "^1.0.0-rc.1",
+    "@graphiql/plugin-doc-explorer": "^1.0.0-rc.2",
+    "@graphiql/plugin-history": "^1.0.0-rc.2",
+    "@graphiql/plugin-query-builder": "^1.0.0-rc.2",
+    "@graphiql/react": "^1.0.0-rc.2",
+    "clsx": "^2.1.1",
+    "react-compiler-runtime": "^1.0.0"
   },
   "peerDependencies": {
     "graphql": "^16.11.0 || ^17.0.0",
@@ -63,11 +63,11 @@
     "@testing-library/react": "^16.3.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "@vitejs/plugin-react": "^5.2.0",
-    "@vitest/web-worker": "^4.1.11",
-    "babel-plugin-react-compiler": "19.1.0-rc.3",
-    "graphql": "^16.14.2",
+    "@vitest/web-worker": "^5.0.3",
+    "babel-plugin-react-compiler": "1.0.0",
+    "graphql": "^17.0.2",
     "lightningcss": "^1.29.3",
     "monaco-editor": ">=0.56.0 <0.58.0",
     "react": "^19.1.0",
@@ -75,7 +75,7 @@
     "typescript": "^5.8.0",
     "vite": "^8.2.2",
     "vite-plugin-dts": "^4.5.3",
-    "vitest-canvas-mock": "^1.1.4",
+    "vitest-canvas-mock": "^1.2.0",
     "zustand": "^5"
   },
   "browser": {

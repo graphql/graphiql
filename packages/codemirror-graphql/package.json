@@ -1,6 +1,6 @@
 {
   "name": "codemirror-graphql",
-  "version": "3.0.0-rc.0",
+  "version": "3.0.0-rc.1",
   "description": "GraphQL mode and helpers for CodeMirror.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -34,8 +34,8 @@
     "!babel.config.js"
   ],
   "scripts": {
-    "types:check": "tsgo --noEmit",
-    "build": "tsgo -p tsconfig.json && tsgo -p tsconfig.esm.json && node ../../scripts/renameFileExtensions.mts './esm/{**,!**/__tests__/}/*.js' . .esm.js",
+    "types:check": "tsc --noEmit",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.esm.json && node ../../scripts/renameFileExtensions.mts './esm/{**,!**/__tests__/}/*.js' . .esm.js",
     "test": "vitest run"
   },
   "peerDependencies": {
@@ -45,13 +45,12 @@
   },
   "dependencies": {
     "@types/codemirror": "^0.0.90",
-    "graphql-language-service": "6.0.0-rc.0"
+    "graphql-language-service": "6.0.0-rc.1"
   },
   "devDependencies": {
     "@codemirror/language": "^6.0.0",
-    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "codemirror": "^5.65.3",
-    "graphql": "^16.14.2",
-    "sane": "2.0.0"
+    "graphql": "^17.0.2"
   }
 }

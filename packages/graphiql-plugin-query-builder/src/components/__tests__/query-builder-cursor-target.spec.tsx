@@ -60,6 +60,7 @@ function makeFakeEditor(getText: () => string) {
         cursorCb = cb;
         return { dispose() {} };
       },
+      onDidChangeModelContent: () => ({ dispose() {} }),
     },
     moveCursorTo(next: number) {
       offset = next;
@@ -71,6 +72,7 @@ function makeFakeEditor(getText: () => string) {
 
 const QUERY = `{ user { ...UserFields } }
 fragment UserFields on User { name }`;
+const QUERY_WITHOUT_FRAGMENT = `{ user { name } }`;
 
 describe('QueryBuilder — cursor as the editing target', () => {
   beforeEach(() => {
@@ -141,5 +143,33 @@ describe('QueryBuilder — cursor as the editing target', () => {
     const last = fake.setPositions.at(-1);
     expect(last).toBeDefined();
     expect(last!.offset).toBeLessThan(QUERY.indexOf('fragment'));
+  });
+
+  it('returns to the operation when the active fragment is deleted in the editor', () => {
+    let text = QUERY;
+    const fake = makeFakeEditor(() => text);
+    const state = installGraphiQLReactMock({
+      schema: TestSchema,
+      queryText: text,
+      queryEditor: fake.editor,
+    });
+    const { rerender } = render(<QueryBuilder />);
+
+    act(() => {
+      fake.moveCursorTo(QUERY.indexOf('name'));
+      vi.advanceTimersByTime(100);
+    });
+    expect(
+      screen.getByRole('button', { name: /back to query/i }),
+    ).toBeInTheDocument();
+
+    text = QUERY_WITHOUT_FRAGMENT;
+    state.queryText = text;
+    rerender(<QueryBuilder />);
+
+    expect(
+      screen.queryByRole('button', { name: /back to query/i }),
+    ).not.toBeInTheDocument();
+    expect(fake.setPositions.at(-1)?.offset).toBeLessThan(text.length);
   });
 });

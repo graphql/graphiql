@@ -14,8 +14,6 @@ import EditorWorker from 'monaco-editor/editor/editor.worker.js?worker';
  */
 globalThis.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
-    // eslint-disable-next-line no-console
-    console.info('setup-workers/vite', { label });
     switch (label) {
       case 'json':
         return new JsonWorker();

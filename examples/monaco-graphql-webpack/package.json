@@ -11,16 +11,16 @@
   },
   "dependencies": {
     "graphql": "^16.14.2",
-    "graphql-language-service": "^6.0.0-rc.0",
+    "graphql-language-service": "^6.0.0-rc.1",
     "json-schema": "^0.4",
     "jsonc-parser": "^3",
     "monaco-editor": "0.57.0",
-    "monaco-graphql": "^2.0.0-rc.0",
+    "monaco-graphql": "^2.0.0-rc.1",
     "prettier": "^3"
   },
   "devDependencies": {
     "@babel/core": "^7",
-    "@babel/plugin-proposal-class-properties": "^7",
+    "@babel/plugin-transform-class-properties": "^7",
     "@babel/plugin-syntax-dynamic-import": "^7",
     "@babel/plugin-transform-class-static-block": "^7",
     "@babel/preset-env": "^7",

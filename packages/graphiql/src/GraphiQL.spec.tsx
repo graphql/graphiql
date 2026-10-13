@@ -863,9 +863,7 @@ describe('GraphiQL', () => {
 
   describe('tab strip actions', () => {
     it('renders exactly one prettify, merge, copy, and save action', async () => {
-      const { container } = render(
-        <GraphiQL fetcher={noOpFetcher} onSaveQuery={() => {}} />,
-      );
+      const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
       await waitFor(() => {
         expect(

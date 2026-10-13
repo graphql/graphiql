@@ -1,5 +1,25 @@
 # @graphiql/plugin-query-builder
 
+## 1.0.0-rc.3
+
+### Patch Changes
+
+- [#4650](https://github.com/graphql/graphiql/pull/4650) [`7e31f1e`](https://github.com/graphql/graphiql/commit/7e31f1ee897e6004417f5d148c4749faf834d639) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Return the query builder to the selected operation when the active fragment is deleted in the editor.
+
+- [#4651](https://github.com/graphql/graphiql/pull/4651) [`7f19588`](https://github.com/graphql/graphiql/commit/7f195889566e2c770b3c6f79d7da34a63badd857) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Select the operation under the cursor when a new operation is typed in the editor.
+
+## 1.0.0-rc.2
+
+### Patch Changes
+
+- [#4623](https://github.com/graphql/graphiql/pull/4623) [`ecedd76`](https://github.com/graphql/graphiql/commit/ecedd76452c31637745bd509174f6eab5d0aebc5) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Build with the stable React Compiler and use its stable runtime for React 18 compatibility.
+
+## 1.0.0-rc.1
+
+### Patch Changes
+
+- [#4474](https://github.com/graphql/graphiql/pull/4474) [`a539b83`](https://github.com/graphql/graphiql/commit/a539b83cac07d3987a8098346b1647a0ddec67f4) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Restore caret ranges for internal GraphiQL dependencies. The RC versions sort after the stale canary and `next` versions that beta ranges selected, so the exact pins from the beta cycle are no longer necessary.
+
 ## 1.0.0-rc.0
 
 ### Patch Changes

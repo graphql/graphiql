@@ -39,7 +39,6 @@ function makeStore() {
     const executionSlice = createExecutionSlice({
       fetcher: vi.fn(),
       getDefaultFieldNames: undefined,
-      overrideOperationName: null,
     })(...args);
     return {
       ...storageSlice,
@@ -83,7 +82,6 @@ function makeRunnableStore(initial: { fetcher?: any; transport?: Transport }) {
       fetcher: initial.fetcher,
       transport: initial.transport,
       getDefaultFieldNames: undefined,
-      overrideOperationName: null,
     })(...args);
 
     return {
@@ -186,6 +184,31 @@ describe('run uses the current document', () => {
     });
   });
 
+  it('runs each tab selection even when operation names overlap across tabs', async () => {
+    const firstQuery = 'query Shared { first } query Other { second }';
+    const secondQuery = 'query Shared { second } query Other { first }';
+    const { store, queryEditor, fetcher } = prepare(firstQuery, 'Shared');
+    queryEditor.setValue = vi.fn(value =>
+      queryEditor.getValue.mockReturnValue(value),
+    );
+    queryEditor.getValue.mockReturnValue(firstQuery);
+    store.setState({
+      tabs: [
+        { ...createTab({ query: firstQuery }), operationName: 'Shared' },
+        { ...createTab({ query: secondQuery }), operationName: 'Other' },
+      ],
+    });
+
+    await store.getState().actions.run();
+    store.getState().actions.changeTab(1);
+    await store.getState().actions.run();
+
+    expect(fetcher.mock.calls.map(([request]) => request)).toMatchObject([
+      { query: firstQuery, operationName: 'Shared' },
+      { query: secondQuery, operationName: 'Other' },
+    ]);
+  });
+
   it('appends external fragments required by the current document', async () => {
     const { store, queryEditor, fetcher } = prepare('query Changed { ...Old }');
     const fragments = parse(
@@ -224,18 +247,6 @@ describe('run uses the current document', () => {
     expect(fetcher.mock.calls[0]?.[0]?.operationName).toBe('Saved');
   });
 
-  it('preserves an operation name supplied by the host', async () => {
-    const query = 'query Alpha { bar } query Beta { bar }';
-    const { store, queryEditor, fetcher } = prepare('query Changed { bar }');
-    store.setState({ overrideOperationName: 'Beta' });
-    queryEditor.getValue.mockReturnValue(query);
-    await store.getState().actions.run();
-    expect(fetcher.mock.calls[0]?.[0]).toMatchObject({
-      query,
-      operationName: 'Beta',
-    });
-  });
-
   it('blocks a newly displayed mutation until POST is selected', async () => {
     const { store, queryEditor, fetcher } = prepare('query Changed { bar }');
     store.setState({ transportMethod: 'GET' });
@@ -252,15 +263,6 @@ describe('run uses the current document', () => {
     await store.getState().actions.run();
     expect(fetcher.mock.calls[0]?.[0]?.operationName).toBe('Saved');
     expect(store.getState().transportMethod).toBe('GET');
-  });
-
-  it('uses the host override to block a mutation within a mixed document', async () => {
-    const query = 'query Alpha { bar } mutation Beta { bar }';
-    const { store, queryEditor, fetcher } = prepare(query, 'Alpha');
-    store.setState({ overrideOperationName: 'Beta', transportMethod: 'GET' });
-    queryEditor.getValue.mockReturnValue(query);
-    await store.getState().actions.run();
-    expect(fetcher).not.toHaveBeenCalled();
   });
 });
 

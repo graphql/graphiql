@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-cli",
-  "version": "4.0.0-rc.0",
+  "version": "4.0.0-rc.2",
   "description": "An interface for building GraphQL language services for IDEs",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -25,8 +25,8 @@
     "src"
   ],
   "scripts": {
-    "build": "tsgo -p tsconfig.json && tsgo -p tsconfig.esm.json",
-    "types:check": "tsgo --noEmit",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.esm.json",
+    "types:check": "tsc --noEmit",
     "test": "vitest run"
   },
   "keywords": [
@@ -40,14 +40,13 @@
     "graphql": "^16.11.0 || ^17.0.0"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.12.1",
     "@types/yargs": "16.0.5",
-    "graphql-language-service": "^6.0.0-rc.0",
-    "graphql-language-service-server": "^3.0.0-rc.0",
+    "graphql-language-service": "^6.0.0-rc.1",
+    "graphql-language-service-server": "^3.0.0-rc.2",
     "yargs": "^16.2.0"
   },
   "devDependencies": {
-    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
-    "graphql": "^16.14.2"
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "graphql": "^17.0.2"
   }
 }

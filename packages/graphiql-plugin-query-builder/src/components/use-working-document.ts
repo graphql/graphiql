@@ -10,7 +10,7 @@ import {
   print,
   valueFromASTUntyped,
 } from 'graphql';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   addInlineFragment,
   argValueToValueNode,
@@ -191,18 +191,23 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     }
   }, [cursorFragment]);
 
+  const visibleFragment =
+    activeFragment != null &&
+    findDefinition(workingDoc, { kind: 'fragment', name: activeFragment })
+      ? activeFragment
+      : null;
   const target: DefinitionTarget =
-    activeFragment != null
-      ? { kind: 'fragment', name: activeFragment }
+    visibleFragment != null
+      ? { kind: 'fragment', name: visibleFragment }
       : { kind: 'operation', name: operationName };
 
   // Auto-expand the tree to the cursor only when the cursor sits in the
   // definition we're showing.
   const cursorInTarget =
     cursor.target != null &&
-    (activeFragment != null
+    (visibleFragment != null
       ? cursor.target.kind === 'fragment' &&
-        cursor.target.name === activeFragment
+        cursor.target.name === visibleFragment
       : cursor.target.kind === 'operation');
   const cursorPath = cursorInTarget ? cursor.path : undefined;
 
@@ -210,27 +215,36 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
   // the active target (above). Setting the target this way — rather than
   // directly — keeps the editor and builder from diverging, which is what made
   // the old click-override approach prone to stale-target bugs.
-  function moveCursorToTarget(next: DefinitionTarget) {
-    // Optimistically reflect the move so the panel updates without waiting for
-    // the debounced cursor read (and for the no-editor case in tests).
-    setActiveFragment(next.kind === 'fragment' ? next.name : null);
-    if (!queryEditor) {
-      return;
+  const moveCursorToTarget = useCallback(
+    (next: DefinitionTarget) => {
+      // Optimistically reflect the move so the panel updates without waiting for
+      // the debounced cursor read (and for the no-editor case in tests).
+      setActiveFragment(next.kind === 'fragment' ? next.name : null);
+      if (!queryEditor) {
+        return;
+      }
+      const model = queryEditor.getModel();
+      if (!model) {
+        return;
+      }
+      let offset: number | undefined;
+      try {
+        offset = definitionSelectionOffset(parse(model.getValue()), next);
+      } catch {
+        return;
+      }
+      if (offset != null) {
+        queryEditor.setPosition(model.getPositionAt(offset));
+      }
+    },
+    [queryEditor],
+  );
+
+  useEffect(() => {
+    if (activeFragment != null && visibleFragment == null) {
+      moveCursorToTarget({ kind: 'operation', name: operationName });
     }
-    const model = queryEditor.getModel();
-    if (!model) {
-      return;
-    }
-    let offset: number | undefined;
-    try {
-      offset = definitionSelectionOffset(parse(model.getValue()), next);
-    } catch {
-      return;
-    }
-    if (offset != null) {
-      queryEditor.setPosition(model.getPositionAt(offset));
-    }
-  }
+  }, [activeFragment, visibleFragment, operationName, moveCursorToTarget]);
 
   function handleFocusFragment(fragmentName: string) {
     moveCursorToTarget({ kind: 'fragment', name: fragmentName });

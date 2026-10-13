@@ -166,8 +166,8 @@ export function argValueToValueNode(
         continue;
       }
       objectFields.push({
-        kind: Kind.OBJECT_FIELD as const,
-        name: { kind: Kind.NAME as const, value: fieldName },
+        kind: Kind.OBJECT_FIELD,
+        name: { kind: Kind.NAME, value: fieldName },
         value: fieldNode,
       });
     }

@@ -1,5 +1,19 @@
 # @graphiql/plugin-history
 
+## 1.0.0-rc.2
+
+### Patch Changes
+
+- [#4636](https://github.com/graphql/graphiql/pull/4636) [`45a81d7`](https://github.com/graphql/graphiql/commit/45a81d76849c0be2622fd97adf75e3dab3aa0e06) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Use `clsx` 2 for class name composition.
+
+- [#4623](https://github.com/graphql/graphiql/pull/4623) [`ecedd76`](https://github.com/graphql/graphiql/commit/ecedd76452c31637745bd509174f6eab5d0aebc5) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Build with the stable React Compiler and use its stable runtime for React 18 compatibility.
+
+## 1.0.0-rc.1
+
+### Patch Changes
+
+- [#4474](https://github.com/graphql/graphiql/pull/4474) [`a539b83`](https://github.com/graphql/graphiql/commit/a539b83cac07d3987a8098346b1647a0ddec67f4) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Restore caret ranges for internal GraphiQL dependencies. The RC versions sort after the stale canary and `next` versions that beta ranges selected, so the exact pins from the beta cycle are no longer necessary.
+
 ## 1.0.0-rc.0
 
 ### Patch Changes

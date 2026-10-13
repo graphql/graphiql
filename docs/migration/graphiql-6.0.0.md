@@ -13,9 +13,11 @@ GraphiQL 6 ships with a complete visual overhaul, new first-party features and A
 7. [GraphQL.js minimum version](#graphqljs-minimum-version)
 8. [`@graphiql/plugin-explorer` removal](#graphiqlplugin-explorer-removal)
 9. [Removed hooks](#removed-hooks)
-10. [Removed `GraphiQL.Toolbar` and `GraphiQL.Logo`](#removed-graphiqltoolbar-and-graphiqllogo)
-11. [Deprecated APIs](#deprecated-apis)
-12. [Other notes](#other-notes)
+10. [Removed `operationName` prop](#removed-operationname-prop)
+11. [Removed `GraphiQL.Toolbar` and `GraphiQL.Logo`](#removed-graphiqltoolbar-and-graphiqllogo)
+12. [Deprecated APIs](#deprecated-apis)
+13. [Other notes](#other-notes)
+14. [Other new features](#other-new-features)
 
 ## Overview
 
@@ -29,6 +31,8 @@ Other breaking changes include:
 
 - The hooks deprecated in v5, including `useEditorContext` and `usePluginContext`, are removed. Use the new store selectors and actions instead.
 - The `GraphiQL.Toolbar` and `GraphiQL.Logo` children are removed. Use plugin `sessionActions` and the top bar's `brand` prop instead.
+- `GraphiQLProps` is now a union that accepts either `fetcher` or `transport`, but not both. If your wrapper uses `interface AppProps extends GraphiQLProps`, switch to a type intersection such as `type AppProps = GraphiQLProps & { applicationName: string }`, even if you keep using `fetcher`.
+- The `operationName` prop is removed from `<GraphiQL>` and `<GraphiQLProvider>`. Requests use the operation selected in the active tab.
 - Applications that configure Monaco workers directly must update to Monaco's exported worker entry points.
 - The `graphql` peer dependency now requires `^16.11.0 || ^17.0.0`.
 
@@ -120,7 +124,7 @@ To retint the accent color and canvas background for dark mode:
 }
 ```
 
-Because the selector is `[data-theme='dark']`, this overrides the built-in values regardless of load order, as long as it's not undone by a later stylesheet.
+Load your custom stylesheet after `graphiql/style.css`. The `[data-theme='dark']` selector has the same specificity as the built-in token selector, so the later declaration wins. If you can't control stylesheet order, use a more specific selector targeting your GraphiQL container.
 
 ### Theme is now an attribute, not just a class
 
@@ -161,6 +165,61 @@ const plugins = DEFAULT_PLUGINS.map(plugin =>
 ```
 
 Declare `@graphiql/plugin-collections` as a direct dependency when importing its factory. See the [package README](../../packages/graphiql-plugin-collections/README.md) for the full option list and the import and merge behavior.
+
+#### Saving with your own plugin
+
+The Save button and `Cmd`/`Ctrl`+`S` call the handler registered with `useGraphiQLActions().registerSaveHandler`. A plugin can register that handler from its `sessionActions` component, which stays mounted even when its panel is hidden. Only one handler can be registered. Collections registers one by default, so omit `COLLECTIONS_PLUGIN` when adding a plugin that owns Save:
+
+```tsx
+import { useEffect } from 'react';
+import { useGraphiQLActions, type GraphiQLPlugin } from '@graphiql/react';
+import { COLLECTIONS_PLUGIN, DEFAULT_PLUGINS, GraphiQL } from 'graphiql';
+
+function RegisterSave() {
+  const { registerSaveHandler } = useGraphiQLActions();
+
+  useEffect(
+    () =>
+      registerSaveHandler(async tab => {
+        const response = await fetch('/api/operations', {
+          method: 'PUT',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            id: tab.id,
+            query: tab.query,
+            variables: tab.variables,
+            headers: tab.headers,
+          }),
+        });
+        if (!response.ok) {
+          throw new Error(`Save failed (${response.status})`);
+        }
+        return true;
+      }),
+    [registerSaveHandler],
+  );
+
+  return null;
+}
+
+const customSavePlugin: GraphiQLPlugin = {
+  title: 'Saved operations',
+  icon: () => <span aria-hidden="true">★</span>,
+  content: () => <p>Operations are saved to this application's server.</p>,
+  sessionActions: RegisterSave,
+};
+
+const plugins = [
+  ...DEFAULT_PLUGINS.filter(plugin => plugin !== COLLECTIONS_PLUGIN),
+  customSavePlugin,
+];
+
+<GraphiQL transport={transport} plugins={plugins} />;
+```
+
+A handler receives the tab and editor contents captured when Save was invoked and returns a `Promise<boolean>`. Resolve to `true` after the write commits, or `false` when the user cancels. Reject on failure; GraphiQL shows the error and leaves the tab unsaved. A dialog can return a promise that settles when the user saves or cancels. The tab's saved marker tracks the submitted query snapshot, so edits made while a save is pending remain dirty. Saves requested again for the same tab run in order. The dirty indicator compares query text; variables and headers are included in the handler input but do not independently change that indicator. If a save must reach several backends, coordinate those writes in one handler and return success only when your chosen commit policy is met.
+
+If you want Collections to remain the save owner with a different persistence backend, use `collectionsPlugin({ storage })`. The adapter's `save(collections)` promise must resolve after its write commits and reject on failure. See [custom storage](../../packages/graphiql-plugin-collections/README.md#custom-storage) for the complete adapter shape and setup.
 
 ### Opting out
 
@@ -275,6 +334,35 @@ With a `Transport`, the response pane header shows the HTTP status code, elapsed
 
 The `Fetcher` contract returns only the parsed GraphQL result, so GraphiQL can't show this HTTP metadata when you use `fetcher`.
 
+### Plugin transport hooks
+
+Plugins can use `useGraphiQLPluginContext().transport` to register hooks when the host passes a `transport` prop. The `transport` field is absent when the host uses the legacy `fetcher` prop. For a request header that remains active even when the plugin pane is closed, register the hook from the plugin's `sessionActions` component:
+
+```tsx
+import { useEffect } from 'react';
+import { useGraphiQLPluginContext } from '@graphiql/react';
+
+function RequestHeaderHook() {
+  const { transport } = useGraphiQLPluginContext();
+
+  useEffect(() => {
+    if (!transport) {
+      return;
+    }
+    return transport.onBeforeSend(request => ({
+      ...request,
+      headers: { ...request.headers, 'X-GraphiQL-Plugin': 'example' },
+    }));
+  }, [transport]);
+
+  return null;
+}
+```
+
+Set `sessionActions: RequestHeaderHook` on your `GraphiQLPlugin`. `onBeforeSend` must return the request, with any changes, and can do so asynchronously. Each registration returns a cleanup function; returning it from the effect removes the hook when the component unmounts or its context changes.
+
+Use `onResponse(response => { ... })` to observe each `TransportResponse`, including HTTP or GraphQL error results and each streamed chunk. Use `onError((error, request) => { ... })` for a rejected request or stream, such as a network failure or a thrown `onBeforeSend` hook. A resolved error response goes to `onResponse`, not `onError`. The `onResponse` and `onError` hooks are for observation only; exceptions they throw are logged and do not replace the response or original error.
+
 ### Request methods
 
 `createTransport` supports three HTTP methods:
@@ -322,6 +410,7 @@ const fetcher: Fetcher = async params => {
 
 ```ts
 import type { Transport } from '@graphiql/toolkit';
+import { GraphQLError } from 'graphql';
 import type { ExecutionResult } from 'graphql';
 
 const transport: Transport = {
@@ -343,7 +432,18 @@ const transport: Transport = {
       signal: request.signal,
     });
     const responseText = await response.text();
-    const body = JSON.parse(responseText) as ExecutionResult;
+    let body: ExecutionResult;
+    try {
+      body = JSON.parse(responseText) as ExecutionResult;
+    } catch {
+      body = {
+        errors: [
+          new GraphQLError(
+            `HTTP ${response.status}: The response was not valid JSON.`,
+          ),
+        ],
+      };
+    }
     const headers: Record<string, string> = {};
     response.headers.forEach((value, key) => {
       headers[key] = value;
@@ -363,6 +463,8 @@ const transport: Transport = {
   },
 };
 ```
+
+The fallback error is created by the client when the HTTP response is not JSON; it is not a GraphQL error returned by the server. This lets `send()` retain the actual HTTP status, headers, timing, and response size. Network failures and aborted requests still reject.
 
 ### CDN usage
 
@@ -394,11 +496,20 @@ Use the [CDN example](../../examples/graphiql-cdn) as a starting point. To add s
 
 v6 adds a settings dialog (the gear icon in the activity rail) with controls for theme, density, and font size. The new `useGraphiQLSettings()` hook in `@graphiql/react` exposes the active values and setters. GraphiQL saves these settings to `localStorage` and reflects them as `data-*` attributes on its container. Custom integrations can use those attributes to adjust their own spacing, typography, or colors when a user changes a setting.
 
+These preferences use the `graphiql:settings` key in `localStorage`, shared by GraphiQL instances on the same origin. They aren't scoped to individual instances and don't use GraphiQL's `storage` prop. Providing a custom storage adapter therefore doesn't change where these preferences are saved.
+
 ```ts
 import { useGraphiQLSettings } from '@graphiql/react';
 
-const { theme, density, fontSize, setTheme, setDensity, setFontSize } =
-  useGraphiQLSettings();
+const {
+  theme,
+  resolvedTheme,
+  density,
+  fontSize,
+  setTheme,
+  setDensity,
+  setFontSize,
+} = useGraphiQLSettings();
 ```
 
 | Setting    | Values                                            | Default         |
@@ -408,6 +519,7 @@ const { theme, density, fontSize, setTheme, setDensity, setFontSize } =
 | `fontSize` | `'compact'` \| `'default'` \| `'large'` \| `'xl'` | `'default'`     |
 
 `'auto'` theme follows `prefers-color-scheme` and updates live if the OS setting changes while GraphiQL is open.
+`resolvedTheme` is always `'light'` or `'dark'` and updates when either the saved theme or the OS preference changes. Use it when rendering JavaScript-driven UI such as charts. The `theme` field retains the user's `'auto'` selection.
 
 ### CSS attribute selectors
 
@@ -615,6 +727,12 @@ const { addToHistory } = useHistoryActions();
 
 See the [`@graphiql/react` README](../../packages/graphiql-react/README.md#available-stores) for the full list of available store selectors and actions.
 
+## Removed `operationName` prop
+
+Remove the `operationName` prop from `<GraphiQL>` or `<GraphiQLProvider>`. It predated tabs and overrode the operation sent with every request, regardless of which tab was active. Across tabs, the same name could refer to different operations or be absent from the current document. Each tab now keeps its own selection; moving the cursor within a document, choosing an operation from the Run picker, or calling `useGraphiQLActions().setOperationName(name)` selects the operation to run in the active tab. The request sent through your `transport` or `fetcher` still includes `operationName` when appropriate.
+
+The `onEditOperationName` callback remains available if you need to observe selection changes or update a URL. If you previously fed that value back through the prop, stop passing it to GraphiQL. There is no longer a way to pin execution to one name across every tab.
+
 ## Removed `GraphiQL.Toolbar` and `GraphiQL.Logo`
 
 `<GraphiQL.Toolbar>` and `<GraphiQL.Logo>` are removed. Use a plugin's `sessionActions` for custom editor actions and the `brand` prop for branding. `<GraphiQL.Footer>` still works as before.
@@ -731,8 +849,8 @@ The v5 `--color-*` variables are also deprecated. They remain defined at their v
 
 ## Other notes
 
-- **Active operation follows the cursor.** In a document with more than one operation, moving the cursor into a different named operation updates `operationName`. The Run button, operation dropdown, and operation-aware plugins therefore reflect the operation you are editing. Previously, `operationName` changed only on run-at-cursor (`Cmd`/`Ctrl`+`Enter`) or when selected from the operation dropdown.
-  - The `onEditOperationName` callback now fires when the cursor crosses into a different named operation, not only on edit or run. If you mirror `operationName` into your URL or app state, expect it to update as the user navigates between operations.
+- **Active operation follows the cursor.** In a document with more than one operation, moving the cursor into a different named operation updates the active tab's selection. The Run button, operation dropdown, and operation-aware plugins therefore reflect the operation you are editing. Previously, the selection changed only on run-at-cursor (`Cmd`/`Ctrl`+`Enter`) or when selected from the operation dropdown.
+  - The `onEditOperationName` callback now fires when the cursor crosses into a different named operation, not only on edit or run. If you mirror the selected name into your URL or app state, expect it to update as the user navigates between operations.
   - A tab holding multiple operations shows the active operation name followed by a `+N` count of the others (for example, `GetUser +2`).
 - **Browserslist.** v6 replaces the project's custom `.browserslistrc` contents with the single `defaults` browserslist preset (`> 0.5%, last 2 versions, Firefox ESR, not dead`). That range covers the modern browsers that support the OKLCH color functions the new token system relies on. If your previous bespoke config deliberately targeted very old browsers, check `defaults` against your support matrix.
 - **Monaco editor theme registration.** The built-in Monaco themes (`graphiql-DARK` and `graphiql-LIGHT`) use the v6 accent palette. GraphQL tokens and the surrounding editor interface now use the same palette as the rest of GraphiQL. Register custom themes with `monaco.editor.defineTheme` on the same Monaco instance GraphiQL uses, then pass their names as `editorTheme={{ dark: 'company-dark', light: 'company-light' }}`. The prop accepts names, not inline theme definitions. If a screenshot test depends on the previous built-in theme values, update its expected colors.
@@ -764,3 +882,12 @@ editor.defineTheme('company-dark', {
 ```
 
 Declare `monaco-graphql` as a direct dependency when importing it here. For server-rendered apps, register themes on the client rather than importing Monaco on the server.
+
+## Other new features
+
+These additions are optional. You don't need to adopt them solely to migrate to v6, but they may be useful after upgrading:
+
+- **Response views.** The response pane offers JSON, Tree, and Table views and remembers the selected view through GraphiQL's storage. The views work with both `fetcher` and `transport`.
+- **Custom saving.** If you save operations to your own backend, see [Saving with your own plugin](#saving-with-your-own-plugin) to register a custom save handler, including asynchronous saves.
+- **Plugin transport hooks.** Plugins can change outgoing requests and observe responses or transport failures. See [Plugin transport hooks](#plugin-transport-hooks).
+- **Display settings.** Users can change theme, density, and font size; integrations can read and set them with `useGraphiQLSettings()`. See [Theme, density, and font-size settings](#theme-density-and-font-size-settings).

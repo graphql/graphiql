@@ -76,6 +76,21 @@ export function getOperationNameAtCursor(
   return operationName;
 }
 
+export function selectOperationName(
+  editor: monaco.editor.ICodeEditor,
+  previousOperations: OperationDefinitionNode[] | undefined,
+  previousName: string | undefined,
+  nextOperations: OperationDefinitionNode[] | undefined,
+  followCursor: boolean,
+): string | undefined {
+  return (
+    (followCursor &&
+      nextOperations &&
+      getOperationNameAtCursor(editor, nextOperations)) ||
+    getSelectedOperationName(previousOperations, previousName, nextOperations)
+  );
+}
+
 export const OperationEditor: FC<OperationEditorProps> = ({
   onClickReference,
   onEdit,
@@ -101,7 +116,6 @@ export const OperationEditor: FC<OperationEditorProps> = ({
     referencePlugin,
     operations,
     operationName,
-    overrideOperationName,
     externalFragments,
     uriInstanceId,
     storage,
@@ -113,7 +127,6 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       'referencePlugin',
       'operations',
       'operationName',
-      'overrideOperationName',
       'externalFragments',
       'uriInstanceId',
       'storage',
@@ -211,6 +224,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
 
   function getAndUpdateOperationFacts(
     editorInstance: monaco.editor.ICodeEditor,
+    followCursor = false,
   ) {
     const currentSchema = schemaRef.current;
     const currentOperations = operationsRef.current;
@@ -224,10 +238,12 @@ export const OperationEditor: FC<OperationEditorProps> = ({
       },
     );
     // Update the operation name should any query names change.
-    const newOperationName = getSelectedOperationName(
+    const newOperationName = selectOperationName(
+      editorInstance,
       currentOperations,
       currentOperationName,
       operationFacts?.operations,
+      followCursor,
     );
     setOperationFacts({
       documentAST: operationFacts?.documentAST,
@@ -245,7 +261,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
   useEffect(() => {
     runAtCursorRef.current = editor => {
       const currentFacts = getAndUpdateOperationFacts(editor);
-      if (!currentFacts || typeof overrideOperationName === 'string') {
+      if (!currentFacts) {
         run();
         return;
       }
@@ -272,8 +288,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
 
   useEffect(() => {
     syncOperationNameToCursorRef.current = editor => {
-      // When an operation is pinned via the `operationName` prop, leave it be.
-      if (!operations || typeof overrideOperationName === 'string') {
+      if (!operations) {
         return;
       }
       const newOperationName = getOperationNameAtCursor(editor, operations);
@@ -281,7 +296,7 @@ export const OperationEditor: FC<OperationEditorProps> = ({
         setOperationName(newOperationName);
       }
     };
-  }, [operationName, operations, overrideOperationName, setOperationName]);
+  }, [operationName, operations, setOperationName]);
 
   useEffect(() => {
     if (!monaco || !monacoGraphQL) {
@@ -305,25 +320,31 @@ export const OperationEditor: FC<OperationEditorProps> = ({
 
     // We don't use the generic `useChangeHandler` hook here because we want to
     // have additional logic that updates the operation facts that we save in `editorStore`
-    const handleChange = debounce(100, () => {
-      const query = editor.getValue();
-      storage.set(STORAGE_KEY.query, query);
+    const handleChange = debounce(
+      100,
+      (event: monaco.editor.IModelContentChangedEvent) => {
+        const query = editor.getValue();
+        storage.set(STORAGE_KEY.query, query);
 
-      const operationFacts = getAndUpdateOperationFacts(editor);
-      // Invoke callback props only after the operation facts have been updated
-      onEdit?.(query, operationFacts?.documentAST);
-      if (
-        operationFacts?.operationName &&
-        operationNameRef.current !== operationFacts.operationName
-      ) {
-        setOperationName(operationFacts.operationName);
-      }
+        const operationFacts = getAndUpdateOperationFacts(
+          editor,
+          !event.isFlush,
+        );
+        // Invoke callback props only after the operation facts have been updated
+        onEdit?.(query, operationFacts?.documentAST);
+        if (
+          operationFacts?.operationName &&
+          operationNameRef.current !== operationFacts.operationName
+        ) {
+          setOperationName(operationFacts.operationName);
+        }
 
-      updateActiveTabValues({
-        query,
-        operationName: operationFacts?.operationName ?? null,
-      });
-    });
+        updateActiveTabValues({
+          query,
+          operationName: operationFacts?.operationName ?? null,
+        });
+      },
+    );
     // Call once to initially update the values
     getAndUpdateOperationFacts(editor);
 

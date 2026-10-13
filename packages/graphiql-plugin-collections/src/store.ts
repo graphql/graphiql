@@ -90,11 +90,16 @@ type CollectionsActions = {
   linkTab(tabId: string, collectionId: string, itemId: string): void;
   /**
    * Save the active operation: update the linked item in place if the tab is
-   * already tied to a collection item, otherwise open the save dialog. Returns
-   * `true` when it saved in place (so the caller can clear the dirty state),
-   * `false` when it opened the dialog instead.
+   * already tied to a collection item, otherwise open the save dialog. The
+   * returned promise settles after storage commits or the dialog is cancelled.
    */
-  requestSave(operation: ActiveOperation): boolean;
+  requestSave(operation: ActiveOperation): Promise<boolean>;
+  commitSaveDialog(input: {
+    name: string;
+    description?: string;
+    collectionId?: string;
+    newCollectionName?: string;
+  }): Promise<void>;
   openSaveDialog(input: Omit<SaveDialogState, 'open'>): void;
   closeSaveDialog(): void;
 };
@@ -149,8 +154,31 @@ function itemContentEqual(a: CollectionItem, b: CollectionItem): boolean {
 }
 
 export const collectionsStore = createStore<StoreShape>((set, get) => {
+  let pendingDialog:
+    | { resolve: (saved: boolean) => void; reject: (error: unknown) => void }
+    | undefined;
+  let committingDialog = false;
+  let lastPersist: Promise<void> = Promise.resolve();
+  const queueWrite = async (write: () => Promise<void>) => {
+    const previous = lastPersist;
+    let release!: () => void;
+    lastPersist = new Promise<void>(resolve => {
+      release = resolve;
+    });
+    await previous;
+    try {
+      await write();
+    } finally {
+      release();
+    }
+  };
   const persist = async () => {
-    await get().storage.save(get().collections);
+    try {
+      await queueWrite(() => get().storage.save(get().collections));
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to persist collections', error);
+    }
   };
 
   return {
@@ -540,10 +568,13 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
         }));
         saveTabLinks(get().links);
       },
-      requestSave(operation) {
+      async requestSave(operation) {
         // Authoritative gate: saving is disabled in read-only mode regardless
         // of how it was triggered (⌘S, save button, etc.).
         if (get().config.readOnly) {
+          return false;
+        }
+        if (get().saveDialog.open) {
           return false;
         }
         const { links, collections, actions } = get();
@@ -552,10 +583,34 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
           const collection = collections.find(c => c.id === link.collectionId);
           const item = collection?.items.find(i => i.id === link.itemId);
           if (item) {
-            actions.updateItem(link.collectionId, link.itemId, {
-              query: operation.query ?? '',
-              variables: operation.variables ?? '',
-              headers: operation.headers ?? '',
+            await queueWrite(async () => {
+              const target = get()
+                .collections.find(c => c.id === link.collectionId)
+                ?.items.find(i => i.id === link.itemId);
+              if (!target) {
+                throw new Error('Saved collection item no longer exists');
+              }
+              const next = get().collections.map(c =>
+                c.id === link.collectionId
+                  ? {
+                      ...c,
+                      updatedAt: Date.now(),
+                      items: c.items.map(i =>
+                        i.id === link.itemId
+                          ? {
+                              ...i,
+                              query: operation.query ?? '',
+                              variables: operation.variables ?? '',
+                              headers: operation.headers ?? '',
+                              updatedAt: Date.now(),
+                            }
+                          : i,
+                      ),
+                    }
+                  : c,
+              );
+              await get().storage.save(next);
+              set({ collections: next });
             });
             return true;
           }
@@ -570,12 +625,89 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
             operation.operationName,
           ),
         });
-        return false;
+        return new Promise<boolean>((resolve, reject) => {
+          pendingDialog = { resolve, reject };
+        });
+      },
+      async commitSaveDialog(input) {
+        const { saveDialog, collections } = get();
+        if (!saveDialog.open || committingDialog) {
+          return;
+        }
+        if (
+          input.collectionId &&
+          !collections.some(c => c.id === input.collectionId)
+        ) {
+          const error = new Error('Selected collection no longer exists');
+          pendingDialog?.reject(error);
+          pendingDialog = undefined;
+          get().actions.closeSaveDialog();
+          throw error;
+        }
+        committingDialog = true;
+        const now = Date.now();
+        const item: CollectionItem = {
+          id: randomId(),
+          name: input.name || 'Unnamed operation',
+          description: input.description || undefined,
+          query: saveDialog.query,
+          variables: saveDialog.variables,
+          headers: saveDialog.headers,
+          createdAt: now,
+          updatedAt: now,
+        };
+        const collectionId = input.collectionId ?? randomId();
+        try {
+          await queueWrite(async () => {
+            if (
+              input.collectionId &&
+              !get().collections.some(c => c.id === collectionId)
+            ) {
+              throw new Error('Selected collection no longer exists');
+            }
+            const next = input.collectionId
+              ? get().collections.map(c =>
+                  c.id === collectionId
+                    ? { ...c, items: [...c.items, item], updatedAt: now }
+                    : c,
+                )
+              : [
+                  ...get().collections,
+                  {
+                    id: collectionId,
+                    name: input.newCollectionName || 'New Collection',
+                    items: [item],
+                    createdAt: now,
+                    updatedAt: now,
+                  },
+                ];
+            await get().storage.save(next);
+            set({ collections: next });
+          });
+          if (saveDialog.tabId) {
+            get().actions.linkTab(saveDialog.tabId, collectionId, item.id);
+          }
+          pendingDialog?.resolve(true);
+          pendingDialog = undefined;
+          committingDialog = false;
+          get().actions.closeSaveDialog();
+        } catch (error) {
+          pendingDialog?.reject(error);
+          pendingDialog = undefined;
+          committingDialog = false;
+          get().actions.closeSaveDialog();
+          throw error;
+        }
       },
       openSaveDialog(input) {
         set({ saveDialog: { ...input, open: true } });
       },
       closeSaveDialog() {
+        if (committingDialog) {
+          return;
+        }
+        pendingDialog?.resolve(false);
+        pendingDialog = undefined;
         set(s => ({ saveDialog: { ...s.saveDialog, open: false } }));
       },
     },
