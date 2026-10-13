@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-query-builder",
-  "version": "1.0.0-rc.2",
+  "version": "1.0.0-rc.3",
   "sideEffects": [
     "*.css"
   ],
@@ -50,7 +50,7 @@
     "react-compiler-runtime": "^1.0.0"
   },
   "devDependencies": {
-    "@graphiql/react": "^1.0.0-rc.2",
+    "@graphiql/react": "^1.0.0-rc.3",
     "@storybook/addon-a11y": "^10.3.6",
     "@storybook/addon-vitest": "^10.6.1",
     "@storybook/react-vite": "^10.3.6",

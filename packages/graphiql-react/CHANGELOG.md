@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 1.0.0-rc.3
+
+### Patch Changes
+
+- [#4649](https://github.com/graphql/graphiql/pull/4649) [`e0f3cc2`](https://github.com/graphql/graphiql/commit/e0f3cc2c5440bca8964d287e8363a53f3623281d) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Expose the reactive `resolvedTheme` value from `useGraphiQLSettings` so plugins can follow light and dark appearance, including OS preference changes while the theme is set to auto.
+
 ## 1.0.0-rc.2
 
 ### Patch Changes

@@ -184,10 +184,10 @@ importers:
         specifier: ^1.0.0-rc.2
         version: link:../../packages/graphiql-plugin-history
       '@graphiql/plugin-query-builder':
-        specifier: ^1.0.0-rc.2
+        specifier: ^1.0.0-rc.3
         version: link:../../packages/graphiql-plugin-query-builder
       '@graphiql/react':
-        specifier: ^1.0.0-rc.2
+        specifier: ^1.0.0-rc.3
         version: link:../../packages/graphiql-react
       '@graphiql/toolkit':
         specifier: ^1.0.0-rc.0
@@ -239,7 +239,7 @@ importers:
         specifier: ^6.0.0-rc.1
         version: link:../../packages/graphiql-plugin-code-exporter
       '@graphiql/react':
-        specifier: ^1.0.0-rc.2
+        specifier: ^1.0.0-rc.3
         version: link:../../packages/graphiql-react
       '@graphiql/toolkit':
         specifier: ^1.0.0-rc.0
@@ -633,7 +633,7 @@ importers:
   packages/graphiql-e2e:
     dependencies:
       '@graphiql/react':
-        specifier: 1.0.0-rc.2
+        specifier: 1.0.0-rc.3
         version: link:../graphiql-react
       '@graphiql/toolkit':
         specifier: 1.0.0-rc.0
@@ -966,7 +966,7 @@ importers:
         version: 1.0.0(react@19.2.7)
     devDependencies:
       '@graphiql/react':
-        specifier: ^1.0.0-rc.2
+        specifier: ^1.0.0-rc.3
         version: link:../graphiql-react
       '@storybook/addon-a11y':
         specifier: ^10.3.6
