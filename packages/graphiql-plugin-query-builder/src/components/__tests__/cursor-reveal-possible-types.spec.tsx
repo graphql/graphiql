@@ -63,6 +63,7 @@ function setupEditor() {
         cursorCb = cb;
         return { dispose() {} };
       },
+      onDidChangeModelContent: () => ({ dispose() {} }),
       getModel: () => ({
         getValue: () => query,
         getOffsetAt: () => query.indexOf('extra') + 1,

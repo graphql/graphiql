@@ -1,7 +1,10 @@
 import { parse } from 'graphql';
 import type { OperationDefinitionNode } from 'graphql';
 import { describe, expect, it } from 'vitest';
-import { getOperationNameAtCursor } from './operation-editor';
+import {
+  getOperationNameAtCursor,
+  selectOperationName,
+} from './operation-editor';
 
 // A minimal fake Monaco editor that reports a fixed cursor offset.
 function makeEditor(offset: number | null) {
@@ -74,5 +77,20 @@ describe('getOperationNameAtCursor', () => {
     expect(
       getOperationNameAtCursor(makeEditor(getUser!.loc!.end), operations),
     ).toBe('GetUser');
+  });
+});
+
+describe('selectOperationName', () => {
+  it('selects the operation at the cursor when typing completes it', () => {
+    const query = parse('query Q { __typename }')
+      .definitions as OperationDefinitionNode[];
+    const document = 'query Q { __typename }\nmutation M { __typename }';
+    const next = parse(document).definitions as OperationDefinitionNode[];
+    const cursor = makeEditor(
+      document.indexOf('mutation M') + 'mutation '.length,
+    );
+
+    expect(selectOperationName(cursor, query, 'Q', next, true)).toBe('M');
+    expect(selectOperationName(cursor, query, 'Q', next, false)).toBe('Q');
   });
 });
