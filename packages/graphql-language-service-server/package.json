@@ -58,7 +58,7 @@
     "lru-cache": "^11.5.2",
     "node-abort-controller": "^3.0.1",
     "nullthrows": "^1.0.0",
-    "source-map-js": "1.0.2",
+    "source-map-js": "1.2.2",
     "svelte": "^5.55.7",
     "svelte2tsx": "^0.7.61",
     "typescript": "^5.8.0",
