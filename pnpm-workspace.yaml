@@ -34,4 +34,3 @@ overrides:
 
 patchedDependencies:
   '@changesets/assemble-release-plan@6.0.3': resources/patches/@changesets+assemble-release-plan+6.0.3.patch
-  js-green-licenses@4.0.0: resources/patches/js-green-licenses+4.0.0.patch
