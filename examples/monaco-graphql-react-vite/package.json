@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "dependencies": {
     "@graphiql/toolkit": "^0.12.1",
-    "graphql": "^16",
+    "graphql": "^17",
     "graphql-language-service": "^5.7.0",
     "jsonc-parser": "^3",
     "monaco-editor": "^0.52",
