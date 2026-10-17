@@ -93,6 +93,7 @@ export class MessageProcessor {
   private _languageService!: GraphQLLanguageService;
   private _textDocumentCache = new Map<string, CachedDocumentType>();
   private _isInitialized = false;
+  private _initializingGraphQLCaches: Promise<void> | null = null;
   private _isGraphQLConfigMissing: boolean | null = null;
   private _willShutdown = false;
   private _logger: Logger | NoopLogger;
@@ -293,6 +294,13 @@ export class MessageProcessor {
       this._handleConfigError({ err });
     }
   }
+  private async _initializeGraphQLCachesOnce() {
+    try {
+      await this._initializeGraphQLCaches();
+    } finally {
+      this._initializingGraphQLCaches = null;
+    }
+  }
   private _handleConfigError({ err }: { err: unknown; uri?: string }) {
     if (err instanceof ConfigNotFoundError || err instanceof ConfigEmptyError) {
       // TODO: obviously this needs to become a map by workspace from uri
@@ -361,7 +369,8 @@ export class MessageProcessor {
         }
         // don't try to initialize again if we've already tried
         // and the graphql config file or package.json entry isn't even there
-        await this._initializeGraphQLCaches();
+        this._initializingGraphQLCaches ??= this._initializeGraphQLCachesOnce();
+        await this._initializingGraphQLCaches;
         return isGraphQLConfigFile;
       }
       // if it has initialized, but this is another config file change, then let's handle it
