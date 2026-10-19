@@ -31,6 +31,7 @@
   "devDependencies": {
     "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "graphql": "^16.9.0",
+    "graphql-sse": "^2.6.0",
     "graphql-ws": "^6.0.8",
     "isomorphic-fetch": "^3.0.0",
     "subscriptions-transport-ws": "0.11.0",
@@ -38,9 +39,13 @@
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0",
+    "graphql-sse": ">= 2.0.0",
     "graphql-ws": ">= 4.5.0"
   },
   "peerDependenciesMeta": {
+    "graphql-sse": {
+      "optional": true
+    },
     "graphql-ws": {
       "optional": true
     }
