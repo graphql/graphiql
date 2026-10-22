@@ -92,25 +92,71 @@ export function createTransport(opts: CreateTransportOptions): Transport {
 
   const incrementalDelivery = opts.enableIncrementalDelivery !== false;
 
-  const fetcherOptions: CreateFetcherOptions = {
-    url: opts.url,
-    headers: opts.headers,
-  };
-
-  const supportedMethods: HttpMethod[] = opts.supportedMethods ?? ['POST'];
-
+  const initialMethod = opts.method ?? 'POST';
+  let supportedMethods = opts.supportedMethods?.slice() ?? [initialMethod];
+  if (!supportedMethods.length) {
+    throw new Error('supportedMethods must contain at least one HTTP method.');
+  }
   if (opts.method !== undefined && !supportedMethods.includes(opts.method)) {
     throw new Error(
       `"${opts.method}" is not in supportedMethods (${supportedMethods.join(', ')}). ` +
         `Either add it to supportedMethods or omit the method option.`,
     );
   }
-
-  // Default to POST when available; otherwise fall back to whichever single
-  // method was configured (e.g. GET-only).
-  let activeMethod: HttpMethod =
+  let activeMethod =
     opts.method ??
     (supportedMethods.includes('POST') ? 'POST' : supportedMethods[0]);
+  const listeners = new Set<() => void>();
+  let discovery: { key: string; result: Promise<HttpMethod[]> } | undefined;
+
+  function notify() {
+    for (const listener of listeners) {
+      try {
+        listener();
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Transport change listener threw:', error);
+      }
+    }
+  }
+
+  function updateMethods(methods: HttpMethod[]) {
+    const method = methods.includes(activeMethod)
+      ? activeMethod
+      : methods.length
+        ? preferredMethod(methods)
+        : activeMethod;
+    if (
+      method !== activeMethod ||
+      methods.join(',') !== supportedMethods.join(',')
+    ) {
+      activeMethod = method;
+      supportedMethods = methods;
+      notify();
+    }
+  }
+
+  function discover(headers: Record<string, string>): Promise<HttpMethod[]> {
+    const key = JSON.stringify(Object.entries(headers).sort());
+    if (discovery?.key === key) {
+      return discovery.result;
+    }
+    // Keep only the latest context. A response for older credentials must not
+    // overwrite the capabilities currently shown to the caller.
+    const current = {
+      key,
+      result: probeMethods(httpFetch, opts.url, headers, initialMethod),
+    };
+    discovery = current;
+    current.result = (async () => {
+      const methods = await current.result;
+      if (discovery === current) {
+        updateMethods(methods);
+      }
+      return methods;
+    })();
+    return current.result;
+  }
 
   function send(
     req: TransportRequest,
@@ -121,72 +167,245 @@ export function createTransport(opts: CreateTransportOptions): Transport {
       variables: req.variables,
       extensions: req.extensions,
     };
-    const fetcherOpts: FetcherOpts | undefined =
-      req.headers || req.signal
-        ? { headers: req.headers, signal: req.signal }
-        : undefined;
-
     const selectedOperation = classifySelectedOperation(
       req.query,
       req.operationName,
     );
-
     if (selectedOperation === 'subscription') {
       return subscribe(opts.subscriptionClient, params);
     }
 
-    // Mutations may only be sent over POST. GET and QUERY are both safe methods
-    // (https://datatracker.ietf.org/doc/draft-ietf-httpbis-safe-method-w-body/),
-    // and the GraphQL over HTTP spec forbids mutations over GET; the same safety
-    // reasoning applies to QUERY. When a safe method is active and the operation
-    // is a mutation, use POST if it is available. If POST is not supported,
-    // throw — a spec-compliant server would reject the request anyway.
-    let method: HttpMethod = activeMethod;
-    if (activeMethod !== 'POST' && selectedOperation === 'mutation') {
-      if (!supportedMethods.includes('POST')) {
+    const selectedMethod = activeMethod;
+    const headers = new Headers(opts.headers);
+    for (const [name, value] of Object.entries(req.headers ?? {})) {
+      headers.set(name, value);
+    }
+    const effectiveHeaders: Record<string, string> = {};
+    headers.forEach((value, name) => {
+      effectiveHeaders[name] = value;
+    });
+    const fetcherOptions: CreateFetcherOptions = { url: opts.url };
+    const fetcherOpts: FetcherOpts = {
+      headers: effectiveHeaders,
+      signal: req.signal,
+    };
+
+    function executionMethod(methods: HttpMethod[]) {
+      if (!methods.length) {
         throw new Error(
-          `Cannot execute a mutation over ${activeMethod}. ` +
-            `This transport does not support POST (supportedMethods: ${supportedMethods.join(', ')}). ` +
-            'Add POST to supportedMethods or switch to a POST-capable transport.',
+          'This endpoint advertises no supported GraphQL HTTP methods.',
         );
       }
-      method = 'POST';
+      const method = methods.includes(selectedMethod)
+        ? selectedMethod
+        : preferredMethod(methods);
+      if (selectedOperation === 'mutation') {
+        if (!methods.includes('POST')) {
+          throw new Error(
+            `Cannot execute a mutation over ${method}. ` +
+              `This transport does not support POST (supportedMethods: ${methods.join(', ')}).`,
+          );
+        }
+        return 'POST';
+      }
+      return method;
     }
 
-    if (incrementalDelivery) {
-      return multipartHttpTransport(
-        fetcherOptions,
-        httpFetch,
-        method,
-      )(params, fetcherOpts);
+    // Explicit capabilities retain synchronous validation and skip discovery.
+    if (opts.supportedMethods) {
+      throwIfAborted(req.signal);
+      const method = executionMethod(supportedMethods);
+      return incrementalDelivery
+        ? multipartHttpTransport(
+            fetcherOptions,
+            httpFetch,
+            method,
+          )(params, fetcherOpts)
+        : simpleHttpTransport(
+            fetcherOptions,
+            httpFetch,
+            method,
+          )(params, fetcherOpts);
     }
-    return simpleHttpTransport(
-      fetcherOptions,
-      httpFetch,
-      method,
-    )(params, fetcherOpts);
+
+    async function prepare(signal?: AbortSignal) {
+      throwIfAborted(signal);
+      const methods = await waitForDiscovery(
+        discover(effectiveHeaders),
+        signal,
+      );
+      throwIfAborted(signal);
+      return executionMethod(methods);
+    }
+
+    if (!incrementalDelivery) {
+      return (async () => {
+        const method = await prepare(req.signal);
+        throwIfAborted(req.signal);
+        return simpleHttpTransport(
+          fetcherOptions,
+          httpFetch,
+          method,
+        )(params, fetcherOpts);
+      })();
+    }
+
+    // An async generator alone queues return() behind a pending next(). Abort
+    // the wait first so closing an iterator cannot send an unwanted operation.
+    const controller = new AbortController();
+    const abort = () => controller.abort(req.signal?.reason);
+    const iterator = (async function* () {
+      if (req.signal?.aborted) {
+        abort();
+      }
+      req.signal?.addEventListener('abort', abort, { once: true });
+      try {
+        const method = await prepare(controller.signal);
+        throwIfAborted(controller.signal);
+        yield* multipartHttpTransport(
+          fetcherOptions,
+          httpFetch,
+          method,
+        )(params, {
+          ...fetcherOpts,
+          signal: controller.signal,
+        });
+      } finally {
+        req.signal?.removeEventListener('abort', abort);
+      }
+    })();
+    return {
+      next: () => iterator.next(),
+      return() {
+        controller.abort();
+        return iterator.return();
+      },
+      [Symbol.asyncIterator]() {
+        return this;
+      },
+    } as AsyncIterableIterator<TransportResponse>;
   }
 
   const transport: Transport = {
     url: opts.url,
-    method: activeMethod,
-    supportedMethods,
+    get method() {
+      return activeMethod;
+    },
+    get supportedMethods() {
+      return supportedMethods;
+    },
     send,
-  };
-
-  if (supportedMethods.length > 1) {
-    transport.setMethod = (method: HttpMethod) => {
+    setMethod(method) {
       if (!supportedMethods.includes(method)) {
         throw new Error(
           `"${method}" is not supported by this transport (supportedMethods: ${supportedMethods.join(', ')}).`,
         );
       }
-      activeMethod = method;
-      transport.method = method;
-    };
-  }
-
+      if (activeMethod !== method) {
+        activeMethod = method;
+        notify();
+      }
+    },
+    subscribe(listener) {
+      listeners.add(listener);
+      return () => {
+        listeners.delete(listener);
+      };
+    },
+  };
   return transport;
+}
+
+function preferredMethod(methods: HttpMethod[]): HttpMethod {
+  return methods.includes('POST')
+    ? 'POST'
+    : methods.includes('QUERY')
+      ? 'QUERY'
+      : 'GET';
+}
+
+function parseAllow(value: string | null): HttpMethod[] | undefined {
+  if (value === null) {
+    return undefined;
+  }
+  const methods = value
+    .split(',')
+    .map(method => method.replaceAll(/^[ \t]+|[ \t]+$/g, ''))
+    .filter(Boolean);
+  // HTTP method tokens are case-sensitive. Empty list elements are permitted
+  // by HTTP's list syntax, but malformed tokens make discovery unavailable.
+  if (methods.some(method => !/^[!#$%&'*+.^_`|~0-9A-Za-z-]+$/.test(method))) {
+    return undefined;
+  }
+  return (['GET', 'POST', 'QUERY'] as const).filter(method =>
+    methods.includes(method),
+  );
+}
+
+async function probeMethods(
+  httpFetch: typeof fetch,
+  url: string,
+  headers: Record<string, string>,
+  initialMethod: HttpMethod,
+): Promise<HttpMethod[]> {
+  const controller = new AbortController();
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  try {
+    const response = await Promise.race([
+      httpFetch(url, { method: 'OPTIONS', headers, signal: controller.signal }),
+      new Promise<void>(resolve => {
+        timeout = setTimeout(() => {
+          resolve();
+          controller.abort();
+        }, 2000);
+      }),
+    ]);
+    if (response?.ok) {
+      return parseAllow(response.headers.get('allow')) ?? [initialMethod];
+    }
+  } catch {
+    // OPTIONS is optional and may be blocked by servers or CORS policies.
+  } finally {
+    clearTimeout(timeout);
+    // Only response headers are needed; stop any remaining OPTIONS body.
+    controller.abort();
+  }
+  return [initialMethod];
+}
+
+function throwIfAborted(signal?: AbortSignal) {
+  if (signal?.aborted) {
+    throw (
+      signal.reason ??
+      new DOMException('The request was aborted.', 'AbortError')
+    );
+  }
+}
+
+async function waitForDiscovery<T>(
+  result: Promise<T>,
+  signal?: AbortSignal,
+): Promise<T> {
+  if (!signal) {
+    return result;
+  }
+  let abort: () => void = () => {};
+  const aborted = new Promise<never>((_resolve, reject) => {
+    abort = () =>
+      reject(
+        signal.reason ??
+          new DOMException('The request was aborted.', 'AbortError'),
+      );
+    signal.addEventListener('abort', abort, { once: true });
+    if (signal.aborted) {
+      abort();
+    }
+  });
+  try {
+    return await Promise.race([result, aborted]);
+  } finally {
+    signal.removeEventListener('abort', abort);
+  }
 }
 
 function subscribe(
