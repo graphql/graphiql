@@ -29,6 +29,9 @@ export const TopBar: FC<TopBarProps> = ({ version, brand }) => {
   const { setTransportMethod } = useGraphiQLActions();
   const transport = useGraphiQL(state => state.transport);
   const transportMethod = useGraphiQL(state => state.transportMethod);
+  const transportSupportedMethods = useGraphiQL(
+    state => state.transportSupportedMethods,
+  );
   const runDisabledReason = useGraphiQL(state =>
     getRunBlockReason(
       state.transportMethod,
@@ -38,7 +41,7 @@ export const TopBar: FC<TopBarProps> = ({ version, brand }) => {
 
   const url = transport?.url ?? '—';
   const method: HttpMethod = transportMethod ?? 'POST';
-  const supportedMethods = transport?.supportedMethods ?? ['POST'];
+  const supportedMethods = transportSupportedMethods ?? ['POST'];
 
   return (
     <TopBarView

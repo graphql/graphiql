@@ -136,6 +136,14 @@ export class TransportHookRegistry {
 
     return {
       ...transport,
+      get method() {
+        return transport.method;
+      },
+      get supportedMethods() {
+        return transport.supportedMethods;
+      },
+      setMethod: transport.setMethod?.bind(transport),
+      subscribe: transport.subscribe?.bind(transport),
       send(request: TransportRequest): AsyncIterable<TransportResponse> {
         return {
           [Symbol.asyncIterator]() {

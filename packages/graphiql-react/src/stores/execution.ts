@@ -173,13 +173,16 @@ export interface ExecutionSlice {
 
   /**
    * The currently active HTTP method as tracked in the store. Mirrors
-   * `transport.method` and updated via `setTransportMethod` so that
+   * `transport.method` and updated when the transport changes so that
    * consumers re-render when the method changes. `null` when using a
    * fetcher (which has no observable method).
    *
    * @default null
    */
   transportMethod: HttpMethod | null;
+
+  /** Available HTTP methods, synchronized with the transport. */
+  transportSupportedMethods: HttpMethod[] | null;
 }
 
 export interface ExecutionActions {
@@ -329,6 +332,7 @@ export const createExecutionSlice: CreateExecutionSlice =
       abortController: null,
       queryId: 0,
       transportMethod: initial.transport?.method ?? null,
+      transportSupportedMethods: initial.transport?.supportedMethods ?? null,
       actions: {
         setResponseView(view: ResponseView) {
           const { storage } = get();
@@ -346,7 +350,7 @@ export const createExecutionSlice: CreateExecutionSlice =
             return;
           }
           transport.setMethod(method);
-          set({ transportMethod: method });
+          set({ transportMethod: transport.method });
         },
         stop() {
           set(({ subscription, abortController, queryId }) => {
