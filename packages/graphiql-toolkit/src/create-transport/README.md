@@ -14,8 +14,37 @@ const transport = createTransport({ url: 'https://my.endpoint/graphql' });
 
 Queries and mutations work with nothing but a `url`. `@defer`/`@stream`
 incremental delivery over `multipart/mixed` is on by default (disable it with
-`enableIncrementalDelivery: false`). GET is opt-in via `method`/
-`supportedMethods`.
+`enableIncrementalDelivery: false`). The initial HTTP method is POST.
+
+## HTTP method discovery
+
+Before the first HTTP operation, `createTransport` sends an `OPTIONS`
+request without a body and reads the endpoint's `Allow` header to discover support for GET,
+POST, and QUERY. Discovery uses the same fetch implementation and effective
+request headers as the operation. Concurrent requests share discovery, and a
+change in headers triggers discovery again. Subscriptions don't trigger it.
+
+The transport keeps the selected method if it is supported; otherwise it
+selects POST, then QUERY, then GET. If discovery fails, takes more than two
+seconds, or provides no usable `Allow` header, the transport keeps the initial
+method (`method`, or POST by default). A valid `Allow` header with no supported
+GraphQL HTTP methods causes HTTP operations to fail without sending them.
+
+To skip discovery and configure the available methods yourself, pass a nonempty
+`supportedMethods` array. For example, `supportedMethods: ['POST']` keeps every
+HTTP operation on POST and makes no OPTIONS request.
+
+For cross-origin discovery, the server must allow the OPTIONS request and
+expose `Allow` with `Access-Control-Expose-Headers: Allow`. Browser CORS
+preflight is separate from this discovery request. Discovery checks HTTP
+methods only; it does not negotiate QUERY formats through `Accept-Query`.
+
+`transport.subscribe(listener)` returns an unsubscribe function. The listener
+runs when `method` or `supportedMethods` changes; read those properties for the
+current values. GraphiQL subscribes automatically to update its method selector.
+Custom transports with static capabilities can omit `subscribe`.
+
+## Sending operations
 
 `send()` takes a `TransportRequest`: `query`, `operationName`, `variables`,
 `extensions` (GraphQL-over-HTTP extensions, e.g. for automatic persisted
