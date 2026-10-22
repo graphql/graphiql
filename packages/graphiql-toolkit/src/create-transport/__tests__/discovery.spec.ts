@@ -361,6 +361,52 @@ describe('HTTP method discovery', () => {
     expect(safeOnly.fetch).toHaveBeenCalledTimes(1);
   });
 
+  it.each([false, true])(
+    'rediscovers capabilities for a mutation after authentication changes (incremental: %s)',
+    async incremental => {
+      const { transport, fetch } = setup('QUERY', {
+        enableIncrementalDelivery: incremental,
+      });
+      async function execute(authorization: string) {
+        const result = transport.send({
+          query: mutation,
+          headers: { authorization },
+        });
+        if (Symbol.asyncIterator in result) {
+          for await (const _ of result) {
+            // Consume the operation to run the incremental transport.
+          }
+        } else {
+          await result;
+        }
+      }
+
+      await expect(execute('query-only')).rejects.toThrow(/mutation.*QUERY/);
+      expect(transport.method).toBe('QUERY');
+      expect(transport.supportedMethods).toEqual(['QUERY']);
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(fetch.mock.calls[0][1]).toMatchObject({
+        method: 'OPTIONS',
+        headers: { authorization: 'query-only' },
+      });
+
+      fetch.mockResolvedValue(response('POST, QUERY'));
+      await execute('can-mutate');
+      expect(fetch.mock.calls.map(([, init]) => init.method)).toEqual([
+        'OPTIONS',
+        'OPTIONS',
+        'POST',
+      ]);
+      expect(fetch.mock.calls[1][1].headers.authorization).toBe('can-mutate');
+      expect(fetch.mock.calls[2][1].headers.authorization).toBe('can-mutate');
+      expect(JSON.parse(fetch.mock.calls[2][1].body)).toMatchObject({
+        query: mutation,
+      });
+      expect(transport.supportedMethods).toEqual(['POST', 'QUERY']);
+      expect(transport.method).toBe('QUERY');
+    },
+  );
+
   it('keeps explicit supportedMethods authoritative and validates empty lists', async () => {
     const { transport, fetch } = setup('QUERY', { supportedMethods: ['POST'] });
     await transport.send({ query });

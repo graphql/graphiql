@@ -77,7 +77,8 @@ export type Transport = {
    */
   url: string;
   /**
-   * Currently active HTTP method.
+   * Selected HTTP method for queries. The transport may route other operation
+   * types differently; createTransport sends mutations through POST.
    */
   method: HttpMethod;
   /**
@@ -86,12 +87,17 @@ export type Transport = {
    */
   supportedMethods: HttpMethod[];
   /**
-   * Switches the active HTTP method used by subsequent `send()` calls.
+   * Switches the selected HTTP method for subsequent query operations.
    * Optional for custom transports that do not support method selection.
    */
   setMethod?: (method: HttpMethod) => void;
   /** Subscribe to changes in method or supportedMethods. Returns an unsubscribe function. */
   subscribe?: (listener: () => void) => () => void;
+  /**
+   * Executes an operation and owns its routing and method safety policy.
+   * Custom HTTP transports must prevent mutations over safe methods such as
+   * GET and QUERY. GraphiQL delegates operation routing to this method.
+   */
   send(
     request: TransportRequest,
   ): Promise<TransportResponse> | AsyncIterable<TransportResponse>;

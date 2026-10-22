@@ -14,7 +14,10 @@ const transport = createTransport({ url: 'https://my.endpoint/graphql' });
 
 Queries and mutations work with nothing but a `url`. `@defer`/`@stream`
 incremental delivery over `multipart/mixed` is on by default (disable it with
-`enableIncrementalDelivery: false`). The initial HTTP method is POST.
+`enableIncrementalDelivery: false`). The initial query method is POST. Mutations use POST regardless of the selected
+query method, or fail without sending if POST is unavailable. GraphiQL delegates
+method routing to the transport, so a mutation can run while GET or QUERY is
+selected without changing the query method.
 
 ## HTTP method discovery
 

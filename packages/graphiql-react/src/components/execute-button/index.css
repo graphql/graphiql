@@ -89,19 +89,6 @@
   color: #fff;
 }
 
-.graphiql-execute-button-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  /* Let pointer events fall through to the tooltip-target wrapper so the
-     "switch to POST" tooltip can open over the disabled button. */
-  pointer-events: none;
-}
-
-.graphiql-execute-button-caret:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
 /* Scoped under `.graphiql-execute-button` so this outranks the global
    `.graphiql-container :focus-visible` ring on specificity, not load order —
    an inset ring (rather than the global's outward one) keeps the two halves'
@@ -110,12 +97,6 @@
 .graphiql-execute-button .graphiql-execute-button-caret:focus-visible {
   outline: 2px solid oklch(var(--accent-blue));
   outline-offset: -2px;
-}
-
-.graphiql-execute-button-tooltip-target {
-  display: inline-flex;
-  flex-shrink: 0;
-  cursor: not-allowed;
 }
 
 .graphiql-execute-button-menu-item {
