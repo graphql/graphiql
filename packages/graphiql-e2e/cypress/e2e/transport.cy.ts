@@ -95,6 +95,7 @@ describe('Transport routing for mutations', () => {
     cy.get('.result-window').should('contain.text', 'MutationType');
     cy.get('.graphiql-top-bar-method-toggle').should('have.text', 'GET');
 
+    cy.activateOperation('Change');
     cy.get('[aria-label="Run operation"]').should('be.enabled');
     cy.get('.graphiql-query-editor textarea').focus();
     cy.realPress([Cypress.platform === 'darwin' ? 'Meta' : 'Control', 'Enter']);
