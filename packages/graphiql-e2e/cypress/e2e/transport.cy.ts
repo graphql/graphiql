@@ -87,7 +87,9 @@ describe('Transport routing for mutations', () => {
     cy.activateOperation('Read');
     cy.get('[aria-label="Choose operation to run"]').click();
     cy.contains('[role="menuitem"]', 'Change')
-      .should('not.have.attr', 'aria-disabled')
+      .should(item => {
+        expect(item).not.to.have.attr('aria-disabled');
+      })
       .click();
     cy.wait('@mutation').its('request.method').should('eq', 'POST');
     cy.get('.result-window').should('contain.text', 'MutationType');
