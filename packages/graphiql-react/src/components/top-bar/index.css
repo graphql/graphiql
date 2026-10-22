@@ -89,28 +89,6 @@
   background: oklch(var(--bg-canvas));
 }
 
-.graphiql-top-bar-method-toggle--attention {
-  color: oklch(var(--accent-orange));
-  border-color: oklch(var(--accent-orange));
-  animation: graphiql-top-bar-method-pulse 1.4s ease-in-out infinite;
-}
-
-@keyframes graphiql-top-bar-method-pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 oklch(var(--accent-orange) / 0.35);
-  }
-  50% {
-    box-shadow: 0 0 0 3px oklch(var(--accent-orange) / 0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .graphiql-top-bar-method-toggle--attention {
-    animation: none;
-  }
-}
-
 .graphiql-top-bar-endpoint-url {
   color: oklch(var(--fg-subtle));
   overflow: hidden;

@@ -3,18 +3,13 @@
 'use no memo';
 
 import type { FC } from 'react';
-import type { HttpMethod } from '@graphiql/toolkit';
 import type { OperationDefinitionNode } from 'graphql';
 import { clsx } from 'clsx';
 import { useGraphiQL, useGraphiQLActions } from '../provider';
 import { KeycapHint, MODIFIER } from '../keycap-hint';
-import { Tooltip } from '../tooltip';
 import { DropdownMenu } from '../dropdown-menu';
 import { PlayIcon, StopIcon, ChevronDownIcon } from '../../icons';
-import {
-  getRunBlockReason,
-  resolveActiveOperation,
-} from '../../utility/run-block';
+import { resolveActiveOperation } from '../../utility/active-operation';
 import './index.css';
 
 /**
@@ -28,13 +23,6 @@ export const ExecuteButton: FC = () => {
   const isSubscribed = useGraphiQL(state => Boolean(state.subscription));
   const operations = useGraphiQL(state => state.operations);
   const operationName = useGraphiQL(state => state.operationName);
-  const transportMethod = useGraphiQL(state => state.transportMethod);
-  const runDisabledReason = useGraphiQL(state =>
-    getRunBlockReason(
-      state.transportMethod,
-      resolveActiveOperation(state.operations, state.operationName),
-    ),
-  );
 
   return (
     <ExecuteButtonView
@@ -42,8 +30,6 @@ export const ExecuteButton: FC = () => {
       isSubscribed={isSubscribed}
       operations={operations}
       operationName={operationName}
-      transportMethod={transportMethod}
-      runDisabledReason={runDisabledReason}
       onRun={run}
       onStop={stop}
       onSetOperationName={setOperationName}
@@ -55,12 +41,9 @@ export type ExecuteButtonViewProps = {
   isFetching: boolean;
   /** An active subscription keeps the button in its stop state. */
   isSubscribed?: boolean;
-  /** Non-null when a run is blocked; the string is the reason shown in a tooltip. */
-  runDisabledReason?: string | null;
   /** The document's operations. A caret + picker only appears for more than one. */
   operations?: OperationDefinitionNode[];
   operationName?: string | null;
-  transportMethod?: HttpMethod | null;
   onRun: () => void;
   onStop: () => void;
   onSetOperationName?: (operationName: string) => void;
@@ -69,17 +52,13 @@ export type ExecuteButtonViewProps = {
 export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
   isFetching,
   isSubscribed = false,
-  runDisabledReason = null,
   operations = [],
   operationName = null,
-  transportMethod = null,
   onRun,
   onStop,
   onSetOperationName,
 }) => {
   const isRunning = isFetching || isSubscribed;
-  // Never block the stop affordance; only a fresh run can be blocked.
-  const isBlocked = !isRunning && runDisabledReason !== null;
   const hasOptions = operations.length > 1;
   // While running, the button is a single-purpose stop control; a picker
   // alongside it would offer to start something that can't start yet.
@@ -101,7 +80,6 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
         !showCaret && 'graphiql-execute-button-primary--solo',
       )}
       onClick={isRunning ? onStop : onRun}
-      disabled={isBlocked}
       aria-label={isRunning ? 'Stop operation' : 'Run operation'}
     >
       {isRunning ? (
@@ -124,18 +102,7 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
 
   return (
     <div className="graphiql-execute-button">
-      {isBlocked ? (
-        <Tooltip label={runDisabledReason}>
-          {/* A native disabled button emits no pointer/focus events, so Radix
-              would never open the tooltip. Wrap it in a focusable span that
-              receives the events instead. */}
-          <span className="graphiql-execute-button-tooltip-target" tabIndex={0}>
-            {primaryButton}
-          </span>
-        </Tooltip>
-      ) : (
-        primaryButton
-      )}
+      {primaryButton}
 
       {showCaret && (
         <>
@@ -159,9 +126,6 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
                 return (
                   <DropdownMenu.Item
                     key={`${label}-${i}`}
-                    disabled={
-                      getRunBlockReason(transportMethod, operation) !== null
-                    }
                     onSelect={() => selectOperation(opName)}
                   >
                     <span

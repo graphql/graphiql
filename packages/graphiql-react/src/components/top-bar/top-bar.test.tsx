@@ -149,49 +149,6 @@ describe('TopBarView', () => {
     expect(onSetMethod).toHaveBeenCalledWith('GET');
   });
 
-  it('jumps straight to POST (not the next method) when a mutation is blocked over QUERY', async () => {
-    const user = userEvent.setup();
-    const onSetMethod = vi.fn();
-    renderTopBar(
-      <TopBarView
-        {...DEFAULTS}
-        method="QUERY"
-        supportedMethods={['GET', 'POST', 'QUERY']}
-        runDisabledReason="Mutations can only be sent via POST"
-        onSetMethod={onSetMethod}
-      />,
-    );
-    await user.click(screen.getByRole('button', { name: 'QUERY' }));
-    expect(onSetMethod).toHaveBeenCalledWith('POST');
-  });
-
-  it('highlights the method toggle when a mutation is blocked over GET', () => {
-    const { container } = renderTopBar(
-      <TopBarView
-        {...DEFAULTS}
-        method="GET"
-        supportedMethods={['GET', 'POST']}
-        runDisabledReason="Mutations can only be sent via POST"
-      />,
-    );
-    expect(
-      container.querySelector('.graphiql-top-bar-method-toggle--attention'),
-    ).not.toBeNull();
-  });
-
-  it('does not highlight the method toggle when not blocked', () => {
-    const { container } = renderTopBar(
-      <TopBarView
-        {...DEFAULTS}
-        method="GET"
-        supportedMethods={['GET', 'POST']}
-      />,
-    );
-    expect(
-      container.querySelector('.graphiql-top-bar-method-toggle--attention'),
-    ).toBeNull();
-  });
-
   it('has role="banner" on the header element', () => {
     const { container } = render(<TopBarView {...DEFAULTS} />);
     expect(container.querySelector('header[role="banner"]')).not.toBeNull();

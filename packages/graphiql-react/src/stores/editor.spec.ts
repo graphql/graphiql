@@ -7,10 +7,7 @@ import { OperationTypeNode } from 'graphql';
 import { createEditorSlice } from './editor';
 import { createStorageSlice } from './storage';
 import { createTab, getDefaultTabState } from '../utility/tabs';
-import {
-  getRunBlockReason,
-  resolveActiveOperation,
-} from '../utility/run-block';
+import { resolveActiveOperation } from '../utility/active-operation';
 import { STORAGE_KEY } from '../constants';
 import type { SlicesWithActions } from '../types';
 
@@ -112,25 +109,19 @@ describe('tab management', () => {
       OperationTypeNode.MUTATION,
     );
     expect(
-      getRunBlockReason(
-        'GET',
-        resolveActiveOperation(
-          mutationState.operations,
-          mutationState.operationName,
-        ),
+      resolveActiveOperation(
+        mutationState.operations,
+        mutationState.operationName,
       ),
-    ).not.toBeNull();
+    ).toBe(mutationState.operations?.[0]);
 
     store.getState().actions.changeTab(0);
     const queryState = store.getState();
     expect(queryState.operationName).toBe('Shared');
     expect(queryState.operations?.[0]?.operation).toBe(OperationTypeNode.QUERY);
     expect(
-      getRunBlockReason(
-        'GET',
-        resolveActiveOperation(queryState.operations, queryState.operationName),
-      ),
-    ).toBeNull();
+      resolveActiveOperation(queryState.operations, queryState.operationName),
+    ).toBe(queryState.operations?.[0]);
   });
 
   it('addTab adds a new tab', () => {

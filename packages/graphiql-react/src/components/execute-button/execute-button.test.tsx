@@ -1,12 +1,10 @@
 'use no memo';
 
-import type { ReactElement } from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { parse, OperationDefinitionNode } from 'graphql';
 import { ExecuteButtonView } from './';
-import { Tooltip } from '../tooltip';
 
 function opsOf(source: string): OperationDefinitionNode[] {
   return parse(source).definitions.filter(
@@ -19,10 +17,6 @@ const DEFAULTS = {
   onRun() {},
   onStop() {},
 };
-
-// The blocked state renders a Tooltip, which needs a provider ancestor.
-const renderBlocked = (ui: ReactElement) =>
-  render(<Tooltip.Provider>{ui}</Tooltip.Provider>);
 
 describe('ExecuteButtonView', () => {
   it.each(['query', 'mutation', 'subscription'])(
@@ -51,44 +45,19 @@ describe('ExecuteButtonView', () => {
     expect(onRun).toHaveBeenCalled();
   });
 
-  it('disables the Run button when a mutation is blocked over GET', () => {
-    renderBlocked(
+  it('runs the selected mutation with the primary button', async () => {
+    const user = userEvent.setup();
+    const onRun = vi.fn();
+    render(
       <ExecuteButtonView
         {...DEFAULTS}
-        transportMethod="GET"
-        runDisabledReason="Mutations can only be sent via POST"
+        operations={opsOf('mutation Change { update }')}
+        operationName="Change"
+        onRun={onRun}
       />,
     );
-    expect(
-      screen.getByRole('button', { name: /Run operation/i }),
-    ).toBeDisabled();
-  });
-
-  it('wraps the disabled Run button in a focusable tooltip target when blocked', () => {
-    renderBlocked(
-      <ExecuteButtonView
-        {...DEFAULTS}
-        transportMethod="GET"
-        runDisabledReason="Mutations can only be sent via POST"
-      />,
-    );
-    // A native disabled button emits no events, so the tooltip needs a
-    // focusable wrapper to receive hover/focus and open.
-    const target = screen
-      .getByRole('button', { name: /Run operation/i })
-      .closest('.graphiql-execute-button-tooltip-target');
-    expect(target).not.toBeNull();
-    expect(target).toHaveAttribute('tabindex', '0');
-  });
-
-  it('does not disable or wrap the button when not blocked', () => {
-    const { container } = render(<ExecuteButtonView {...DEFAULTS} />);
-    expect(
-      screen.getByRole('button', { name: /Run operation/i }),
-    ).not.toBeDisabled();
-    expect(
-      container.querySelector('.graphiql-execute-button-tooltip-target'),
-    ).toBeNull();
+    await user.click(screen.getByRole('button', { name: 'Run operation' }));
+    expect(onRun).toHaveBeenCalledOnce();
   });
 
   describe('stop', () => {
@@ -124,20 +93,6 @@ describe('ExecuteButtonView', () => {
       await user.click(screen.getByRole('button', { name: /Stop operation/i }));
       expect(onStop).toHaveBeenCalled();
       expect(onRun).not.toHaveBeenCalled();
-    });
-
-    it('leaves Stop enabled even when a run would be blocked', () => {
-      renderBlocked(
-        <ExecuteButtonView
-          {...DEFAULTS}
-          isFetching
-          transportMethod="GET"
-          runDisabledReason="Mutations can only be sent via POST"
-        />,
-      );
-      expect(
-        screen.getByRole('button', { name: /Stop operation/i }),
-      ).not.toBeDisabled();
     });
 
     it('hides the operation picker while running', () => {
@@ -239,23 +194,28 @@ describe('ExecuteButtonView', () => {
       expect(onRun).toHaveBeenCalled();
     });
 
-    it('disables a menu item whose operation is blocked for the current method', async () => {
+    it('selects and runs a mutation from the operation picker', async () => {
       const user = userEvent.setup();
-      const ops = opsOf('query Q { a }\nmutation M { b }');
+      const onRun = vi.fn();
+      const onSetOperationName = vi.fn();
       render(
         <ExecuteButtonView
           {...DEFAULTS}
-          transportMethod="GET"
-          operations={ops}
+          operations={opsOf('query Q { a }\nmutation M { b }')}
+          operationName="Q"
+          onRun={onRun}
+          onSetOperationName={onSetOperationName}
         />,
       );
       await user.click(
         screen.getByRole('button', { name: 'Choose operation to run' }),
       );
-      const queryItem = await screen.findByRole('menuitem', { name: 'Q' });
-      const mutationItem = screen.getByRole('menuitem', { name: 'M' });
-      expect(queryItem).not.toHaveAttribute('data-disabled');
-      expect(mutationItem).toHaveAttribute('data-disabled');
+      await user.click(await screen.findByRole('menuitem', { name: 'M' }));
+      expect(onSetOperationName).toHaveBeenCalledWith('M');
+      expect(onRun).toHaveBeenCalledOnce();
+      expect(onSetOperationName.mock.invocationCallOrder[0]!).toBeLessThan(
+        onRun.mock.invocationCallOrder[0]!,
+      );
     });
   });
 });

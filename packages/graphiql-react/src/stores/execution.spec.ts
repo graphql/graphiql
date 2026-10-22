@@ -3,7 +3,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { create } from 'zustand';
 import { Kind, parse } from 'graphql';
-import { StorageAPI } from '@graphiql/toolkit';
+import { createTransport, StorageAPI } from '@graphiql/toolkit';
 import type { Fetcher, Transport, TransportResponse } from '@graphiql/toolkit';
 import { createExecutionSlice, isResponseView } from './execution';
 import { createStorageSlice } from './storage';
@@ -247,12 +247,15 @@ describe('run uses the current document', () => {
     expect(fetcher.mock.calls[0]?.[0]?.operationName).toBe('Saved');
   });
 
-  it('blocks a newly displayed mutation until POST is selected', async () => {
+  it('runs a newly displayed mutation with its current operation name', async () => {
     const { store, queryEditor, fetcher } = prepare('query Changed { bar }');
     store.setState({ transportMethod: 'GET' });
     queryEditor.getValue.mockReturnValue('mutation Saved { bar }');
     await store.getState().actions.run();
-    expect(fetcher).not.toHaveBeenCalled();
+    expect(fetcher.mock.calls[0]?.[0]).toMatchObject({
+      query: 'mutation Saved { bar }',
+      operationName: 'Saved',
+    });
     expect(store.getState().transportMethod).toBe('GET');
   });
 
@@ -264,6 +267,57 @@ describe('run uses the current document', () => {
     expect(fetcher.mock.calls[0]?.[0]?.operationName).toBe('Saved');
     expect(store.getState().transportMethod).toBe('GET');
   });
+});
+
+it('lets the transport rediscover POST for a mutation after headers change', async () => {
+  const fetch = vi
+    .fn<typeof globalThis.fetch>()
+    .mockImplementation(async (_url, init) => {
+      const authenticated =
+        new Headers(init?.headers).get('authorization') === 'Bearer writer';
+      return init?.method === 'OPTIONS'
+        ? new Response(null, {
+            status: 204,
+            headers: { Allow: authenticated ? 'QUERY, POST' : 'QUERY' },
+          })
+        : Response.json({ data: { bar: 'updated' } });
+    });
+  const transport = createTransport({
+    url: '/graphql',
+    method: 'QUERY',
+    fetch,
+    enableIncrementalDelivery: false,
+  });
+  const registry = new TransportHookRegistry();
+  const { store, queryEditor, responseEditor } = makeRunnableStore({
+    transport: registry.wrap(transport),
+  });
+  queryEditor.getValue.mockReturnValue('mutation Update { bar }');
+  let authorization = 'Bearer reader';
+  store.getState().actions.setEditor({
+    headerEditor: {
+      getValue: () => JSON.stringify({ authorization }),
+    } as SlicesWithActions['headerEditor'],
+  });
+
+  await store.getState().actions.run();
+  expect(fetch.mock.calls.map(([, init]) => init?.method)).toEqual(['OPTIONS']);
+  expect(responseEditor.setValue).toHaveBeenLastCalledWith(
+    expect.stringContaining('does not support POST'),
+  );
+
+  authorization = 'Bearer writer';
+  await store.getState().actions.run();
+  expect(fetch.mock.calls.map(([, init]) => init?.method)).toEqual([
+    'OPTIONS',
+    'OPTIONS',
+    'POST',
+  ]);
+  expect(store.getState().lastResponse?.body).toEqual({
+    data: { bar: 'updated' },
+  });
+  expect(transport.method).toBe('QUERY');
+  expect(store.getState().transportMethod).toBe('QUERY');
 });
 
 describe('isResponseView', () => {

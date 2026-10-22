@@ -118,22 +118,8 @@ export const CustomBrand: Story = {
   ],
 };
 
-/** GET selected with a mutation in the editor: Run disabled, method toggle highlighted. */
-export const MutationBlockedOverGet: Story = {
-  globals: { theme: 'light' },
-  decorators: [
-    Story => (
-      <>
-        <style>{`
-          .graphiql-top-bar-method-toggle--attention {
-            animation-delay: -0.7s !important;
-            animation-play-state: paused !important;
-          }
-        `}</style>
-        <Story />
-      </>
-    ),
-  ],
+/** GET stays selected for queries while the transport sends mutations via POST. */
+export const MutationWithGetSelected: Story = {
   render: () => (
     <Tooltip.Provider>
       <TopBarView
@@ -141,13 +127,10 @@ export const MutationBlockedOverGet: Story = {
         url="https://api.example.com/graphql"
         method="GET"
         supportedMethods={['GET', 'POST']}
-        runDisabledReason="Mutations can only be sent via POST"
         runButton={
           <ExecuteButtonView
             isFetching={false}
-            transportMethod="GET"
             operations={opsOf('mutation CreateWidget { createWidget { id } }')}
-            runDisabledReason="Mutations can only be sent via POST"
             onRun={() => {}}
             onStop={() => {}}
           />

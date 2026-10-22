@@ -387,11 +387,9 @@ const transport = createTransport({
 });
 ```
 
-Direct calls to `transport.send()` route mutations through `POST`, even when `GET` or `QUERY` is selected. If `POST` isn't included in `supportedMethods`, the transport rejects the mutation.
+`createTransport` routes mutations through POST, including operations started from GraphiQL's Run button, operation dropdown, or keyboard shortcut. The selected method applies to queries and remains selected after running a mutation. If POST is unavailable, the transport rejects the mutation without sending it. Discovery uses the current request headers before making this decision, so a header change can reveal newly available POST support.
 
-In GraphiQL, select **POST** before running a mutation. With **GET** or **QUERY** selected, Run is disabled with the explanation **Mutations can only be sent via POST**. The operation dropdown and keyboard shortcut apply the same restriction. When more than one method is available, the top bar's method control cycles through `supportedMethods`; for a blocked mutation, selecting the control chooses **POST** when supported.
-
-Discovery runs when an HTTP operation executes. If POST is unavailable in the selector and you change authentication headers, run a query to refresh the available methods before selecting POST for a mutation. You can also configure `supportedMethods` explicitly when the endpoint's capabilities are known.
+When more than one method is available, the top bar's method control cycles through `supportedMethods`. GraphiQL delegates HTTP method policy to the transport; custom transports must also keep mutations off GET and QUERY.
 
 ### Custom transports (FAQ)
 

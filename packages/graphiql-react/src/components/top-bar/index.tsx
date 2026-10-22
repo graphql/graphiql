@@ -8,11 +8,6 @@ import { useGraphiQL, useGraphiQLActions } from '../provider';
 import { Tooltip } from '../tooltip';
 import { ExecuteButton } from '../execute-button';
 import { GraphQLLogoIcon } from '../../icons';
-import { clsx } from 'clsx';
-import {
-  getRunBlockReason,
-  resolveActiveOperation,
-} from '../../utility/run-block';
 import './index.css';
 
 export type TopBarProps = {
@@ -32,12 +27,6 @@ export const TopBar: FC<TopBarProps> = ({ version, brand }) => {
   const transportSupportedMethods = useGraphiQL(
     state => state.transportSupportedMethods,
   );
-  const runDisabledReason = useGraphiQL(state =>
-    getRunBlockReason(
-      state.transportMethod,
-      resolveActiveOperation(state.operations, state.operationName),
-    ),
-  );
 
   const url = transport?.url ?? '—';
   const method: HttpMethod = transportMethod ?? 'POST';
@@ -50,7 +39,6 @@ export const TopBar: FC<TopBarProps> = ({ version, brand }) => {
       url={url}
       method={method}
       supportedMethods={supportedMethods}
-      runDisabledReason={runDisabledReason}
       runButton={<ExecuteButton />}
       onSetMethod={setTransportMethod}
     />
@@ -63,11 +51,6 @@ export type TopBarViewProps = {
   url: string;
   method: HttpMethod;
   supportedMethods: HttpMethod[];
-  /**
-   * Non-null when a run is blocked; drives the method toggle's attention state.
-   * The reason itself is surfaced by the run control.
-   */
-  runDisabledReason?: string | null;
   /** The run control, rendered at the end of the bar. */
   runButton?: ReactNode;
   onSetMethod: (method: HttpMethod) => void;
@@ -79,21 +62,15 @@ export const TopBarView: FC<TopBarViewProps> = ({
   url,
   method,
   supportedMethods,
-  runDisabledReason = null,
   runButton,
   onSetMethod,
 }) => {
   const canSwitch = supportedMethods.length > 1;
-  const isBlocked = runDisabledReason !== null;
-  // Clicking the chip cycles to the next supported method. When a mutation is
-  // blocked on a safe method (GET/QUERY), the chip pulses and instead jumps
-  // straight to POST so a single click resolves the block.
+  // Clicking the chip cycles to the next supported method.
   const nextMethod =
     supportedMethods[
       (supportedMethods.indexOf(method) + 1) % supportedMethods.length
     ] ?? method;
-  const switchTarget =
-    isBlocked && supportedMethods.includes('POST') ? 'POST' : nextMethod;
 
   return (
     <header className="graphiql-top-bar" role="banner">
@@ -113,20 +90,22 @@ export const TopBarView: FC<TopBarViewProps> = ({
       <div className="graphiql-top-bar-divider" aria-hidden="true" />
 
       {canSwitch ? (
-        <Tooltip label={`Switch to ${switchTarget}`}>
+        <Tooltip label={`Switch query method to ${nextMethod}`}>
           <button
             type="button"
-            className={clsx(
-              'graphiql-top-bar-method-toggle',
-              isBlocked && 'graphiql-top-bar-method-toggle--attention',
-            )}
-            onClick={() => onSetMethod(switchTarget)}
+            className="graphiql-top-bar-method-toggle"
+            onClick={() => onSetMethod(nextMethod)}
           >
             {method}
           </button>
         </Tooltip>
       ) : (
-        <span className="graphiql-top-bar-method-label">{method}</span>
+        <span
+          className="graphiql-top-bar-method-label"
+          title="HTTP method for queries"
+        >
+          {method}
+        </span>
       )}
 
       <div className="graphiql-top-bar-endpoint">
