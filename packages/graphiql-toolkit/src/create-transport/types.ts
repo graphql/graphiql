@@ -60,7 +60,7 @@ export type TransportResponse = {
  *   but subject to URL length limits.
  * - `QUERY` sends a JSON request body like `POST`, but is safe and idempotent
  *   like `GET` (per the HTTP QUERY method), so responses stay cacheable. See
- *   https://datatracker.ietf.org/doc/draft-ietf-httpbis-safe-method-w-body/
+ *   https://www.rfc-editor.org/rfc/rfc10008.html
  *
  * Mutations may only be sent over `POST`, since `GET` and `QUERY` are safe.
  */
@@ -81,14 +81,17 @@ export type Transport = {
    */
   method: HttpMethod;
   /**
-   * HTTP methods this transport is configured to use. Defaults to `['POST']`.
+   * Currently available HTTP methods. May change after discovery; an empty
+   * list means the endpoint advertises no usable methods.
    */
   supportedMethods: HttpMethod[];
   /**
-   * Present only when `supportedMethods` has more than one entry. Switches the
-   * active HTTP method used by subsequent `send()` calls.
+   * Switches the active HTTP method used by subsequent `send()` calls.
+   * Optional for custom transports that do not support method selection.
    */
   setMethod?: (method: HttpMethod) => void;
+  /** Subscribe to changes in method or supportedMethods. Returns an unsubscribe function. */
+  subscribe?: (listener: () => void) => () => void;
   send(
     request: TransportRequest,
   ): Promise<TransportResponse> | AsyncIterable<TransportResponse>;
@@ -159,9 +162,10 @@ export type CreateTransportOptions = {
    */
   method?: HttpMethod;
   /**
-   * HTTP methods this transport should advertise as supported.
-   * Defaults to `['POST']`. Pass e.g. `['GET', 'POST']` or
-   * `['GET', 'POST', 'QUERY']` to allow switching.
+   * Explicit supported methods. A nonempty list bypasses automatic discovery.
+   * When omitted, the first HTTP execution discovers methods using OPTIONS
+   * and Allow, repeating when effective request headers change. If discovery
+   * is unavailable, the initial method (normally POST) remains available.
    */
   supportedMethods?: HttpMethod[];
 };

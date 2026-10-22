@@ -183,7 +183,7 @@ describe('createTransport — query / mutation', () => {
       extensions: { persistedQuery: { sha256Hash: 'abc' } },
     });
 
-    const [, fetchInit] = mockFetch.mock.calls[0] as [string, RequestInit];
+    const [, fetchInit] = mockFetch.mock.calls.at(-1)! as [string, RequestInit];
     expect(JSON.parse(fetchInit.body as string)).toMatchObject({
       extensions: { persistedQuery: { sha256Hash: 'abc' } },
     });
@@ -202,7 +202,7 @@ describe('createTransport — query / mutation', () => {
 
     await transport.send({ query: QUERY, signal: controller.signal });
 
-    const [, fetchInit] = mockFetch.mock.calls[0] as [string, RequestInit];
+    const [, fetchInit] = mockFetch.mock.calls.at(-1)! as [string, RequestInit];
     expect(fetchInit.signal).toBe(controller.signal);
   });
 });
@@ -281,14 +281,14 @@ describe('createTransport — GET method', () => {
     vi.clearAllMocks();
   });
 
-  it('defaults to POST-only: no setMethod, requests go out as POST', () => {
+  it('starts with POST available before discovery', () => {
     const transport = createTransport({
       url: URL,
       fetch: mockFetch as typeof fetch,
     });
     expect(transport.method).toBe('POST');
     expect(transport.supportedMethods).toEqual(['POST']);
-    expect(transport.setMethod).toBeUndefined();
+    expect(transport.setMethod).toBeDefined();
   });
 
   it("GET-only: active method is GET when supportedMethods is ['GET']", () => {
@@ -299,7 +299,7 @@ describe('createTransport — GET method', () => {
     });
     expect(transport.method).toBe('GET');
     expect(transport.supportedMethods).toEqual(['GET']);
-    expect(transport.setMethod).toBeUndefined();
+    expect(transport.setMethod).toBeDefined();
   });
 
   it('GET-only: a query goes out as GET with params in the URL', async () => {
@@ -506,7 +506,7 @@ describe('createTransport — GET method', () => {
 
     await transport.send({ query: QUERY });
 
-    const [, fetchInit] = mockFetch.mock.calls[0] as [string, RequestInit];
+    const [, fetchInit] = mockFetch.mock.calls.at(-1)! as [string, RequestInit];
     expect((fetchInit.headers as Record<string, string>)['content-type']).toBe(
       'application/json',
     );
@@ -534,7 +534,7 @@ describe('createTransport — GET method', () => {
       // consume
     }
 
-    const [, fetchInit] = mockFetch.mock.calls[0] as [string, RequestInit];
+    const [, fetchInit] = mockFetch.mock.calls.at(-1)! as [string, RequestInit];
     expect((fetchInit.headers as Record<string, string>).accept).toMatch(
       'application/graphql-response+json',
     );
