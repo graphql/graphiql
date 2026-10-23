@@ -365,37 +365,42 @@ Use `onResponse(response => { ... })` to observe each `TransportResponse`, inclu
 
 ### Request methods
 
-`createTransport` supports three HTTP methods:
+`createTransport` automatically selects the first supported method in this order for queries:
 
-- `POST` is the default. It sends queries and mutations in a JSON request body.
-- `GET` sends queries in the URL without a request body.
-- [`QUERY`](https://www.rfc-editor.org/rfc/rfc10008.html) sends queries in a JSON request body but is defined as safe and idempotent.
+1. [`QUERY`](https://www.rfc-editor.org/rfc/rfc10008.html) sends a JSON request body and is defined as safe and idempotent.
+2. `POST` sends a JSON request body.
+3. `GET` sends the query, operation name, variables, and extensions in the URL without a request body.
 
-By default, the transport discovers available methods with an `OPTIONS` request without a body before its first HTTP operation, including introspection. It reads the endpoint's `Allow` header and updates the method selector. The request uses the effective headers, including changes made by `onBeforeSend` hooks. Concurrent operations share discovery; changing the headers triggers it again. If you supply a schema, discovery waits until you execute an HTTP operation.
+Before its first HTTP operation, including introspection, the transport discovers available methods with an `OPTIONS` request without a body. It reads the endpoint's `Allow` header using the effective request headers, including changes made by `onBeforeSend` hooks. Concurrent operations share discovery; changing the headers triggers it again. If you supply a schema, discovery waits until you execute an HTTP operation.
 
-If discovery fails, exceeds two seconds, or returns no usable `Allow` header, the transport keeps the initial method (POST by default). A valid advertisement containing no usable methods blocks HTTP requests. Discovery preserves the selected method when supported; otherwise it selects POST, then QUERY, then GET. It does not automatically retry operations or negotiate QUERY request formats through `Accept-Query`.
+If discovery fails, exceeds two seconds, or returns no usable `Allow` header, the transport falls back to POST (or the configured `method` override). A valid advertisement containing no usable methods blocks HTTP requests. Discovery does not automatically retry operations or negotiate QUERY request formats through `Accept-Query`.
 
 For cross-origin discovery, the server must permit OPTIONS and expose `Allow` with `Access-Control-Expose-Headers: Allow`. Browser preflight and its `Access-Control-Allow-Methods` header do not replace endpoint discovery.
 
-Use `method` to set the initial method. To skip discovery, pass a nonempty `supportedMethods` array listing the methods users can select:
+Use `method` to override the automatic query method for testing. The override fails if discovery says the method is unavailable. To skip discovery, also pass a nonempty `supportedMethods` array listing the endpoint's capabilities:
 
 ```ts
 const transport = createTransport({
   url: 'https://my.endpoint/graphql',
-  method: 'POST',
-  supportedMethods: ['POST', 'GET', 'QUERY'],
+  method: 'GET',
+  supportedMethods: ['GET', 'POST'],
 });
+
+transport.setMethod?.('POST'); // Override subsequent queries.
+transport.setMethod?.(); // Restore automatic selection (POST for this endpoint).
 ```
 
-`createTransport` routes mutations through POST, including operations started from GraphiQL's Run button, operation dropdown, or keyboard shortcut. The selected method applies to queries and remains selected after running a mutation. If POST is unavailable, the transport rejects the mutation without sending it. Discovery uses the current request headers before making this decision, so a header change can reveal newly available POST support.
+This example sends queries through GET and mutations through POST. Omitting `method` would prefer POST over GET. If discovery is unavailable with `method: 'GET'` and no explicit capabilities, only GET is assumed available; configure `supportedMethods: ['GET', 'POST']` when both methods are known to work.
 
-When more than one method is available, the top bar's method control cycles through `supportedMethods`. GraphiQL delegates HTTP method policy to the transport; custom transports must also keep mutations off GET and QUERY.
+Mutations always require POST, including operations started from GraphiQL's Run button, operation dropdown, or keyboard shortcut. If POST is unavailable, the transport rejects the mutation without sending it. Operations whose type cannot be determined also require POST. Discovery uses the current request headers before making this decision.
+
+GraphiQL's top bar shows the endpoint without a method chip or switcher. The response pane displays `TransportResponse.method` alongside timing and size, so it shows the actual HTTP method for that response. This field is optional and is omitted for WebSocket events or custom transports that cannot report it. GraphiQL delegates HTTP method policy to the transport; custom transports must also keep mutations off GET and QUERY.
 
 ### Custom transports (FAQ)
 
 If you hand-rolled a `Fetcher` rather than using `createGraphiQLFetcher`, migrate by implementing the `Transport` interface directly. A `Transport` declares its endpoint `url`, active `method`, `supportedMethods`, and a `send(request)` method. For queries and mutations it returns a `Promise<TransportResponse>`; for subscriptions and incremental delivery it returns an `AsyncIterable<TransportResponse>`, one entry per event or chunk.
 
-If your transport changes `method` or `supportedMethods` asynchronously, implement the optional `subscribe(listener)` method and notify listeners after updating those properties. Return an unsubscribe function. GraphiQL reads the current properties on each notification; it does not perform discovery for custom transports. Transports with static capabilities can omit `subscribe`.
+Include the actual HTTP method in each `TransportResponse.method` when your transport can observe it. GraphiQL displays response metadata directly; it does not discover capabilities or subscribe to method changes on custom transports.
 
 **Before (custom fetcher):**
 
@@ -456,6 +461,7 @@ const transport: Transport = {
     });
     return {
       ok: response.ok && !body.errors?.length,
+      method: 'POST',
       status: response.status,
       statusText: response.statusText,
       headers,
