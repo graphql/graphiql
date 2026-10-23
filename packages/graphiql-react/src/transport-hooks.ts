@@ -143,7 +143,6 @@ export class TransportHookRegistry {
         return transport.supportedMethods;
       },
       setMethod: transport.setMethod?.bind(transport),
-      subscribe: transport.subscribe?.bind(transport),
       send(request: TransportRequest): AsyncIterable<TransportResponse> {
         return {
           [Symbol.asyncIterator]() {

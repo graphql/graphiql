@@ -29,68 +29,10 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-function observableTransport() {
-  const listeners = new Set<() => void>();
-  const transport: Transport = {
-    url: '/graphql',
-    method: 'POST',
-    supportedMethods: ['POST'],
-    send: async () => ({
-      ok: true,
-      body: {},
-      timing: { totalMs: 0 },
-      size: {},
-    }),
-    subscribe(listener) {
-      listeners.add(listener);
-      return () => listeners.delete(listener);
-    },
-    setMethod(method) {
-      this.method = method;
-      for (const listener of listeners) {
-        listener();
-      }
-    },
-  };
-  return { transport, listeners };
-}
-
-it('synchronizes available methods even when the selected method does not change', () => {
-  const { transport, listeners } = observableTransport();
-  const { result, unmount } = renderHook(() => useGraphiQL(state => state), {
-    wrapper: ({ children }) => (
-      <GraphiQLProvider transport={transport} schema={null}>
-        {children}
-      </GraphiQLProvider>
-    ),
-  });
-
-  act(() => {
-    transport.supportedMethods = ['POST', 'QUERY'];
-    for (const listener of listeners) {
-      listener();
-    }
-  });
-  expect(result.current.transportMethod).toBe('POST');
-  expect(result.current.transportSupportedMethods).toEqual(['POST', 'QUERY']);
-
-  act(() => result.current.actions.setTransportMethod('QUERY'));
-  expect(transport.method).toBe('QUERY');
-  expect(result.current.transportMethod).toBe('QUERY');
-  expect(result.current.transport!.method).toBe('QUERY');
-
-  act(() => transport.setMethod!('POST'));
-  expect(result.current.transportMethod).toBe('POST');
-  unmount();
-  expect(listeners.size).toBe(0);
-});
-
-it('releases subscriptions when replacing a transport or switching to a fetcher', () => {
-  const first = observableTransport();
-  const second = observableTransport();
-  second.transport.method = 'GET';
-  second.transport.supportedMethods = ['GET'];
-  let transport: Transport | undefined = first.transport;
+it('replaces the wrapped transport and can switch back to a fetcher', () => {
+  const first = createTransport({ url: '/first', supportedMethods: ['POST'] });
+  const second = createTransport({ url: '/second', supportedMethods: ['GET'] });
+  let transport: Transport | undefined = first;
   const fetcher = async () => ({ data: {} });
   const { result, rerender } = renderHook(() => useGraphiQL(state => state), {
     wrapper: ({ children }: { children: ReactNode }) => (
@@ -103,18 +45,16 @@ it('releases subscriptions when replacing a transport or switching to a fetcher'
     ),
   });
 
-  transport = second.transport;
+  expect(result.current.transport?.url).toBe('/first');
+  transport = second;
   rerender();
-  expect(first.listeners.size).toBe(0);
-  expect(second.listeners.size).toBe(1);
-  expect(result.current.transportMethod).toBe('GET');
-  expect(result.current.transportSupportedMethods).toEqual(['GET']);
+  expect(result.current.transport?.url).toBe('/second');
+  expect(result.current.transport?.method).toBe('GET');
 
   transport = undefined;
   rerender();
-  expect(second.listeners.size).toBe(0);
-  expect(result.current.transportMethod).toBeNull();
-  expect(result.current.transportSupportedMethods).toBeNull();
+  expect(result.current.transport).toBeUndefined();
+  expect(result.current.fetcher).toBe(fetcher);
 });
 
 it('discovers through the wrapped transport using headers produced by request hooks', async () => {
@@ -165,14 +105,11 @@ it('discovers through the wrapped transport using headers produced by request ho
 
   expect(fetch.mock.calls.map(([, init]) => init?.method)).toEqual([
     'OPTIONS',
-    'POST',
+    'QUERY',
   ]);
   expect(beforeSend).toHaveBeenCalledOnce();
   expect(onResponse).toHaveBeenCalledOnce();
-  expect(result.current.state.transportSupportedMethods).toEqual([
-    'POST',
-    'QUERY',
-  ]);
+  expect(onResponse.mock.calls[0]?.[0]).toMatchObject({ method: 'QUERY' });
   expect(result.current.state.transport!.supportedMethods).toEqual([
     'POST',
     'QUERY',

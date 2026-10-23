@@ -1,6 +1,7 @@
 'use no memo';
 
 import type { FC } from 'react';
+import type { HttpMethod } from '@graphiql/toolkit';
 import { SegmentedControl } from '../../segmented-control';
 import { ToolbarButton } from '../../toolbar-button';
 import { CloseIcon, CopyIcon } from '../../../icons';
@@ -8,6 +9,8 @@ import type { ResponseView } from '../../../stores';
 import './index.css';
 
 export type ResponseHeaderProps = {
+  /** HTTP method used for the request that produced this response. */
+  method?: HttpMethod;
   /** HTTP-equivalent status code from the last response. */
   status?: number;
   /** HTTP status text accompanying the status code (e.g. "OK", "Not Found"). */
@@ -50,6 +53,7 @@ const VIEW_OPTIONS: { value: ResponseView; label: string }[] = [
 ];
 
 export const ResponseHeader: FC<ResponseHeaderProps> = ({
+  method,
   status,
   statusText,
   timeMs,
@@ -108,6 +112,11 @@ export const ResponseHeader: FC<ResponseHeaderProps> = ({
                   {statusText}
                 </span>
               )}
+            </span>
+          )}
+          {method && (
+            <span className="graphiql-response-method" title="Request method">
+              {method}
             </span>
           )}
           {timeMs !== undefined && (

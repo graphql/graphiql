@@ -1,11 +1,9 @@
 // React Compiler can stale-cache the references returned by zustand hooks;
-// opt this file out so `useGraphiQL` / `useGraphiQLActions` stay live.
+// opt this file out so `useGraphiQL` stays live.
 'use no memo';
 
 import type { FC, ReactNode } from 'react';
-import type { HttpMethod } from '@graphiql/toolkit';
-import { useGraphiQL, useGraphiQLActions } from '../provider';
-import { Tooltip } from '../tooltip';
+import { useGraphiQL } from '../provider';
 import { ExecuteButton } from '../execute-button';
 import { GraphQLLogoIcon } from '../../icons';
 import './index.css';
@@ -21,26 +19,14 @@ export type TopBarProps = {
 };
 
 export const TopBar: FC<TopBarProps> = ({ version, brand }) => {
-  const { setTransportMethod } = useGraphiQLActions();
-  const transport = useGraphiQL(state => state.transport);
-  const transportMethod = useGraphiQL(state => state.transportMethod);
-  const transportSupportedMethods = useGraphiQL(
-    state => state.transportSupportedMethods,
-  );
-
-  const url = transport?.url ?? '—';
-  const method: HttpMethod = transportMethod ?? 'POST';
-  const supportedMethods = transportSupportedMethods ?? ['POST'];
+  const url = useGraphiQL(state => state.transport?.url ?? '—');
 
   return (
     <TopBarView
       version={version}
       brand={brand}
       url={url}
-      method={method}
-      supportedMethods={supportedMethods}
       runButton={<ExecuteButton />}
-      onSetMethod={setTransportMethod}
     />
   );
 };
@@ -49,29 +35,16 @@ export type TopBarViewProps = {
   version?: string;
   brand?: ReactNode;
   url: string;
-  method: HttpMethod;
-  supportedMethods: HttpMethod[];
   /** The run control, rendered at the end of the bar. */
   runButton?: ReactNode;
-  onSetMethod: (method: HttpMethod) => void;
 };
 
 export const TopBarView: FC<TopBarViewProps> = ({
   version,
   brand,
   url,
-  method,
-  supportedMethods,
   runButton,
-  onSetMethod,
 }) => {
-  const canSwitch = supportedMethods.length > 1;
-  // Clicking the chip cycles to the next supported method.
-  const nextMethod =
-    supportedMethods[
-      (supportedMethods.indexOf(method) + 1) % supportedMethods.length
-    ] ?? method;
-
   return (
     <header className="graphiql-top-bar" role="banner">
       <div className="graphiql-top-bar-brand">
@@ -88,25 +61,6 @@ export const TopBarView: FC<TopBarViewProps> = ({
       </div>
 
       <div className="graphiql-top-bar-divider" aria-hidden="true" />
-
-      {canSwitch ? (
-        <Tooltip label={`Switch query method to ${nextMethod}`}>
-          <button
-            type="button"
-            className="graphiql-top-bar-method-toggle"
-            onClick={() => onSetMethod(nextMethod)}
-          >
-            {method}
-          </button>
-        </Tooltip>
-      ) : (
-        <span
-          className="graphiql-top-bar-method-label"
-          title="HTTP method for queries"
-        >
-          {method}
-        </span>
-      )}
 
       <div className="graphiql-top-bar-endpoint">
         <span className="graphiql-top-bar-endpoint-url">{url}</span>

@@ -47,34 +47,22 @@ async function collect(
 describe('TransportHookRegistry', () => {
   it('forwards live transport state and binds methods to the original transport', () => {
     const registry = new TransportHookRegistry();
-    const listeners = new Set<() => void>();
     const transport: Transport = {
       ...makeTransport(async () => makeResponse()),
       setMethod(method) {
-        this.method = method;
-        for (const listener of listeners) {
-          listener();
-        }
-      },
-      subscribe(listener) {
         expect(this).toBe(transport);
-        listeners.add(listener);
-        return () => listeners.delete(listener);
+        this.method = method ?? 'POST';
       },
     };
     const wrapped = registry.wrap(transport);
-    const listener = vi.fn();
-    const unsubscribe = wrapped.subscribe!(listener);
 
     transport.supportedMethods = ['POST', 'QUERY'];
     wrapped.setMethod!('QUERY');
 
     expect(wrapped.method).toBe('QUERY');
     expect(wrapped.supportedMethods).toEqual(['POST', 'QUERY']);
-    expect(listener).toHaveBeenCalledOnce();
-    unsubscribe();
-    wrapped.setMethod!('POST');
-    expect(listener).toHaveBeenCalledOnce();
+    wrapped.setMethod!();
+    expect(wrapped.method).toBe('POST');
   });
 
   describe('onBeforeSend', () => {

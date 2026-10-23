@@ -2,7 +2,7 @@
 
 `createTransport` builds a `Transport`: the wire-level primitive `<GraphiQL>`
 uses to run operations. Unlike a `Fetcher`, a `Transport` response carries the
-real HTTP metadata — status, headers, timing, and request/response sizes.
+real HTTP metadata: method, status, headers, timing, and request/response sizes.
 
 ```ts
 import { createTransport } from '@graphiql/toolkit';
@@ -12,40 +12,35 @@ const transport = createTransport({ url: 'https://my.endpoint/graphql' });
 // <GraphiQL transport={transport} />
 ```
 
-Queries and mutations work with nothing but a `url`. `@defer`/`@stream`
-incremental delivery over `multipart/mixed` is on by default (disable it with
-`enableIncrementalDelivery: false`). The initial query method is POST. Mutations use POST regardless of the selected
-query method, or fail without sending if POST is unavailable. GraphiQL delegates
-method routing to the transport, so a mutation can run while GET or QUERY is
-selected without changing the query method.
+Queries and mutations work with nothing but a `url`. `@defer`/`@stream` incremental delivery over `multipart/mixed` is on by default (disable it with `enableIncrementalDelivery: false`). Queries automatically use the first available method in this order: QUERY, POST, GET. Mutations use POST or fail without sending if POST is unavailable. GraphiQL delegates routing to the transport and shows the actual HTTP method in the response pane beside timing and size.
 
 ## HTTP method discovery
 
-Before the first HTTP operation, `createTransport` sends an `OPTIONS`
-request without a body and reads the endpoint's `Allow` header to discover support for GET,
-POST, and QUERY. Discovery uses the same fetch implementation and effective
-request headers as the operation. Concurrent requests share discovery, and a
-change in headers triggers discovery again. Subscriptions don't trigger it.
+Before the first HTTP operation, `createTransport` sends an `OPTIONS` request without a body and reads the endpoint's `Allow` header to discover support for GET, POST, and QUERY. Discovery uses the same fetch implementation and effective request headers as the operation. Concurrent requests share discovery, and a change in headers triggers discovery again. Subscriptions don't trigger it.
 
-The transport keeps the selected method if it is supported; otherwise it
-selects POST, then QUERY, then GET. If discovery fails, takes more than two
-seconds, or provides no usable `Allow` header, the transport keeps the initial
-method (`method`, or POST by default). A valid `Allow` header with no supported
-GraphQL HTTP methods causes HTTP operations to fail without sending them.
+If discovery fails, takes more than two seconds, or provides no usable `Allow` header, the transport falls back to POST (or the configured `method` override). A valid `Allow` header with no supported GraphQL HTTP methods causes HTTP operations to fail without sending them. Operations whose type cannot be determined also require POST.
 
-To skip discovery and configure the available methods yourself, pass a nonempty
-`supportedMethods` array. For example, `supportedMethods: ['POST']` keeps every
-HTTP operation on POST and makes no OPTIONS request.
+To skip discovery and configure the available methods yourself, pass a nonempty `supportedMethods` array. For example, `supportedMethods: ['POST']` keeps every HTTP operation on POST and makes no OPTIONS request. The order of this array does not change the automatic preference.
 
-For cross-origin discovery, the server must allow the OPTIONS request and
-expose `Allow` with `Access-Control-Expose-Headers: Allow`. Browser CORS
-preflight is separate from this discovery request. Discovery checks HTTP
-methods only; it does not negotiate QUERY formats through `Accept-Query`.
+For cross-origin discovery, the server must allow the OPTIONS request and expose `Allow` with `Access-Control-Expose-Headers: Allow`. Browser CORS preflight is separate from this discovery request. Discovery checks HTTP methods only; it does not negotiate QUERY formats through `Accept-Query` or automatically retry an operation with another method.
 
-`transport.subscribe(listener)` returns an unsubscribe function. The listener
-runs when `method` or `supportedMethods` changes; read those properties for the
-current values. GraphiQL subscribes automatically to update its method selector.
-Custom transports with static capabilities can omit `subscribe`.
+## Overriding the query method
+
+Pass `method` to test a particular query method. GET puts the query, operation name, variables, and extensions in the URL, without a request body. POST and QUERY send a JSON body. An override affects queries only; mutations still require POST. If discovery excludes the overridden method, the query fails without sending instead of silently selecting another method.
+
+```ts
+const transport = createTransport({
+  url: 'https://my.endpoint/graphql',
+  method: 'GET',
+});
+
+transport.setMethod?.('POST'); // Override subsequent queries.
+transport.setMethod?.(); // Restore automatic QUERY → POST → GET selection.
+```
+
+To test GET queries and POST mutations against an endpoint with known capabilities without OPTIONS discovery, supply both `method: 'GET'` and `supportedMethods: ['GET', 'POST']`. Setting only `supportedMethods: ['GET', 'POST']` automatically prefers POST. If discovery is unavailable with `method: 'GET'`, only GET is assumed available, so mutations are rejected unless POST is explicitly configured.
+
+`transport.method` reports the query override or the automatic choice for the latest capabilities. It does not describe an individual request. Use `TransportResponse.method` for the HTTP method that produced that response; it is absent for WebSocket events and other transports that cannot report it. GraphiQL does not keep a separate method selection or capability subscription.
 
 ## Sending operations
 

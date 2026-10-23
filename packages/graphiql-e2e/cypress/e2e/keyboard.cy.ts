@@ -53,10 +53,10 @@ describe('keyboard navigation', () => {
     cy.get('.graphiql-query-editor .view-lines').should('exist');
   });
 
-  it('Tab from a fresh load lands on the top bar method chip, and Shift+Tab returns to the page', () => {
+  it('Tab from a fresh load lands on Run, and Shift+Tab returns to the page', () => {
     cy.get('.graphiql-top-bar-brand').realClick();
     cy.realPress('Tab');
-    cy.focused().should('have.class', 'graphiql-top-bar-method-toggle');
+    cy.focused().should('have.attr', 'aria-label', 'Run operation');
     // The brand mark isn't itself focusable, so Shift+Tab from the first
     // real stop leaves the document (nothing before it in tab order).
     cy.realPress(['Shift', 'Tab']);
@@ -73,7 +73,6 @@ describe('keyboard navigation', () => {
   // toolbar changes while still proving each segment is keyboard-reachable
   // in order.
   const TOP_BAR_AND_RAIL_LABELS = [
-    { className: 'graphiql-top-bar-method-toggle' },
     { ariaLabel: 'Run operation' },
     { ariaLabel: 'Show Documentation Explorer' },
     { ariaLabel: 'Show History' },

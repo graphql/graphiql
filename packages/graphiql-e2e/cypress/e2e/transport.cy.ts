@@ -2,7 +2,7 @@
  * The E2E app in `packages/graphiql-e2e/src/e2e.ts` uses `createTransport` and the
  * `<GraphiQL transport={...}>` prop. These tests confirm that the response pane
  * header shows real wire metadata from the actual HTTP response (status code,
- * timing, response size) and that the upgrade banner is NOT shown because
+ * method, timing, response size) and that the upgrade banner is NOT shown because
  * `transport` is in use, not `fetcher`.
  */
 
@@ -21,6 +21,32 @@ describe('Transport API + response pane header', () => {
       'have.class',
       'graphiql-response-status--ok',
     );
+  });
+
+  it('Shows the actual POST method with no toolbar method control', () => {
+    cy.visitGraphiQL({ query: testQuery });
+    cy.clickExecuteQuery();
+    cy.get('.graphiql-response-method').should('have.text', 'POST');
+    cy.get('.graphiql-top-bar-method-toggle').should('not.exist');
+    cy.get('.graphiql-top-bar-method-label').should('not.exist');
+  });
+
+  it('Discovers a GET-only endpoint and displays the actual GET method', () => {
+    cy.intercept('OPTIONS', '/graphql', {
+      statusCode: 204,
+      headers: { Allow: 'GET' },
+    }).as('discovery');
+    cy.intercept('GET', '/graphql*', request => {
+      if (new URL(request.url).searchParams.get('operationName') === 'Read') {
+        request.alias = 'read';
+      }
+    });
+    cy.visitGraphiQL({ query: 'query Read { __typename }' });
+    cy.wait('@discovery');
+    cy.clickExecuteQuery();
+    cy.wait('@read').its('request.method').should('eq', 'GET');
+    cy.get('.graphiql-response-method').should('have.text', 'GET');
+    cy.get('.result-window').should('contain.text', '__typename');
   });
 
   it('Shows a real timing badge in ms', () => {
@@ -59,7 +85,7 @@ describe('Transport API + response pane header', () => {
 });
 
 describe('Transport routing for mutations', () => {
-  it('executes mutations through POST from the button, dropdown, and shortcut while GET stays selected', () => {
+  it('executes mutations through POST from the button, dropdown, and shortcut', () => {
     const mutationMethods: string[] = [];
     cy.intercept('/graphql*', request => {
       const operationName =
@@ -74,15 +100,12 @@ describe('Transport routing for mutations', () => {
     cy.visitGraphiQL({
       query: 'query Read { __typename }\nmutation Change { __typename }\n',
     });
-    cy.get('.graphiql-top-bar-method-toggle').click();
-    cy.get('.graphiql-top-bar-method-toggle').click();
-    cy.get('.graphiql-top-bar-method-toggle').should('have.text', 'GET');
     cy.activateOperation('Change');
 
     cy.get('[aria-label="Run operation"]').should('be.enabled').click();
     cy.wait('@mutation').its('request.method').should('eq', 'POST');
     cy.get('.result-window').should('contain.text', 'MutationType');
-    cy.get('.graphiql-top-bar-method-toggle').should('have.text', 'GET');
+    cy.get('.graphiql-response-method').should('have.text', 'POST');
 
     cy.activateOperation('Read');
     cy.get('[aria-label="Choose operation to run"]').click();
@@ -93,7 +116,7 @@ describe('Transport routing for mutations', () => {
       .click();
     cy.wait('@mutation').its('request.method').should('eq', 'POST');
     cy.get('.result-window').should('contain.text', 'MutationType');
-    cy.get('.graphiql-top-bar-method-toggle').should('have.text', 'GET');
+    cy.get('.graphiql-response-method').should('have.text', 'POST');
 
     cy.activateOperation('Change');
     cy.get('[aria-label="Run operation"]').should('be.enabled');
@@ -101,7 +124,7 @@ describe('Transport routing for mutations', () => {
     cy.realPress([Cypress.platform === 'darwin' ? 'Meta' : 'Control', 'Enter']);
     cy.wait('@mutation').its('request.method').should('eq', 'POST');
     cy.get('.result-window').should('contain.text', 'MutationType');
-    cy.get('.graphiql-top-bar-method-toggle').should('have.text', 'GET');
+    cy.get('.graphiql-response-method').should('have.text', 'POST');
     cy.then(() =>
       expect(mutationMethods).to.deep.equal(['POST', 'POST', 'POST']),
     );
