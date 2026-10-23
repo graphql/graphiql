@@ -74,7 +74,7 @@
     "concurrently": "^10.0.5",
     "cross-env": "^10.1.0",
     "cypress": "^16.0.0",
-    "graphql": "^16.11.0",
+    "graphql": "^17.0.2",
     "lightningcss": "^1.29.3",
     "monaco-editor": "0.52.2",
     "react": "^19.1.0",
