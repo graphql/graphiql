@@ -12,28 +12,6 @@ packages:
 minimumReleaseAge: 4320
 minimumReleaseAgeExclude:
   - monaco-editor@0.57.0
-  - typescript@7.1.0-beta
-  - '@typescript/typescript-aix-ppc64@7.1.0-beta'
-  - '@typescript/typescript-android-arm64@7.1.0-beta'
-  - '@typescript/typescript-darwin-arm64@7.1.0-beta'
-  - '@typescript/typescript-darwin-x64@7.1.0-beta'
-  - '@typescript/typescript-freebsd-arm64@7.1.0-beta'
-  - '@typescript/typescript-freebsd-x64@7.1.0-beta'
-  - '@typescript/typescript-linux-arm@7.1.0-beta'
-  - '@typescript/typescript-linux-arm64@7.1.0-beta'
-  - '@typescript/typescript-linux-loong64@7.1.0-beta'
-  - '@typescript/typescript-linux-mips64el@7.1.0-beta'
-  - '@typescript/typescript-linux-ppc64@7.1.0-beta'
-  - '@typescript/typescript-linux-riscv64@7.1.0-beta'
-  - '@typescript/typescript-linux-s390x@7.1.0-beta'
-  - '@typescript/typescript-linux-x64@7.1.0-beta'
-  - '@typescript/typescript-netbsd-arm64@7.1.0-beta'
-  - '@typescript/typescript-netbsd-x64@7.1.0-beta'
-  - '@typescript/typescript-openbsd-arm64@7.1.0-beta'
-  - '@typescript/typescript-openbsd-x64@7.1.0-beta'
-  - '@typescript/typescript-sunos-x64@7.1.0-beta'
-  - '@typescript/typescript-win32-arm64@7.1.0-beta'
-  - '@typescript/typescript-win32-x64@7.1.0-beta'
 engineStrict: true
 nodeLinker: isolated
 linkWorkspacePackages: true
