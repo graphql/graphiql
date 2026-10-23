@@ -1,1 +1,0 @@
-declare module 'picomatch-browser';

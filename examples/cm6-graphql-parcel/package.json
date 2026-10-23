@@ -30,7 +30,7 @@
     "@codemirror/theme-one-dark": "^6",
     "@codemirror/view": "^6",
     "cm6-graphql": "^0.0",
-    "graphql": "^16"
+    "graphql": "^16.14.2"
   },
   "devDependencies": {
     "parcel": "^2",

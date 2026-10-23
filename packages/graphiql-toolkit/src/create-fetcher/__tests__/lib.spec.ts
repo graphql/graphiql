@@ -10,14 +10,9 @@ import 'isomorphic-fetch';
 
 vi.mock('graphql-ws');
 
-vi.mock('subscriptions-transport-ws');
-
 import { createClient as _createClient } from 'graphql-ws';
 
-import { SubscriptionClient as _SubscriptionClient } from 'subscriptions-transport-ws';
-
 const createClient = _createClient as Mock<typeof _createClient>;
-const SubscriptionClient = _SubscriptionClient as Mock;
 
 const exampleWithSubscription = parse(/* GraphQL */ `
   subscription Example {
@@ -77,12 +72,41 @@ describe('getWsFetcher', () => {
     await getWsFetcher({ url: '', wsClient: true });
     expect(createClient.mock.calls).toHaveLength(0);
   });
-  it('creates a subscriptions-transports-ws observable when custom legacyClient option is provided', async () => {
+  it('uses a custom legacyWsClient observable', async () => {
     // @ts-expect-error
     createClient.mockReturnValue(true);
-    await getWsFetcher({ url: '', legacyClient: true });
+    const unsubscribe = vi.fn();
+    const subscribe = vi.fn(
+      (sink: {
+        next(value: { data: { greeting: string } }): void;
+        complete(): void;
+      }) => {
+        queueMicrotask(() => {
+          sink.next({ data: { greeting: 'hello' } });
+          setTimeout(() => sink.complete(), 0);
+        });
+        return { unsubscribe };
+      },
+    );
+    const request = vi.fn(() => ({ subscribe }));
+    const fetcher = await getWsFetcher({
+      url: '',
+      legacyWsClient: { request },
+    });
+    const params = { query: 'subscription { greeting }' };
+    const results = [];
+    const iterable = (await fetcher!(params)) as AsyncIterable<{
+      data: { greeting: string };
+    }>;
+    for await (const result of iterable) {
+      results.push(result);
+    }
+
     expect(createClient.mock.calls).toHaveLength(0);
-    expect(SubscriptionClient.mock.calls).toHaveLength(0);
+    expect(request).toHaveBeenCalledWith(params);
+    expect(subscribe).toHaveBeenCalledOnce();
+    expect(unsubscribe).toHaveBeenCalledOnce();
+    expect(results).toEqual([{ data: { greeting: 'hello' } }]);
   });
 
   it('if subscriptionsUrl is provided, create a client on the fly', async () => {
@@ -92,7 +116,6 @@ describe('getWsFetcher', () => {
     expect(createClient.mock.calls[0]).toEqual([
       { connectionParams: {}, url: 'wss://example' },
     ]);
-    expect(SubscriptionClient.mock.calls).toHaveLength(0);
   });
 });
 

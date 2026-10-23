@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-server",
-  "version": "2.15.0",
+  "version": "3.0.0-rc.2",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net)",
@@ -31,19 +31,19 @@
     "typescript"
   ],
   "scripts": {
-    "build": "tsgo -p tsconfig.json && tsgo -p tsconfig.esm.json",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.esm.json",
     "test": "vitest run",
-    "types:check": "tsgo --noEmit"
+    "types:check": "tsc --noEmit"
   },
   "main": "dist/index.js",
   "module": "esm/index.js",
   "typings": "esm/index.d.ts",
   "peerDependencies": {
-    "graphql": "^16.0.0"
+    "graphql": "^16.11.0 || ^17.0.0"
   },
   "COMMENT": "please do not remove dependencies without thorough testing. many dependencies are not imported directly, as they are peer dependencies",
   "dependencies": {
-    "@astrojs/compiler": "^2.10.1",
+    "@astrojs/compiler": "^4.0.0",
     "@babel/parser": "^8.0.4",
     "@babel/types": "^8.0.4",
     "@graphql-tools/code-file-loader": "8.0.3",
@@ -54,7 +54,7 @@
     "fast-glob": "^3.2.7",
     "glob": "^13.0.6",
     "graphql-config": "^5.1.6",
-    "graphql-language-service": "^5.7.0",
+    "graphql-language-service": "^6.0.0-rc.1",
     "lru-cache": "^11.5.2",
     "node-abort-controller": "^3.0.1",
     "nullthrows": "^1.0.0",
@@ -71,8 +71,8 @@
   "devDependencies": {
     "@types/debounce-promise": "^3.1.9",
     "@types/glob": "^8.1.0",
-    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
-    "graphql": "^16.9.0",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "graphql": "^17.0.2",
     "msw": "^2.13.4",
     "vscode-languageserver-protocol": "^3.17.1"
   }

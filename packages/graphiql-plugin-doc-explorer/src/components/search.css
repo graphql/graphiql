@@ -1,78 +1,82 @@
 .graphiql-doc-explorer-search {
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
+  color: oklch(var(--fg-muted));
 
   &:not([data-state='idle']) {
-    border: var(--popover-border);
-    border-radius: var(--border-radius-4);
-    box-shadow: var(--popover-box-shadow);
-    color: hsl(var(--color-neutral));
+    color: oklch(var(--fg-default));
 
     & .graphiql-doc-explorer-search-input {
-      background: hsl(var(--color-base));
+      background: oklch(var(--bg-canvas));
+      border: 1px solid oklch(var(--border-default));
+      box-shadow: var(--shadow-popover);
     }
   }
 }
 
 .graphiql-doc-explorer-search-input {
   align-items: center;
-  background-color: hsla(var(--color-neutral), var(--alpha-background-light));
+  background-color: oklch(var(--fg-default) / 0.08);
   border-radius: var(--border-radius-4);
   display: flex;
-  padding: var(--px-8) var(--px-12);
+  flex: 1;
+
+  &:focus-within {
+    outline: 2px solid oklch(var(--accent-blue));
+    outline-offset: 2px;
+  }
+  gap: var(--px-8);
+  padding: var(--px-4) var(--px-8);
 }
 
 .graphiql-doc-explorer-search [role='combobox'] {
   border: none;
   background-color: transparent;
-  margin-left: var(--px-4);
-  width: 100%;
+  flex: 1;
+  min-width: 0;
 
   &:focus {
     outline: none;
   }
 }
 
+.graphiql-doc-explorer-search:focus-within .graphiql-keycap-hint {
+  display: none;
+}
+
 .graphiql-doc-explorer-search [role='listbox'] {
-  background-color: hsl(var(--color-base));
-  border: none;
-  border-bottom-left-radius: var(--border-radius-4);
-  border-bottom-right-radius: var(--border-radius-4);
-  border-top: 1px solid
-    hsla(var(--color-neutral), var(--alpha-background-heavy));
+  background-color: oklch(var(--bg-canvas));
+  border: 1px solid oklch(var(--border-default));
+  border-radius: var(--border-radius-4);
+  box-shadow: var(--shadow-popover);
   max-height: 400px;
   overflow-y: auto;
   margin: 0;
   font-size: var(--font-size-body);
   padding: var(--px-4);
   /**
-   * This makes sure that the logic for auto-scrolling the search results when
-   * using keyboard navigation works properly (we use `offsetTop` there).
+   * Float below the input as a separate popup so the dropdown does not
+   * appear glued to the panel header. `offsetTop` from the listbox is used
+   * for keyboard auto-scroll, which still works under absolute positioning.
    */
-  position: relative;
+  position: absolute;
+  top: calc(100% + var(--px-4));
+  left: 0;
+  right: 0;
+  z-index: 5;
 }
 
 .graphiql-doc-explorer-search [role='option'] {
   border-radius: var(--border-radius-4);
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
+  color: oklch(var(--fg-muted));
   overflow-x: hidden;
   padding: var(--px-8) var(--px-12);
   text-overflow: ellipsis;
   white-space: nowrap;
   cursor: pointer;
+  transition: background-color var(--transition-fast);
 
-  &[data-headlessui-state='active'] {
-    background-color: hsla(var(--color-neutral), var(--alpha-background-light));
-  }
-
+  &[data-headlessui-state='active'],
   &:hover {
-    background-color: hsla(
-      var(--color-neutral),
-      var(--alpha-background-medium)
-    );
-  }
-
-  &[data-headlessui-state='active']:hover {
-    background-color: hsla(var(--color-neutral), var(--alpha-background-heavy));
+    background-color: oklch(var(--bg-subtle));
   }
 
   & + & {
@@ -81,26 +85,38 @@
 }
 
 .graphiql-doc-explorer-search-type {
-  color: hsl(var(--color-info));
+  color: oklch(var(--type-composite));
+}
+
+.graphiql-doc-explorer-search-type[data-type-kind='scalar'] {
+  color: oklch(var(--type-scalar));
+}
+
+.graphiql-doc-explorer-search-type[data-type-kind='enum'] {
+  color: oklch(var(--type-enum));
+}
+
+.graphiql-doc-explorer-search-type[data-type-kind='input'] {
+  color: oklch(var(--type-input));
 }
 
 .graphiql-doc-explorer-search-field {
-  color: hsl(var(--color-warning));
+  color: oklch(var(--accent-green-light));
 }
 
 .graphiql-doc-explorer-search-argument {
-  color: hsl(var(--color-secondary));
+  color: oklch(var(--accent-purple));
 }
 
 .graphiql-doc-explorer-search-divider {
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
-  font-size: var(--font-size-hint);
+  color: oklch(var(--fg-muted));
+  font-size: var(--font-size-eyebrow);
   font-weight: var(--font-weight-medium);
   margin-top: var(--px-8);
   padding: var(--px-8) var(--px-12);
 }
 
 .graphiql-doc-explorer-search-empty {
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
+  color: oklch(var(--fg-muted));
   padding: var(--px-8) var(--px-12);
 }

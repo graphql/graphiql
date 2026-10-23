@@ -12,7 +12,11 @@ that are useful when working with these packages.
 
 ## Docs
 
+- **[`createTransport`](./src/create-transport/README.md)** : a utility for
+  creating a `transport` prop implementation, GraphiQL's wire-level primitive
+  for running operations and reading back real HTTP status, headers, and
+  timing
 - **[`createFetcher`](./docs/create-fetcher.md)** : a utility for creating a
   `fetcher` prop implementation for HTTP GET, POST including multipart,
-  websockets fetcher
+  websockets fetcher (deprecated in favor of `createTransport`)
 - more to come!

@@ -5,8 +5,13 @@ import type {
   DocumentNode,
 } from 'graphql';
 import type { OperationFacts } from 'graphql-language-service';
-import { MaybePromise, mergeAst } from '@graphiql/toolkit';
+import {
+  getSelectedOperationName,
+  MaybePromise,
+  mergeAst,
+} from '@graphiql/toolkit';
 import { print } from 'graphql';
+import { getOperationFacts } from 'graphql-language-service';
 import {
   createTab,
   setPropertiesInActiveTab,
@@ -19,6 +24,7 @@ import {
 import type { SlicesWithActions, MonacoEditor } from '../types';
 import { debounce, formatJSONC } from '../utility';
 import { STORAGE_KEY } from '../constants';
+import { monacoStore } from './monaco';
 
 export interface EditorSlice extends TabsState {
   /**
@@ -120,6 +126,17 @@ export interface EditorSlice extends TabsState {
   onCopyQuery?: (query: string) => void;
 
   /**
+   * Registered save handler. The dirty-state dot and Save button appear only
+   * when a plugin registers one.
+   */
+  saveHandlers: Set<SaveHandler>;
+
+  /** IDs of tabs whose save handler has not finished. */
+  savingTabIds: Set<string>;
+  /** The most recent save failure, shown beside the Save action. */
+  saveError: string | null;
+
+  /**
    * Invoked when the prettify callback is invoked.
    * @param query - The current value of the operation editor.
    * @default
@@ -214,6 +231,28 @@ export interface EditorActions {
   }): void;
 
   /**
+   * Save the current query. Triggered by the Save toolbar button or ⌘S.
+   * Delegates to the registered plugin handler. Repeated saves of one tab run
+   * in order.
+   */
+  saveQuery(): void;
+
+  /**
+   * Mark a tab as saved outside the registered save handler. The handler should
+   * instead resolve to `true` so GraphiQL records the submitted snapshot.
+   * @param tabId - The id of the tab that was saved.
+   * @param savedQuery - The query that was committed. Without this argument,
+   * the current editor contents are used for the active tab.
+   */
+  markTabSaved(tabId: string, savedQuery?: string | null): void;
+
+  /**
+   * Registers the save handler. A second registration throws.
+   * @returns An unregister function to call on unmount.
+   */
+  registerSaveHandler(handler: SaveHandler): () => void;
+
+  /**
    * Copy a query to clipboard.
    */
   copyQuery: () => Promise<void>;
@@ -275,6 +314,9 @@ export interface EditorProps extends Pick<
   initialHeaders?: EditorSlice['initialHeaders'];
 }
 
+/** Resolve to true after the write commits, false on cancellation, or reject on failure. */
+export type SaveHandler = (tab: TabState) => Promise<boolean>;
+
 type CreateEditorSlice = (
   initial: Pick<
     EditorSlice,
@@ -301,16 +343,48 @@ type CreateEditorSlice = (
 >;
 
 export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
+  const pendingSaves = new Set<string>();
+  const queuedSaves = new Map<
+    string,
+    { tab: TabState; handler: SaveHandler }
+  >();
+
+  async function runSave(tab: TabState, handler: SaveHandler) {
+    pendingSaves.add(tab.id);
+    set({ savingTabIds: new Set(pendingSaves), saveError: null });
+
+    try {
+      if (await handler(tab)) {
+        get().actions.markTabSaved(tab.id, tab.query);
+      }
+    } catch (error) {
+      set({
+        saveError: error instanceof Error ? error.message : String(error),
+      });
+    } finally {
+      const next = queuedSaves.get(tab.id);
+      queuedSaves.delete(tab.id);
+      if (next) {
+        void runSave(next.tab, next.handler);
+      } else {
+        pendingSaves.delete(tab.id);
+        set({ savingTabIds: new Set(pendingSaves) });
+      }
+    }
+  }
+
   function setEditorValues({
     query,
     variables,
     headers,
     response,
+    operationName,
   }: {
     query: string | null;
     variables?: string | null;
     headers?: string | null;
     response: string | null;
+    operationName?: string | null;
   }) {
     const {
       queryEditor,
@@ -318,11 +392,26 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       headerEditor,
       responseEditor,
       defaultHeaders,
+      schema,
+      operations,
     } = get();
     queryEditor?.setValue(query ?? '');
     variableEditor?.setValue(variables ?? '');
     headerEditor?.setValue(headers ?? defaultHeaders ?? '');
     responseEditor?.setValue(response ?? '');
+    const facts = getOperationFacts(schema, query, {
+      experimentalFragmentArguments:
+        monacoStore.getState().monacoGraphQL?.experimentalFragmentArguments,
+    });
+    return {
+      documentAST: facts?.documentAST,
+      operations: facts?.operations,
+      operationName: getSelectedOperationName(
+        operations,
+        operationName ?? undefined,
+        facts?.operations,
+      ),
+    };
   }
 
   function synchronizeActiveTabValues(tabsState: TabsState): TabsState {
@@ -333,14 +422,25 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       responseEditor,
       operationName,
     } = get();
+    const activeTab = tabsState.tabs[tabsState.activeTabIndex]!;
     return setPropertiesInActiveTab(tabsState, {
-      query: queryEditor?.getValue() ?? null,
-      variables: variableEditor?.getValue() ?? null,
-      headers: headerEditor?.getValue() ?? null,
-      response: responseEditor?.getValue() ?? null,
+      query: queryEditor?.getValue() ?? activeTab.query,
+      variables: variableEditor?.getValue() ?? activeTab.variables,
+      headers: headerEditor?.getValue() ?? activeTab.headers,
+      response: responseEditor?.getValue() ?? activeTab.response,
       operationName: operationName ?? null,
     });
   }
+
+  function persistTabs(tabsState: TabsState) {
+    const { shouldPersistHeaders, storage } = get();
+    storage.set(
+      STORAGE_KEY.tabs,
+      serializeTabState(tabsState, shouldPersistHeaders),
+    );
+  }
+
+  const scheduleTabPersistence = debounce(500, persistTabs);
 
   const $actions: EditorActions = {
     addTab() {
@@ -355,22 +455,29 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
           activeTabIndex: updatedValues.tabs.length,
         };
         actions.storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]!);
+        const operationFacts = setEditorValues(
+          updated.tabs[updated.activeTabIndex]!,
+        );
         onTabChange?.(updated);
-        return updated;
+        return { ...updated, ...operationFacts };
       });
     },
     changeTab(index) {
-      set(({ actions, onTabChange, tabs }) => {
+      set(({ actions, onTabChange, tabs, activeTabIndex }) => {
+        if (index === activeTabIndex) {
+          return {};
+        }
         actions.stop();
         const updated = {
-          tabs,
+          ...synchronizeActiveTabValues({ tabs, activeTabIndex }),
           activeTabIndex: index,
         };
         actions.storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]!);
+        const operationFacts = setEditorValues(
+          updated.tabs[updated.activeTabIndex]!,
+        );
         onTabChange?.(updated);
-        return updated;
+        return { ...updated, ...operationFacts };
       });
     },
     moveTab(newOrder) {
@@ -381,9 +488,11 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
           activeTabIndex: newOrder.indexOf(activeTab),
         };
         actions.storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]!);
+        const operationFacts = setEditorValues(
+          updated.tabs[updated.activeTabIndex]!,
+        );
         onTabChange?.(updated);
-        return updated;
+        return { ...updated, ...operationFacts };
       });
     },
     closeTab(index) {
@@ -399,9 +508,11 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
               : Math.max(activeTabIndex - 1, 0),
         };
         actions.storeTabs(updated);
-        setEditorValues(updated.tabs[updated.activeTabIndex]!);
+        const operationFacts = setEditorValues(
+          updated.tabs[updated.activeTabIndex]!,
+        );
         onTabChange?.(updated);
-        return updated;
+        return { ...updated, ...operationFacts };
       });
     },
     updateActiveTabValues(partialTab) {
@@ -448,18 +559,99 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       storage.set(STORAGE_KEY.persistHeaders, persist.toString());
       set({ shouldPersistHeaders: persist });
     },
-    storeTabs({ tabs, activeTabIndex }) {
-      const { shouldPersistHeaders, storage } = get();
-      const store = debounce(500, (value: string) => {
-        storage.set(STORAGE_KEY.tabs, value);
-      });
-      store(serializeTabState({ tabs, activeTabIndex }, shouldPersistHeaders));
+    storeTabs(tabsState) {
+      scheduleTabPersistence(tabsState);
     },
     setOperationFacts({ documentAST, operationName, operations }) {
       set({
         documentAST,
         operationName,
         operations,
+      });
+    },
+    saveQuery() {
+      const {
+        queryEditor,
+        variableEditor,
+        headerEditor,
+        saveHandlers,
+        tabs,
+        activeTabIndex,
+      } = get();
+      const activeTab = tabs[activeTabIndex];
+      if (!activeTab) {
+        return;
+      }
+      const handler = saveHandlers.values().next().value;
+      if (!handler) {
+        return;
+      }
+      const tabArg = {
+        ...activeTab,
+        query: queryEditor?.getValue() ?? activeTab.query,
+        variables: variableEditor?.getValue() ?? activeTab.variables,
+        headers: headerEditor?.getValue() ?? activeTab.headers,
+      };
+      if (pendingSaves.has(tabArg.id)) {
+        queuedSaves.set(tabArg.id, { tab: tabArg, handler });
+      } else {
+        void runSave(tabArg, handler);
+      }
+    },
+    markTabSaved(tabId, savedQuery) {
+      set(state => {
+        const {
+          activeTabIndex,
+          tabs,
+          onTabChange,
+          queryEditor,
+          variableEditor,
+          headerEditor,
+          storage,
+          shouldPersistHeaders,
+        } = state;
+        if (!tabs.some(tab => tab.id === tabId)) {
+          return state;
+        }
+        const activeTab = tabs[activeTabIndex];
+        const updated =
+          activeTab?.id === tabId
+            ? setPropertiesInActiveTab(
+                { tabs, activeTabIndex },
+                {
+                  query: queryEditor?.getValue() ?? activeTab.query,
+                  variables: variableEditor?.getValue() ?? activeTab.variables,
+                  headers: headerEditor?.getValue() ?? activeTab.headers,
+                  lastSavedQuery:
+                    savedQuery === undefined
+                      ? (queryEditor?.getValue() ?? activeTab.query)
+                      : savedQuery,
+                },
+              )
+            : {
+                tabs: tabs.map(tab =>
+                  tab.id === tabId
+                    ? {
+                        ...tab,
+                        lastSavedQuery:
+                          savedQuery === undefined ? tab.query : savedQuery,
+                      }
+                    : tab,
+                ),
+                activeTabIndex,
+              };
+        scheduleTabPersistence.cancel();
+        persistTabs(updated);
+        if (activeTab?.id === tabId) {
+          const saved = updated.tabs[activeTabIndex]!;
+          storage.set(STORAGE_KEY.query, saved.query ?? '');
+          storage.set(STORAGE_KEY.variables, saved.variables ?? '');
+          if (shouldPersistHeaders) {
+            storage.set(STORAGE_KEY.headers, saved.headers ?? '');
+          }
+        }
+        onTabChange?.(updated);
+        return updated;
       });
     },
     async copyQuery() {
@@ -535,9 +727,29 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       }
       queryEditor!.setValue(print(mergeAst(documentAST, schema)));
     },
+    registerSaveHandler(handler) {
+      set(s => {
+        if (s.saveHandlers.size > 0) {
+          throw new Error('Only one plugin save handler can be registered');
+        }
+        const next = new Set(s.saveHandlers);
+        next.add(handler);
+        return { saveHandlers: next };
+      });
+      return () => {
+        set(s => {
+          const next = new Set(s.saveHandlers);
+          next.delete(handler);
+          return { saveHandlers: next };
+        });
+      };
+    },
   };
   return {
     ...initial,
+    saveHandlers: new Set(),
+    savingTabIds: new Set(),
+    saveError: null,
     actions: $actions,
   };
 };

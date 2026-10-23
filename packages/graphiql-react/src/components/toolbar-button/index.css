@@ -2,10 +2,23 @@ button.graphiql-toolbar-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: var(--toolbar-width);
-  width: var(--toolbar-width);
+  height: var(--icon-button-size-lg);
+  width: var(--icon-button-size-lg);
+  color: oklch(var(--fg-subtle));
+  border-radius: var(--radius-sm);
+
+  &:hover {
+    background-color: oklch(var(--bg-overlay));
+    color: oklch(var(--fg-default));
+  }
+
+  &:focus-visible {
+    outline: 2px solid oklch(var(--accent-blue));
+    outline-offset: 1px;
+  }
 
   &.error {
-    background: hsla(var(--color-error), var(--alpha-background-heavy));
+    background-color: oklch(var(--accent-red) / 0.15);
+    color: oklch(var(--accent-red));
   }
 }
