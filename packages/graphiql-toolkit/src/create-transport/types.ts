@@ -40,6 +40,8 @@ export type TransportResponse = {
    * this is purely `!hasGraphQLErrors`, since there is no status to consult.
    */
   ok: boolean;
+  /** HTTP method used for this execution. Absent for non-HTTP transports. */
+  method?: HttpMethod;
   status?: number;
   statusText?: string;
   headers?: Record<string, string>;
@@ -77,8 +79,9 @@ export type Transport = {
    */
   url: string;
   /**
-   * Selected HTTP method for queries. The transport may route other operation
-   * types differently; createTransport sends mutations through POST.
+   * Effective query method for the latest known capabilities, or the explicit
+   * override. Use response.method to observe the method of an execution.
+   * createTransport always sends mutations through POST.
    */
   method: HttpMethod;
   /**
@@ -87,12 +90,12 @@ export type Transport = {
    */
   supportedMethods: HttpMethod[];
   /**
-   * Switches the selected HTTP method for subsequent query operations.
+   * Overrides the method for subsequent queries; undefined restores automatic
+   * QUERY → POST → GET selection. Queries reject if the override is unavailable
+   * after discovery. Mutations still require POST.
    * Optional for custom transports that do not support method selection.
    */
-  setMethod?: (method: HttpMethod) => void;
-  /** Subscribe to changes in method or supportedMethods. Returns an unsubscribe function. */
-  subscribe?: (listener: () => void) => () => void;
+  setMethod?: (method?: HttpMethod) => void;
   /**
    * Executes an operation and owns its routing and method safety policy.
    * Custom HTTP transports must prevent mutations over safe methods such as
@@ -160,11 +163,12 @@ export type CreateTransportOptions = {
    */
   fetch?: typeof fetch;
   /**
-   * Initial HTTP method to use for queries. Defaults to `'POST'`.
-   * When set to `'GET'`, queries are encoded into the URL per the
-   * GraphQL over HTTP spec; when set to `'QUERY'`, queries are sent in a
-   * request body like POST. Mutations always use POST regardless, since
-   * `'GET'` and `'QUERY'` are safe methods.
+   * Override the HTTP method for queries. When omitted, choose the first
+   * available method in QUERY → POST → GET order. An unsupported override
+   * rejects execution instead of silently choosing another method.
+   * GET encodes queries and variables in the URL without a request body;
+   * QUERY and POST use a JSON body. Mutations always require POST.
+   * If OPTIONS discovery is unavailable, this method (or POST) is the fallback.
    */
   method?: HttpMethod;
   /**

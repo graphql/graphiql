@@ -38,17 +38,17 @@ afterEach(() => {
 });
 
 describe('HTTP method discovery', () => {
-  it('discovers lazily, updates subscribers, and preserves POST when available', async () => {
+  it('discovers lazily and automatically prefers QUERY', async () => {
     const { transport, fetch } = setup('QUERY, POST, GET, QUERY, OPTIONS');
-    const listener = vi.fn();
-    const unsubscribe = transport.subscribe!(listener);
     expect(fetch).not.toHaveBeenCalled();
     const result = transport.send({ query });
     expect(result).toBeInstanceOf(Promise);
-    await result;
+    await expect(result).resolves.toMatchObject({ method: 'QUERY' });
+    await transport.send({ query });
     expect(fetch.mock.calls.map(([, init]) => init.method)).toEqual([
       'OPTIONS',
-      'POST',
+      'QUERY',
+      'QUERY',
     ]);
     expect(fetch.mock.calls[0]).toEqual([
       url,
@@ -56,30 +56,22 @@ describe('HTTP method discovery', () => {
     ]);
     expect(fetch.mock.calls[0][1].body).toBeUndefined();
     expect(transport.supportedMethods).toEqual(['GET', 'POST', 'QUERY']);
-    expect(listener).toHaveBeenCalledTimes(1);
-    transport.setMethod!('QUERY');
-    transport.setMethod!('QUERY');
-    expect(listener).toHaveBeenCalledTimes(2);
-    unsubscribe();
-    await transport.send({ query });
-    expect(fetch.mock.calls.map(([, init]) => init.method)).toEqual([
-      'OPTIONS',
-      'POST',
-      'QUERY',
-    ]);
-    transport.setMethod!('GET');
-    expect(listener).toHaveBeenCalledTimes(2);
+    expect(transport.method).toBe('QUERY');
   });
 
-  it.each(['GET, QUERY', 'QUERY', 'GET'])(
-    'selects an advertised replacement from %s',
-    async allow => {
-      const { transport, fetch } = setup(allow);
-      await transport.send({ query });
-      expect(transport.method).toBe(allow.includes('QUERY') ? 'QUERY' : 'GET');
-      expect(fetch.mock.calls[1][1].method).toBe(transport.method);
-    },
-  );
+  it.each([
+    ['GET, POST, QUERY', 'QUERY'],
+    ['GET, QUERY', 'QUERY'],
+    ['GET, POST', 'POST'],
+    ['POST', 'POST'],
+    ['QUERY', 'QUERY'],
+    ['GET', 'GET'],
+  ])('automatically selects %s as %s', async (allow, method) => {
+    const { transport, fetch } = setup(allow);
+    await expect(transport.send({ query })).resolves.toMatchObject({ method });
+    expect(transport.method).toBe(method);
+    expect(fetch.mock.calls[1][1].method).toBe(method);
+  });
 
   it('supports an initial QUERY method without a manual capability list', async () => {
     const { transport } = setup('GET, QUERY', { method: 'QUERY' });
@@ -196,11 +188,11 @@ describe('HTTP method discovery', () => {
       });
       async function consume(result: ReturnType<typeof transport.send>) {
         if (Symbol.asyncIterator in result) {
-          for await (const _ of result) {
-            /* consume */
+          for await (const chunk of result) {
+            return chunk;
           }
         } else {
-          await result;
+          return result;
         }
       }
       await consume(transport.send({ query }));
@@ -214,45 +206,125 @@ describe('HTTP method discovery', () => {
       transport.setMethod!('GET');
       const pending = consume(result);
       options.resolve(response('GET, POST, QUERY'));
-      await pending;
+      expect((await pending)?.method).toBe('QUERY');
       expect(fetch.mock.calls.at(-1)![1].method).toBe('QUERY');
       expect(transport.method).toBe('GET');
     },
   );
 
-  it('isolates failing listeners from discovery, later listeners, and execution', async () => {
-    const { transport, fetch } = setup('GET, POST, QUERY');
-    const error = new Error('observer failed');
-    const logged = vi.spyOn(console, 'error').mockImplementation(() => {});
-    transport.subscribe!(() => {
-      throw error;
-    });
-    const listener = vi.fn();
-    transport.subscribe!(listener);
-    await transport.send({ query });
-    expect(listener).toHaveBeenCalledTimes(1);
-    expect(logged).toHaveBeenCalledWith(
-      'Transport change listener threw:',
-      error,
-    );
-    expect(() => transport.setMethod!('QUERY')).not.toThrow();
-    expect(listener).toHaveBeenCalledTimes(2);
-    await transport.send({ query });
-    expect(fetch.mock.calls.map(([, init]) => init.method)).toEqual([
-      'OPTIONS',
-      'POST',
-      'QUERY',
-    ]);
-  });
-
-  it('preserves the configured manual order when POST is absent', async () => {
+  it('uses the same automatic preference with explicit supportedMethods', async () => {
     const { transport, fetch } = setup(undefined, {
       supportedMethods: ['GET', 'QUERY'],
     });
-    expect(transport.method).toBe('GET');
+    expect(transport.method).toBe('QUERY');
     await transport.send({ query });
-    expect(fetch.mock.calls.map(([, init]) => init.method)).toEqual(['GET']);
+    expect(fetch.mock.calls.map(([, init]) => init.method)).toEqual(['QUERY']);
   });
+
+  it('recomputes the automatic method when a new header context supports QUERY', async () => {
+    const { transport, fetch } = setup('POST');
+    await transport.send({ query });
+    fetch.mockResolvedValue(response('GET, POST, QUERY'));
+    await expect(
+      transport.send({ query, headers: { authorization: 'new' } }),
+    ).resolves.toMatchObject({ method: 'QUERY' });
+    expect(transport.method).toBe('QUERY');
+  });
+
+  it.each([false, true])(
+    'rejects an unavailable override without silently changing method (incremental: %s)',
+    async incremental => {
+      const { transport, fetch } = setup('POST, QUERY', {
+        method: 'GET',
+        enableIncrementalDelivery: incremental,
+      });
+      const execute = async () => {
+        const result = transport.send({ query });
+        if (Symbol.asyncIterator in result) {
+          for await (const _ of result) {
+            /* consume */
+          }
+        } else {
+          await result;
+        }
+      };
+      await expect(execute()).rejects.toThrow(/GET.*not supported/);
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(transport.method).toBe('GET');
+      transport.setMethod!();
+      await execute();
+      expect(fetch.mock.calls[1][1].method).toBe('QUERY');
+      expect(transport.method).toBe('QUERY');
+    },
+  );
+
+  it('routes mutations through POST even when the query override is unavailable', async () => {
+    const { transport, fetch } = setup('POST, QUERY', { method: 'GET' });
+    await expect(transport.send({ query: mutation })).resolves.toMatchObject({
+      method: 'POST',
+    });
+    expect(fetch.mock.calls.map(([, init]) => init.method)).toEqual([
+      'OPTIONS',
+      'POST',
+    ]);
+    await expect(transport.send({ query })).rejects.toThrow(
+      /GET.*not supported/,
+    );
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('accepts a GET override before discovery and keeps mutations on POST', async () => {
+    const { transport, fetch } = setup('GET, POST, QUERY');
+    transport.setMethod!('GET');
+    const queryWithVariables = 'query Read($id: ID!) { node(id: $id) { id } }';
+    await expect(
+      transport.send({
+        query: queryWithVariables,
+        variables: { id: 'hello & goodbye' },
+        operationName: 'Read',
+        extensions: { trace: 'hello & goodbye' },
+      }),
+    ).resolves.toMatchObject({ method: 'GET' });
+    const [requestUrl, init] = fetch.mock.calls[1];
+    expect(init.body).toBeUndefined();
+    const params = new URL(requestUrl).searchParams;
+    expect(params.get('query')).toBe(queryWithVariables);
+    expect(JSON.parse(params.get('variables')!)).toEqual({
+      id: 'hello & goodbye',
+    });
+    expect(params.get('operationName')).toBe('Read');
+    expect(JSON.parse(params.get('extensions')!)).toEqual({
+      trace: 'hello & goodbye',
+    });
+    await expect(transport.send({ query: mutation })).resolves.toMatchObject({
+      method: 'POST',
+    });
+    expect(transport.method).toBe('GET');
+    transport.setMethod!();
+    await expect(transport.send({ query })).resolves.toMatchObject({
+      method: 'QUERY',
+    });
+  });
+
+  it.each([
+    { query: 'invalid GraphQL' },
+    { query: 'query Read { id } mutation Change { update }' },
+    { query, operationName: 'Missing' },
+  ])(
+    'uses POST when the selected operation cannot be classified: %s',
+    async request => {
+      const { transport, fetch } = setup('GET, POST, QUERY');
+      await expect(transport.send(request)).resolves.toMatchObject({
+        method: 'POST',
+      });
+      expect(fetch.mock.calls[1][1].method).toBe('POST');
+      const safeOnly = setup('QUERY');
+      await expect(safeOnly.transport.send(request)).rejects.toThrow(
+        /unclassified operation.*QUERY/,
+      );
+      expect(safeOnly.fetch).toHaveBeenCalledTimes(1);
+    },
+  );
 
   it('does not let an older header context overwrite current capabilities', async () => {
     const { transport, fetch } = setup();
@@ -324,6 +396,7 @@ describe('HTTP method discovery', () => {
       chunks.push(chunk);
     }
     expect(chunks).toHaveLength(1);
+    expect(chunks[0].method).toBe('QUERY');
     expect(fetch.mock.calls.map(([, init]) => init.method)).toEqual([
       'OPTIONS',
       'QUERY',
@@ -411,7 +484,9 @@ describe('HTTP method discovery', () => {
     const { transport, fetch } = setup('QUERY', { supportedMethods: ['POST'] });
     await transport.send({ query });
     expect(fetch.mock.calls.map(([, init]) => init.method)).toEqual(['POST']);
-    expect(() => transport.setMethod!('QUERY')).toThrow(/not supported/);
+    transport.setMethod!('QUERY');
+    expect(() => transport.send({ query })).toThrow(/not supported/);
+    expect(fetch).toHaveBeenCalledTimes(1);
     expect(() => setup(undefined, { supportedMethods: [] })).toThrow(
       /at least one/,
     );
@@ -432,6 +507,7 @@ describe('HTTP method discovery', () => {
       events.push(event);
     }
     expect(events).toHaveLength(1);
+    expect(events[0].method).toBeUndefined();
     expect(fetch).not.toHaveBeenCalled();
   });
 });

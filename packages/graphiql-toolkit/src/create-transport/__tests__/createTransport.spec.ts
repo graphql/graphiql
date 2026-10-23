@@ -1,3 +1,4 @@
+import { ReadableStream } from 'node:stream/web';
 import {
   type Mock,
   describe,
@@ -80,6 +81,7 @@ describe('createTransport — query / mutation', () => {
     const response = (await result) as TransportResponse;
     expect(response).toMatchObject({
       ok: true,
+      method: 'POST',
       status: 200,
       statusText: 'OK',
       body: { data: { __typename: 'Query' } },
@@ -162,6 +164,7 @@ describe('createTransport — query / mutation', () => {
 
     expect(response.ok).toBe(false);
     expect(response.status).toBe(502);
+    expect(response.method).toBe('POST');
     expect(response.statusText).toBe('Bad Gateway');
     expect(response.body).toMatchObject({
       errors: [{ message: '<html><body>Bad Gateway</body></html>' }],
@@ -239,6 +242,7 @@ describe('createTransport — subscription', () => {
     expect(events[0]).toMatchObject({ ok: true, body: { data: { tick: 1 } } });
     // No HTTP response envelope for a socket.
     expect(events[0].status).toBeUndefined();
+    expect(events[0].method).toBeUndefined();
     expect(events[0].headers).toBeUndefined();
     expect(events[0].size.response).toBeGreaterThan(0);
   });
@@ -472,29 +476,34 @@ describe('createTransport — GET method', () => {
     expect(fetchInit.method).toBe('GET');
   });
 
-  it('setMethod throws when asked to switch to an unsupported method', () => {
+  it('rejects an unsupported method override when sending a query', () => {
     const transport = createTransport({
       url: URL,
       supportedMethods: ['GET', 'POST'],
       fetch: mockFetch as typeof fetch,
     });
-    // TypeScript would catch this at compile time; this verifies the runtime guard.
-    expect(() => transport.setMethod?.('GET' as never)).not.toThrow();
-    // Simulating a value that isn't in supportedMethods by bypassing types.
-    expect(() =>
-      (transport.setMethod as (m: string) => void)?.('DELETE'),
-    ).toThrow(/not supported/i);
+    transport.setMethod!('QUERY');
+    expect(() => transport.send({ query: QUERY })).toThrow(/not supported/i);
+    expect(mockFetch).not.toHaveBeenCalled();
   });
 
-  it('throws at construction when method is not in supportedMethods', () => {
-    expect(() =>
-      createTransport({
-        url: URL,
-        method: 'GET',
-        supportedMethods: ['POST'],
-        fetch: mockFetch as typeof fetch,
-      }),
-    ).toThrow(/not in supportedMethods/i);
+  it('validates a configured override only for queries, allowing POST mutations', async () => {
+    const transport = createTransport({
+      url: URL,
+      method: 'GET',
+      supportedMethods: ['POST'],
+      enableIncrementalDelivery: false,
+      fetch: mockFetch as typeof fetch,
+    });
+    expect(() => transport.send({ query: QUERY })).toThrow(
+      /GET.*not supported/i,
+    );
+    expect(mockFetch).not.toHaveBeenCalled();
+    await expect(
+      transport.send({ query: 'mutation { update }' }),
+    ).resolves.toMatchObject({ method: 'POST' });
+    expect(mockFetch.mock.calls[0][1].method).toBe('POST');
+    expect(transport.method).toBe('GET');
   });
 
   it('POST keeps content-type and accept headers', async () => {
@@ -540,6 +549,59 @@ describe('createTransport — GET method', () => {
     );
   });
 
+  it('reports the request method on every multipart chunk after the override changes', async () => {
+    const payloads = [
+      { data: { node: { id: '1' } }, hasNext: true },
+      {
+        incremental: [{ path: ['node'], data: { name: 'Ada' } }],
+        hasNext: false,
+      },
+    ];
+    const multipartBody = new ReadableStream({
+      start(controller) {
+        controller.enqueue(new TextEncoder().encode('--graphql'));
+        for (const payload of payloads) {
+          controller.enqueue(
+            new TextEncoder().encode(
+              '\r\nContent-Type: application/json\r\n\r\n' +
+                JSON.stringify(payload) +
+                '\r\n--graphql',
+            ),
+          );
+        }
+        controller.enqueue(new TextEncoder().encode('--\r\n'));
+        controller.close();
+      },
+    });
+    const httpFetch = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      body: multipartBody,
+      headers: new Headers({
+        'content-type': 'multipart/mixed; boundary=graphql',
+      }),
+    });
+    const transport = createTransport({
+      url: URL,
+      supportedMethods: ['GET', 'POST', 'QUERY'],
+      fetch: httpFetch,
+    });
+    const result = transport.send({
+      query: QUERY,
+    }) as AsyncIterable<TransportResponse>;
+    transport.setMethod!('GET');
+    const chunks: TransportResponse[] = [];
+    for await (const chunk of result) {
+      chunks.push(chunk);
+    }
+    expect(chunks.map(chunk => chunk.body)).toEqual(
+      payloads.map(payload => [payload]),
+    );
+    expect(chunks.map(chunk => chunk.method)).toEqual(['QUERY', 'QUERY']);
+    expect(httpFetch.mock.calls[0][1].method).toBe('QUERY');
+    expect(transport.method).toBe('GET');
+  });
+
   it('the default transport also resolves a TransportResponse when the body is not JSON', async () => {
     // Same non-JSON-body guarantee as the simple path, but through
     // `multipartHttpTransport`'s single-response branch (the default when
@@ -564,6 +626,7 @@ describe('createTransport — GET method', () => {
     expect(chunk).toHaveLength(1);
     expect(chunk[0]).toMatchObject({
       ok: false,
+      method: 'POST',
       status: 401,
       body: { errors: [{ message: 'Unauthorized' }] },
     });

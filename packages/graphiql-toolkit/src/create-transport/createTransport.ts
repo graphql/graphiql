@@ -97,44 +97,8 @@ export function createTransport(opts: CreateTransportOptions): Transport {
   if (!supportedMethods.length) {
     throw new Error('supportedMethods must contain at least one HTTP method.');
   }
-  if (opts.method !== undefined && !supportedMethods.includes(opts.method)) {
-    throw new Error(
-      `"${opts.method}" is not in supportedMethods (${supportedMethods.join(', ')}). ` +
-        `Either add it to supportedMethods or omit the method option.`,
-    );
-  }
-  let activeMethod =
-    opts.method ??
-    (supportedMethods.includes('POST') ? 'POST' : supportedMethods[0]);
-  const listeners = new Set<() => void>();
+  let methodOverride = opts.method;
   let discovery: { key: string; result: Promise<HttpMethod[]> } | undefined;
-
-  function notify() {
-    for (const listener of listeners) {
-      try {
-        listener();
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Transport change listener threw:', error);
-      }
-    }
-  }
-
-  function updateMethods(methods: HttpMethod[]) {
-    const method = methods.includes(activeMethod)
-      ? activeMethod
-      : methods.length
-        ? preferredMethod(methods)
-        : activeMethod;
-    if (
-      method !== activeMethod ||
-      methods.join(',') !== supportedMethods.join(',')
-    ) {
-      activeMethod = method;
-      supportedMethods = methods;
-      notify();
-    }
-  }
 
   function discover(headers: Record<string, string>): Promise<HttpMethod[]> {
     const key = JSON.stringify(Object.entries(headers).sort());
@@ -151,7 +115,7 @@ export function createTransport(opts: CreateTransportOptions): Transport {
     current.result = (async () => {
       const methods = await current.result;
       if (discovery === current) {
-        updateMethods(methods);
+        supportedMethods = methods;
       }
       return methods;
     })();
@@ -175,7 +139,7 @@ export function createTransport(opts: CreateTransportOptions): Transport {
       return subscribe(opts.subscriptionClient, params);
     }
 
-    const selectedMethod = activeMethod;
+    const selectedOverride = methodOverride;
     const headers = new Headers(opts.headers);
     for (const [name, value] of Object.entries(req.headers ?? {})) {
       headers.set(name, value);
@@ -196,17 +160,24 @@ export function createTransport(opts: CreateTransportOptions): Transport {
           'This endpoint advertises no supported GraphQL HTTP methods.',
         );
       }
-      const method = methods.includes(selectedMethod)
-        ? selectedMethod
-        : preferredMethod(methods);
-      if (selectedOperation === 'mutation') {
+      if (selectedOperation !== 'query') {
         if (!methods.includes('POST')) {
+          const operation =
+            selectedOperation === 'mutation'
+              ? 'a mutation'
+              : 'an unclassified operation';
           throw new Error(
-            `Cannot execute a mutation over ${method}. ` +
-              `This transport does not support POST (supportedMethods: ${methods.join(', ')}).`,
+            `Cannot execute ${operation} over ${methods.join(', ')}. ` +
+              'This transport does not support POST.',
           );
         }
         return 'POST';
+      }
+      const method = selectedOverride ?? preferredMethod(methods);
+      if (!methods.includes(method)) {
+        throw new Error(
+          `"${method}" is not supported by this transport (supportedMethods: ${methods.join(', ')}).`,
+        );
       }
       return method;
     }
@@ -289,38 +260,29 @@ export function createTransport(opts: CreateTransportOptions): Transport {
   const transport: Transport = {
     url: opts.url,
     get method() {
-      return activeMethod;
+      return (
+        methodOverride ??
+        (supportedMethods.length
+          ? preferredMethod(supportedMethods)
+          : initialMethod)
+      );
     },
     get supportedMethods() {
       return supportedMethods;
     },
     send,
     setMethod(method) {
-      if (!supportedMethods.includes(method)) {
-        throw new Error(
-          `"${method}" is not supported by this transport (supportedMethods: ${supportedMethods.join(', ')}).`,
-        );
-      }
-      if (activeMethod !== method) {
-        activeMethod = method;
-        notify();
-      }
-    },
-    subscribe(listener) {
-      listeners.add(listener);
-      return () => {
-        listeners.delete(listener);
-      };
+      methodOverride = method;
     },
   };
   return transport;
 }
 
 function preferredMethod(methods: HttpMethod[]): HttpMethod {
-  return methods.includes('POST')
-    ? 'POST'
-    : methods.includes('QUERY')
-      ? 'QUERY'
+  return methods.includes('QUERY')
+    ? 'QUERY'
+    : methods.includes('POST')
+      ? 'POST'
       : 'GET';
 }
 
