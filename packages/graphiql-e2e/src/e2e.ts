@@ -90,7 +90,6 @@ const root = ReactDOM.createRoot(document.getElementById('graphiql')!);
 const props: ComponentProps<typeof GraphiQL> = {
   transport: createTransport({
     url: getSchemaUrl(),
-    supportedMethods: ['GET', 'POST', 'QUERY'],
     subscriptionClient: isLocal()
       ? createClient({
           url: `${location.protocol === 'https:' ? 'wss:' : 'ws:'}//${location.host}/subscriptions`,

@@ -5,7 +5,6 @@ import {
   formatResult,
   GetDefaultFieldNamesFn,
   getSelectedOperationName,
-  HttpMethod,
   isAsyncIterable,
   isObservable,
   Transport,
@@ -166,19 +165,6 @@ export interface ExecutionSlice {
    * timing, size). Mutually exclusive with `fetcher`.
    */
   transport?: Transport;
-
-  /**
-   * The currently active HTTP method as tracked in the store. Mirrors
-   * `transport.method` and updated when the transport changes so that
-   * consumers re-render when the method changes. `null` when using a
-   * fetcher (which has no observable method).
-   *
-   * @default null
-   */
-  transportMethod: HttpMethod | null;
-
-  /** Available HTTP methods, synchronized with the transport. */
-  transportSupportedMethods: HttpMethod[] | null;
 }
 
 export interface ExecutionActions {
@@ -201,13 +187,6 @@ export interface ExecutionActions {
    * Mark the upgrade-to-`transport` banner as dismissed and persist the choice.
    */
   dismissTransportUpgradeBanner(): void;
-
-  /**
-   * Switch the HTTP method used by subsequent requests and re-render
-   * consumers that read `transportMethod`. Only valid when `transport`
-   * is configured and `transport.supportedMethods` has more than one entry.
-   */
-  setTransportMethod(method: HttpMethod): void;
 }
 
 type BaseExecutionProps = {
@@ -327,8 +306,6 @@ export const createExecutionSlice: CreateExecutionSlice =
       subscription: null,
       abortController: null,
       queryId: 0,
-      transportMethod: initial.transport?.method ?? null,
-      transportSupportedMethods: initial.transport?.supportedMethods ?? null,
       actions: {
         setResponseView(view: ResponseView) {
           const { storage } = get();
@@ -339,14 +316,6 @@ export const createExecutionSlice: CreateExecutionSlice =
           const { storage } = get();
           storage.set(STORAGE_KEY.transportUpgradeBannerDismissed, 'true');
           set({ transportUpgradeBannerDismissed: true });
-        },
-        setTransportMethod(method: HttpMethod) {
-          const { transport } = get();
-          if (!transport?.setMethod) {
-            return;
-          }
-          transport.setMethod(method);
-          set({ transportMethod: transport.method });
         },
         stop() {
           set(({ subscription, abortController, queryId }) => {

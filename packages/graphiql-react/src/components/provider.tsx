@@ -358,26 +358,8 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
     storeRef.current.setState({
       fetcher,
       transport: wrappedTransport,
-      transportMethod: wrappedTransport?.method ?? null,
-      transportSupportedMethods: wrappedTransport?.supportedMethods ?? null,
     });
   }, [fetcher, transport]);
-
-  useEffect(() => {
-    const syncTransport = () => {
-      storeRef.current.setState({
-        transportMethod: transport?.method ?? null,
-        transportSupportedMethods: transport
-          ? [...transport.supportedMethods]
-          : null,
-      });
-    };
-    const unsubscribe = transport?.subscribe?.(syncTransport);
-    // Catch changes between rendering and subscribing, including discovery
-    // started by a child that sends an introspection request.
-    syncTransport();
-    return unsubscribe;
-  }, [transport]);
 
   // Plugin sync
   useDidUpdate(() => {

@@ -33,6 +33,7 @@ export const WithMetadata: Story = {
     return (
       <ResponseHeader
         status={200}
+        method="QUERY"
         statusText="OK"
         timeMs={143}
         sizeBytes={2812}
@@ -65,6 +66,7 @@ export const TreeView: Story = {
     return (
       <ResponseHeader
         status={200}
+        method="QUERY"
         timeMs={56}
         sizeBytes={1024}
         view={view}
