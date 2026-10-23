@@ -30,7 +30,7 @@ overrides:
   markdown-it: 15.0.3
   react: 19.2.7
   react-dom: 19.2.7
-  vite: 8.2.2
+  vite: 8.2.4
 
 patchedDependencies:
   '@changesets/assemble-release-plan@6.0.3': resources/patches/@changesets+assemble-release-plan+6.0.3.patch
