@@ -32,10 +32,10 @@ overrides:
   '@babel/traverse': ^7.23.2
   eslint: ^10.12.0
   vscode-languageserver-types: 3.17.3
-  markdown-it: 15.0.1
+  markdown-it: 15.0.3
   react: 19.2.7
   react-dom: 19.2.7
-  vite: 8.2.2
+  vite: 8.2.4
 
 patchedDependencies:
   '@changesets/assemble-release-plan@6.0.3': resources/patches/@changesets+assemble-release-plan+6.0.3.patch
