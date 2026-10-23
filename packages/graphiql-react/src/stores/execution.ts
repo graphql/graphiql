@@ -5,7 +5,6 @@ import {
   formatResult,
   GetDefaultFieldNamesFn,
   getSelectedOperationName,
-  HttpMethod,
   isAsyncIterable,
   isObservable,
   Transport,
@@ -25,10 +24,6 @@ import getValue from 'get-value';
 
 import type { StateCreator } from 'zustand';
 import { tryParseJSONC } from '../utility';
-import {
-  getRunBlockReason,
-  resolveActiveOperation,
-} from '../utility/run-block';
 import { Range } from '../utility/monaco-ssr';
 import { STORAGE_KEY } from '../constants';
 import type { SlicesWithActions, MonacoEditor } from '../types';
@@ -170,16 +165,6 @@ export interface ExecutionSlice {
    * timing, size). Mutually exclusive with `fetcher`.
    */
   transport?: Transport;
-
-  /**
-   * The currently active HTTP method as tracked in the store. Mirrors
-   * `transport.method` and updated via `setTransportMethod` so that
-   * consumers re-render when the method changes. `null` when using a
-   * fetcher (which has no observable method).
-   *
-   * @default null
-   */
-  transportMethod: HttpMethod | null;
 }
 
 export interface ExecutionActions {
@@ -202,13 +187,6 @@ export interface ExecutionActions {
    * Mark the upgrade-to-`transport` banner as dismissed and persist the choice.
    */
   dismissTransportUpgradeBanner(): void;
-
-  /**
-   * Switch the HTTP method used by subsequent requests and re-render
-   * consumers that read `transportMethod`. Only valid when `transport`
-   * is configured and `transport.supportedMethods` has more than one entry.
-   */
-  setTransportMethod(method: HttpMethod): void;
 }
 
 type BaseExecutionProps = {
@@ -328,7 +306,6 @@ export const createExecutionSlice: CreateExecutionSlice =
       subscription: null,
       abortController: null,
       queryId: 0,
-      transportMethod: initial.transport?.method ?? null,
       actions: {
         setResponseView(view: ResponseView) {
           const { storage } = get();
@@ -339,14 +316,6 @@ export const createExecutionSlice: CreateExecutionSlice =
           const { storage } = get();
           storage.set(STORAGE_KEY.transportUpgradeBannerDismissed, 'true');
           set({ transportUpgradeBannerDismissed: true });
-        },
-        setTransportMethod(method: HttpMethod) {
-          const { transport } = get();
-          if (!transport?.setMethod) {
-            return;
-          }
-          transport.setMethod(method);
-          set({ transportMethod: method });
         },
         stop() {
           set(({ subscription, abortController, queryId }) => {
@@ -380,7 +349,6 @@ export const createExecutionSlice: CreateExecutionSlice =
             queryId,
             fetcher,
             transport,
-            transportMethod,
           } = get();
           if (!queryEditor || !responseEditor) {
             return;
@@ -426,16 +394,6 @@ export const createExecutionSlice: CreateExecutionSlice =
             query,
             operationName: selectedOperationName ?? null,
           });
-
-          // Mutations are forbidden over GET. Don't silently fall back to POST —
-          // the UI disables Run in this state; bail out for any keyboard path too.
-          const blockReason = getRunBlockReason(
-            transportMethod,
-            resolveActiveOperation(facts?.operations, selectedOperationName),
-          );
-          if (blockReason) {
-            return;
-          }
 
           function setResponse(value: string): void {
             responseEditor?.setValue(value);

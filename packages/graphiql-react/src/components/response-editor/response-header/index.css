@@ -45,6 +45,7 @@
   color: oklch(var(--fg-muted));
 }
 
+.graphiql-response-method,
 .graphiql-response-meta {
   font-family: var(--font-family-mono);
   font-size: var(--font-size-mono);

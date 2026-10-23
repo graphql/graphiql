@@ -48,6 +48,29 @@ describe('ResponseHeader', () => {
     expect(container.querySelector('.graphiql-response-status')).toBeNull();
   });
 
+  it('renders the method reported by the response beside the other metadata', () => {
+    renderWithTooltip(
+      <ResponseHeader
+        method="POST"
+        status={200}
+        timeMs={42}
+        sizeBytes={512}
+        view="json"
+        onViewChange={() => {}}
+      />,
+    );
+    expect(screen.getByTitle('Request method')).toHaveTextContent('POST');
+    expect(screen.getByText('42ms')).toBeInTheDocument();
+    expect(screen.getByText('512 B')).toBeInTheDocument();
+  });
+
+  it('omits the method when the response does not report one', () => {
+    renderWithTooltip(
+      <ResponseHeader timeMs={42} view="json" onViewChange={() => {}} />,
+    );
+    expect(screen.queryByTitle('Request method')).not.toBeInTheDocument();
+  });
+
   it('renders time in ms when provided', () => {
     renderWithTooltip(
       <ResponseHeader timeMs={42} view="json" onViewChange={() => {}} />,

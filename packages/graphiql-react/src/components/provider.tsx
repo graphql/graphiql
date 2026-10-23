@@ -358,7 +358,6 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
     storeRef.current.setState({
       fetcher,
       transport: wrappedTransport,
-      transportMethod: wrappedTransport?.method ?? null,
     });
   }, [fetcher, transport]);
 

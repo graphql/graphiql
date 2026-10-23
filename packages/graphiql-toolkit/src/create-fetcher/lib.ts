@@ -98,6 +98,7 @@ type WireSizes = { requestBody?: string; rawResponseText?: string };
 function toTransportResponse(
   body: unknown,
   response: Response,
+  method: HttpMethod,
   startMs: number,
   { requestBody, rawResponseText }: WireSizes = {},
 ): TransportResponse {
@@ -106,6 +107,7 @@ function toTransportResponse(
   const contentLength = response.headers?.get?.('content-length');
   return {
     ok: response.ok && !hasErrors,
+    method,
     status: response.status,
     statusText: response.statusText,
     headers: headersToObject(response.headers),
@@ -199,7 +201,7 @@ export const simpleHttpTransport =
         },
       });
       const { body, raw } = await readResponseBody(response);
-      return toTransportResponse(body, response, startMs, {
+      return toTransportResponse(body, response, method, startMs, {
         rawResponseText: raw,
       });
     }
@@ -216,7 +218,7 @@ export const simpleHttpTransport =
       },
     });
     const { body, raw } = await readResponseBody(response);
-    return toTransportResponse(body, response, startMs, {
+    return toTransportResponse(body, response, method, startMs, {
       requestBody,
       rawResponseText: raw,
     });
@@ -375,7 +377,7 @@ export const multipartHttpTransport = (
     // Single, non-multipart response: behaves like the simple transport.
     if (!isAsyncIterable(response)) {
       const { body, raw } = await readResponseBody(response);
-      yield toTransportResponse(body, rawResponse, startMs, {
+      yield toTransportResponse(body, rawResponse, method, startMs, {
         requestBody,
         rawResponseText: raw,
       });
@@ -394,6 +396,7 @@ export const multipartHttpTransport = (
       yield toTransportResponse(
         chunk.map(part => part.body) as TransportResponse['body'],
         rawResponse,
+        method,
         startMs,
         { requestBody },
       );

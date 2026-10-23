@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { parse, OperationDefinitionNode } from 'graphql';
 import { ExecuteButtonView } from './';
-import { Tooltip } from '../tooltip';
 
 function opsOf(source: string): OperationDefinitionNode[] {
   return parse(source).definitions.filter(
@@ -13,13 +12,6 @@ const meta: Meta<typeof ExecuteButtonView> = {
   title: 'Components/ExecuteButton',
   component: ExecuteButtonView,
   tags: ['autodocs'],
-  decorators: [
-    Story => (
-      <Tooltip.Provider>
-        <Story />
-      </Tooltip.Provider>
-    ),
-  ],
   args: {
     isFetching: false,
     onRun() {},
@@ -45,11 +37,10 @@ export const Default: Story = {
 
 /**
  * Several named operations: the button grows a caret opening the operation
- * picker. GET is selected, so the mutation's menu item is disabled.
+ * picker for queries and mutations.
  */
 export const MultipleOperationsWithPicker: Story = {
   args: {
-    transportMethod: 'GET',
     operationName: 'Beta',
     onSetOperationName() {},
   },
@@ -67,12 +58,8 @@ export const MultipleOperationsWithPicker: Story = {
   ),
 };
 
-/** GET selected with a mutation active: the button is disabled and explains why on hover. */
-export const BlockedOverGet: Story = {
-  args: {
-    transportMethod: 'GET',
-    runDisabledReason: 'Mutations can only be sent via POST',
-  },
+/** A mutation uses the same Run control as any other operation. */
+export const Mutation: Story = {
   render: args => (
     <ExecuteButtonView
       {...args}
