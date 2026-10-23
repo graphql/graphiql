@@ -34,7 +34,7 @@
   "devDependencies": {
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@typescript/native": "npm:typescript@^7.0.2",
+    "@typescript/native": "npm:typescript@7.1.0-beta",
     "@vitejs/plugin-react": "^5.2.0",
     "axe-core": "^4",
     "babel-plugin-react-compiler": "1.0.0",

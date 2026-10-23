@@ -82,7 +82,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19.1.2",
     "@types/set-value": "^4.0.1",
-    "@typescript/native": "npm:typescript@^7.0.2",
+    "@typescript/native": "npm:typescript@7.1.0-beta",
     "@vitejs/plugin-react": "^5.2.0",
     "@vitest/browser-playwright": "^5.0.3",
     "@vitest/web-worker": "^5.0.3",

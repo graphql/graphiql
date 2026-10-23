@@ -39,7 +39,7 @@
     "@types/benchmark": "^2.1.5",
     "@types/debounce-promise": "^3.1.9",
     "@types/json-schema": "7.0.9",
-    "@typescript/native": "npm:typescript@^7.0.2",
+    "@typescript/native": "npm:typescript@7.1.0-beta",
     "benchmark": "^2.1.4",
     "graphql": "^17.0.2",
     "graphql-config": "^5.1.6",
