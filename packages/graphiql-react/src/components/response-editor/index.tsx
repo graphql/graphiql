@@ -185,6 +185,7 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
     <div {...props} className={clsx('graphiql-response-pane', props.className)}>
       {showHeader && (
         <ResponseHeader
+          method={lastResponse?.method}
           status={lastResponse?.status}
           statusText={lastResponse?.statusText}
           timeMs={

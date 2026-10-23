@@ -40,6 +40,8 @@ export type TransportResponse = {
    * this is purely `!hasGraphQLErrors`, since there is no status to consult.
    */
   ok: boolean;
+  /** HTTP method used for this execution. Absent for non-HTTP transports. */
+  method?: HttpMethod;
   status?: number;
   statusText?: string;
   headers?: Record<string, string>;
@@ -60,7 +62,7 @@ export type TransportResponse = {
  *   but subject to URL length limits.
  * - `QUERY` sends a JSON request body like `POST`, but is safe and idempotent
  *   like `GET` (per the HTTP QUERY method), so responses stay cacheable. See
- *   https://datatracker.ietf.org/doc/draft-ietf-httpbis-safe-method-w-body/
+ *   https://www.rfc-editor.org/rfc/rfc10008.html
  *
  * Mutations may only be sent over `POST`, since `GET` and `QUERY` are safe.
  */
@@ -77,18 +79,28 @@ export type Transport = {
    */
   url: string;
   /**
-   * Currently active HTTP method.
+   * Effective query method for the latest known capabilities, or the explicit
+   * override. Use response.method to observe the method of an execution.
+   * createTransport always sends mutations through POST.
    */
   method: HttpMethod;
   /**
-   * HTTP methods this transport is configured to use. Defaults to `['POST']`.
+   * Currently available HTTP methods. May change after discovery; an empty
+   * list means the endpoint advertises no usable methods.
    */
   supportedMethods: HttpMethod[];
   /**
-   * Present only when `supportedMethods` has more than one entry. Switches the
-   * active HTTP method used by subsequent `send()` calls.
+   * Overrides the method for subsequent queries; undefined restores automatic
+   * QUERY → POST → GET selection. Queries reject if the override is unavailable
+   * after discovery. Mutations still require POST.
+   * Optional for custom transports that do not support method selection.
    */
-  setMethod?: (method: HttpMethod) => void;
+  setMethod?: (method?: HttpMethod) => void;
+  /**
+   * Executes an operation and owns its routing and method safety policy.
+   * Custom HTTP transports must prevent mutations over safe methods such as
+   * GET and QUERY. GraphiQL delegates operation routing to this method.
+   */
   send(
     request: TransportRequest,
   ): Promise<TransportResponse> | AsyncIterable<TransportResponse>;
@@ -151,17 +163,19 @@ export type CreateTransportOptions = {
    */
   fetch?: typeof fetch;
   /**
-   * Initial HTTP method to use for queries. Defaults to `'POST'`.
-   * When set to `'GET'`, queries are encoded into the URL per the
-   * GraphQL over HTTP spec; when set to `'QUERY'`, queries are sent in a
-   * request body like POST. Mutations always use POST regardless, since
-   * `'GET'` and `'QUERY'` are safe methods.
+   * Override the HTTP method for queries. When omitted, choose the first
+   * available method in QUERY → POST → GET order. An unsupported override
+   * rejects execution instead of silently choosing another method.
+   * GET encodes queries and variables in the URL without a request body;
+   * QUERY and POST use a JSON body. Mutations always require POST.
+   * If OPTIONS discovery is unavailable, this method (or POST) is the fallback.
    */
   method?: HttpMethod;
   /**
-   * HTTP methods this transport should advertise as supported.
-   * Defaults to `['POST']`. Pass e.g. `['GET', 'POST']` or
-   * `['GET', 'POST', 'QUERY']` to allow switching.
+   * Explicit supported methods. A nonempty list bypasses automatic discovery.
+   * When omitted, the first HTTP execution discovers methods using OPTIONS
+   * and Allow, repeating when effective request headers change. If discovery
+   * is unavailable, the initial method (normally POST) remains available.
    */
   supportedMethods?: HttpMethod[];
 };

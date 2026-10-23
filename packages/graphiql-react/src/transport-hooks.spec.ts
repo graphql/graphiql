@@ -45,6 +45,26 @@ async function collect(
 }
 
 describe('TransportHookRegistry', () => {
+  it('forwards live transport state and binds methods to the original transport', () => {
+    const registry = new TransportHookRegistry();
+    const transport: Transport = {
+      ...makeTransport(async () => makeResponse()),
+      setMethod(method) {
+        expect(this).toBe(transport);
+        this.method = method ?? 'POST';
+      },
+    };
+    const wrapped = registry.wrap(transport);
+
+    transport.supportedMethods = ['POST', 'QUERY'];
+    wrapped.setMethod!('QUERY');
+
+    expect(wrapped.method).toBe('QUERY');
+    expect(wrapped.supportedMethods).toEqual(['POST', 'QUERY']);
+    wrapped.setMethod!();
+    expect(wrapped.method).toBe('POST');
+  });
+
   describe('onBeforeSend', () => {
     it('calls registered callbacks before send', async () => {
       const registry = new TransportHookRegistry();
