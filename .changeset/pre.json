@@ -66,6 +66,7 @@
     "shared-graphiql-settings",
     "stable-react-compiler",
     "transport-api",
+    "transport-method-discovery",
     "update-motion-14",
     "v6-redesign"
   ]
