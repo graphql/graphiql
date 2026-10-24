@@ -169,6 +169,28 @@ describe('getDiagnostics', () => {
     expect(errors.length).toEqual(0);
   });
 
+  it('returns no errors for a comments-only query', () => {
+    const errors = getDiagnostics(
+      '# a comment\n  # an indented comment\n\n# another comment',
+      schema,
+    );
+    expect(errors).toEqual([]);
+  });
+
+  it('returns no errors for a whitespace-only query', () => {
+    const errors = getDiagnostics('  \n\n  ', schema);
+    expect(errors).toEqual([]);
+  });
+
+  it('still reports syntax errors for truncated queries', () => {
+    const errors = getDiagnostics('query {', schema);
+    expect(errors).toHaveLength(1);
+    expect(errors[0].message).toEqual(
+      'Syntax Error: Expected Name, found <EOF>.',
+    );
+    expect(errors[0].source).toEqual('GraphQL: Syntax');
+  });
+
   it.runIf(Number.parseInt(version, 10) >= 17)(
     'parses and validates fragment arguments with GraphQL 17',
     () => {
