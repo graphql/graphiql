@@ -1225,7 +1225,34 @@ export class MessageProcessor {
    */
   private async _cacheDocumentFilesforProject(project: GraphQLProjectConfig) {
     try {
-      const documents = await project.getDocuments();
+      if (!project.documents) {
+        return;
+      }
+      const exclude = project.exclude
+        ? Array.isArray(project.exclude)
+          ? project.exclude
+          : [project.exclude]
+        : [];
+
+      const documentsList = Array.isArray(project.documents)
+        ? project.documents
+        : [project.documents];
+
+      const explicitlyIncludesNodeModules = documentsList.some(
+        doc => typeof doc === 'string' && doc.includes('node_modules'),
+      );
+
+      const ignore = [...exclude];
+      if (
+        !explicitlyIncludesNodeModules &&
+        !ignore.some(pattern => typeof pattern === 'string' && pattern.includes('node_modules'))
+      ) {
+        ignore.push('**/node_modules/**');
+      }
+
+      const documents = await project.loadDocuments(project.documents, {
+        ignore,
+      });
       const documentLocations = new Set(
         documents
           .filter(doc => doc.location && doc.rawSDL)
