@@ -12,7 +12,7 @@ Query                                      | meta.type.interface.graphql support
 users                                      | meta.type.interface.graphql meta.type.object.graphql variable.graphql
 (                                          | meta.type.interface.graphql meta.type.object.graphql meta.brace.round.graphql
                                            | meta.type.interface.graphql meta.type.object.graphql
-"                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 First argument                             | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 "                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
                                            | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql
@@ -21,7 +21,7 @@ first                                      | meta.type.interface.graphql meta.ty
                                            | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql
 Int                                        | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql support.type.builtin.graphql
                                            | meta.type.interface.graphql meta.type.object.graphql
-"                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 Second argument, with punctuation: (value) | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 "                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
                                            | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql
@@ -43,7 +43,7 @@ ID                                         | meta.type.interface.graphql meta.ty
 !                                          | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql meta.type.list.graphql keyword.operator.nulltype.graphql
 ]                                          | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql meta.type.list.graphql meta.brace.square.graphql
                                            | meta.type.interface.graphql meta.type.object.graphql
-"                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 Fourth argument                            | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 "                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
                                            | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql
@@ -58,7 +58,7 @@ String                                     | meta.type.interface.graphql meta.ty
 default value                              | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql string.quoted.double.graphql
 "                                          | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql string.quoted.double.graphql punctuation.definition.string.end.graphql
                                            | meta.type.interface.graphql meta.type.object.graphql
-"                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 Fifth argument                             | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 "                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
                                            | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql
@@ -95,13 +95,13 @@ use user                                   | meta.type.interface.graphql meta.ty
                                            | meta.type.interface.graphql meta.type.object.graphql comment.line.graphql.js punctuation.whitespace.comment.leading.graphql
 # prettier-ignore                          | meta.type.interface.graphql meta.type.object.graphql comment.line.graphql.js
                                            | meta.type.interface.graphql meta.type.object.graphql
-"                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 Next field                                 | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 "                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
                                            | meta.type.interface.graphql meta.type.object.graphql
 user                                       | meta.type.interface.graphql meta.type.object.graphql variable.graphql
 (                                          | meta.type.interface.graphql meta.type.object.graphql meta.brace.round.graphql
-"                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 Inline first                               | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 "                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
                                            | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql
@@ -110,7 +110,7 @@ id                                         | meta.type.interface.graphql meta.ty
                                            | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql
 ID                                         | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql support.type.builtin.graphql
                                            | meta.type.interface.graphql meta.type.object.graphql
-"                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 Inline second                              | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 "                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
                                            | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql
@@ -135,7 +135,7 @@ other                                      | meta.type.interface.graphql meta.ty
 User                                       | meta.type.interface.graphql meta.type.object.graphql support.type.graphql
                                            | meta.type.interface.graphql meta.type.object.graphql
                                            | meta.type.interface.graphql meta.type.object.graphql
-"                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 Final field                                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 "                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
                                            | meta.type.interface.graphql meta.type.object.graphql
@@ -156,7 +156,7 @@ first                                      | meta.type.interface.graphql meta.ty
                                            | meta.type.interface.graphql meta.type.object.graphql
 Int                                        | meta.type.interface.graphql meta.type.object.graphql support.type.builtin.graphql
                                            | meta.type.interface.graphql meta.type.object.graphql
-"                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 Input field description                    | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 "                                          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
                                            | meta.type.interface.graphql meta.type.object.graphql
@@ -192,7 +192,7 @@ first                                      | meta.variables.graphql variable.par
                                            | meta.variables.graphql
 Int                                        | meta.variables.graphql support.type.builtin.graphql
                                            | 
-"                                          | comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                          | comment.line.documentation.graphql
 Directive argument description             | comment.line.documentation.graphql
 "                                          | comment.line.documentation.graphql
                                            | meta.variables.graphql
@@ -938,7 +938,7 @@ TestType               | support.type.graphql
 exports[`source.graphql grammar > should tokenize descriptions as documentation and argument values as strings 1`] = `
 # a hash comment stays a comment | comment.line.graphql.js
                                  | 
-"                                | comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                | comment.line.documentation.graphql
 Top-level type description       | comment.line.documentation.graphql
 "                                | comment.line.documentation.graphql
 type                             | meta.type.interface.graphql keyword.type.graphql
@@ -947,13 +947,13 @@ User                             | meta.type.interface.graphql support.type.grap
                                  | meta.type.interface.graphql meta.type.object.graphql
 {                                | meta.type.interface.graphql meta.type.object.graphql punctuation.operation.graphql
                                  | meta.type.interface.graphql meta.type.object.graphql
-"                                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 Field description                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 "                                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
                                  | meta.type.interface.graphql meta.type.object.graphql
 fullName                         | meta.type.interface.graphql meta.type.object.graphql variable.graphql
 (                                | meta.type.interface.graphql meta.type.object.graphql meta.brace.round.graphql
-"                                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 Argument description             | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 "                                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
                                  | meta.type.interface.graphql meta.type.object.graphql meta.variables.graphql
@@ -1014,7 +1014,7 @@ String                           | meta.type.interface.graphql meta.type.object.
 !                                | meta.type.interface.graphql meta.type.object.graphql meta.type.list.graphql keyword.operator.nulltype.graphql
 }                                | meta.type.interface.graphql meta.type.object.graphql punctuation.operation.graphql
                                  | 
-"                                | comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                | comment.line.documentation.graphql
 Input description                | comment.line.documentation.graphql
 "                                | comment.line.documentation.graphql
 input                            | meta.type.interface.graphql keyword.input.graphql
@@ -1023,7 +1023,7 @@ UserFilter                       | meta.type.interface.graphql support.type.grap
                                  | meta.type.interface.graphql meta.type.object.graphql
 {                                | meta.type.interface.graphql meta.type.object.graphql punctuation.operation.graphql
                                  | meta.type.interface.graphql meta.type.object.graphql
-"                                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 Input field description          | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
 "                                | meta.type.interface.graphql meta.type.object.graphql comment.line.documentation.graphql
                                  | meta.type.interface.graphql meta.type.object.graphql
@@ -1069,7 +1069,7 @@ Role                             | meta.enum.graphql support.type.enum.graphql
                                  | meta.enum.graphql meta.type.object.graphql
 {                                | meta.enum.graphql meta.type.object.graphql punctuation.operation.graphql
                                  | meta.enum.graphql meta.type.object.graphql
-"                                | meta.enum.graphql meta.type.object.graphql comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                | meta.enum.graphql meta.type.object.graphql comment.line.documentation.graphql
 Enum value description           | meta.enum.graphql meta.type.object.graphql comment.line.documentation.graphql
 "                                | meta.enum.graphql meta.type.object.graphql comment.line.documentation.graphql
   ADMIN                          | meta.enum.graphql meta.type.object.graphql constant.character.enum.graphql
@@ -1081,7 +1081,7 @@ directive                        | keyword.directive.graphql
 @sample                          | entity.name.function.directive.graphql
 (                                | meta.brace.round.graphql
                                  | 
-"                                | comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                | comment.line.documentation.graphql
 Directive argument description   | comment.line.documentation.graphql
 "                                | comment.line.documentation.graphql
                                  | meta.variables.graphql
@@ -1132,7 +1132,7 @@ id                               | meta.selectionset.graphql meta.selectionset.g
 }                                | meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
 }                                | meta.selectionset.graphql punctuation.operation.graphql
                                  | 
-"                                | comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                | comment.line.documentation.graphql
 Operation description            | comment.line.documentation.graphql
 "                                | comment.line.documentation.graphql
 query                            | keyword.operation.graphql
@@ -1140,7 +1140,7 @@ query                            | keyword.operation.graphql
 GetUser                          | entity.name.function.graphql
 (                                | meta.brace.round.graphql
                                  | 
-"                                | comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                | comment.line.documentation.graphql
 Variable description             | comment.line.documentation.graphql
 "                                | comment.line.documentation.graphql
                                  | meta.variables.graphql
@@ -1174,7 +1174,7 @@ UserFields                       | meta.selectionset.graphql meta.selectionset.g
 }                                | meta.selectionset.graphql meta.selectionset.graphql punctuation.operation.graphql
 }                                | meta.selectionset.graphql punctuation.operation.graphql
                                  | 
-"                                | comment.line.documentation.graphql punctuation.whitespace.comment.leading.graphql
+"                                | comment.line.documentation.graphql
 Fragment description             | comment.line.documentation.graphql
 "                                | comment.line.documentation.graphql
 fragment                         | meta.fragment.graphql keyword.fragment.graphql
