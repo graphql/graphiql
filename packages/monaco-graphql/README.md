@@ -42,6 +42,11 @@ It provides the following features while editing GraphQL files:
 For now, we use `language` id of `graphql` until we can ensure we can dovetail
 nicely with the official `graphql` language ID.
 
+`monaco-graphql@2` supports `monaco-editor` 0.56 and 0.57. Applications must
+configure
+`globalThis.MonacoEnvironment.getWorker` to return the GraphQL worker when the
+worker label is `graphql`.
+
 To use with webpack, here is an example to get you started:
 
 ```sh
@@ -51,7 +56,7 @@ yarn add monaco-graphql
 ## Sync Example
 
 ```ts
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import * as monaco from 'monaco-graphql/monaco-editor';
 
 import { initializeMode } from 'monaco-graphql/initializeMode'; // `monaco-graphql/esm/initializeMode` is deprecated but still works
 
@@ -99,7 +104,7 @@ The existing API works as before in terms of instantiating the schema.
 To avoid manually calling getWorker(), you can use the monaco editor plugins for webpack or vite (see examples, and below)
 
 ```ts
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import * as monaco from 'monaco-graphql/monaco-editor';
 // enables our language worker right away, despite no schema
 import 'monaco-graphql';
 
@@ -152,7 +157,7 @@ any given set of operations
 ## Full Sync Demo with Variables JSON
 
 ```ts
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import * as monaco from 'monaco-graphql/monaco-editor';
 
 import { initializeMode } from 'monaco-graphql/initializeMode';
 
@@ -257,7 +262,7 @@ Warning: by default, completion and other features will not work, only highlight
 import { initializeMode } from 'monaco-graphql/lite';
 
 // enable completion
-import 'monaco-editor/esm/vs/editor/contrib/inlineCompletions/browser/inlineCompletions.contribution';
+import 'monaco-editor/features/inlineCompletions/register';
 
 const api = initializeMode({
   schemas: [
@@ -460,8 +465,7 @@ should give you a starting point to see how to implement it with
   yourself using `useEffect` on `didMount` to prevent breaking SSR.
 - it may work with other libraries by using a similar strategy to
   [this](https://github.com/graphql/graphiql/blob/9df315b44896efa313ed6744445fc8f9e702ebc3/examples/monaco-graphql-webpack/src/editors.ts#L15).
-  you can also provide `MonacoEnvironment.getWorkerUrl` which works better as an
-  async import of your pre-build worker files
+  configure `MonacoEnvironment.getWorker` to return your pre-built worker.
 
 ## Custom Webworker (for passing non-static config to worker)
 
@@ -484,7 +488,7 @@ config such as `schemaLoader` to `createData`:
 import type * as monaco from 'monaco-editor';
 import type { ICreateData } from 'monaco-graphql';
 // @ts-expect-error -- ignore missing types
-import { initialize } from 'monaco-editor/esm/vs/editor/editor.worker';
+import { initialize } from 'monaco-editor/editor/editor.worker';
 import { GraphQLWorker } from 'monaco-graphql/esm/GraphQLWorker';
 import { GraphQLError, ValidationRule } from 'graphql';
 
@@ -503,21 +507,23 @@ const RequireOperationNameRule: ValidationRule = context => {
   };
 };
 
-globalThis.onmessage = () => {
-  initialize((ctx: monaco.worker.IWorkerContext, createData: ICreateData) => {
+class CustomGraphQLWorker extends GraphQLWorker {
+  override initialize(createData: ICreateData) {
     createData.languageConfig.customValidationRules = [
       RequireOperationNameRule,
     ];
-    return new GraphQLWorker(ctx, createData);
-  });
-};
+    super.initialize(createData);
+  }
+}
+
+initialize((ctx: monaco.worker.IWorkerContext) => new CustomGraphQLWorker(ctx));
 ```
 
 then, in your application:
 
 ```ts
 // Vite query suffixes https://vite.dev/guide/features.html#import-with-query-suffixes
-import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
+import EditorWorker from 'monaco-editor/editor/editor.worker?worker';
 import GraphQLWorker from './my-graphql.worker?worker';
 
 globalThis.MonacoEnvironment = {
@@ -531,8 +537,15 @@ or, if you have webpack configured for it:
 
 ```ts
 globalThis.MonacoEnvironment = {
-  getWorkerUrl(_workerId: string, label: string) {
-    return label === 'graphql' ? 'my-graphql.worker.js' : 'editor.worker.js';
+  getWorker(_workerId: string, label: string) {
+    return new Worker(
+      new URL(
+        label === 'graphql'
+          ? './my-graphql.worker.js'
+          : 'monaco-editor/editor/editor.worker.js',
+        import.meta.url,
+      ),
+    );
   },
 };
 ```

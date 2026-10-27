@@ -29,6 +29,8 @@ build({
     'babel-core',
     'htmling',
     'ractive',
+    'react',
+    'react-dom/server',
     'mote',
     'eco',
     'jqtpl',

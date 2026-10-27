@@ -11,7 +11,8 @@
     "example-graphiql-webpack",
     "example-monaco-graphql-nextjs",
     "example-monaco-graphql-react-vite",
-    "example-monaco-graphql-webpack"
+    "example-monaco-graphql-webpack",
+    "graphiql-e2e"
   ],
   "updateInternalDependencies": "patch",
   "privatePackages": {

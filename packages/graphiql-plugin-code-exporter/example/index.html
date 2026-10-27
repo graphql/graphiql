@@ -59,7 +59,7 @@
       import ReactDOM from 'react-dom/client';
       // Import GraphiQL and the Explorer plugin
       import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
-      import { createGraphiQLFetcher } from '@graphiql/toolkit';
+      import { createTransport } from '@graphiql/toolkit';
       // Required to be before `@graphiql/plugin-code-exporter`
       import 'regenerator-runtime/runtime';
       import { codeExporterPlugin } from '@graphiql/plugin-code-exporter';
@@ -81,7 +81,7 @@
         },
       };
 
-      const fetcher = createGraphiQLFetcher({
+      const transport = createTransport({
         url: 'https://countries.trevorblades.com',
       });
       function getQuery(arg, spaceCount = 2) {
@@ -124,7 +124,7 @@
 
       function App() {
         return React.createElement(GraphiQL, {
-          fetcher,
+          transport,
           plugins,
           defaultEditorToolsVisibility: true,
         });

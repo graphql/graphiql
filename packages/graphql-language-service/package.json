@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service",
-  "version": "5.7.0",
+  "version": "6.0.0-rc.1",
   "description": "The official, runtime independent Language Service for GraphQL",
   "contributors": [
     "GraphQL Contributors"
@@ -28,24 +28,20 @@
   "main": "dist/index.js",
   "module": "esm/index.js",
   "types": "dist/index.d.ts",
-  "bin": {
-    "graphql": "./dist/temp-bin.js"
-  },
   "peerDependencies": {
-    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0"
+    "graphql": "^16.11.0 || ^17.0.0"
   },
   "dependencies": {
     "debounce-promise": "^3.1.2",
-    "nullthrows": "^1.0.0",
     "vscode-languageserver-types": "^3.17.1"
   },
   "devDependencies": {
     "@types/benchmark": "^2.1.5",
     "@types/debounce-promise": "^3.1.9",
     "@types/json-schema": "7.0.9",
-    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
+    "@typescript/native": "npm:typescript@7.1.0-beta",
     "benchmark": "^2.1.4",
-    "graphql": "^16.9.0",
+    "graphql": "^17.0.2",
     "graphql-config": "^5.1.6",
     "lodash": "^4.18.1",
     "platform": "^1.3.5",
@@ -53,8 +49,8 @@
     "typescript": "^5.8.0"
   },
   "scripts": {
-    "build": "tsgo -p tsconfig.json && tsgo -p tsconfig.esm.json",
-    "types:check": "tsgo --noEmit",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.esm.json",
+    "types:check": "tsc --noEmit",
     "benchmark": "ts-node benchmark/index.ts",
     "test": "vitest run"
   }

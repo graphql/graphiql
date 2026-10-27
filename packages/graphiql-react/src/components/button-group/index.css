@@ -1,5 +1,5 @@
 .graphiql-button-group {
-  background-color: hsla(var(--color-neutral), var(--alpha-background-light));
+  background-color: oklch(var(--bg-subtle));
   /* Border radius of button plus padding */
   border-radius: calc(var(--border-radius-4) + var(--px-4));
   display: flex;
@@ -8,13 +8,10 @@
   & > button.graphiql-button {
     background-color: transparent;
     &:hover {
-      background-color: hsla(
-        var(--color-neutral),
-        var(--alpha-background-light)
-      );
+      background-color: oklch(var(--bg-overlay));
     }
     &.active {
-      background-color: hsl(var(--color-base));
+      background-color: oklch(var(--bg-canvas));
       cursor: default;
     }
   }

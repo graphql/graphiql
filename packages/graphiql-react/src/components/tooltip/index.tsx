@@ -1,5 +1,6 @@
 import type { FC, ReactNode } from 'react';
 import * as T from '@radix-ui/react-tooltip';
+import { usePortalContainer } from '../portal';
 import './index.css';
 
 export const TooltipRoot: FC<T.TooltipContentProps & { label: ReactNode }> = ({
@@ -9,10 +10,11 @@ export const TooltipRoot: FC<T.TooltipContentProps & { label: ReactNode }> = ({
   sideOffset = 5,
   label,
 }) => {
+  const container = usePortalContainer();
   return (
     <T.Root>
       <T.Trigger asChild>{children}</T.Trigger>
-      <T.Portal>
+      <T.Portal container={container}>
         <T.Content
           className="graphiql-tooltip"
           align={align}

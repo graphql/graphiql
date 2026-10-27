@@ -5,7 +5,8 @@ module.exports = {
     require.resolve('@babel/preset-react'),
   ],
   plugins: [
-    require.resolve('@babel/plugin-proposal-class-properties'),
+    require.resolve('@babel/plugin-transform-class-properties'),
+    require.resolve('@babel/plugin-transform-private-methods'),
     require.resolve('@babel/plugin-transform-class-static-block'),
   ],
 };

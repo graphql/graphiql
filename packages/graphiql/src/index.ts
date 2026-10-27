@@ -13,8 +13,11 @@ export {
   GraphiQL,
   // https://github.com/graphql/graphiql/issues/4057
   GraphiQLInterface,
+  DEFAULT_PLUGINS,
   type GraphiQLProps,
   type GraphiQLInterfaceProps,
 } from './GraphiQL';
 
 export { HISTORY_PLUGIN } from '@graphiql/plugin-history';
+export { QUERY_BUILDER_PLUGIN } from '@graphiql/plugin-query-builder';
+export { COLLECTIONS_PLUGIN } from '@graphiql/plugin-collections';

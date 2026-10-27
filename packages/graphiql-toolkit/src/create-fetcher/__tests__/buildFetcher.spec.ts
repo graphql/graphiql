@@ -8,8 +8,6 @@ vi.mock('../lib');
 
 vi.mock('graphql-ws');
 
-vi.mock('subscriptions-transport-ws');
-
 import {
   createWebsocketsFetcherFromUrl as _createWebsocketsFetcherFromUrl,
   createMultipartFetcher as _createMultipartFetcher,
@@ -18,7 +16,6 @@ import {
   createLegacyWebsocketsFetcher as _createLegacyWebsocketsFetcher,
 } from '../lib';
 import { createClient as _createClient } from 'graphql-ws';
-import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 const serverURL = 'http://localhost:3000/graphql';
 const wssURL = 'ws://localhost:3000/graphql';
@@ -118,16 +115,16 @@ describe('createGraphiQLFetcher', () => {
     expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([]);
   });
 
-  it('returns fetcher with custom legacyClient', () => {
+  it('returns fetcher with custom legacyWsClient', () => {
     // @ts-expect-error
     createClient.mockReturnValue('WSClient');
     // @ts-expect-error
     createLegacyWebsocketsFetcher.mockReturnValue('CustomWSSFetcher');
 
-    const legacyClient = new SubscriptionClient(wssURL);
+    const legacyWsClient = { request: vi.fn() };
     const args = {
       url: serverURL,
-      legacyClient,
+      legacyWsClient,
       enableIncrementalDelivery: true,
     };
 

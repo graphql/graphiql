@@ -8,7 +8,6 @@
     "packages/graphiql",
     "packages/graphiql-plugin-code-exporter",
     "packages/graphiql-plugin-doc-explorer",
-    "packages/graphiql-plugin-explorer",
     "packages/graphiql-plugin-history",
     "packages/graphiql-react",
     "packages/graphiql-toolkit",

@@ -19,7 +19,6 @@ export const reactCompilerConfig: Partial<ReactCompilerConfig> = {
   logger: {
     logEvent(filename, result) {
       if (result.kind === 'CompileSuccess') {
-        console.info('🚀 File', filename, 'was optimized with react-compiler');
         return;
       }
       if (result.kind === 'CompileSkip') {
@@ -58,7 +57,12 @@ export const plugins: PluginOption[] = [
   dts({
     include: ['src/**'],
     outDir: ['dist'],
-    exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],
+    exclude: [
+      '**/*.spec.{ts,tsx}',
+      '**/*.test.{ts,tsx}',
+      '**/*.stories.{ts,tsx}',
+      '**/__tests__/',
+    ],
   }),
   {
     name: 'copy-original-setup-workers-file',
@@ -87,8 +91,6 @@ export const plugins: PluginOption[] = [
         fs.writeFile(path.join(dest, 'webpack.js'), removeTypes(webpack)),
         fs.writeFile(path.join(dest, 'webpack.d.ts'), types),
       ]);
-
-      console.info(`Build finished! Created "${dest}"...`);
     },
   },
 ];
