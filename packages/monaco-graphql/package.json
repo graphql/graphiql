@@ -78,7 +78,7 @@
     "minimatch": "^10.2.6"
   },
   "devDependencies": {
-    "@typescript/native": "npm:typescript@^7.0.2",
+    "@typescript/native": "npm:typescript@7.1.0-beta",
     "graphql": "^17.0.2",
     "monaco-editor": "0.57.0",
     "prettier": "3.3.2",
