@@ -243,11 +243,13 @@ describe('keyboard navigation', () => {
     cy.get('.result-window').should('contain.text', '__typename');
   });
 
-  it('The Run button caret opens a keyboard-operable operation picker', () => {
+  it('The operation picker selects without running and supports keyboard navigation', () => {
+    const pickedOperations: string[] = [];
     cy.clock(Date.now(), ['setTimeout', 'clearTimeout']);
     cy.intercept('POST', '/graphql', request => {
       if (['A', 'B'].includes(request.body.operationName)) {
         request.alias = 'pickedOperation';
+        pickedOperations.push(request.body.operationName);
       }
     });
     cy.visitGraphiQL({
@@ -273,9 +275,11 @@ describe('keyboard navigation', () => {
     cy.focused().should('have.attr', 'role', 'menuitem').and('have.text', 'B');
     cy.realPress('Enter');
     cy.tick(0);
-    cy.wait('@pickedOperation')
-      .its('request.body.operationName')
-      .should('equal', 'B');
+    cy.get('[aria-label="Choose operation to run"]').should(
+      'contain.text',
+      'B',
+    );
+    cy.then(() => expect(pickedOperations).to.deep.equal([]));
     cy.get('.graphiql-tab-active .graphiql-tab-button').should(
       'contain.text',
       'B',
