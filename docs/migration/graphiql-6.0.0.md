@@ -392,15 +392,19 @@ transport.setMethod?.(); // Restore automatic selection (POST for this endpoint)
 
 This example sends queries through GET and mutations through POST. Omitting `method` would prefer POST over GET. If discovery is unavailable with `method: 'GET'` and no explicit capabilities, only GET is assumed available; configure `supportedMethods: ['GET', 'POST']` when both methods are known to work.
 
-Mutations always require POST, including operations started from GraphiQL's Run button, operation dropdown, or keyboard shortcut. If POST is unavailable, the transport rejects the mutation without sending it. Operations whose type cannot be determined also require POST. Discovery uses the current request headers before making this decision.
+Mutations always require POST. If POST is unavailable, the transport rejects the mutation without sending it. Operations whose type cannot be determined also require POST. Discovery uses the current request headers before making this decision.
 
-GraphiQL's top bar shows the endpoint without a method chip or switcher. The response pane displays `TransportResponse.method` alongside timing and size, so it shows the actual HTTP method for that response. This field is optional and is omitted for WebSocket events or custom transports that cannot report it. GraphiQL delegates HTTP method policy to the transport; custom transports must also keep mutations off GET and QUERY.
+`Transport.method` reflects the effective query method, which can differ from the method used for a mutation. Use `TransportResponse.method` to read the actual HTTP method for an execution. This field is optional and is omitted for WebSocket events or custom transports that cannot report it. GraphiQL delegates HTTP method policy to the transport; custom transports must also keep mutations off GET and QUERY.
 
 ### Custom transports (FAQ)
 
-If you hand-rolled a `Fetcher` rather than using `createGraphiQLFetcher`, migrate by implementing the `Transport` interface directly. A `Transport` declares its endpoint `url`, active `method`, `supportedMethods`, and a `send(request)` method. For queries and mutations it returns a `Promise<TransportResponse>`; for subscriptions and incremental delivery it returns an `AsyncIterable<TransportResponse>`, one entry per event or chunk.
+If you hand-rolled a `Fetcher` rather than using `createGraphiQLFetcher`, migrate by implementing the `Transport` interface directly. A `Transport` declares its endpoint `url`, effective query `method`, `supportedMethods`, and a `send(request)` method. For queries and mutations it returns a `Promise<TransportResponse>`; for subscriptions and incremental delivery it returns an `AsyncIterable<TransportResponse>`, one entry per event or chunk.
 
-Include the actual HTTP method in each `TransportResponse.method` when your transport can observe it. GraphiQL displays response metadata directly; it does not discover capabilities or subscribe to method changes on custom transports.
+Include the actual HTTP method in each `TransportResponse.method` when your transport can observe it. Custom transports own capability discovery and method routing.
+
+To support method selection, implement the optional `setMethod(method?)` API. Calling it without an argument restores automatic selection. Expose the optional `methodOverride` property to distinguish an explicit query preference from Auto: `undefined` means Auto when the property is present; omitting the property means the policy is not observable.
+
+Implement the optional `subscribe(listener)` API to notify GraphiQL when the preference or supported methods change, and return an unsubscribe function. GraphiQL rereads `method`, `methodOverride`, and `supportedMethods` after each notification. This observes transport state, independently of GraphQL subscriptions and the plugin request lifecycle hooks. `createTransport` implements these APIs. Custom transports that omit them remain supported, but external state changes do not automatically refresh the method selector.
 
 **Before (custom fetcher):**
 
