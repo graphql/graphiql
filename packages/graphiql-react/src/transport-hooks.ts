@@ -134,7 +134,7 @@ export class TransportHookRegistry {
   wrap(transport: Transport): Transport {
     const { _beforeSend, _onResponse, _onError } = this;
 
-    return {
+    const wrapped: Transport = {
       ...transport,
       get method() {
         return transport.method;
@@ -143,6 +143,7 @@ export class TransportHookRegistry {
         return transport.supportedMethods;
       },
       setMethod: transport.setMethod?.bind(transport),
+      subscribe: transport.subscribe?.bind(transport),
       send(request: TransportRequest): AsyncIterable<TransportResponse> {
         return {
           [Symbol.asyncIterator]() {
@@ -246,5 +247,12 @@ export class TransportHookRegistry {
         };
       },
     };
+    if ('methodOverride' in transport) {
+      Object.defineProperty(wrapped, 'methodOverride', {
+        enumerable: true,
+        get: () => transport.methodOverride,
+      });
+    }
+    return wrapped;
   }
 }
