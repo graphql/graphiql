@@ -10,6 +10,35 @@ describe('Theme', () => {
     });
   });
 
+  for (const theme of ['light', 'dark'] as const) {
+    it(`keeps Run visually distinct from secondary controls on hover in ${theme} mode`, () => {
+      cy.visitGraphiQL(
+        { query: '{ __typename }' },
+        {
+          onBeforeLoad(win) {
+            win.localStorage.setItem(
+              'graphiql:settings',
+              JSON.stringify({ theme }),
+            );
+          },
+        },
+      );
+      cy.get('.graphiql-container').should('have.attr', 'data-theme', theme);
+      cy.get('.graphiql-execute-button-primary')
+        .realHover()
+        .then($button => {
+          const runBackground = getComputedStyle($button[0]).backgroundColor;
+          cy.get('[aria-label="Choose request method"]')
+            .realHover()
+            .should($method => {
+              expect(getComputedStyle($method[0]).backgroundColor).not.to.equal(
+                runBackground,
+              );
+            });
+        });
+    });
+  }
+
   describe('Settings theme toggle', () => {
     function editorBackground() {
       return cy
