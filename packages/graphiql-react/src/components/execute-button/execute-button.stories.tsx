@@ -12,7 +12,7 @@ function opsOf(source: string): OperationDefinitionNode[] {
 }
 
 const operations = opsOf(
-  'query GetViewer { viewer { id name } }\nmutation UpdateProfile { updateProfile { id name } }',
+  'query GetViewer { viewer { id name } }\nmutation UpdateProfile { updateProfile { id name } }\nsubscription OnWidget { widgetAdded { id } }',
 );
 
 const meta: Meta<typeof ExecuteButtonView> = {

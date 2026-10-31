@@ -33,9 +33,13 @@ const QUERY_METHODS = {
 };
 
 describe('ExecuteButtonView', () => {
-  it.each(['query', 'mutation', 'subscription'])(
+  it.each([
+    ['query', 'QRY'],
+    ['mutation', 'MUT'],
+    ['subscription', 'SUB'],
+  ])(
     'keeps the selected %s name visible with an operation-neutral Run action',
-    kind => {
+    (kind, chip) => {
       render(
         <ExecuteButtonView
           {...DEFAULTS}
@@ -43,6 +47,7 @@ describe('ExecuteButtonView', () => {
         />,
       );
       expect(screen.getByText('Selected')).toBeVisible();
+      expect(screen.getByText(chip)).toBeVisible();
       expect(
         screen.getByRole('button', { name: 'Run operation' }),
       ).toBeEnabled();
@@ -180,9 +185,9 @@ describe('ExecuteButtonView', () => {
         screen.getByRole('button', { name: 'Choose operation to run' }),
       );
       expect(
-        await screen.findByRole('menuitem', { name: 'Alpha' }),
+        await screen.findByRole('menuitem', { name: /QRY.*Alpha/ }),
       ).toBeVisible();
-      await user.click(screen.getByRole('menuitem', { name: 'Change' }));
+      await user.click(screen.getByRole('menuitem', { name: /MUT.*Change/ }));
       expect(onSetOperationName).toHaveBeenCalledExactlyOnceWith('Change');
       expect(onRun).not.toHaveBeenCalled();
     });
@@ -203,7 +208,9 @@ describe('ExecuteButtonView', () => {
       await user.click(
         screen.getByRole('button', { name: 'Choose operation to run' }),
       );
-      await user.click(await screen.findByRole('menuitem', { name: 'Alpha' }));
+      await user.click(
+        await screen.findByRole('menuitem', { name: /QRY.*Alpha/ }),
+      );
       expect(onSetOperationName).not.toHaveBeenCalled();
       expect(onRun).not.toHaveBeenCalled();
     });
@@ -225,7 +232,7 @@ describe('ExecuteButtonView', () => {
       picker.focus();
       await user.keyboard('{Enter}');
       expect(
-        await screen.findByRole('menuitem', { name: 'Alpha' }),
+        await screen.findByRole('menuitem', { name: /QRY.*Alpha/ }),
       ).toHaveFocus();
       await user.keyboard('{ArrowDown}{Enter}');
       expect(onSetOperationName).toHaveBeenCalledWith('Change');

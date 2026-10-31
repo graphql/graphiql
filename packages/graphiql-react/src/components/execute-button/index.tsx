@@ -10,6 +10,7 @@ import { useGraphiQL, useGraphiQLActions } from '../provider';
 import { KeycapHint, MODIFIER } from '../keycap-hint';
 import { DropdownMenu } from '../dropdown-menu';
 import { Tooltip } from '../tooltip';
+import { MethodPill } from '../method-pill';
 import { PlayIcon, StopIcon, ChevronDownIcon } from '../../icons';
 import { resolveActiveOperation } from '../../utility/active-operation';
 import { useTransportMethod } from './use-transport-method';
@@ -97,9 +98,12 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
   const canSelectMethod =
     isQuery && Boolean(onSetMethod) && availableMethods.length > 1;
   const name = (
-    <span id={nameId} className="graphiql-execute-button-name">
-      {operationLabel}
-    </span>
+    <>
+      {activeOperation && <MethodPill operation={activeOperation.operation} />}
+      <span id={nameId} className="graphiql-execute-button-name">
+        {operationLabel}
+      </span>
+    </>
   );
   const methodLabel = (
     <span
@@ -187,7 +191,8 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
                         'graphiql-execute-button-menu-item--active',
                     )}
                   >
-                    {label}
+                    <MethodPill operation={operation.operation} />
+                    <span>{label}</span>
                   </span>
                 </DropdownMenu.Item>
               );

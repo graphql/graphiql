@@ -75,6 +75,11 @@
   text-overflow: ellipsis;
 }
 
+.graphiql-execute-button-operation .graphiql-method-pill,
+.graphiql-execute-button-menu-item .graphiql-method-pill {
+  flex-shrink: 0;
+}
+
 .graphiql-execute-button .graphiql-execute-button-method {
   flex-shrink: 0;
 }
