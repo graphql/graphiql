@@ -174,6 +174,7 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
               return (
                 <DropdownMenu.Item
                   key={`${label}-${i}`}
+                  textValue={label}
                   disabled={!opName}
                   aria-current={
                     operation === activeOperation ? true : undefined

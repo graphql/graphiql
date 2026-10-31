@@ -268,11 +268,15 @@ describe('keyboard navigation', () => {
     cy.realPress('Enter');
     cy.get('[role="menu"]').should('be.visible');
     cy.tick(0);
-    cy.focused().should('have.attr', 'role', 'menuitem').and('have.text', 'A');
+    cy.focused()
+      .should('have.attr', 'role', 'menuitem')
+      .and('have.text', 'QRYA');
 
     cy.realPress('ArrowDown');
     cy.tick(0);
-    cy.focused().should('have.attr', 'role', 'menuitem').and('have.text', 'B');
+    cy.focused()
+      .should('have.attr', 'role', 'menuitem')
+      .and('have.text', 'QRYB');
     cy.realPress('Enter');
     cy.tick(0);
     cy.get('[aria-label="Choose operation to run"]').should(

@@ -234,6 +234,11 @@ describe('ExecuteButtonView', () => {
       expect(
         await screen.findByRole('menuitem', { name: /QRY.*Alpha/ }),
       ).toHaveFocus();
+      await user.keyboard('c');
+      expect(
+        screen.getByRole('menuitem', { name: /MUT.*Change/ }),
+      ).toHaveFocus();
+      await user.keyboard('{ArrowUp}');
       await user.keyboard('{ArrowDown}{Enter}');
       expect(onSetOperationName).toHaveBeenCalledWith('Change');
       expect(picker).toHaveFocus();
