@@ -93,41 +93,36 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
         : queryMethod && 'POST'
       : undefined;
   const automatic = isQuery && isMethodAutomatic;
-  const canSelectMethod = isQuery && Boolean(onSetMethod);
+  const availableMethods = [...new Set(supportedMethods)];
+  const canSelectMethod =
+    isQuery && Boolean(onSetMethod) && availableMethods.length > 1;
   const name = (
     <span id={nameId} className="graphiql-execute-button-name">
       {operationLabel}
     </span>
   );
   const methodLabel = (
-    <>
-      <span
-        id={`${nameId}-method`}
-        className="graphiql-execute-button-method-label"
-      >
-        {method}
-      </span>
-      {automatic && (
-        <span id={`${nameId}-auto`} className="graphiql-execute-button-auto">
-          Auto
-        </span>
-      )}
-    </>
+    <span
+      id={`${nameId}-method`}
+      className="graphiql-execute-button-method-label"
+    >
+      {method}
+    </span>
   );
 
   return (
     <div className="graphiql-execute-button">
       <Tooltip
         label={
-          <>
-            {isRunning ? 'Stop operation' : 'Run operation'}
+          <span className="graphiql-execute-button-tooltip-label">
+            <span>{isRunning ? 'Stop operation' : 'Run operation'}</span>
             <KeycapHint
               keys={[MODIFIER.Meta, MODIFIER.Enter]}
               ariaLabel={
                 isRunning ? 'Stop operation shortcut' : 'Run operation shortcut'
               }
             />
-          </>
+          </span>
         }
       >
         <button
@@ -214,7 +209,7 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
               type="button"
               className="graphiql-execute-button-segment graphiql-execute-button-method"
               aria-label="Choose request method"
-              aria-describedby={`${nameId}-method${automatic ? ` ${nameId}-auto` : ''}`}
+              aria-describedby={`${nameId}-method`}
               disabled={isRunning}
             >
               {methodLabel}
@@ -238,7 +233,7 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
                 </span>
               </DropdownMenu.Item>
               <DropdownMenu.Separator />
-              {[...new Set(supportedMethods)].map(supportedMethod => (
+              {availableMethods.map(supportedMethod => (
                 <DropdownMenu.Item
                   key={supportedMethod}
                   aria-current={

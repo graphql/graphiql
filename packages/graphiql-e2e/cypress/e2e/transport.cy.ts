@@ -27,9 +27,10 @@ describe('Transport API + response pane header', () => {
     cy.visitGraphiQL({ query: testQuery });
     cy.clickExecuteQuery();
     cy.get('.graphiql-response-method').should('have.text', 'POST');
+    cy.get('.graphiql-execute-button-method-label').should('have.text', 'POST');
     cy.get('[aria-label="Choose request method"]').should(
-      'contain.text',
-      'POST',
+      'not.contain.text',
+      'Auto',
     );
     cy.get('.graphiql-top-bar-method-toggle').should('not.exist');
     cy.get('.graphiql-top-bar-method-label').should('not.exist');
@@ -50,10 +51,8 @@ describe('Transport API + response pane header', () => {
     cy.clickExecuteQuery();
     cy.wait('@read').its('request.method').should('eq', 'GET');
     cy.get('.graphiql-response-method').should('have.text', 'GET');
-    cy.get('[aria-label="Choose request method"]').should(
-      'contain.text',
-      'GET',
-    );
+    cy.get('.graphiql-execute-button-method').should('have.text', 'GET');
+    cy.get('[aria-label="Choose request method"]').should('not.exist');
     cy.get('.result-window').should('contain.text', '__typename');
   });
 
@@ -168,8 +167,14 @@ describe('Joined Run method selection', () => {
     cy.wait('@methodDiscovery');
     cy.activateOperation('Read');
     cy.get('[aria-label="Choose request method"]')
-      .should('contain.text', 'Auto')
+      .should('contain.text', 'POST')
+      .and('not.contain.text', 'Auto')
       .click();
+    cy.contains('[role="menuitem"]', /^Auto$/).should(
+      'have.attr',
+      'aria-current',
+      'true',
+    );
     cy.contains('[role="menuitem"]', /^GET$/).click();
     cy.get('[aria-label="Choose request method"]')
       .should('contain.text', 'GET')
@@ -190,7 +195,7 @@ describe('Joined Run method selection', () => {
     cy.contains('[role="menuitem"]', /^Auto/).click();
     cy.get('[aria-label="Choose request method"]')
       .should('contain.text', 'POST')
-      .and('contain.text', 'Auto');
+      .and('not.contain.text', 'Auto');
     cy.clickExecuteQuery();
     cy.wait('@selectedOperation').its('request.method').should('equal', 'POST');
     cy.then(() =>

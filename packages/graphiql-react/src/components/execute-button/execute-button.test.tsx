@@ -250,7 +250,8 @@ describe('ExecuteButtonView', () => {
       expect(screen.queryByText('POST')).not.toBeInTheDocument();
     });
 
-    it('shows the effective query method and Auto separately', () => {
+    it('shows only the effective method until the menu opens', async () => {
+      const user = userEvent.setup();
       render(
         <ExecuteButtonView
           {...DEFAULTS}
@@ -264,8 +265,39 @@ describe('ExecuteButtonView', () => {
         name: 'Choose request method',
       });
       expect(picker).toHaveTextContent('QUERY');
-      expect(within(picker).getByText('Auto')).toBeVisible();
+      expect(screen.queryByText('Auto')).not.toBeInTheDocument();
+      await user.click(picker);
+      expect(
+        await screen.findByRole('menuitem', { name: 'Auto' }),
+      ).toHaveAttribute('aria-current', 'true');
     });
+
+    it.each([['POST'], ['POST', 'POST']] as const)(
+      'keeps a single distinct method static (%j)',
+      (...supportedMethods) => {
+        const props = {
+          ...DEFAULTS,
+          queryMethod: 'POST' as const,
+          supportedMethods,
+          operations: TWO_OPS,
+          operationName: 'Alpha',
+          isMethodAutomatic: true,
+          onSetMethod: vi.fn(),
+        };
+        const { rerender } = render(<ExecuteButtonView {...props} />);
+        expect(screen.getByText('POST')).toBeVisible();
+        expect(
+          screen.queryByRole('button', { name: 'Choose request method' }),
+        ).not.toBeInTheDocument();
+        expect(screen.queryByText('Auto')).not.toBeInTheDocument();
+        rerender(
+          <ExecuteButtonView {...props} supportedMethods={['POST', 'GET']} />,
+        );
+        expect(
+          screen.getByRole('button', { name: 'Choose request method' }),
+        ).toHaveTextContent('POST');
+      },
+    );
 
     it('offers only supported methods and can restore automatic selection', async () => {
       const user = userEvent.setup();

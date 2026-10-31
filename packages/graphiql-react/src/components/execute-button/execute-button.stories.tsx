@@ -86,6 +86,10 @@ export const SingleOperation: Story = {
   args: { operations: opsOf('query GetViewer { viewer { id } }') },
 };
 
+export const SingleMethod: Story = {
+  args: { queryMethod: 'POST', supportedMethods: ['POST'] },
+};
+
 export const UnnamedOperation: Story = {
   args: { operations: opsOf('{ viewer { id } }'), operationName: null },
 };
