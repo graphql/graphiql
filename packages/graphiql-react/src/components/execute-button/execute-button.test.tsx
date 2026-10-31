@@ -54,9 +54,9 @@ describe('ExecuteButtonView', () => {
     },
   );
 
-  it('labels an unnamed operation without inventing an operation name', () => {
+  it('labels an anonymous operation without inventing an operation name', () => {
     render(<ExecuteButtonView {...DEFAULTS} operations={opsOf('{ field }')} />);
-    expect(screen.getByText('<Unnamed query>')).toBeVisible();
+    expect(screen.getByText('<Anonymous query>')).toBeVisible();
   });
 
   it('does not imply that an ambiguous document has a selected operation', () => {
@@ -285,33 +285,52 @@ describe('ExecuteButtonView', () => {
     });
 
     it.each([['POST'], ['POST', 'POST']] as const)(
-      'keeps a single distinct method static (%j)',
-      (...supportedMethods) => {
-        const props = {
-          ...DEFAULTS,
-          queryMethod: 'POST' as const,
-          supportedMethods,
-          operations: TWO_OPS,
-          operationName: 'Alpha',
-          isMethodAutomatic: true,
-          onSetMethod: vi.fn(),
-        };
-        const { rerender } = render(<ExecuteButtonView {...props} />);
-        expect(screen.getByText('POST')).toBeVisible();
-        expect(
-          screen.queryByRole('button', { name: 'Choose request method' }),
-        ).not.toBeInTheDocument();
-        expect(screen.queryByText('Auto')).not.toBeInTheDocument();
-        rerender(
-          <ExecuteButtonView {...props} supportedMethods={['POST', 'GET']} />,
+      'explains unavailable methods even with one distinct method (%j)',
+      async (...supportedMethods) => {
+        const user = userEvent.setup();
+        const onSetMethod = vi.fn();
+        render(
+          <ExecuteButtonView
+            {...DEFAULTS}
+            queryMethod="POST"
+            supportedMethods={supportedMethods}
+            operations={TWO_OPS}
+            operationName="Alpha"
+            isMethodAutomatic
+            onSetMethod={onSetMethod}
+          />,
         );
-        expect(
+        await user.click(
           screen.getByRole('button', { name: 'Choose request method' }),
-        ).toHaveTextContent('POST');
+        );
+        expect(screen.getAllByRole('menuitem', { name: 'POST' })).toHaveLength(
+          1,
+        );
+        const unavailable = screen.getByRole('menuitem', { name: 'QUERY' });
+        expect(unavailable).toHaveAttribute('aria-disabled', 'true');
+        await user.hover(unavailable);
+        expect(await screen.findByRole('tooltip')).toHaveTextContent(
+          'This server does not support QUERY.',
+        );
+        await user.click(unavailable);
+        expect(onSetMethod).not.toHaveBeenCalled();
+        expect(screen.getByRole('menu')).toBeVisible();
+        await user.keyboard('{Home}{ArrowDown}');
+        expect(unavailable).toHaveFocus();
+        expect(await screen.findByRole('tooltip')).toHaveTextContent(
+          'This server does not support QUERY.',
+        );
+        await user.keyboard('{Enter}');
+        expect(onSetMethod).not.toHaveBeenCalled();
+        expect(screen.getByRole('menu')).toBeVisible();
+        expect(screen.getByRole('menuitem', { name: 'GET' })).toHaveAttribute(
+          'aria-disabled',
+          'true',
+        );
       },
     );
 
-    it('offers only supported methods and can restore automatic selection', async () => {
+    it('disables unsupported methods and can restore automatic selection', async () => {
       const user = userEvent.setup();
       const onSetMethod = vi.fn();
       const onRun = vi.fn();
@@ -336,9 +355,10 @@ describe('ExecuteButtonView', () => {
         await screen.findByRole('menuitem', { name: /^Auto/ }),
       ).toBeVisible();
       expect(screen.getAllByRole('menuitem', { name: 'GET' })).toHaveLength(1);
-      expect(
-        screen.queryByRole('menuitem', { name: 'QUERY' }),
-      ).not.toBeInTheDocument();
+      expect(screen.getByRole('menuitem', { name: 'QUERY' })).toHaveAttribute(
+        'aria-disabled',
+        'true',
+      );
       await user.click(screen.getByRole('menuitem', { name: 'POST' }));
       expect(onSetMethod).toHaveBeenLastCalledWith('POST');
       await user.click(picker);
@@ -348,7 +368,8 @@ describe('ExecuteButtonView', () => {
       expect(onRun).not.toHaveBeenCalled();
     });
 
-    it('shows POST for a mutation and restores the query override when returning to a query', () => {
+    it('explains mutation restrictions without changing the query override', async () => {
+      const user = userEvent.setup();
       const props = {
         ...DEFAULTS,
         ...QUERY_METHODS,
@@ -365,11 +386,25 @@ describe('ExecuteButtonView', () => {
         screen.getByRole('button', { name: 'Choose request method' }),
       ).toHaveTextContent('GET');
       rerender(<ExecuteButtonView {...props} operationName="Change" />);
-      expect(screen.getByText('POST')).toBeVisible();
+      const picker = screen.getByRole('button', {
+        name: 'Choose request method',
+      });
+      expect(picker).toHaveTextContent('POST');
+      await user.click(picker);
       expect(
-        screen.queryByRole('button', { name: 'Choose request method' }),
+        screen.queryByRole('menuitem', { name: 'Auto' }),
       ).not.toBeInTheDocument();
-      expect(screen.queryByText('GET')).not.toBeInTheDocument();
+      for (const method of ['GET', 'QUERY']) {
+        const unavailable = screen.getByRole('menuitem', { name: method });
+        expect(unavailable).toHaveAttribute('aria-disabled', 'true');
+        await user.hover(unavailable);
+        expect(await screen.findByRole('tooltip')).toHaveTextContent(
+          `${method} is not supported for mutations.`,
+        );
+        await user.click(unavailable);
+        expect(props.onSetMethod).not.toHaveBeenCalled();
+      }
+      await user.click(screen.getByRole('menuitem', { name: 'POST' }));
       rerender(<ExecuteButtonView {...props} operationName="Alpha" />);
       expect(
         screen.getByRole('button', { name: 'Choose request method' }),

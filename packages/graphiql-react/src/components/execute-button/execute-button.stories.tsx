@@ -90,7 +90,7 @@ export const SingleMethod: Story = {
   args: { queryMethod: 'POST', supportedMethods: ['POST'] },
 };
 
-export const UnnamedOperation: Story = {
+export const AnonymousOperation: Story = {
   args: { operations: opsOf('{ viewer { id } }'), operationName: null },
 };
 

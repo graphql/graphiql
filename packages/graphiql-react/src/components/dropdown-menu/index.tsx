@@ -45,11 +45,18 @@ const Content: FC<DropdownMenuContentProps> = ({
   );
 };
 
-const Item: FC<DropdownMenuItemProps> = ({ className, children, ...props }) => (
-  <RadixItem className={clsx('graphiql-dropdown-item', className)} {...props}>
-    {children}
-  </RadixItem>
+const Item = forwardRef<HTMLDivElement, DropdownMenuItemProps>(
+  ({ className, children, ...props }, ref) => (
+    <RadixItem
+      ref={ref}
+      className={clsx('graphiql-dropdown-item', className)}
+      {...props}
+    >
+      {children}
+    </RadixItem>
+  ),
 );
+Item.displayName = 'DropdownMenuItem';
 
 const Separator: FC<ComponentProps<'div'>> = ({ className, ...props }) => (
   <RadixSeparator

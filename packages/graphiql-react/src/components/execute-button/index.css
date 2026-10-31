@@ -136,6 +136,12 @@
   background: oklch(var(--accent-green));
 }
 
+/* Unavailable methods stay focusable so keyboard users can read the reason. */
+.graphiql-execute-button-method-option[aria-disabled='true'] {
+  color: oklch(var(--fg-disabled));
+  cursor: default;
+}
+
 @media (max-width: 600px) {
   .graphiql-execute-button-name {
     max-width: 130px;

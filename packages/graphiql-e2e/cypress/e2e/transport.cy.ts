@@ -51,8 +51,21 @@ describe('Transport API + response pane header', () => {
     cy.clickExecuteQuery();
     cy.wait('@read').its('request.method').should('eq', 'GET');
     cy.get('.graphiql-response-method').should('have.text', 'GET');
-    cy.get('.graphiql-execute-button-method').should('have.text', 'GET');
-    cy.get('[aria-label="Choose request method"]').should('not.exist');
+    cy.get('.graphiql-execute-button-method-label').should('have.text', 'GET');
+    cy.get('[aria-label="Choose request method"]').click();
+    cy.contains('[role="menuitem"]', /^POST$/).should(
+      'have.attr',
+      'aria-disabled',
+      'true',
+    );
+    cy.contains('[role="menuitem"]', /^QUERY$/)
+      .should('have.attr', 'aria-disabled', 'true')
+      .realHover();
+    cy.get('[role="tooltip"]').should(
+      'contain.text',
+      'This server does not support QUERY.',
+    );
+    cy.realPress('Escape');
     cy.get('.result-window').should('contain.text', '__typename');
   });
 
@@ -184,7 +197,17 @@ describe('Joined Run method selection', () => {
 
     cy.activateOperation('Change');
     cy.get('.graphiql-execute-button').should('contain.text', 'POST');
-    cy.get('[aria-label="Choose request method"]').should('not.exist');
+    cy.get('[aria-label="Choose request method"]').click();
+    cy.contains('[role="menuitem"]', /^GET$/)
+      .should('have.attr', 'aria-disabled', 'true')
+      .realHover();
+    cy.get('[role="tooltip"]').should(
+      'contain.text',
+      'GET is not supported for mutations.',
+    );
+    cy.contains('[role="menuitem"]', /^GET$/).click();
+    cy.get('[role="menu"]').should('be.visible');
+    cy.realPress('Escape');
     cy.clickExecuteQuery();
     cy.wait('@selectedOperation').its('request.method').should('equal', 'POST');
 

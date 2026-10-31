@@ -84,7 +84,8 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
       ? executingOperation
       : resolveActiveOperation(operations, operationName);
   const operationLabel = activeOperation
-    ? (activeOperation.name?.value ?? `<Unnamed ${activeOperation.operation}>`)
+    ? (activeOperation.name?.value ??
+      `<Anonymous ${activeOperation.operation}>`)
     : 'Choose operation';
   const isQuery = activeOperation?.operation === 'query';
   const method =
@@ -94,9 +95,7 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
         : queryMethod && 'POST'
       : undefined;
   const automatic = isQuery && isMethodAutomatic;
-  const availableMethods = [...new Set(supportedMethods)];
-  const canSelectMethod =
-    isQuery && Boolean(onSetMethod) && availableMethods.length > 1;
+  const canSelectMethod = Boolean(onSetMethod);
   const name = (
     <>
       {activeOperation && <MethodPill operation={activeOperation.operation} />}
@@ -170,7 +169,7 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
           <DropdownMenu.Content align="end">
             {operations.map((operation, i) => {
               const opName = operation.name?.value;
-              const label = opName ?? `<Unnamed ${operation.operation}>`;
+              const label = opName ?? `<Anonymous ${operation.operation}>`;
               return (
                 <DropdownMenu.Item
                   key={`${label}-${i}`}
@@ -225,43 +224,75 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
               />
             </DropdownMenu.Button>
             <DropdownMenu.Content align="end" aria-label="Request method">
-              <DropdownMenu.Item
-                aria-current={automatic ? true : undefined}
-                onSelect={() => onSetMethod?.()}
-              >
-                <span
-                  className={clsx(
-                    'graphiql-execute-button-menu-item',
-                    automatic && 'graphiql-execute-button-menu-item--active',
-                  )}
-                >
-                  Auto
-                </span>
-              </DropdownMenu.Item>
-              <DropdownMenu.Separator />
-              {availableMethods.map(supportedMethod => (
-                <DropdownMenu.Item
-                  key={supportedMethod}
-                  aria-current={
-                    !automatic &&
-                    (methodOverride ?? queryMethod) === supportedMethod
-                      ? true
-                      : undefined
-                  }
-                  onSelect={() => onSetMethod?.(supportedMethod)}
-                >
-                  <span
-                    className={clsx(
-                      'graphiql-execute-button-menu-item',
-                      !automatic &&
-                        (methodOverride ?? queryMethod) === supportedMethod &&
-                        'graphiql-execute-button-menu-item--active',
-                    )}
+              {isQuery && (
+                <>
+                  <DropdownMenu.Item
+                    aria-current={automatic ? true : undefined}
+                    onSelect={() => onSetMethod?.()}
                   >
-                    {supportedMethod}
-                  </span>
-                </DropdownMenu.Item>
-              ))}
+                    <span
+                      className={clsx(
+                        'graphiql-execute-button-menu-item',
+                        automatic &&
+                          'graphiql-execute-button-menu-item--active',
+                      )}
+                    >
+                      Auto
+                    </span>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Separator />
+                </>
+              )}
+              {(['QUERY', 'POST', 'GET'] as const).map(candidate => {
+                const unavailableReason =
+                  !isQuery && candidate !== 'POST'
+                    ? `${candidate} is not supported for mutations.`
+                    : !supportedMethods.includes(candidate)
+                      ? `This server does not support ${candidate}.`
+                      : undefined;
+                const selected =
+                  !unavailableReason &&
+                  (isQuery
+                    ? !automatic &&
+                      (methodOverride ?? queryMethod) === candidate
+                    : candidate === 'POST');
+                const item = (
+                  <DropdownMenu.Item
+                    key={candidate}
+                    className="graphiql-execute-button-method-option"
+                    textValue={candidate}
+                    aria-disabled={unavailableReason ? true : undefined}
+                    aria-current={selected ? true : undefined}
+                    onSelect={event => {
+                      if (unavailableReason) {
+                        event.preventDefault();
+                      } else if (isQuery) {
+                        onSetMethod?.(candidate);
+                      }
+                    }}
+                  >
+                    <span
+                      className={clsx(
+                        'graphiql-execute-button-menu-item',
+                        selected && 'graphiql-execute-button-menu-item--active',
+                      )}
+                    >
+                      {candidate}
+                    </span>
+                  </DropdownMenu.Item>
+                );
+                return unavailableReason ? (
+                  <Tooltip
+                    key={candidate}
+                    label={unavailableReason}
+                    side="left"
+                  >
+                    {item}
+                  </Tooltip>
+                ) : (
+                  item
+                );
+              })}
             </DropdownMenu.Content>
           </DropdownMenu>
         ) : (
