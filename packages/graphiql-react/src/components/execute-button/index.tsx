@@ -13,6 +13,7 @@ import { MethodPill } from '../method-pill';
 import { PlayIcon, StopIcon, ChevronDownIcon } from '../../icons';
 import { resolveActiveOperation } from '../../utility/active-operation';
 import { useTransportMethod } from './use-transport-method';
+import '../../style/selection.css';
 import './index.css';
 
 /** Select an operation and its query method separately from executing it. */
@@ -174,7 +175,7 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
                   key={`${label}-${i}`}
                   textValue={label}
                   disabled={!opName}
-                  className="graphiql-execute-button-option"
+                  className="graphiql-execute-button-option graphiql-selection-item"
                   role="menuitemradio"
                   aria-checked={operation === activeOperation}
                   onSelect={() => {
@@ -220,7 +221,7 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
               {isQuery && (
                 <>
                   <DropdownMenu.Item
-                    className="graphiql-execute-button-option"
+                    className="graphiql-execute-button-option graphiql-selection-item"
                     role="menuitemradio"
                     aria-checked={automatic}
                     onSelect={() => onSetMethod?.()}
@@ -248,7 +249,7 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
                 const item = (
                   <DropdownMenu.Item
                     key={candidate}
-                    className="graphiql-execute-button-option graphiql-execute-button-method-option"
+                    className="graphiql-execute-button-option graphiql-execute-button-method-option graphiql-selection-item"
                     role="menuitemradio"
                     textValue={candidate}
                     aria-disabled={unavailableReason ? true : undefined}

@@ -5,6 +5,7 @@ import { useGraphiQL, useGraphiQLActions } from '../provider';
 import type { GraphiQLPlugin } from '../../stores/plugin';
 import { Tooltip } from '../tooltip';
 import { SettingsIcon } from '../../icons';
+import '../../style/selection.css';
 import './index.css';
 
 export interface ActivityRailProps {
@@ -44,7 +45,7 @@ export const ActivityRail: FC<ActivityRailProps> = ({
               <Tooltip label={label}>
                 <button
                   type="button"
-                  className={`graphiql-activity-rail-item${isActive ? ' active' : ''}`}
+                  className={`graphiql-activity-rail-item graphiql-selection-item${isActive ? ' active' : ''}`}
                   aria-pressed={isActive}
                   aria-label={label}
                   onClick={() => {
