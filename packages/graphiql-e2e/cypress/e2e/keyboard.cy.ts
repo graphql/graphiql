@@ -270,13 +270,15 @@ describe('keyboard navigation', () => {
     cy.tick(0);
     cy.focused()
       .should('have.attr', 'role', 'menuitem')
-      .and('have.text', 'QRYA');
+      .and('contain.text', 'A');
+    cy.focused().find('.graphiql-method-pill').should('have.text', 'QRY');
 
     cy.realPress('ArrowDown');
     cy.tick(0);
     cy.focused()
       .should('have.attr', 'role', 'menuitem')
-      .and('have.text', 'QRYB');
+      .and('contain.text', 'B');
+    cy.focused().find('.graphiql-method-pill').should('have.text', 'QRY');
     cy.realPress('Enter');
     cy.tick(0);
     cy.get('[aria-label="Choose operation to run"]').should(
