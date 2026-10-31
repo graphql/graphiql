@@ -684,6 +684,9 @@ importers:
       cypress-axe:
         specifier: ^1
         version: 1.7.0(axe-core@4.13.0)(cypress@16.0.0)
+      cypress-each:
+        specifier: ^1.14.1
+        version: 1.14.1
       cypress-real-events:
         specifier: ^1.15.1
         version: 1.15.1(cypress@16.0.0)
@@ -6783,6 +6786,9 @@ packages:
       axe-core: ^3 || ^4
       cypress: ^10 || ^11 || ^12 || ^13 || ^14 || ^15
 
+  cypress-each@1.14.1:
+    resolution: {integrity: sha512-evywTv0Gid5J24C2W6ajYsVoBpoXIkvNo6L5a5+6QabtKOG1pn9Fq4zO/EwrdfktDZ9PWRRWFbJBMoRh3NlrYg==}
+
   cypress-real-events@1.15.1:
     resolution: {integrity: sha512-BiTyqYcNHiIFWfSLRn3H+TgTvpnTGOKfl4Brz51yeSGKMxBbD60wtRQw31nII00yQ67Xg3C18mU8lqUxDN3OUA==}
     peerDependencies:
@@ -7552,6 +7558,9 @@ packages:
   form-data@4.0.6:
     resolution: {integrity: sha512-vKatAh4SlVfgbv+YtmhiRjhEMJsYpsG1Y2rMQtR+SVSbytsSD1YGzDIcrAJmdFec88u/+VoGmxnl+80gL1tRCQ==}
     engines: {node: '>= 6'}
+
+  format-util@1.0.5:
+    resolution: {integrity: sha512-varLbTj0e0yVyRpqQhuWV+8hlePAgaoFRhNFj50BNjEIrw1/DphHSObtqwskVCPWNgzwPoQrZAbfa/SBiicNeg==}
 
   formdata-node@4.3.2:
     resolution: {integrity: sha512-k7lYJyzDOSL6h917favP8j1L0/wNyylzU+x+1w4p5haGVHNlP58dbpdJhiCUsDbWsa9HwEtLp89obQgXl2e0qg==}
@@ -17447,6 +17456,10 @@ snapshots:
       axe-core: 4.13.0
       cypress: 16.0.0
 
+  cypress-each@1.14.1:
+    dependencies:
+      format-util: 1.0.5
+
   cypress-real-events@1.15.1(cypress@16.0.0):
     dependencies:
       cypress: 16.0.0
@@ -18398,6 +18411,8 @@ snapshots:
       es-set-tostringtag: 2.1.0
       hasown: 2.0.4
       mime-types: 2.1.35
+
+  format-util@1.0.5: {}
 
   formdata-node@4.3.2:
     dependencies:

@@ -42,6 +42,7 @@
     "cross-env": "^10.1.0",
     "cypress": "^16.0.0",
     "cypress-axe": "^1",
+    "cypress-each": "^1.14.1",
     "cypress-real-events": "^1.15.1",
     "start-server-and-test": "^1.10.11",
     "typescript": "^5.8.0",

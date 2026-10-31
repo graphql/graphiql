@@ -1,3 +1,5 @@
+import 'cypress-each';
+
 describe('Theme', () => {
   describe('`defaultTheme`', () => {
     it('should have light theme', () => {
@@ -10,8 +12,9 @@ describe('Theme', () => {
     });
   });
 
-  for (const theme of ['light', 'dark'] as const) {
-    it(`keeps Run visually distinct from secondary controls on hover in ${theme} mode`, () => {
+  it.each(['light', 'dark'] as const)(
+    'keeps Run visually distinct from secondary controls on hover in %s mode',
+    theme => {
       cy.visitGraphiQL(
         { query: '{ __typename }' },
         {
@@ -36,8 +39,8 @@ describe('Theme', () => {
               );
             });
         });
-    });
-  }
+    },
+  );
 
   describe('Settings theme toggle', () => {
     function editorBackground() {
