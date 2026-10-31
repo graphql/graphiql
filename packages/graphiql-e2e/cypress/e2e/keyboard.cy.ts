@@ -269,14 +269,14 @@ describe('keyboard navigation', () => {
     cy.get('[role="menu"]').should('be.visible');
     cy.tick(0);
     cy.focused()
-      .should('have.attr', 'role', 'menuitem')
+      .should('have.attr', 'role', 'menuitemradio')
       .and('contain.text', 'A');
     cy.focused().find('.graphiql-method-pill').should('have.text', 'QRY');
 
     cy.realPress('ArrowDown');
     cy.tick(0);
     cy.focused()
-      .should('have.attr', 'role', 'menuitem')
+      .should('have.attr', 'role', 'menuitemradio')
       .and('contain.text', 'B');
     cy.focused().find('.graphiql-method-pill').should('have.text', 'QRY');
     cy.realPress('Enter');
@@ -306,7 +306,7 @@ describe('keyboard navigation', () => {
     cy.realPress('Enter');
     cy.get('[role="menu"]').should('be.visible');
     cy.tick(0);
-    cy.focused().should('have.attr', 'role', 'menuitem');
+    cy.focused().should('have.attr', 'role', 'menuitemradio');
     cy.realPress('Escape');
     cy.get('[role="menu"]').should('not.exist');
     cy.tick(0);

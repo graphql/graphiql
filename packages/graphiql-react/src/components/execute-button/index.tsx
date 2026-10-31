@@ -5,7 +5,6 @@
 import { useId, type FC } from 'react';
 import type { HttpMethod } from '@graphiql/toolkit';
 import type { OperationDefinitionNode } from 'graphql';
-import { clsx } from 'clsx';
 import { useGraphiQL, useGraphiQLActions } from '../provider';
 import { KeycapHint, MODIFIER } from '../keycap-hint';
 import { DropdownMenu } from '../dropdown-menu';
@@ -175,22 +174,16 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
                   key={`${label}-${i}`}
                   textValue={label}
                   disabled={!opName}
-                  aria-current={
-                    operation === activeOperation ? true : undefined
-                  }
+                  className="graphiql-execute-button-option"
+                  role="menuitemradio"
+                  aria-checked={operation === activeOperation}
                   onSelect={() => {
                     if (opName && opName !== operationName) {
                       onSetOperationName?.(opName);
                     }
                   }}
                 >
-                  <span
-                    className={clsx(
-                      'graphiql-execute-button-menu-item',
-                      operation === activeOperation &&
-                        'graphiql-execute-button-menu-item--active',
-                    )}
-                  >
+                  <span className="graphiql-execute-button-menu-item">
                     <MethodPill operation={operation.operation} />
                     <span>{label}</span>
                   </span>
@@ -227,16 +220,12 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
               {isQuery && (
                 <>
                   <DropdownMenu.Item
-                    aria-current={automatic ? true : undefined}
+                    className="graphiql-execute-button-option"
+                    role="menuitemradio"
+                    aria-checked={automatic}
                     onSelect={() => onSetMethod?.()}
                   >
-                    <span
-                      className={clsx(
-                        'graphiql-execute-button-menu-item',
-                        automatic &&
-                          'graphiql-execute-button-menu-item--active',
-                      )}
-                    >
+                    <span className="graphiql-execute-button-menu-item">
                       Auto
                     </span>
                   </DropdownMenu.Item>
@@ -259,10 +248,11 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
                 const item = (
                   <DropdownMenu.Item
                     key={candidate}
-                    className="graphiql-execute-button-method-option"
+                    className="graphiql-execute-button-option graphiql-execute-button-method-option"
+                    role="menuitemradio"
                     textValue={candidate}
                     aria-disabled={unavailableReason ? true : undefined}
-                    aria-current={selected ? true : undefined}
+                    aria-checked={selected}
                     onSelect={event => {
                       if (unavailableReason) {
                         event.preventDefault();
@@ -271,12 +261,7 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
                       }
                     }}
                   >
-                    <span
-                      className={clsx(
-                        'graphiql-execute-button-menu-item',
-                        selected && 'graphiql-execute-button-menu-item--active',
-                      )}
-                    >
+                    <span className="graphiql-execute-button-menu-item">
                       {candidate}
                     </span>
                   </DropdownMenu.Item>

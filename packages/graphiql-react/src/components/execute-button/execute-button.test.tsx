@@ -185,9 +185,11 @@ describe('ExecuteButtonView', () => {
         screen.getByRole('button', { name: 'Choose operation to run' }),
       );
       expect(
-        await screen.findByRole('menuitem', { name: /QRY.*Alpha/ }),
+        await screen.findByRole('menuitemradio', { name: /QRY.*Alpha/ }),
       ).toBeVisible();
-      await user.click(screen.getByRole('menuitem', { name: /MUT.*Change/ }));
+      await user.click(
+        screen.getByRole('menuitemradio', { name: /MUT.*Change/ }),
+      );
       expect(onSetOperationName).toHaveBeenCalledExactlyOnceWith('Change');
       expect(onRun).not.toHaveBeenCalled();
     });
@@ -209,7 +211,7 @@ describe('ExecuteButtonView', () => {
         screen.getByRole('button', { name: 'Choose operation to run' }),
       );
       await user.click(
-        await screen.findByRole('menuitem', { name: /QRY.*Alpha/ }),
+        await screen.findByRole('menuitemradio', { name: /QRY.*Alpha/ }),
       );
       expect(onSetOperationName).not.toHaveBeenCalled();
       expect(onRun).not.toHaveBeenCalled();
@@ -232,11 +234,11 @@ describe('ExecuteButtonView', () => {
       picker.focus();
       await user.keyboard('{Enter}');
       expect(
-        await screen.findByRole('menuitem', { name: /QRY.*Alpha/ }),
+        await screen.findByRole('menuitemradio', { name: /QRY.*Alpha/ }),
       ).toHaveFocus();
       await user.keyboard('c');
       expect(
-        screen.getByRole('menuitem', { name: /MUT.*Change/ }),
+        screen.getByRole('menuitemradio', { name: /MUT.*Change/ }),
       ).toHaveFocus();
       await user.keyboard('{ArrowUp}');
       await user.keyboard('{ArrowDown}{Enter}');
@@ -280,8 +282,8 @@ describe('ExecuteButtonView', () => {
       expect(screen.queryByText('Auto')).not.toBeInTheDocument();
       await user.click(picker);
       expect(
-        await screen.findByRole('menuitem', { name: 'Auto' }),
-      ).toHaveAttribute('aria-current', 'true');
+        await screen.findByRole('menuitemradio', { name: 'Auto' }),
+      ).toHaveAttribute('aria-checked', 'true');
     });
 
     it.each([['POST'], ['POST', 'POST']] as const)(
@@ -303,10 +305,12 @@ describe('ExecuteButtonView', () => {
         await user.click(
           screen.getByRole('button', { name: 'Choose request method' }),
         );
-        expect(screen.getAllByRole('menuitem', { name: 'POST' })).toHaveLength(
-          1,
-        );
-        const unavailable = screen.getByRole('menuitem', { name: 'QUERY' });
+        expect(
+          screen.getAllByRole('menuitemradio', { name: 'POST' }),
+        ).toHaveLength(1);
+        const unavailable = screen.getByRole('menuitemradio', {
+          name: 'QUERY',
+        });
         expect(unavailable).toHaveAttribute('aria-disabled', 'true');
         await user.hover(unavailable);
         expect(await screen.findByRole('tooltip')).toHaveTextContent(
@@ -323,10 +327,9 @@ describe('ExecuteButtonView', () => {
         await user.keyboard('{Enter}');
         expect(onSetMethod).not.toHaveBeenCalled();
         expect(screen.getByRole('menu')).toBeVisible();
-        expect(screen.getByRole('menuitem', { name: 'GET' })).toHaveAttribute(
-          'aria-disabled',
-          'true',
-        );
+        expect(
+          screen.getByRole('menuitemradio', { name: 'GET' }),
+        ).toHaveAttribute('aria-disabled', 'true');
       },
     );
 
@@ -352,17 +355,20 @@ describe('ExecuteButtonView', () => {
       expect(within(picker).queryByText('Auto')).not.toBeInTheDocument();
       await user.click(picker);
       expect(
-        await screen.findByRole('menuitem', { name: /^Auto/ }),
+        await screen.findByRole('menuitemradio', { name: /^Auto/ }),
       ).toBeVisible();
-      expect(screen.getAllByRole('menuitem', { name: 'GET' })).toHaveLength(1);
-      expect(screen.getByRole('menuitem', { name: 'QUERY' })).toHaveAttribute(
-        'aria-disabled',
-        'true',
-      );
-      await user.click(screen.getByRole('menuitem', { name: 'POST' }));
+      expect(
+        screen.getAllByRole('menuitemradio', { name: 'GET' }),
+      ).toHaveLength(1);
+      expect(
+        screen.getByRole('menuitemradio', { name: 'QUERY' }),
+      ).toHaveAttribute('aria-disabled', 'true');
+      await user.click(screen.getByRole('menuitemradio', { name: 'POST' }));
       expect(onSetMethod).toHaveBeenLastCalledWith('POST');
       await user.click(picker);
-      await user.click(await screen.findByRole('menuitem', { name: /^Auto/ }));
+      await user.click(
+        await screen.findByRole('menuitemradio', { name: /^Auto/ }),
+      );
       expect(onSetMethod).toHaveBeenCalledTimes(2);
       expect(onSetMethod.mock.calls.at(-1)?.[0]).toBeUndefined();
       expect(onRun).not.toHaveBeenCalled();
@@ -392,10 +398,10 @@ describe('ExecuteButtonView', () => {
       expect(picker).toHaveTextContent('POST');
       await user.click(picker);
       expect(
-        screen.queryByRole('menuitem', { name: 'Auto' }),
+        screen.queryByRole('menuitemradio', { name: 'Auto' }),
       ).not.toBeInTheDocument();
       for (const method of ['GET', 'QUERY']) {
-        const unavailable = screen.getByRole('menuitem', { name: method });
+        const unavailable = screen.getByRole('menuitemradio', { name: method });
         expect(unavailable).toHaveAttribute('aria-disabled', 'true');
         await user.hover(unavailable);
         expect(await screen.findByRole('tooltip')).toHaveTextContent(
@@ -404,7 +410,7 @@ describe('ExecuteButtonView', () => {
         await user.click(unavailable);
         expect(props.onSetMethod).not.toHaveBeenCalled();
       }
-      await user.click(screen.getByRole('menuitem', { name: 'POST' }));
+      await user.click(screen.getByRole('menuitemradio', { name: 'POST' }));
       rerender(<ExecuteButtonView {...props} operationName="Alpha" />);
       expect(
         screen.getByRole('button', { name: 'Choose request method' }),

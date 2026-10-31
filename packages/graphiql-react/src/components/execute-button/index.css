@@ -125,23 +125,60 @@
   gap: var(--px-6);
 }
 
-/* Reserve the selection dot's gutter so menu labels stay aligned. */
-.graphiql-execute-button-menu-item::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
+.graphiql-execute-button-option {
+  position: relative;
 }
 
-.graphiql-execute-button-menu-item--active::before {
+.graphiql-execute-button-option[aria-checked='true'] {
+  background: color-mix(
+    in oklab,
+    oklch(var(--accent-green)) 12%,
+    oklch(var(--bg-elevated))
+  );
+  color: oklch(var(--fg-strong));
+  font-weight: var(--font-weight-medium);
+
+  &[data-highlighted],
+  &:hover {
+    background: color-mix(
+      in oklab,
+      oklch(var(--accent-green)) 20%,
+      oklch(var(--bg-elevated))
+    );
+  }
+}
+
+/* The marker distinguishes selection from hover without relying on color. */
+.graphiql-execute-button-option[aria-checked='true']::before {
+  content: '';
+  position: absolute;
+  inset-block: var(--px-6);
+  inset-inline-start: 0;
+  width: 3px;
+  border-radius: 2px;
   background: oklch(var(--accent-green));
+}
+
+.graphiql-execute-button-option:focus-visible {
+  outline: 2px solid oklch(var(--accent-blue));
+  outline-offset: -2px;
 }
 
 /* Unavailable methods stay focusable so keyboard users can read the reason. */
 .graphiql-execute-button-method-option[aria-disabled='true'] {
   color: oklch(var(--fg-disabled));
   cursor: default;
+}
+
+@media (forced-colors: active) {
+  .graphiql-execute-button-option[aria-checked='true']::before {
+    background: Highlight;
+    forced-color-adjust: none;
+  }
+
+  .graphiql-execute-button-option:focus-visible {
+    outline-color: Highlight;
+  }
 }
 
 @media (max-width: 600px) {

@@ -53,12 +53,12 @@ describe('Transport API + response pane header', () => {
     cy.get('.graphiql-response-method').should('have.text', 'GET');
     cy.get('.graphiql-execute-button-method-label').should('have.text', 'GET');
     cy.get('[aria-label="Choose request method"]').click();
-    cy.contains('[role="menuitem"]', /^POST$/).should(
+    cy.contains('[role="menuitemradio"]', /^POST$/).should(
       'have.attr',
       'aria-disabled',
       'true',
     );
-    cy.contains('[role="menuitem"]', /^QUERY$/)
+    cy.contains('[role="menuitemradio"]', /^QUERY$/)
       .should('have.attr', 'aria-disabled', 'true')
       .realHover();
     cy.get('[role="tooltip"]').should(
@@ -129,7 +129,7 @@ describe('Transport routing for mutations', () => {
 
     cy.activateOperation('Read');
     cy.get('[aria-label="Choose operation to run"]').click();
-    cy.contains('[role="menuitem"]', 'Change')
+    cy.contains('[role="menuitemradio"]', 'Change')
       .should(item => {
         expect(item).not.to.have.attr('aria-disabled');
       })
@@ -183,12 +183,12 @@ describe('Joined Run method selection', () => {
       .should('contain.text', 'POST')
       .and('not.contain.text', 'Auto')
       .click();
-    cy.contains('[role="menuitem"]', /^Auto$/).should(
+    cy.contains('[role="menuitemradio"]', /^Auto$/).should(
       'have.attr',
-      'aria-current',
+      'aria-checked',
       'true',
     );
-    cy.contains('[role="menuitem"]', /^GET$/).click();
+    cy.contains('[role="menuitemradio"]', /^GET$/).click();
     cy.get('[aria-label="Choose request method"]')
       .should('contain.text', 'GET')
       .and('not.contain.text', 'Auto');
@@ -198,14 +198,14 @@ describe('Joined Run method selection', () => {
     cy.activateOperation('Change');
     cy.get('.graphiql-execute-button').should('contain.text', 'POST');
     cy.get('[aria-label="Choose request method"]').click();
-    cy.contains('[role="menuitem"]', /^GET$/)
+    cy.contains('[role="menuitemradio"]', /^GET$/)
       .should('have.attr', 'aria-disabled', 'true')
       .realHover();
     cy.get('[role="tooltip"]').should(
       'contain.text',
       'GET is not supported for mutations.',
     );
-    cy.contains('[role="menuitem"]', /^GET$/).click();
+    cy.contains('[role="menuitemradio"]', /^GET$/).click();
     cy.get('[role="menu"]').should('be.visible');
     cy.realPress('Escape');
     cy.clickExecuteQuery();
@@ -215,7 +215,7 @@ describe('Joined Run method selection', () => {
     cy.get('[aria-label="Choose request method"]')
       .should('contain.text', 'GET')
       .click();
-    cy.contains('[role="menuitem"]', /^Auto/).click();
+    cy.contains('[role="menuitemradio"]', /^Auto/).click();
     cy.get('[aria-label="Choose request method"]')
       .should('contain.text', 'POST')
       .and('not.contain.text', 'Auto');

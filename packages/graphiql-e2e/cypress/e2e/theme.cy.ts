@@ -13,6 +13,80 @@ describe('Theme', () => {
   });
 
   it.each(['light', 'dark'] as const)(
+    'keeps dropdown selection accessible and distinct from keyboard focus in %s mode',
+    theme => {
+      cy.visitGraphiQL(
+        { query: 'query Alpha { __typename }\nmutation Change { __typename }' },
+        {
+          onBeforeLoad(win) {
+            win.localStorage.setItem(
+              'graphiql:settings',
+              JSON.stringify({ theme }),
+            );
+          },
+        },
+      );
+      cy.injectAxe();
+      cy.get('[aria-label="Choose request method"]').focus();
+      cy.realPress('Enter');
+      cy.get('[role="menuitemradio"][aria-checked="true"]')
+        .should('have.text', 'Auto')
+        .as('selection');
+      cy.checkA11y('[role="menu"]');
+
+      cy.realPress('ArrowDown');
+      cy.focused()
+        .should('have.text', 'QUERY')
+        .and('have.attr', 'aria-disabled', 'true')
+        .and('have.attr', 'aria-checked', 'false')
+        .should($item => {
+          const style = getComputedStyle($item[0]);
+          expect(style.outlineStyle).to.equal('solid');
+          expect(parseFloat(style.outlineWidth)).to.be.at.least(2);
+        });
+      cy.get('@selection').should('have.attr', 'aria-checked', 'true');
+      cy.get('[role="tooltip"]').should(
+        'contain.text',
+        'This server does not support QUERY.',
+      );
+      cy.realPress('Enter');
+      cy.get('[role="menu"]').should('be.visible');
+      cy.realPress('Escape');
+      cy.focused().should('have.attr', 'aria-label', 'Choose request method');
+
+      cy.get('[aria-label="Choose operation to run"]').focus();
+      cy.realPress('Enter');
+      cy.get('[role="menuitemradio"][aria-checked="true"]').should(
+        'contain.text',
+        'Alpha',
+      );
+      cy.checkA11y('[role="menu"]');
+      cy.realPress('ArrowDown');
+      cy.focused()
+        .should('contain.text', 'Change')
+        .and('have.attr', 'aria-checked', 'false');
+      cy.realPress('Enter');
+      cy.focused()
+        .should('have.attr', 'aria-label', 'Choose operation to run')
+        .and('contain.text', 'Change');
+
+      cy.realPress('Enter');
+      cy.get('[role="menuitemradio"][aria-checked="true"]').should(
+        'contain.text',
+        'Change',
+      );
+      cy.checkA11y('[role="menu"]');
+      cy.realPress('Escape');
+      cy.get('[aria-label="Choose request method"]').click();
+      cy.get('[role="menuitemradio"][aria-checked="true"]').should(
+        'have.text',
+        'POST',
+      );
+      cy.checkA11y('[role="menu"]');
+    },
+  );
+
+  it.each(['light', 'dark'] as const)(
     'keeps Run visually distinct from secondary controls on hover in %s mode',
     theme => {
       cy.visitGraphiQL(
