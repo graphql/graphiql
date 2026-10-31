@@ -46,7 +46,9 @@
 }
 
 .graphiql-execute-button
-  button.graphiql-execute-button-segment:hover:not(:disabled) {
+  button.graphiql-execute-button-segment:not(
+    .graphiql-execute-button-primary
+  ):hover:not(:disabled) {
   background: oklch(var(--bg-overlay));
 }
 
@@ -59,9 +61,9 @@
   color: #fff;
 }
 
-.graphiql-execute-button button.graphiql-execute-button-primary:hover {
-  background: oklch(var(--btn-primary));
-  filter: brightness(1.1);
+.graphiql-execute-button
+  button.graphiql-execute-button-primary:hover:not(:disabled) {
+  background: oklch(var(--btn-primary-border));
 }
 
 .graphiql-execute-button .graphiql-execute-button-operation {
