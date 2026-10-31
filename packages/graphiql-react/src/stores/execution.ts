@@ -11,7 +11,12 @@ import {
   TransportResponse,
   Unsubscribable,
 } from '@graphiql/toolkit';
-import { ExecutionResult, GraphQLError, print } from 'graphql';
+import {
+  ExecutionResult,
+  GraphQLError,
+  print,
+  type OperationDefinitionNode,
+} from 'graphql';
 import {
   getFragmentDependenciesForAST,
   getOperationFacts,
@@ -26,6 +31,7 @@ import type { StateCreator } from 'zustand';
 import { tryParseJSONC } from '../utility';
 import { Range } from '../utility/monaco-ssr';
 import { STORAGE_KEY } from '../constants';
+import { resolveActiveOperation } from '../utility/active-operation';
 import type { SlicesWithActions, MonacoEditor } from '../types';
 
 export type ResponseView = 'json' | 'tree' | 'table';
@@ -84,6 +90,12 @@ export interface ExecutionSlice {
    * @default false
    */
   isFetching: boolean;
+
+  /**
+   * Operation captured from the last dispatched document. While fetching or
+   * subscribed, this identifies the request independently of editor changes.
+   */
+  executingOperation?: OperationDefinitionNode;
 
   /**
    * The full `TransportResponse` envelope from the most recent completed
@@ -442,7 +454,13 @@ export const createExecutionSlice: CreateExecutionSlice =
           }
 
           setResponse('');
-          set({ isFetching: true });
+          set({
+            isFetching: true,
+            executingOperation: resolveActiveOperation(
+              facts?.operations,
+              selectedOperationName,
+            ),
+          });
           const fetchStartMs = Date.now();
           // Populated for the `transport` path; read from the `catch` block
           // to tell a user-initiated `stop()` apart from a genuine request

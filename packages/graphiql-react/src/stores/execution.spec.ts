@@ -263,6 +263,68 @@ describe('run uses the current document', () => {
     await store.getState().actions.run();
     expect(fetcher.mock.calls[0]?.[0]?.operationName).toBe('Saved');
   });
+
+  it('keeps the dispatched operation while selection and document change, then captures the next run', async () => {
+    const query = 'query Read { bar } mutation Change { bar }';
+    const { store, queryEditor, fetcher } = prepare(query, 'Read');
+    queryEditor.getValue.mockReturnValue(query);
+    let finish!: (result: { data: {} }) => void;
+    fetcher.mockImplementation(
+      () =>
+        new Promise(resolve => {
+          finish = resolve;
+        }),
+    );
+    const observedNames: Array<string | undefined> = [];
+    const unsubscribe = store.subscribe(state => {
+      if (state.isFetching) {
+        observedNames.push(state.executingOperation?.name?.value);
+      }
+    });
+
+    const firstRun = store.getState().actions.run();
+    const executingOperation = store.getState().executingOperation;
+    expect(executingOperation?.name?.value).toBe('Read');
+    expect(executingOperation?.operation).toBe('query');
+    store.getState().actions.setOperationName('Change');
+    queryEditor.getValue.mockReturnValue('mutation Replacement { bar }');
+    const documentAST = parse('mutation Replacement { bar }');
+    store.getState().actions.setOperationFacts({
+      documentAST,
+      operations: documentAST.definitions.filter(
+        definition => definition.kind === Kind.OPERATION_DEFINITION,
+      ),
+      operationName: 'Replacement',
+    });
+    expect(store.getState().executingOperation).toBe(executingOperation);
+    expect(observedNames.length).toBeGreaterThan(0);
+    expect(observedNames.every(name => name === 'Read')).toBe(true);
+
+    finish({ data: {} });
+    await firstRun;
+    observedNames.length = 0;
+    const nextRun = store.getState().actions.run();
+    expect(store.getState().executingOperation?.name?.value).toBe(
+      'Replacement',
+    );
+    expect(store.getState().executingOperation?.operation).toBe('mutation');
+    expect(observedNames.every(name => name === 'Replacement')).toBe(true);
+    finish({ data: {} });
+    await nextRun;
+    unsubscribe();
+  });
+
+  it('captures anonymous operations and clears stale identity for an unparseable run', async () => {
+    const { store, queryEditor } = prepare('query Changed { bar }');
+    queryEditor.getValue.mockReturnValue('{ bar }');
+    await store.getState().actions.run();
+    expect(store.getState().executingOperation?.operation).toBe('query');
+    expect(store.getState().executingOperation?.name).toBeUndefined();
+
+    queryEditor.getValue.mockReturnValue('invalid GraphQL');
+    await store.getState().actions.run();
+    expect(store.getState().executingOperation).toBeUndefined();
+  });
 });
 
 it('lets the transport rediscover POST for a mutation after headers change', async () => {

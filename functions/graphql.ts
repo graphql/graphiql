@@ -68,6 +68,14 @@ async function bufferMultipartResponse(
  */
 export function createHandler(options: HandlerOptions): NetlifyHandler {
   return async function handleRequest(event: NetlifyHandlerEvent) {
+    if (event.httpMethod === 'OPTIONS') {
+      return {
+        statusCode: 204,
+        headers: { Allow: 'GET, POST, OPTIONS' },
+        body: '',
+      };
+    }
+
     try {
       const rawBody =
         event.body && event.isBase64Encoded

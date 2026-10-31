@@ -1,64 +1,99 @@
-/* The split Run control: a primary run half and, when the document has more
-   than one operation, a caret half opening the operation picker. Both halves
-   render their own green fill so `:hover`/`:active` on either (which also
-   match this wrapper, per normal CSS bubbling) can brighten/darken the whole
-   pill as one piece. */
 .graphiql-execute-button {
   display: inline-flex;
   align-items: center;
   border-radius: var(--radius-md);
-  color: #fff;
+  color: oklch(var(--fg-default));
   font-family: var(--font-family);
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-medium);
   white-space: nowrap;
-  flex-shrink: 0;
+  min-width: 0;
+  max-width: 100%;
 }
 
-.graphiql-execute-button:hover {
-  filter: brightness(1.1);
-}
-
-.graphiql-execute-button:active {
-  filter: brightness(0.92);
-}
-
-.graphiql-execute-button-primary,
-.graphiql-execute-button-caret {
+/* Dropdown triggers reset box sizing through UnStyledButton. */
+.graphiql-execute-button .graphiql-execute-button-segment {
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  gap: var(--px-8);
   height: 28px;
-  background: oklch(var(--btn-primary));
-  border: 1px solid oklch(var(--btn-primary-border));
+  padding: 0 var(--px-10);
+  border: 1px solid oklch(var(--border-strong));
+  border-radius: 0;
+  background: oklch(var(--bg-subtle));
   color: inherit;
   font: inherit;
-  cursor: pointer;
 }
 
-/* The caret is an `UnStyledButton`, whose `all: unset` resets `box-sizing` to
-   `content-box` — its border would add to the 28px height and make it stand a
-   pixel taller than the primary half. Scope under `.graphiql-execute-button` so
-   this wins on specificity, not load order. */
-.graphiql-execute-button .graphiql-execute-button-caret {
-  box-sizing: border-box;
+.graphiql-execute-button
+  .graphiql-execute-button-segment
+  + .graphiql-execute-button-segment {
+  border-left: 0;
 }
 
-.graphiql-execute-button-primary {
-  gap: var(--px-8);
-  padding: 0 var(--px-10);
+.graphiql-execute-button .graphiql-execute-button-segment:first-child {
   border-radius: var(--radius-md) 0 0 var(--radius-md);
 }
 
-/* No caret to pair with (a single operation, an override pinning it, or a run
-   in flight) — the primary half is the whole pill. */
-.graphiql-execute-button-primary--solo {
-  border-radius: var(--radius-md);
+.graphiql-execute-button .graphiql-execute-button-segment:last-child {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
 }
 
-.graphiql-execute-button-caret {
-  padding: 0 var(--px-8);
-  border-left: none;
-  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+.graphiql-execute-button button.graphiql-execute-button-segment {
+  cursor: pointer;
+}
+
+.graphiql-execute-button
+  button.graphiql-execute-button-segment:hover:not(:disabled) {
+  background: oklch(var(--bg-overlay));
+}
+
+.graphiql-execute-button .graphiql-execute-button-primary {
+  flex-shrink: 0;
+  width: 34px;
+  padding: 0;
+  background: oklch(var(--btn-primary));
+  border-color: oklch(var(--btn-primary-border));
+  color: #fff;
+}
+
+.graphiql-execute-button button.graphiql-execute-button-primary:hover {
+  background: oklch(var(--btn-primary));
+  filter: brightness(1.1);
+}
+
+.graphiql-execute-button .graphiql-execute-button-operation {
+  min-width: 0;
+}
+
+.graphiql-execute-button-name {
+  min-width: 0;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.graphiql-execute-button-operation .graphiql-method-pill,
+.graphiql-execute-button-menu-item .graphiql-method-pill {
+  flex-shrink: 0;
+}
+
+.graphiql-execute-button .graphiql-execute-button-method {
+  flex-shrink: 0;
+}
+
+.graphiql-execute-button-method-label {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-small);
+  color: oklch(var(--accent-green-light));
+}
+
+.graphiql-execute-button-tooltip-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-8);
 }
 
 .graphiql-execute-button-caret-icon {
@@ -70,31 +105,14 @@
 .graphiql-execute-button-icon {
   width: auto;
   height: 11px;
-  flex-shrink: 0;
 }
 
-.graphiql-execute-button-sep {
-  width: 1px;
-  height: 14px;
-  background: rgb(255 255 255 / 0.28);
-  flex-shrink: 0;
+.graphiql-execute-button button:disabled {
+  cursor: default;
+  opacity: 0.6;
 }
 
-/* The shortcut keys sit on the green fill here, not the dark bar. Darken them
-   into subtle inset chips rather than the default dark boxes; a light (white)
-   overlay would lighten the green and drop the white glyphs below AA contrast. */
-.graphiql-execute-button .graphiql-keycap {
-  border-color: rgb(255 255 255 / 0.2);
-  background: rgb(0 0 0 / 0.18);
-  color: #fff;
-}
-
-/* Scoped under `.graphiql-execute-button` so this outranks the global
-   `.graphiql-container :focus-visible` ring on specificity, not load order —
-   an inset ring (rather than the global's outward one) keeps the two halves'
-   rings from overlapping each other. */
-.graphiql-execute-button .graphiql-execute-button-primary:focus-visible,
-.graphiql-execute-button .graphiql-execute-button-caret:focus-visible {
+.graphiql-execute-button .graphiql-execute-button-segment:focus-visible {
   outline: 2px solid oklch(var(--accent-blue));
   outline-offset: -2px;
 }
@@ -105,8 +123,7 @@
   gap: var(--px-6);
 }
 
-/* Every item reserves the dot's gutter so names stay left-aligned whether or
-   not the item is active; only the active item paints its dot. */
+/* Reserve the selection dot's gutter so menu labels stay aligned. */
 .graphiql-execute-button-menu-item::before {
   content: '';
   width: 6px;
@@ -117,4 +134,16 @@
 
 .graphiql-execute-button-menu-item--active::before {
   background: oklch(var(--accent-green));
+}
+
+/* Unavailable methods stay focusable so keyboard users can read the reason. */
+.graphiql-execute-button-method-option[aria-disabled='true'] {
+  color: oklch(var(--fg-disabled));
+  cursor: default;
+}
+
+@media (max-width: 600px) {
+  .graphiql-execute-button-name {
+    max-width: 130px;
+  }
 }
