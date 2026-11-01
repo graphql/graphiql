@@ -39,7 +39,7 @@
     "test": "vitest run"
   },
   "peerDependencies": {
-    "@codemirror/language": "6.0.0",
+    "@codemirror/language": "^6.0.0",
     "codemirror": "^5.65.3",
     "graphql": "^16.11.0 || ^17.0.0"
   },
