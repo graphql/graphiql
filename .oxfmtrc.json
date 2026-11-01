@@ -9,7 +9,8 @@
   "ignorePatterns": [
     "**/CHANGELOG.md",
     "working-group/agendas/**",
-    "examples/monaco-graphql-nextjs/next-env.d.ts"
+    "examples/monaco-graphql-nextjs/next-env.d.ts",
+    "examples/graphiql-nextjs/next-env.d.ts"
   ],
   "overrides": [
     {

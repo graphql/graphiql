@@ -7,6 +7,7 @@ import 'graphiql/setup-workers/webpack';
 import 'graphiql/style.css';
 
 const transport = createTransport({
+  fetch,
   url: 'https://graphql.earthdata.nasa.gov/api',
 });
 
