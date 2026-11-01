@@ -4,6 +4,8 @@
 'graphiql': minor
 ---
 
+pr: 4359
+
 Add `@graphiql/plugin-collections` for saving operations in named collections, reopening them in tabs, and sharing or importing collections as JSON. Save with Cmd+S/Ctrl+S or the Save button. Re-saving an operation opened from a collection updates that saved item. Imports match items by stable ID and offer conflict resolution; merging preserves existing items.
 
 Use `COLLECTIONS_PLUGIN` for the default configuration, or `collectionsPlugin(options)` to configure a storage adapter, `readOnly`, `allowImportExport`, and `allowReplace`. The default adapter uses `localStorage`.
