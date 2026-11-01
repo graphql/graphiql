@@ -1,19 +1,26 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GraphiQL with Next.js
 
-## Getting Started
+This standalone example uses GraphiQL 6 and the Next.js App Router. It is independent of the repository's pnpm workspace.
 
-First, run the development server:
+Use Node.js 24, then install and start the example from this directory:
 
-```bash
+```sh
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [the example](http://localhost:3000/). Edit [`src/app/graphiql.tsx`](./src/app/graphiql.tsx) to change the GraphQL endpoint or editor options.
 
-You can start editing the page by modifying [`src/app/graphiql.tsx`](./src/app/graphiql.tsx). The page auto-updates as you edit the file.
+The development and production commands use Webpack so GraphiQL's Monaco worker setup is preserved. The transport receives an explicit `fetch` implementation so the page can also render on the server.
+
+Validate the example with:
+
+```sh
+npm run types:check
+npm run build
+npm start
+```
+
+The TypeScript dependency uses the classic compiler API required by Next.js. The scoped DOMPurify override updates Monaco's declared package dependency within the same major version.
+
+Monaco 0.57.0 also embeds DOMPurify 3.4.15 in its distributed editor code. The package override does not replace that vendored copy; its sanitizer advisories require an upstream Monaco release containing [DOMPurify 3.4.17 or later](https://github.com/cure53/DOMPurify/releases/tag/3.4.17).
