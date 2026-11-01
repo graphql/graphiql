@@ -476,7 +476,7 @@ importers:
         version: '@typescript/typescript6@6.0.2'
       webpack:
         specifier: ^5
-        version: 5.112.2(esbuild@0.28.2)(svgo@4.1.0)(webpack-cli@7.2.3)
+        version: 5.112.2(esbuild@0.28.2)(postcss@8.5.32)(svgo@4.1.0)(webpack-cli@7.2.3)
       webpack-bundle-analyzer:
         specifier: ^5
         version: 5.4.0
@@ -17983,7 +17983,7 @@ snapshots:
       semver: 7.8.5
       tapable: 2.3.3
       typescript: '@typescript/typescript6@6.0.2'
-      webpack: 5.112.2(esbuild@0.28.2)(svgo@4.1.0)(webpack-cli@7.2.3)
+      webpack: 5.112.2(esbuild@0.28.2)(postcss@8.5.32)(svgo@4.1.0)(webpack-cli@7.2.3)
 
   form-data@4.0.6:
     dependencies:
@@ -19413,7 +19413,7 @@ snapshots:
     dependencies:
       loader-utils: 2.0.4
       monaco-editor: 0.57.0
-      webpack: 5.112.2(esbuild@0.28.2)(svgo@4.1.0)(webpack-cli@7.2.3)
+      webpack: 5.112.2(esbuild@0.28.2)(postcss@8.5.32)(svgo@4.1.0)(webpack-cli@7.2.3)
 
   monaco-editor@0.57.0:
     dependencies:
