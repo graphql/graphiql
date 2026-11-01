@@ -33,8 +33,6 @@ overrides:
   '@types/node': ^24
   # Newer eligible releases introduce a separate authentication advisory.
   '@vscode/vsce>@azure/identity': 4.13.0
-  # Stay below the affected esbuild patches while satisfying tsup's range.
-  'tsup>esbuild': 0.27.2
   'start-server-and-test>wait-on': 7.2.0
   # New accessibility rules need a separate review of existing stories.
   axe-core: 4.13.0
