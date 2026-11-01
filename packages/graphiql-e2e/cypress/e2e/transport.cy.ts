@@ -28,7 +28,7 @@ describe('Transport API + response pane header', () => {
     cy.clickExecuteQuery();
     cy.get('.graphiql-response-method').should('have.text', 'POST');
     cy.get('.graphiql-execute-button-method-label').should('have.text', 'POST');
-    cy.get('[aria-label="Choose request method"]').should(
+    cy.get('button.graphiql-execute-button-method').should(
       'not.contain.text',
       'Auto',
     );
@@ -52,7 +52,7 @@ describe('Transport API + response pane header', () => {
     cy.wait('@read').its('request.method').should('eq', 'GET');
     cy.get('.graphiql-response-method').should('have.text', 'GET');
     cy.get('.graphiql-execute-button-method-label').should('have.text', 'GET');
-    cy.get('[aria-label="Choose request method"]').click();
+    cy.get('button.graphiql-execute-button-method').click();
     cy.contains('[role="menuitemradio"]', /^POST$/).should(
       'have.attr',
       'aria-disabled',
@@ -128,13 +128,13 @@ describe('Transport routing for mutations', () => {
     cy.get('.graphiql-response-method').should('have.text', 'POST');
 
     cy.activateOperation('Read');
-    cy.get('[aria-label="Choose operation to run"]').click();
+    cy.get('button.graphiql-execute-button-operation').click();
     cy.contains('[role="menuitemradio"]', 'Change')
       .should(item => {
         expect(item).not.to.have.attr('aria-disabled');
       })
       .click();
-    cy.get('[aria-label="Choose operation to run"]').should(
+    cy.get('button.graphiql-execute-button-operation').should(
       'contain.text',
       'Change',
     );
@@ -179,7 +179,7 @@ describe('Joined Run method selection', () => {
     });
     cy.wait('@methodDiscovery');
     cy.activateOperation('Read');
-    cy.get('[aria-label="Choose request method"]')
+    cy.get('button.graphiql-execute-button-method')
       .should('contain.text', 'POST')
       .and('not.contain.text', 'Auto')
       .click();
@@ -189,7 +189,7 @@ describe('Joined Run method selection', () => {
       'true',
     );
     cy.contains('[role="menuitemradio"]', /^GET$/).click();
-    cy.get('[aria-label="Choose request method"]')
+    cy.get('button.graphiql-execute-button-method')
       .should('contain.text', 'GET')
       .and('not.contain.text', 'Auto');
     cy.clickExecuteQuery();
@@ -197,7 +197,7 @@ describe('Joined Run method selection', () => {
 
     cy.activateOperation('Change');
     cy.get('.graphiql-execute-button').should('contain.text', 'POST');
-    cy.get('[aria-label="Choose request method"]').click();
+    cy.get('button.graphiql-execute-button-method').click();
     cy.contains('[role="menuitemradio"]', /^GET$/)
       .should('have.attr', 'aria-disabled', 'true')
       .realHover();
@@ -212,11 +212,11 @@ describe('Joined Run method selection', () => {
     cy.wait('@selectedOperation').its('request.method').should('equal', 'POST');
 
     cy.activateOperation('Read');
-    cy.get('[aria-label="Choose request method"]')
+    cy.get('button.graphiql-execute-button-method')
       .should('contain.text', 'GET')
       .click();
     cy.contains('[role="menuitemradio"]', /^Auto/).click();
-    cy.get('[aria-label="Choose request method"]')
+    cy.get('button.graphiql-execute-button-method')
       .should('contain.text', 'POST')
       .and('not.contain.text', 'Auto');
     cy.clickExecuteQuery();

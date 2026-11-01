@@ -89,7 +89,7 @@ describe('Theme', () => {
         });
       cy.get('.graphiql-top-bar-wordmark').realHover();
       cy.injectAxe();
-      cy.get('[aria-label="Choose request method"]').focus();
+      cy.get('button.graphiql-execute-button-method').focus();
       cy.realPress('Enter');
       cy.get('[role="menuitemradio"][aria-checked="true"]')
         .should('have.text', 'Auto')
@@ -116,9 +116,9 @@ describe('Theme', () => {
       cy.realPress('Enter');
       cy.get('[role="menu"]').should('be.visible');
       cy.realPress('Escape');
-      cy.focused().should('have.attr', 'aria-label', 'Choose request method');
+      cy.focused().should('have.class', 'graphiql-execute-button-method');
 
-      cy.get('[aria-label="Choose operation to run"]').focus();
+      cy.get('button.graphiql-execute-button-operation').focus();
       cy.realPress('Enter');
       cy.get('[role="menuitemradio"][aria-checked="true"]').should(
         'contain.text',
@@ -134,7 +134,7 @@ describe('Theme', () => {
       );
       cy.realPress('Enter');
       cy.focused()
-        .should('have.attr', 'aria-label', 'Choose operation to run')
+        .should('have.class', 'graphiql-execute-button-operation')
         .and('contain.text', 'Change');
 
       cy.realPress('Enter');
@@ -144,7 +144,7 @@ describe('Theme', () => {
       );
       cy.checkA11y('[role="menu"]');
       cy.realPress('Escape');
-      cy.get('[aria-label="Choose request method"]').click();
+      cy.get('button.graphiql-execute-button-method').click();
       cy.get('[role="menuitemradio"][aria-checked="true"]').should(
         'have.text',
         'POST',
@@ -172,7 +172,7 @@ describe('Theme', () => {
         .realHover()
         .then($button => {
           const runBackground = getComputedStyle($button[0]).backgroundColor;
-          cy.get('[aria-label="Choose request method"]')
+          cy.get('button.graphiql-execute-button-method')
             .realHover()
             .should($method => {
               expect(getComputedStyle($method[0]).backgroundColor).not.to.equal(
