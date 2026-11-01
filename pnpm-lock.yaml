@@ -634,8 +634,8 @@ importers:
         specifier: 8.2.4
         version: 8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)
       vite-plugin-dts:
-        specifier: ^4.5.3
-        version: 4.5.4(@types/node@24.19.2)(@typescript/typescript6@6.0.2)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))
+        specifier: ^5.1.2
+        version: 5.1.2(@microsoft/api-extractor@7.60.0(@types/node@24.19.2))(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.16)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(svgo@4.1.0))
       vitest-canvas-mock:
         specifier: ^1.2.0
         version: 1.2.0(vitest@5.0.5)
@@ -768,8 +768,8 @@ importers:
         specifier: 8.2.4
         version: 8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)
       vite-plugin-dts:
-        specifier: ^4.0.1
-        version: 4.5.4(@types/node@24.19.2)(@typescript/typescript6@6.0.2)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))
+        specifier: ^5.1.2
+        version: 5.1.2(@microsoft/api-extractor@7.60.0(@types/node@24.19.2))(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.16)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))(webpack@5.112.2(esbuild@0.28.2)(svgo@4.1.0))
 
   packages/graphiql-plugin-collections:
     dependencies:
@@ -823,8 +823,8 @@ importers:
         specifier: 8.2.4
         version: 8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)
       vite-plugin-dts:
-        specifier: ^4.5.3
-        version: 4.5.4(@types/node@24.19.2)(@typescript/typescript6@6.0.2)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))
+        specifier: ^5.1.2
+        version: 5.1.2(@microsoft/api-extractor@7.60.0(@types/node@24.19.2))(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.16)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))(webpack@5.112.2(esbuild@0.28.2)(svgo@4.1.0))
       vite-plugin-svgr:
         specifier: ^5.2.0
         version: 5.2.0(@typescript/typescript6@6.0.2)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))
@@ -902,8 +902,8 @@ importers:
         specifier: 8.2.4
         version: 8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)
       vite-plugin-dts:
-        specifier: ^4.5.3
-        version: 4.5.4(@types/node@24.19.2)(@typescript/typescript6@6.0.2)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))
+        specifier: ^5.1.2
+        version: 5.1.2(@microsoft/api-extractor@7.60.0(@types/node@24.19.2))(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.16)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))(webpack@5.112.2(esbuild@0.28.2)(svgo@4.1.0))
       vitest-canvas-mock:
         specifier: ^1.2.0
         version: 1.2.0(vitest@5.0.5)
@@ -969,8 +969,8 @@ importers:
         specifier: 8.2.4
         version: 8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)
       vite-plugin-dts:
-        specifier: ^4.5.3
-        version: 4.5.4(@types/node@24.19.2)(@typescript/typescript6@6.0.2)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))
+        specifier: ^5.1.2
+        version: 5.1.2(@microsoft/api-extractor@7.60.0(@types/node@24.19.2))(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.16)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))(webpack@5.112.2(esbuild@0.28.2)(svgo@4.1.0))
       vitest-canvas-mock:
         specifier: ^1.2.0
         version: 1.2.0(vitest@5.0.5)
@@ -1039,8 +1039,8 @@ importers:
         specifier: 8.2.4
         version: 8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)
       vite-plugin-dts:
-        specifier: ^4.5.3
-        version: 4.5.4(@types/node@24.19.2)(@typescript/typescript6@6.0.2)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))
+        specifier: ^5.1.2
+        version: 5.1.2(@microsoft/api-extractor@7.60.0(@types/node@24.19.2))(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.16)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))(webpack@5.112.2(esbuild@0.28.2)(svgo@4.1.0))
 
   packages/graphiql-react:
     dependencies:
@@ -1166,8 +1166,8 @@ importers:
         specifier: 8.2.4
         version: 8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)
       vite-plugin-dts:
-        specifier: ^4.5.3
-        version: 4.5.4(@types/node@24.19.2)(@typescript/typescript6@6.0.2)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))
+        specifier: ^5.1.2
+        version: 5.1.2(@microsoft/api-extractor@7.60.0(@types/node@24.19.2))(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.16)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))(webpack@5.112.2(esbuild@0.28.2)(svgo@4.1.0))
       vite-plugin-svgr:
         specifier: ^5.2.0
         version: 5.2.0(@typescript/typescript6@6.0.2)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))
@@ -5814,17 +5814,6 @@ packages:
   '@vue/compiler-ssr@3.5.44':
     resolution: {integrity: sha512-xr5gb1JVHlfXJwSlRz1FeP6uxoazdzHuMTVLE7up+4Vrqxk219CvxLPxD9NXBt47yvZW7+p4DXfyp4O1fkByIA==}
 
-  '@vue/compiler-vue2@2.7.16':
-    resolution: {integrity: sha512-qYC3Psj9S/mfu9uVi5WvNZIzq+xnXMhOwbTFKKDD7b1lhpnn71jXSFdTQ+WsIEk0ONCd7VV2IMm7ONl6tbQ86A==}
-
-  '@vue/language-core@2.2.0':
-    resolution: {integrity: sha512-O1ZZFaaBGkKbsRfnVH1ifOK1/1BUkyK+3SQsfnh6PmMmD4qJcTU8godCeA96jjDRTL6zgnK7YzCHfaUlH2r0Mw==}
-    peerDependencies:
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
   '@vue/reactivity@3.5.44':
     resolution: {integrity: sha512-u+QJdKeBBEADkPdevsL+6E12QlYVfBD8Zcw5qjDQKtamI6l14KyqazJMobhCKelhWN5zpyKUiEDoTyHE93cqWw==}
 
@@ -5990,9 +5979,6 @@ packages:
 
   ajv@8.20.0:
     resolution: {integrity: sha512-Thbli+OlOj+iMPYFBVBfJ3OmCAnaSyNn4M1vz9T6Gka5Jt9ba/HIR56joy65tY6kx/FCF5VXNB819Y7/GUrBGA==}
-
-  alien-signals@0.4.14:
-    resolution: {integrity: sha512-itUAVzhczTmP2U5yX67xVpsbbOiquusbWVyA9N+sy6+r6YVbFkahXvNCeEPWEOMhwDYwbVbGHFkVL03N9I5g+Q==}
 
   ansi-escapes@7.3.0:
     resolution: {integrity: sha512-BvU8nYgGQBxcmMuEeUEmNTvrMVjJNSH7RgW24vXexN4Ven6qCvy4TntnvlnwnMLTVlcRQQdbRY8NKnaIoeWDNg==}
@@ -6859,9 +6845,6 @@ packages:
   dayjs@1.11.23:
     resolution: {integrity: sha512-QDTCU0M0MxR3hQfnlDJfwekQiaanm1ubOD231u73WBckQ/fsamwRLiE2GBz6D3a/xF1NgfiDLJjXBa1hYOYTtQ==}
 
-  de-indent@1.0.2:
-    resolution: {integrity: sha512-e/1zu3xH5MQryN2zdVaF0OrdNLUbvWxzMbi+iNA6Bky7l1RoP8a2fIbRocyHclXt/arDrrR6lL3TqFD9pMQTsg==}
-
   debounce-promise@3.1.2:
     resolution: {integrity: sha512-rZHcgBkbYavBeD9ej6sP56XfG53d51CD4dnaw989YX/nZ/ZJfgRx/9ePKmTNiUiyQvh4mtrMoS3OAWW+yoYtpg==}
 
@@ -7677,6 +7660,9 @@ packages:
     engines: {node: '>=10.0'}
     peerDependencies:
       tslib: '2'
+
+  glob-to-regexp@0.4.1:
+    resolution: {integrity: sha512-lkX1HJXwyMcprw/5YUZc2s7DrpAiHB21/V+E1rHUrVNokkvB6bqMzT0VfV6/86ZNabt1k14YOIaT7nDvOX3Iiw==}
 
   glob@11.1.0:
     resolution: {integrity: sha512-vuNwKSaKiqm7g0THUBu2x7ckSs3XJLXE+2ssL7/MfTGPLLcrJQ/4Uq1CjPTtO5cCIiRxqvN6Twy1qOwhL0Xjcw==}
@@ -8873,10 +8859,6 @@ packages:
     resolution: {integrity: sha512-7o1wEA2RyMP7Iu7GNba9vc0RWWGACJOCZBJX2GJWip0ikV+wcOsgVuY9uE8CPiyQhkGFSlhuSkZPavN7u1c2Fw==}
     engines: {node: '>=10'}
 
-  minimatch@9.0.9:
-    resolution: {integrity: sha512-OBwBN9AL4dqmETlpS2zasx+vTeWclWzkblfZk7KTA5j3jeOONz/tRCnZomUyvNg83wL5Zv9Ss6HMJXAgL8R2Yg==}
-    engines: {node: '>=16 || 14 >=14.17'}
-
   minimist-options@4.1.0:
     resolution: {integrity: sha512-Q4r8ghd80yhO/0j1O3B2BjweX3fiHg9cdOwjJd2J76Q135c+NDxGCqdYKQ1SKBuFfgWbAUzBfvYjPUEeNgqN1A==}
     engines: {node: '>= 6'}
@@ -8997,9 +8979,6 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
-
-  muggle-string@0.4.1:
-    resolution: {integrity: sha512-VNTrAak/KhO2i8dqqnqnAHOa3cYBwXEZe9h+D5h/1ZqFSTEFHdM65lR7RoIqq3tBBYavsOXV84NoHXZ0AkPyqQ==}
 
   multicast-dns@7.2.5:
     resolution: {integrity: sha512-2eznPJP8z2BFLX50tf0LuODrpINqP1RVIm/CObbTcBRITQgmC/TjcREF1NeTBzIcR5XO/ukWo+YHOjBbFwIupg==}
@@ -10840,6 +10819,40 @@ packages:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
     engines: {node: '>= 0.8'}
 
+  unplugin-dts@1.1.2:
+    resolution: {integrity: sha512-RDqy90XUmFj6rz4U5YoTMdYdaCJe2ZnQZaWIjkWS4952Gv0zBTQyqWtlGgVMPYHa982dURvyoc+sUOFIcDFv+w==}
+    peerDependencies:
+      '@microsoft/api-extractor': '>=7'
+      '@rspack/core': ^1
+      '@vue/language-core': ^3.1.5
+      esbuild: '*'
+      rolldown: '*'
+      rollup: '>=3'
+      typescript: '>=4'
+      vite: 8.2.4
+      webpack: ^4 || ^5
+    peerDependenciesMeta:
+      '@microsoft/api-extractor':
+        optional: true
+      '@rspack/core':
+        optional: true
+      '@vue/language-core':
+        optional: true
+      esbuild:
+        optional: true
+      rolldown:
+        optional: true
+      rollup:
+        optional: true
+      vite:
+        optional: true
+      webpack:
+        optional: true
+
+  unplugin@2.3.11:
+    resolution: {integrity: sha512-5uKD0nqiYVzlmCRs01Fhs2BdkEgBS3SAVP6ndrBsuK42iC2+JHyxM05Rm9G8+5mkmRtzMZGY8Ct5+mliZxU/Ww==}
+    engines: {node: '>=18.12.0'}
+
   until-async@3.0.2:
     resolution: {integrity: sha512-IiSk4HlzAMqTUseHHe3VhIGyuFmN90zMTpD3Z3y8jeQbzLIq500MVM7Jq2vUAnTKAFPJrqwkzr6PoTcPhGcOiw==}
 
@@ -10932,12 +10945,17 @@ packages:
     resolution: {integrity: sha512-Ci3wnR2uuSAWFMSglZuB8Z2apBdtOyz8CV7dC6/U1XbltXBC+IuutUkXQISz01P+US2ouBuesSbV6zILZ6BuzQ==}
     engines: {node: '>= 0.9'}
 
-  vite-plugin-dts@4.5.4:
-    resolution: {integrity: sha512-d4sOM8M/8z7vRXHHq/ebbblfaxENjogAAekcfcDCCwAyvGqnPrc7f4NZbvItS+g4WTgerW0xDwSz5qz11JT3vg==}
+  vite-plugin-dts@5.1.2:
+    resolution: {integrity: sha512-1bXUz836sWq6ewEMQre3ZtNFVfZk/92DppgCCKP8tWx/NWwV2wHuXlRHb2TztHjbikPxvyAGLGu7hVh94Plwww==}
     peerDependencies:
-      typescript: '*'
+      '@microsoft/api-extractor': '>=7'
+      rollup: '>=3'
       vite: 8.2.4
     peerDependenciesMeta:
+      '@microsoft/api-extractor':
+        optional: true
+      rollup:
+        optional: true
       vite:
         optional: true
 
@@ -11188,6 +11206,9 @@ packages:
   webpack-sources@3.6.0:
     resolution: {integrity: sha512-EIMmPVvNI0CYXyRPp34F2Qk7W37/BZVZIofS6LAUnrNjCVahS+hO4mxwFJDjQjODTGZDtVzLYoN2+1dYkhk9qA==}
     engines: {node: '>=10.13.0'}
+
+  webpack-virtual-modules@0.6.2:
+    resolution: {integrity: sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ==}
 
   webpack@5.112.2:
     resolution: {integrity: sha512-B2tp1LI9D8GVpPDqprdt12ukTkXXahj9MzqSWJq4faSPgOUM7CdZaGAB6HrL/8E6UwbBpdj4vzWDbKoFnVoU6g==}
@@ -13951,6 +13972,7 @@ snapshots:
       '@rushstack/node-core-library': 5.25.1(@types/node@24.19.2)
     transitivePeerDependencies:
       - '@types/node'
+    optional: true
 
   '@microsoft/api-extractor@7.60.0(@types/node@24.19.2)':
     dependencies:
@@ -13969,6 +13991,7 @@ snapshots:
       typescript: 6.0.3
     transitivePeerDependencies:
       - '@types/node'
+    optional: true
 
   '@microsoft/tsdoc-config@0.18.3':
     dependencies:
@@ -13976,8 +13999,10 @@ snapshots:
       ajv: 8.18.0
       jju: 1.4.0
       resolve: 1.22.13
+    optional: true
 
-  '@microsoft/tsdoc@0.17.1': {}
+  '@microsoft/tsdoc@0.17.1':
+    optional: true
 
   '@mswjs/interceptors@0.41.9':
     dependencies:
@@ -14992,15 +15017,18 @@ snapshots:
       semver: 7.7.4
     optionalDependencies:
       '@types/node': 24.19.2
+    optional: true
 
   '@rushstack/problem-matcher@0.2.1(@types/node@24.19.2)':
     optionalDependencies:
       '@types/node': 24.19.2
+    optional: true
 
   '@rushstack/rig-package@0.7.4':
     dependencies:
       jju: 1.4.0
       resolve: 1.22.13
+    optional: true
 
   '@rushstack/terminal@0.24.7(@types/node@24.19.2)':
     dependencies:
@@ -15009,6 +15037,7 @@ snapshots:
       supports-color: 8.1.1
     optionalDependencies:
       '@types/node': 24.19.2
+    optional: true
 
   '@rushstack/ts-command-line@5.3.17(@types/node@24.19.2)':
     dependencies:
@@ -15018,6 +15047,7 @@ snapshots:
       string-argv: 0.3.2
     transitivePeerDependencies:
       - '@types/node'
+    optional: true
 
   '@sec-ant/readable-stream@0.4.1': {}
 
@@ -15405,7 +15435,8 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
-  '@types/argparse@1.0.38': {}
+  '@types/argparse@1.0.38':
+    optional: true
 
   '@types/aria-query@5.0.4': {}
 
@@ -15966,24 +15997,6 @@ snapshots:
       '@vue/compiler-dom': 3.5.44
       '@vue/shared': 3.5.44
 
-  '@vue/compiler-vue2@2.7.16':
-    dependencies:
-      de-indent: 1.0.2
-      he: 1.2.0
-
-  '@vue/language-core@2.2.0(@typescript/typescript6@6.0.2)':
-    dependencies:
-      '@volar/language-core': 2.4.30
-      '@vue/compiler-dom': 3.5.44
-      '@vue/compiler-vue2': 2.7.16
-      '@vue/shared': 3.5.44
-      alien-signals: 0.4.14
-      minimatch: 9.0.9
-      muggle-string: 0.4.1
-      path-browserify: 1.0.1
-    optionalDependencies:
-      typescript: '@typescript/typescript6@6.0.2'
-
   '@vue/reactivity@3.5.44':
     dependencies:
       '@vue/shared': 3.5.44
@@ -16163,6 +16176,7 @@ snapshots:
   ajv-draft-04@1.0.0(ajv@8.20.0):
     optionalDependencies:
       ajv: 8.20.0
+    optional: true
 
   ajv-formats@3.0.1(ajv@8.20.0):
     optionalDependencies:
@@ -16190,6 +16204,7 @@ snapshots:
       fast-uri: 3.1.9
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
+    optional: true
 
   ajv@8.20.0:
     dependencies:
@@ -16197,8 +16212,6 @@ snapshots:
       fast-uri: 3.1.9
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
-
-  alien-signals@0.4.14: {}
 
   ansi-escapes@7.3.0:
     dependencies:
@@ -16242,6 +16255,7 @@ snapshots:
   argparse@1.0.10:
     dependencies:
       sprintf-js: 1.0.3
+    optional: true
 
   argparse@2.0.1: {}
 
@@ -17172,8 +17186,6 @@ snapshots:
 
   dayjs@1.11.23: {}
 
-  de-indent@1.0.2: {}
-
   debounce-promise@3.1.2: {}
 
   debug@2.6.9:
@@ -17268,7 +17280,8 @@ snapshots:
 
   diff@4.0.4: {}
 
-  diff@8.0.4: {}
+  diff@8.0.4:
+    optional: true
 
   dir-glob@3.0.1:
     dependencies:
@@ -18024,6 +18037,7 @@ snapshots:
       graceful-fs: 4.2.11
       jsonfile: 6.2.1
       universalify: 2.0.1
+    optional: true
 
   fs-extra@11.4.1:
     dependencies:
@@ -18146,6 +18160,8 @@ snapshots:
   glob-to-regex.js@1.3.1(tslib@2.8.1):
     dependencies:
       tslib: 2.8.1
+
+  glob-to-regexp@0.4.1: {}
 
   glob@11.1.0:
     dependencies:
@@ -18556,7 +18572,8 @@ snapshots:
 
   import-fresh@4.0.1: {}
 
-  import-lazy@4.0.0: {}
+  import-lazy@4.0.0:
+    optional: true
 
   import-local@3.2.0:
     dependencies:
@@ -19345,6 +19362,7 @@ snapshots:
   minimatch@10.2.3:
     dependencies:
       brace-expansion: 5.0.12
+    optional: true
 
   minimatch@10.2.6:
     dependencies:
@@ -19363,10 +19381,6 @@ snapshots:
     dependencies:
       brace-expansion: 2.1.7
 
-  minimatch@9.0.9:
-    dependencies:
-      brace-expansion: 2.1.7
-
   minimist-options@4.1.0:
     dependencies:
       arrify: 1.0.1
@@ -19374,6 +19388,19 @@ snapshots:
       kind-of: 6.0.3
 
   minimist@1.2.8: {}
+
+  minimizer-webpack-plugin@5.13.1(esbuild@0.28.2)(lightningcss@1.33.0)(svgo@4.1.0)(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(svgo@4.1.0)):
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.31
+      jest-worker: 27.5.1
+      schema-utils: 4.8.1(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(svgo@4.1.0))
+      terser: 5.51.2
+      webpack: 5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(svgo@4.1.0)
+    optionalDependencies:
+      esbuild: 0.28.2
+      lightningcss: 1.33.0
+      svgo: 4.1.0
+    optional: true
 
   minimizer-webpack-plugin@5.13.1(esbuild@0.28.2)(postcss@8.5.32)(svgo@4.1.0)(webpack@5.112.2):
     dependencies:
@@ -19386,6 +19413,18 @@ snapshots:
       esbuild: 0.28.2
       postcss: 8.5.32
       svgo: 4.1.0
+
+  minimizer-webpack-plugin@5.13.1(esbuild@0.28.2)(svgo@4.1.0)(webpack@5.112.2(esbuild@0.28.2)(svgo@4.1.0)):
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.31
+      jest-worker: 27.5.1
+      schema-utils: 4.8.1(webpack@5.112.2(esbuild@0.28.2)(svgo@4.1.0))
+      terser: 5.51.2
+      webpack: 5.112.2(esbuild@0.28.2)(svgo@4.1.0)
+    optionalDependencies:
+      esbuild: 0.28.2
+      svgo: 4.1.0
+    optional: true
 
   minimizer-webpack-plugin@5.13.1(esbuild@0.28.2)(svgo@4.1.0)(webpack@5.112.2):
     dependencies:
@@ -19477,8 +19516,6 @@ snapshots:
       typescript: '@typescript/typescript6@6.0.2'
     transitivePeerDependencies:
       - '@types/node'
-
-  muggle-string@0.4.1: {}
 
   multicast-dns@7.2.5:
     dependencies:
@@ -20609,6 +20646,26 @@ snapshots:
       ajv: 6.15.0
       ajv-keywords: 3.5.2(ajv@6.15.0)
 
+  schema-utils@4.8.1(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(svgo@4.1.0)):
+    dependencies:
+      '@types/json-schema': 7.0.15
+      ajv: 8.20.0
+      ajv-formats: 3.0.1(ajv@8.20.0)
+      ajv-keywords: 5.1.0(ajv@8.20.0)
+    optionalDependencies:
+      webpack: 5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(svgo@4.1.0)
+    optional: true
+
+  schema-utils@4.8.1(webpack@5.112.2(esbuild@0.28.2)(svgo@4.1.0)):
+    dependencies:
+      '@types/json-schema': 7.0.15
+      ajv: 8.20.0
+      ajv-formats: 3.0.1(ajv@8.20.0)
+      ajv-keywords: 5.1.0(ajv@8.20.0)
+    optionalDependencies:
+      webpack: 5.112.2(esbuild@0.28.2)(svgo@4.1.0)
+    optional: true
+
   schema-utils@4.8.1(webpack@5.112.2):
     dependencies:
       '@types/json-schema': 7.0.15
@@ -20641,7 +20698,8 @@ snapshots:
 
   semver@6.3.1: {}
 
-  semver@7.7.4: {}
+  semver@7.7.4:
+    optional: true
 
   semver@7.8.5: {}
 
@@ -20895,7 +20953,8 @@ snapshots:
     dependencies:
       through: 2.3.8
 
-  sprintf-js@1.0.3: {}
+  sprintf-js@1.0.3:
+    optional: true
 
   sshpk@1.18.0:
     dependencies:
@@ -20966,7 +21025,8 @@ snapshots:
 
   strict-event-emitter@0.5.1: {}
 
-  string-argv@0.3.2: {}
+  string-argv@0.3.2:
+    optional: true
 
   string-env-interpolation@1.0.1: {}
 
@@ -21557,6 +21617,57 @@ snapshots:
 
   unpipe@1.0.0: {}
 
+  unplugin-dts@1.1.2(@microsoft/api-extractor@7.60.0(@types/node@24.19.2))(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.16)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(svgo@4.1.0)):
+    dependencies:
+      '@rollup/pluginutils': 5.5.1(rollup@4.66.0)
+      '@volar/typescript': 2.4.30(@typescript/typescript6@6.0.2)
+      compare-versions: 6.1.1
+      debug: 4.4.3(supports-color@8.1.1)
+      glob-to-regexp: 0.4.1
+      kolorist: 1.8.0
+      local-pkg: 1.2.1
+      magic-string: 0.30.21
+      typescript: '@typescript/typescript6@6.0.2'
+      unplugin: 2.3.11
+    optionalDependencies:
+      '@microsoft/api-extractor': 7.60.0(@types/node@24.19.2)
+      esbuild: 0.28.2
+      rolldown: 1.2.16
+      rollup: 4.66.0
+      vite: 8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)
+      webpack: 5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(svgo@4.1.0)
+    transitivePeerDependencies:
+      - supports-color
+
+  unplugin-dts@1.1.2(@microsoft/api-extractor@7.60.0(@types/node@24.19.2))(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.16)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))(webpack@5.112.2(esbuild@0.28.2)(svgo@4.1.0)):
+    dependencies:
+      '@rollup/pluginutils': 5.5.1(rollup@4.66.0)
+      '@volar/typescript': 2.4.30(@typescript/typescript6@6.0.2)
+      compare-versions: 6.1.1
+      debug: 4.4.3(supports-color@8.1.1)
+      glob-to-regexp: 0.4.1
+      kolorist: 1.8.0
+      local-pkg: 1.2.1
+      magic-string: 0.30.21
+      typescript: '@typescript/typescript6@6.0.2'
+      unplugin: 2.3.11
+    optionalDependencies:
+      '@microsoft/api-extractor': 7.60.0(@types/node@24.19.2)
+      esbuild: 0.28.2
+      rolldown: 1.2.16
+      rollup: 4.66.0
+      vite: 8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)
+      webpack: 5.112.2(esbuild@0.28.2)(svgo@4.1.0)
+    transitivePeerDependencies:
+      - supports-color
+
+  unplugin@2.3.11:
+    dependencies:
+      '@jridgewell/remapping': 2.3.5
+      acorn: 8.19.0
+      picomatch: 4.0.7
+      webpack-virtual-modules: 0.6.2
+
   until-async@3.0.2: {}
 
   untildify@4.0.0: {}
@@ -21631,24 +21742,37 @@ snapshots:
       clone-stats: 0.0.1
       replace-ext: 0.0.1
 
-  vite-plugin-dts@4.5.4(@types/node@24.19.2)(@typescript/typescript6@6.0.2)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)):
+  vite-plugin-dts@5.1.2(@microsoft/api-extractor@7.60.0(@types/node@24.19.2))(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.16)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(svgo@4.1.0)):
     dependencies:
-      '@microsoft/api-extractor': 7.60.0(@types/node@24.19.2)
-      '@rollup/pluginutils': 5.5.1(rollup@4.66.0)
-      '@volar/typescript': 2.4.30(@typescript/typescript6@6.0.2)
-      '@vue/language-core': 2.2.0(@typescript/typescript6@6.0.2)
-      compare-versions: 6.1.1
-      debug: 4.4.3(supports-color@8.1.1)
-      kolorist: 1.8.0
-      local-pkg: 1.2.1
-      magic-string: 0.30.21
-      typescript: '@typescript/typescript6@6.0.2'
+      unplugin-dts: 1.1.2(@microsoft/api-extractor@7.60.0(@types/node@24.19.2))(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.16)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(svgo@4.1.0))
     optionalDependencies:
+      '@microsoft/api-extractor': 7.60.0(@types/node@24.19.2)
+      rollup: 4.66.0
       vite: 8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)
     transitivePeerDependencies:
-      - '@types/node'
-      - rollup
+      - '@rspack/core'
+      - '@vue/language-core'
+      - esbuild
+      - rolldown
       - supports-color
+      - typescript
+      - webpack
+
+  vite-plugin-dts@5.1.2(@microsoft/api-extractor@7.60.0(@types/node@24.19.2))(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.16)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))(webpack@5.112.2(esbuild@0.28.2)(svgo@4.1.0)):
+    dependencies:
+      unplugin-dts: 1.1.2(@microsoft/api-extractor@7.60.0(@types/node@24.19.2))(@typescript/typescript6@6.0.2)(esbuild@0.28.2)(rolldown@1.2.16)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))(webpack@5.112.2(esbuild@0.28.2)(svgo@4.1.0))
+    optionalDependencies:
+      '@microsoft/api-extractor': 7.60.0(@types/node@24.19.2)
+      rollup: 4.66.0
+      vite: 8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)
+    transitivePeerDependencies:
+      - '@rspack/core'
+      - '@vue/language-core'
+      - esbuild
+      - rolldown
+      - supports-color
+      - typescript
+      - webpack
 
   vite-plugin-svgr@5.2.0(@typescript/typescript6@6.0.2)(rollup@4.66.0)(vite@8.2.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)):
     dependencies:
@@ -21890,6 +22014,46 @@ snapshots:
 
   webpack-sources@3.6.0: {}
 
+  webpack-virtual-modules@0.6.2: {}
+
+  webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(svgo@4.1.0):
+    dependencies:
+      '@types/estree': 1.0.10
+      '@types/json-schema': 7.0.15
+      '@webassemblyjs/ast': 1.14.1
+      '@webassemblyjs/wasm-edit': 1.14.1
+      '@webassemblyjs/wasm-parser': 1.14.1
+      browserslist: 4.29.5
+      chrome-trace-event: 1.0.4
+      enhanced-resolve: 5.26.0
+      es-module-lexer: 2.3.2
+      events: 3.3.0
+      graceful-fs: 4.2.11
+      mime-db: 1.54.0
+      minimizer-webpack-plugin: 5.13.1(esbuild@0.28.2)(lightningcss@1.33.0)(svgo@4.1.0)(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(svgo@4.1.0))
+      schema-utils: 4.8.1(webpack@5.112.2(esbuild@0.28.2)(lightningcss@1.33.0)(svgo@4.1.0))
+      tapable: 2.3.3
+      watchpack: 2.6.3
+      webpack-sources: 3.6.0
+    transitivePeerDependencies:
+      - '@minify-html/node'
+      - '@napi-rs/image'
+      - '@swc/core'
+      - '@swc/css'
+      - '@swc/html'
+      - clean-css
+      - cssnano
+      - csso
+      - esbuild
+      - html-minifier-terser
+      - imagemin
+      - lightningcss
+      - postcss
+      - sharp
+      - svgo
+      - uglify-js
+    optional: true
+
   webpack@5.112.2(esbuild@0.28.2)(postcss@8.5.32)(svgo@4.1.0)(webpack-cli@7.2.3):
     dependencies:
       '@types/estree': 1.0.10
@@ -21928,6 +22092,44 @@ snapshots:
       - sharp
       - svgo
       - uglify-js
+
+  webpack@5.112.2(esbuild@0.28.2)(svgo@4.1.0):
+    dependencies:
+      '@types/estree': 1.0.10
+      '@types/json-schema': 7.0.15
+      '@webassemblyjs/ast': 1.14.1
+      '@webassemblyjs/wasm-edit': 1.14.1
+      '@webassemblyjs/wasm-parser': 1.14.1
+      browserslist: 4.29.5
+      chrome-trace-event: 1.0.4
+      enhanced-resolve: 5.26.0
+      es-module-lexer: 2.3.2
+      events: 3.3.0
+      graceful-fs: 4.2.11
+      mime-db: 1.54.0
+      minimizer-webpack-plugin: 5.13.1(esbuild@0.28.2)(svgo@4.1.0)(webpack@5.112.2(esbuild@0.28.2)(svgo@4.1.0))
+      schema-utils: 4.8.1(webpack@5.112.2(esbuild@0.28.2)(svgo@4.1.0))
+      tapable: 2.3.3
+      watchpack: 2.6.3
+      webpack-sources: 3.6.0
+    transitivePeerDependencies:
+      - '@minify-html/node'
+      - '@napi-rs/image'
+      - '@swc/core'
+      - '@swc/css'
+      - '@swc/html'
+      - clean-css
+      - cssnano
+      - csso
+      - esbuild
+      - html-minifier-terser
+      - imagemin
+      - lightningcss
+      - postcss
+      - sharp
+      - svgo
+      - uglify-js
+    optional: true
 
   webpack@5.112.2(esbuild@0.28.2)(svgo@4.1.0)(webpack-cli@7.2.3):
     dependencies:
