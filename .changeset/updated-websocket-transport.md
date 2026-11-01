@@ -2,4 +2,4 @@
 'vscode-graphql-execution': patch
 ---
 
-Update WebSocket dependencies and fix subscriptions using the bundled Node.js WebSocket constructor.
+Fix subscription startup in the bundled execution extension by passing the Node.js WebSocket constructor to the client.
