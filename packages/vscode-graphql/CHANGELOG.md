@@ -1,5 +1,16 @@
 # Change Log
 
+## 1.0.0
+
+### Major Changes
+
+- [#4478](https://github.com/graphql/graphiql/pull/4478) [`066528a`](https://github.com/graphql/graphiql/commit/066528a6bb7706d685536888d7b5549d6fd5a109) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Update the extensions' bundled GraphQL.js runtime to 16.14.2. GraphQL.js is included in each extension rather than supplied as a peer dependency; updating the extension does not require installing or upgrading `graphql` in your project.
+
+### Patch Changes
+
+- Updated dependencies [[`4225e29`](https://github.com/graphql/graphiql/commit/4225e29ebea023591aeb5c54a84cf98b226f6df7), [`066528a`](https://github.com/graphql/graphiql/commit/066528a6bb7706d685536888d7b5549d6fd5a109)]:
+  - graphql-language-service-server@3.0.0
+
 ## 1.0.0-rc.1
 
 ### Patch Changes

@@ -1,5 +1,23 @@
 # @graphiql/plugin-doc-explorer
 
+## 1.0.0
+
+### Major Changes
+
+- [#4478](https://github.com/graphql/graphiql/pull/4478) [`066528a`](https://github.com/graphql/graphiql/commit/066528a6bb7706d685536888d7b5549d6fd5a109) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - GraphQL.js 15 and 16.0–16.10 are no longer supported peer dependencies. The supported range is `^16.11.0 || ^17.0.0`. GraphQL.js 16.11 fixes OneOf input validation for nullable variables and tightens input-object coercion to reject arrays, giving GraphiQL 6 a correct baseline for OneOf inputs. Upgrade `graphql` before upgrading these packages.
+
+- [#4393](https://github.com/graphql/graphiql/pull/4393) [`827da62`](https://github.com/graphql/graphiql/commit/827da6263685aa6e2f4df98ab7aaf032d2783605) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Remove deprecated hooks: `useEditorContext`, `useExecutionContext`, `usePluginContext`, `useSchemaContext`, `useTheme`, `useStorage`, `useStorageContext`, `usePrettifyEditors`, `useCopyQuery`, `useMergeQuery`, the `*Store` aliases (in `@graphiql/react`); `useExplorerContext` (in `@graphiql/plugin-doc-explorer`); and `useHistoryContext` (in `@graphiql/plugin-history`). Replacements were available since v5 — see the [removed-hooks migration guide](https://github.com/graphql/graphiql/blob/c2e792bc446d5d6751bd7cd1d9ac283a4a1d8fc4/docs/migration/graphiql-6.0.0.md#removed-hooks) for one-line replacements.
+
+### Minor Changes
+
+- [#4228](https://github.com/graphql/graphiql/pull/4228) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Restyle the Documentation Explorer for GraphiQL 6, including light and dark themes, keyboard focus indicators, and GraphQL type-category colors. Customize type colors with `--type-scalar`, `--type-enum`, `--type-input`, and `--type-composite`.
+
+  The v5 `--color-*` overrides no longer theme the built-in UI. Migrate custom styles to the new OKLCH tokens using the [CSS and retheming guide](https://github.com/graphql/graphiql/blob/c2e792bc446d5d6751bd7cd1d9ac283a4a1d8fc4/docs/migration/graphiql-6.0.0.md#css-and-retheming).
+
+### Patch Changes
+
+- [#4623](https://github.com/graphql/graphiql/pull/4623) [`ecedd76`](https://github.com/graphql/graphiql/commit/ecedd76452c31637745bd509174f6eab5d0aebc5) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Build with the stable React Compiler and use its stable runtime for React 18 compatibility.
+
 ## 1.0.0-rc.2
 
 ### Patch Changes

@@ -1,5 +1,82 @@
 # Change Log
 
+## 6.0.0
+
+### Major Changes
+
+- [#4478](https://github.com/graphql/graphiql/pull/4478) [`066528a`](https://github.com/graphql/graphiql/commit/066528a6bb7706d685536888d7b5549d6fd5a109) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - GraphQL.js 15 and 16.0–16.10 are no longer supported peer dependencies. The supported range is `^16.11.0 || ^17.0.0`. GraphQL.js 16.11 fixes OneOf input validation for nullable variables and tightens input-object coercion to reject arrays, giving GraphiQL 6 a correct baseline for OneOf inputs. Upgrade `graphql` before upgrading these packages.
+
+- [#4416](https://github.com/graphql/graphiql/pull/4416) [`9c153e2`](https://github.com/graphql/graphiql/commit/9c153e2dc85d8d705370c4c0c739fcdc0844741d) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Replace `@graphiql/plugin-explorer` with `@graphiql/plugin-query-builder`. Remove the Explorer dependency and plugin registration when upgrading. Query Builder is included in GraphiQL's default plugin set; if you supply a custom `plugins` array, add `QUERY_BUILDER_PLUGIN` from `graphiql` to retain query-building support.
+
+- [#4566](https://github.com/graphql/graphiql/pull/4566) [`f916fd6`](https://github.com/graphql/graphiql/commit/f916fd6ba17c23cedd459b5bf16c55dea3b826e8) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Upgrade the bundled Monaco Editor to 0.57 and adopt the worker and ESM entry points introduced in 0.56. Published packages accept `monaco-editor` `>=0.56.0 <0.58.0`. If you configure Monaco directly, use Monaco 0.56 or 0.57, replace `monaco-editor/esm/vs/*` imports with exported entry points, and configure `MonacoEnvironment.getWorker` to return the GraphQL worker for the `graphql` label. Custom GraphQL workers must initialize immediately and provide non-cloneable configuration by overriding `GraphQLWorker.initialize`. GraphiQL's worker setup helpers handle these changes and load the matching `monaco-graphql` major. See the [GraphiQL 6 migration guide](https://github.com/graphql/graphiql/blob/c2e792bc446d5d6751bd7cd1d9ac283a4a1d8fc4/docs/migration/graphiql-6.0.0.md#monaco-editor-056-and-057-worker-setup) for examples. This update builds on the initial worker migration contributed by @lukasbash.
+
+- [#4610](https://github.com/graphql/graphiql/pull/4610) [`b40d7fe`](https://github.com/graphql/graphiql/commit/b40d7feec9a26451402efd93cba046b8bd947509) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Remove the `operationName` prop from `GraphiQL` and `GraphiQLProvider`. Each request now uses the operation selected in the active tab. Use the cursor, Run picker, or `useGraphiQLActions().setOperationName(name)` to select an operation; `onEditOperationName` still reports selection changes.
+
+- [#4425](https://github.com/graphql/graphiql/pull/4425) [`ff2e4ca`](https://github.com/graphql/graphiql/commit/ff2e4ca25b565ecee504ac64aa7459805cb8e724) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Remove the composable `GraphiQL.Toolbar` and `GraphiQL.Logo` slots. Editor actions are now contributed through a plugin's `sessionActions`, and branding is customized through the `brand` prop passed to `<GraphiQL>` (or `<TopBar>` directly). `GraphiQL.Footer` is unchanged. See the [Toolbar and Logo migration guide](https://github.com/graphql/graphiql/blob/c2e792bc446d5d6751bd7cd1d9ac283a4a1d8fc4/docs/migration/graphiql-6.0.0.md#removed-graphiqltoolbar-and-graphiqllogo) for before/after examples.
+
+- [#4333](https://github.com/graphql/graphiql/pull/4333) [`093cb10`](https://github.com/graphql/graphiql/commit/093cb100a4524b1005b82c1c064bb897416bfc82) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add `createTransport` and a structured `Transport` API for queries, mutations, subscriptions, and incremental delivery. Pass a transport through `<GraphiQL transport={...}>`; the `transport` and `fetcher` props are mutually exclusive at the type level.
+
+  `GraphiQLProps` is now a union. If a TypeScript wrapper uses `interface AppProps extends GraphiQLProps`, replace it with a type intersection such as `type AppProps = GraphiQLProps & { applicationName: string }`, even when retaining `fetcher`. See the [migration overview](https://github.com/graphql/graphiql/blob/c2e792bc446d5d6751bd7cd1d9ac283a4a1d8fc4/docs/migration/graphiql-6.0.0.md#overview).
+
+  When `supportedMethods` is omitted, `createTransport` discovers endpoint capabilities through `OPTIONS` and the `Allow` header. Queries prefer QUERY, then POST, then GET. Mutations and operations of unknown type require POST. An explicit `method` override applies to queries and fails if the endpoint excludes it. GET sends GraphQL parameters in the URL; POST and QUERY send a JSON body.
+
+  Discovery is shared by concurrent requests and repeats when effective request headers change. If discovery fails, exceeds two seconds, or the `Allow` header is missing or malformed, the transport assumes only its initially configured `method` (POST by default) is available. A valid advertisement containing no supported methods blocks execution. Pass a nonempty `supportedMethods` array to skip discovery for known capabilities. Cross-origin servers must permit OPTIONS and expose `Allow` through `Access-Control-Expose-Headers`.
+
+  `TransportResponse` exposes HTTP method, status, headers, timing, and byte sizes alongside the GraphQL result. HTTP metadata remains available when a response body is not valid JSON. Its `ok` field accounts for both HTTP status and GraphQL errors. `TransportRequest` supports GraphQL `extensions` and an abort `signal`. Subscriptions require an explicit `subscriptionClient` with an `iterate(request)` method, supported by `graphql-ws` v6 and `graphql-sse` clients.
+
+  Plugins can transform outgoing requests with `onBeforeSend` and observe responses or request failures with `onResponse` and `onError`, available through `useGraphiQLPluginContext().transport`. Each registration returns a cleanup function. This context field is absent when using the legacy `fetcher` prop.
+
+  Transports can expose query method preferences through optional `setMethod`, `methodOverride`, and `subscribe(listener)` APIs. Calling `setMethod()` without an argument restores automatic selection. `methodOverride` distinguishes an explicit preference from Auto; `Transport.method` reflects the query method, while `TransportResponse.method` reports the method actually used for an execution. `subscribe(listener)` notifies GraphiQL of preference and capability changes and returns an unsubscribe function. These notifications are independent of request lifecycle hooks. `createTransport` implements these APIs; custom transports can omit them.
+
+  `createGraphiQLFetcher`, `Fetcher`, and `<GraphiQL fetcher={...}>` are deprecated but remain supported. See the [Transport migration guide](https://github.com/graphql/graphiql/blob/c2e792bc446d5d6751bd7cd1d9ac283a4a1d8fc4/docs/migration/graphiql-6.0.0.md#new-transport-api) for examples and custom transport requirements.
+
+- [#4228](https://github.com/graphql/graphiql/pull/4228) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Redesign GraphiQL with light and dark themes, an endpoint and Run bar, a plugin activity rail, a resizable side panel, a status bar, and a Variables/Headers tab strip. The Documentation Explorer, History, and Monaco editor themes follow the same design. Settings offer theme, density, and font-size controls.
+
+  The top bar joins Run/Stop with the selected operation name, its QRY/MUT/SUB label, and an HTTP method selector. Selecting an operation does not execute it; use Run or the keyboard shortcut. The method menu offers Auto for queries and explains unavailable options. Selected rows use the GraphQL logo pink, while keyboard focus has a separate outline.
+
+  The response pane adds HTTP method, status, timing, and size from transports that provide them, a copy action, and persisted JSON, Tree, and Table views. Tree expands response objects and arrays; Table presents each list field separately. Saved operations show when they have unsaved edits, and tabs with multiple operations identify the active operation.
+
+  Improve keyboard focus visibility and screen-reader labels throughout the interface. Escape cancels History label edits and returns focus to the edit button. Closing Settings returns focus to its trigger.
+
+  Unify GraphQL syntax coloring across Documentation Explorer, History, and Query Builder. Use the `--type-scalar`, `--type-enum`, `--type-input`, and `--type-composite` CSS tokens and the exported `typeCategory` helper to customize type-category colors.
+
+  The design tokens use OKLCH colors, and the build targets the `defaults` browserslist preset. The v5 `--color-*` variables remain defined but no longer theme the built-in UI; migrate existing overrides to the new OKLCH tokens. Custom CSS that overrides internal class names may also need updating. See [CSS and retheming](https://github.com/graphql/graphiql/blob/c2e792bc446d5d6751bd7cd1d9ac283a4a1d8fc4/docs/migration/graphiql-6.0.0.md#css-and-retheming) for migration guidance. Refs graphql/graphiql#4219.
+
+### Minor Changes
+
+- [#4359](https://github.com/graphql/graphiql/pull/4359) [`ac56840`](https://github.com/graphql/graphiql/commit/ac5684038d1147650ac4203b47ff0f49e905e5cd) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add `@graphiql/plugin-collections` for saving operations in named collections, reopening them in tabs, and sharing or importing collections as JSON. Save with Cmd+S/Ctrl+S or the Save button. Re-saving an operation opened from a collection updates that saved item. Imports match items by stable ID and offer conflict resolution; merging preserves existing items.
+
+  Use `COLLECTIONS_PLUGIN` for the default configuration, or `collectionsPlugin(options)` to configure a storage adapter, `readOnly`, `allowImportExport`, and `allowReplace`. The default adapter uses `localStorage`.
+
+  `@graphiql/react` adds `registerSaveHandler(handler)` to connect a plugin to the save shortcut and button. Only one handler can be registered at a time. GraphiQL waits for its promise to resolve before marking the submitted query snapshot saved; cancellation and errors leave it unsaved. `GraphiQLPlugin.sessionActions` provides an always-mounted slot for plugin actions, dialogs, and behavior registration.
+
+- [#4589](https://github.com/graphql/graphiql/pull/4589) [`7f9e0cc`](https://github.com/graphql/graphiql/commit/7f9e0ccdd673c7b1f05aca12fe3a8d1f12cee982) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Include Query Builder and Collections alongside History in GraphiQL's default plugin set. Passing `plugins` replaces this set; use `plugins={[...DEFAULT_PLUGINS, customPlugin]}` to extend it. The Documentation Explorer remains controlled separately by `referencePlugin`.
+
+  Export the immutable `DEFAULT_PLUGINS` array, `QUERY_BUILDER_PLUGIN`, and `COLLECTIONS_PLUGIN` from `graphiql` so you can customize the defaults without importing each plugin package.
+
+- [#4352](https://github.com/graphql/graphiql/pull/4352) [`f8a9445`](https://github.com/graphql/graphiql/commit/f8a944505a0fbb9245b4ea1a3ca67bd50d4b7991) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Keep the active operation synchronized with the editor cursor in documents containing multiple operations. Operation-aware plugins use the same selection. The `onEditOperationName` callback fires when the cursor enters a different named operation, as well as when an operation is selected explicitly.
+
+- [#4352](https://github.com/graphql/graphiql/pull/4352) [`f8a9445`](https://github.com/graphql/graphiql/commit/f8a944505a0fbb9245b4ea1a3ca67bd50d4b7991) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add `@graphiql/plugin-query-builder` for building operations from a schema. Select fields and arguments, promote scalar arguments to variables, extract and edit named fragments, and add inline fragments for union or interface types. Edits update the active operation in the editor.
+
+  The package exports `QUERY_BUILDER_PLUGIN` for registration and `QueryBuilder` for custom integrations.
+
+- [#4322](https://github.com/graphql/graphiql/pull/4322) [`fdbd07d`](https://github.com/graphql/graphiql/commit/fdbd07d0c11426ef2095ba6637fb80272dd01a86) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add `useGraphiQLSettings()` for reading and updating persisted theme, density, and font-size preferences. Settings are shared between consumers, including plugins and the exported `SettingsDialog`. The hook exposes `resolvedTheme` so plugins can follow light and dark appearance, including operating-system changes when the theme is `auto`.
+
+  `SettingsDialog` also controls header persistence. The existing `forcedTheme` and `showPersistHeadersSettings` props continue to apply; a forced theme hides the theme control.
+
+### Patch Changes
+
+- [#4636](https://github.com/graphql/graphiql/pull/4636) [`45a81d7`](https://github.com/graphql/graphiql/commit/45a81d76849c0be2622fd97adf75e3dab3aa0e06) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Use `clsx` 2 for class name composition.
+
+- [#4623](https://github.com/graphql/graphiql/pull/4623) [`ecedd76`](https://github.com/graphql/graphiql/commit/ecedd76452c31637745bd509174f6eab5d0aebc5) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Build with the stable React Compiler and use its stable runtime for React 18 compatibility.
+
+- Updated dependencies [[`45a81d7`](https://github.com/graphql/graphiql/commit/45a81d76849c0be2622fd97adf75e3dab3aa0e06), [`b6f8dc6`](https://github.com/graphql/graphiql/commit/b6f8dc6f247b63c19fe2b7962866508c5d0fb219), [`066528a`](https://github.com/graphql/graphiql/commit/066528a6bb7706d685536888d7b5549d6fd5a109), [`541682b`](https://github.com/graphql/graphiql/commit/541682ba18c9614976991dc230b9da7c502bcebf), [`d4f0268`](https://github.com/graphql/graphiql/commit/d4f026853b89b9755f28d8f4059fcba419aa6d5a), [`f916fd6`](https://github.com/graphql/graphiql/commit/f916fd6ba17c23cedd459b5bf16c55dea3b826e8), [`f8a9445`](https://github.com/graphql/graphiql/commit/f8a944505a0fbb9245b4ea1a3ca67bd50d4b7991), [`f8a9445`](https://github.com/graphql/graphiql/commit/f8a944505a0fbb9245b4ea1a3ca67bd50d4b7991), [`f45e26b`](https://github.com/graphql/graphiql/commit/f45e26b6eff736c2faddbafd82550ddfc3efa860), [`827da62`](https://github.com/graphql/graphiql/commit/827da6263685aa6e2f4df98ab7aaf032d2783605), [`b40d7fe`](https://github.com/graphql/graphiql/commit/b40d7feec9a26451402efd93cba046b8bd947509), [`b6f8dc6`](https://github.com/graphql/graphiql/commit/b6f8dc6f247b63c19fe2b7962866508c5d0fb219), [`ecedd76`](https://github.com/graphql/graphiql/commit/ecedd76452c31637745bd509174f6eab5d0aebc5), [`093cb10`](https://github.com/graphql/graphiql/commit/093cb100a4524b1005b82c1c064bb897416bfc82), [`cc33695`](https://github.com/graphql/graphiql/commit/cc33695caf063f64c85febd7f9013cef8b94e051), [`a9f2e37`](https://github.com/graphql/graphiql/commit/a9f2e372251bbe92e7cf0bf622bc50191da1e3eb), [`a9f2e37`](https://github.com/graphql/graphiql/commit/a9f2e372251bbe92e7cf0bf622bc50191da1e3eb), [`b6f8dc6`](https://github.com/graphql/graphiql/commit/b6f8dc6f247b63c19fe2b7962866508c5d0fb219)]:
+  - @graphiql/react@1.0.0
+  - @graphiql/plugin-history@1.0.0
+  - @graphiql/plugin-collections@1.0.0
+  - @graphiql/plugin-doc-explorer@1.0.0
+  - @graphiql/plugin-query-builder@1.0.0
+
 ## 6.0.0-rc.3
 
 ### Patch Changes

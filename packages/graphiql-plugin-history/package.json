@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-history",
-  "version": "1.0.0-rc.2",
+  "version": "1.0.0",
   "sideEffects": [
     "*.css"
   ],
@@ -42,13 +42,13 @@
     "react-dom": "^18 || ^19"
   },
   "dependencies": {
-    "@graphiql/toolkit": "^1.0.0-rc.0",
+    "@graphiql/toolkit": "^1.0.0",
     "clsx": "^2.1.1",
     "react-compiler-runtime": "^1.0.0",
     "zustand": "^5"
   },
   "devDependencies": {
-    "@graphiql/react": "^1.0.0-rc.2",
+    "@graphiql/react": "^1.0.0",
     "@storybook/react-vite": "^10.3.6",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.1.0",

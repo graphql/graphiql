@@ -1,5 +1,24 @@
 # @graphiql/plugin-history
 
+## 1.0.0
+
+### Major Changes
+
+- [#4393](https://github.com/graphql/graphiql/pull/4393) [`827da62`](https://github.com/graphql/graphiql/commit/827da6263685aa6e2f4df98ab7aaf032d2783605) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Remove deprecated hooks: `useEditorContext`, `useExecutionContext`, `usePluginContext`, `useSchemaContext`, `useTheme`, `useStorage`, `useStorageContext`, `usePrettifyEditors`, `useCopyQuery`, `useMergeQuery`, the `*Store` aliases (in `@graphiql/react`); `useExplorerContext` (in `@graphiql/plugin-doc-explorer`); and `useHistoryContext` (in `@graphiql/plugin-history`). Replacements were available since v5 — see the [removed-hooks migration guide](https://github.com/graphql/graphiql/blob/c2e792bc446d5d6751bd7cd1d9ac283a4a1d8fc4/docs/migration/graphiql-6.0.0.md#removed-hooks) for one-line replacements.
+
+### Patch Changes
+
+- [#4636](https://github.com/graphql/graphiql/pull/4636) [`45a81d7`](https://github.com/graphql/graphiql/commit/45a81d76849c0be2622fd97adf75e3dab3aa0e06) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Use `clsx` 2 for class name composition.
+
+- [#4623](https://github.com/graphql/graphiql/pull/4623) [`ecedd76`](https://github.com/graphql/graphiql/commit/ecedd76452c31637745bd509174f6eab5d0aebc5) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Build with the stable React Compiler and use its stable runtime for React 18 compatibility.
+
+- [#4228](https://github.com/graphql/graphiql/pull/4228) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Restyle History for GraphiQL 6 with light and dark themes, shared GraphQL syntax colors, and clearer keyboard focus indicators. Escape cancels a label edit and returns focus to the edit button.
+
+  The v5 `--color-*` overrides no longer theme the built-in UI. Migrate custom styles to the new OKLCH tokens using the [CSS and retheming guide](https://github.com/graphql/graphiql/blob/c2e792bc446d5d6751bd7cd1d9ac283a4a1d8fc4/docs/migration/graphiql-6.0.0.md#css-and-retheming).
+
+- Updated dependencies [[`066528a`](https://github.com/graphql/graphiql/commit/066528a6bb7706d685536888d7b5549d6fd5a109), [`26ae143`](https://github.com/graphql/graphiql/commit/26ae143ba68004d4a50468ba1feb649ace673f3a), [`093cb10`](https://github.com/graphql/graphiql/commit/093cb100a4524b1005b82c1c064bb897416bfc82)]:
+  - @graphiql/toolkit@1.0.0
+
 ## 1.0.0-rc.2
 
 ### Patch Changes
