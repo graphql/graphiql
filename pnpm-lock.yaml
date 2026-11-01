@@ -306,8 +306,8 @@ importers:
         specifier: ^6
         version: 6.0.0(webpack-cli@7.2.3)(webpack@5.106.2)
       webpack-manifest-plugin:
-        specifier: ^5
-        version: 5.0.1(webpack@5.106.2)
+        specifier: ^6
+        version: 6.0.1(webpack@5.106.2)
       workbox-webpack-plugin:
         specifier: ^7
         version: 7.4.0(@types/babel__core@7.20.5)(webpack@5.106.2)
@@ -5321,6 +5321,9 @@ packages:
 
   '@types/estree@0.0.39':
     resolution: {integrity: sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==}
+
+  '@types/estree@1.0.10':
+    resolution: {integrity: sha512-lTyOMnOcmRBzdCv6/4zUZCrEhV0xrqQiUZBZtVcbmLHBXKLnN8q89v/wKRF/Q0HbwVsqbIG3o5HDoFl9sduM+g==}
 
   '@types/estree@1.0.7':
     resolution: {integrity: sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==}
@@ -11394,9 +11397,9 @@ packages:
       webpack-cli:
         optional: true
 
-  webpack-manifest-plugin@5.0.1:
-    resolution: {integrity: sha512-xTlX7dC3hrASixA2inuWFMz6qHsNi6MT3Uiqw621sJjRTShtpMjbDYhPPZBwWUKdIYKIjSq9em6+uzWayf38aQ==}
-    engines: {node: '>=14'}
+  webpack-manifest-plugin@6.0.1:
+    resolution: {integrity: sha512-R0p/8/IJVY5hIhQtkeWUQugalVpIwojc09eb14zGq+oiZOCmN5paAz2NBJfd+6v9eBbxAS3YMjc2ov8UMlCDLQ==}
+    engines: {node: '>=20.19.0'}
     peerDependencies:
       webpack: ^5.75.0
 
@@ -11407,12 +11410,12 @@ packages:
   webpack-sources@1.4.3:
     resolution: {integrity: sha512-lgTS3Xhv1lCOKo7SA5TjKXMjpSM4sBjNV5+q2bqesbSPs5FjGmU6jjtBSkX9b4qW87vDIsCIlUPOEhbZrMdjeQ==}
 
-  webpack-sources@2.3.1:
-    resolution: {integrity: sha512-y9EI9AO42JjEcrTJFOYmVywVZdKVUfOvDUPsJea5GIr1JOEGFVqwlY2K098fFoIjOkDzHn2AjRvM8dsBZu+gCA==}
-    engines: {node: '>=10.13.0'}
-
   webpack-sources@3.4.0:
     resolution: {integrity: sha512-gHwIe1cgBvvfLeu1Yz/dcFpmHfKDVxxyqI+kzqmuxZED81z2ChxpyqPaWcNqigPywhaEke7AjSGga+kxY55gjQ==}
+    engines: {node: '>=10.13.0'}
+
+  webpack-sources@3.6.0:
+    resolution: {integrity: sha512-EIMmPVvNI0CYXyRPp34F2Qk7W37/BZVZIofS6LAUnrNjCVahS+hO4mxwFJDjQjODTGZDtVzLYoN2+1dYkhk9qA==}
     engines: {node: '>=10.13.0'}
 
   webpack@5.106.2:
@@ -15807,6 +15810,8 @@ snapshots:
 
   '@types/estree@0.0.39': {}
 
+  '@types/estree@1.0.10': {}
+
   '@types/estree@1.0.7': {}
 
   '@types/estree@1.0.9': {}
@@ -17975,7 +17980,7 @@ snapshots:
   eslint-scope@9.1.2:
     dependencies:
       '@types/esrecurse': 4.3.1
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       esrecurse: 4.3.0
       estraverse: 5.3.0
 
@@ -17994,7 +17999,7 @@ snapshots:
       '@humanfs/node': 0.16.8
       '@humanwhocodes/module-importer': 1.0.1
       '@humanwhocodes/retry': 0.4.3
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       ajv: 6.15.0
       cross-spawn: 7.0.6
       debug: 4.4.3(supports-color@8.1.1)
@@ -22538,11 +22543,11 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  webpack-manifest-plugin@5.0.1(webpack@5.106.2):
+  webpack-manifest-plugin@6.0.1(webpack@5.106.2):
     dependencies:
       tapable: 2.3.3
       webpack: 5.106.2(esbuild@0.28.2)(webpack-cli@7.2.3)
-      webpack-sources: 2.3.1
+      webpack-sources: 3.6.0
 
   webpack-merge@6.0.1:
     dependencies:
@@ -22555,12 +22560,9 @@ snapshots:
       source-list-map: 2.0.1
       source-map: 0.6.1
 
-  webpack-sources@2.3.1:
-    dependencies:
-      source-list-map: 2.0.1
-      source-map: 0.6.1
-
   webpack-sources@3.4.0: {}
+
+  webpack-sources@3.6.0: {}
 
   webpack@5.106.2(esbuild@0.28.2)(webpack-cli@7.2.3):
     dependencies:
