@@ -53,16 +53,3 @@ jobs:
         with:
           version: pnpm ci:version
           publish: pnpm release
-          createGithubReleases: false
-
-      # The action only pushes tags when it creates GitHub releases. Keep the
-      # maintenance tags, including after a partial publish, without changing
-      # GitHub's latest release.
-      - name: Push maintenance release tags
-        if: ${{ !cancelled() && steps.changesets.outputs.published == 'true' }}
-        env:
-          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
-        run: |
-          while IFS= read -r tag; do
-            git push origin "refs/tags/$tag"
-          done < <(jq -r '.[] | "\(.name)@\(.version)"' <<< "$PUBLISHED_PACKAGES")
