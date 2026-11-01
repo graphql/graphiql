@@ -1536,8 +1536,8 @@ importers:
         specifier: ^1.3.0
         version: 1.3.0(@types/node@24.19.2)
       vscode-oniguruma:
-        specifier: ^1.7.0
-        version: 1.7.0
+        specifier: ^2.0.1
+        version: 2.0.1
       vscode-textmate:
         specifier: ^9.0.0
         version: 9.3.2
@@ -11592,8 +11592,8 @@ packages:
     resolution: {integrity: sha512-eUt8f1z2N2IEUDBsKaNapkz7jl5QpskN2Y0G01T/ItMxBxw1fJwvtySGB9QMecatne8jFIWJGWI61dWjyTLQsw==}
     hasBin: true
 
-  vscode-oniguruma@1.7.0:
-    resolution: {integrity: sha512-L9WMGRfrjOhgHSdOYgCt/yRMsXzLDJSL7BPrOZt73gU0iWO4mpqzqQzOz5srxqTvMBaR0XZTSrVWo4j55Rc6cA==}
+  vscode-oniguruma@2.0.1:
+    resolution: {integrity: sha512-poJU8iHIWnC3vgphJnrLZyI3YdqRlR27xzqDmpPXYzA93R4Gk8z7T6oqDzDoHjoikA2aS82crdXFkjELCdJsjQ==}
 
   vscode-textmate@9.3.2:
     resolution: {integrity: sha512-n2uGbUcrjhUEBH16uGA0TvUfhWwliFZ1e3+pTjrkim1Mt7ydB41lV08aUvsi70OlzDWp6X7Bx3w/x3fAXIsN0Q==}
@@ -22910,7 +22910,7 @@ snapshots:
     dependencies:
       vscode-languageserver-protocol: 3.17.3
 
-  vscode-oniguruma@1.7.0: {}
+  vscode-oniguruma@2.0.1: {}
 
   vscode-textmate@9.3.2: {}
 
