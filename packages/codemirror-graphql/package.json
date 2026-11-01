@@ -44,7 +44,7 @@
     "graphql": "^16.11.0 || ^17.0.0"
   },
   "dependencies": {
-    "@types/codemirror": "^0.0.90",
+    "@types/codemirror": "^5.60.18",
     "graphql-language-service": "6.0.0"
   },
   "devDependencies": {

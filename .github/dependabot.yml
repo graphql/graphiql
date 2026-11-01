@@ -14,7 +14,6 @@ updates:
         exclude-patterns:
           - '@changesets/changelog-github'
           - '@rolldown/plugin-babel'
-          - '@types/codemirror'
           - '@types/copy'
           - copy
           - esbuild
