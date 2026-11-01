@@ -1,5 +1,6 @@
 import { defineConfig, type PluginOption } from 'vite';
-import react from '@vitejs/plugin-react';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
+import babel from '@rolldown/plugin-babel';
 import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-compiler';
 import dts from 'vite-plugin-dts';
 import { reactCompilerConfig as $reactCompilerConfig } from '../graphiql-react/vite.config.mjs';
@@ -16,10 +17,10 @@ export const reactCompilerConfig: Partial<ReactCompilerConfig> = {
 };
 
 export const plugins: PluginOption[] = [
-  react({
-    babel: {
-      plugins: [['babel-plugin-react-compiler', reactCompilerConfig]],
-    },
+  react(),
+  babel({
+    include: /\.[jt]sx?(?:$|\?)/,
+    presets: [reactCompilerPreset(reactCompilerConfig)],
   }),
   dts({
     compilerOptions: { rootDir: 'src' },
