@@ -160,8 +160,8 @@ importers:
         specifier: ^6.0.0
         version: link:../../packages/graphiql
       graphql:
-        specifier: ^16.14.2
-        version: 16.14.2
+        specifier: ^17.0.2
+        version: 17.0.2
       react:
         specifier: 19.3.1
         version: 19.3.1
@@ -252,11 +252,11 @@ importers:
         specifier: ^6.0.0
         version: link:../../packages/graphiql
       graphql:
-        specifier: ^16.14.2
-        version: 16.14.2
+        specifier: ^17.0.2
+        version: 17.0.2
       graphql-ws:
         specifier: ^6
-        version: 6.4.1(graphql@16.14.2)(ws@8.22.0)
+        version: 6.4.1(graphql@17.0.2)(ws@8.22.0)
       react:
         specifier: 19.3.1
         version: 19.3.1
@@ -322,8 +322,8 @@ importers:
         specifier: ^1.0.0
         version: link:../../packages/graphiql-toolkit
       graphql:
-        specifier: ^16.14.2
-        version: 16.14.2
+        specifier: ^17.0.2
+        version: 17.0.2
       jsonc-parser:
         specifier: ^3
         version: 3.3.1
@@ -362,8 +362,8 @@ importers:
         specifier: ^1.0.0
         version: link:../../packages/graphiql-toolkit
       graphql:
-        specifier: ^16.14.2
-        version: 16.14.2
+        specifier: ^17.0.2
+        version: 17.0.2
       graphql-language-service:
         specifier: ^6.0.0
         version: link:../../packages/graphql-language-service
@@ -393,8 +393,8 @@ importers:
   examples/monaco-graphql-webpack:
     dependencies:
       graphql:
-        specifier: ^16.14.2
-        version: 16.14.2
+        specifier: ^17.0.2
+        version: 17.0.2
       graphql-language-service:
         specifier: ^6.0.0
         version: link:../../packages/graphql-language-service

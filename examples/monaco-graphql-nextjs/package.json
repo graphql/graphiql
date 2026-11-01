@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=20.9.0"
+    "node": "^22.0.0 || >=24.0.0"
   },
   "scripts": {
     "types:check": "next typegen && tsc --noEmit",
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@graphiql/toolkit": "^1.0.0",
-    "graphql": "^16.14.2",
+    "graphql": "^17.0.2",
     "jsonc-parser": "^3",
     "monaco-editor": "0.57.0",
     "monaco-graphql": "^2.0.0",
