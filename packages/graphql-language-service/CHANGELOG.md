@@ -1,5 +1,17 @@
 # graphql-language-service
 
+## 6.0.0
+
+### Major Changes
+
+- [#4478](https://github.com/graphql/graphiql/pull/4478) [`066528a`](https://github.com/graphql/graphiql/commit/066528a6bb7706d685536888d7b5549d6fd5a109) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - GraphQL.js 15 and 16.0–16.10 are no longer supported peer dependencies. The supported range is `^16.11.0 || ^17.0.0`. GraphQL.js 16.11 fixes OneOf input validation for nullable variables and tightens input-object coercion to reject arrays, giving GraphiQL 6 a correct baseline for OneOf inputs. Upgrade `graphql` before upgrading these packages.
+
+- [#4635](https://github.com/graphql/graphiql/pull/4635) [`3d368ba`](https://github.com/graphql/graphiql/commit/3d368ba8747ac2ad0bd73c8bf6f46f952122cfc8) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Remove the deprecated `graphql` executable. Install `graphql-language-service-cli` and use `graphql-lsp` for the language server CLI.
+
+### Patch Changes
+
+- [#4590](https://github.com/graphql/graphiql/pull/4590) [`5affc68`](https://github.com/graphql/graphiql/commit/5affc680b14dc04feb02fc8713a18dfdd56b4a81) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Remove the CommonJS-only `nullthrows` dependency and replace `picomatch-browser` with an ESM-compatible glob matcher.
+
 ## 6.0.0-rc.1
 
 ### Major Changes
