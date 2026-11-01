@@ -9,8 +9,8 @@
   },
   "scripts": {
     "types:check": "tsc --noEmit",
-    "build": "pnpm types:check && cm-buildhelper src/index.ts",
-    "prepack": "tsc --noEmit && cm-buildhelper src/index.ts",
+    "build": "pnpm types:check && node build.mjs",
+    "prepack": "tsc --noEmit && node build.mjs",
     "test": "vitest run"
   },
   "main": "dist/index.cjs",
@@ -26,7 +26,6 @@
   },
   "devDependencies": {
     "@codemirror/autocomplete": "^6.0.0",
-    "@codemirror/buildhelper": "^0.1.16",
     "@codemirror/language": "^6.0.0",
     "@codemirror/lint": "^6.9.7",
     "@codemirror/state": "^6.0.0",
@@ -35,6 +34,7 @@
     "@lezer/generator": "^1.1.0",
     "@lezer/highlight": "^1.0.0",
     "@lezer/lr": "^1.0.0",
+    "@marijn/buildtool": "^1.2.1",
     "@typescript/native": "npm:typescript@7.1.0-beta",
     "graphql": "^17.0.2",
     "typescript": "^5.8.0"
