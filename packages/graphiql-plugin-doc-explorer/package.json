@@ -70,7 +70,7 @@
     "react-dom": "^19.1.0",
     "storybook": "^10.6.1",
     "vite": "^8.2.4",
-    "vite-plugin-dts": "^4.5.3",
+    "vite-plugin-dts": "^5.1.2",
     "vitest-canvas-mock": "^1.2.0",
     "typescript": "npm:@typescript/typescript6@^6.0.2"
   }

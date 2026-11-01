@@ -57,7 +57,7 @@ export const plugins: PluginOption[] = [
   dts({
     compilerOptions: { rootDir: 'src' },
     include: ['src/**'],
-    outDir: ['dist'],
+    outDirs: ['dist'],
     exclude: [
       '**/*.spec.{ts,tsx}',
       '**/*.test.{ts,tsx}',
