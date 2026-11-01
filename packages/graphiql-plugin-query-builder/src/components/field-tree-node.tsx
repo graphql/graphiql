@@ -9,7 +9,7 @@ import {
   type GraphQLInterfaceType,
   type GraphQLObjectType,
 } from 'graphql';
-import { type FC, useState } from 'react';
+import { type FC } from 'react';
 import {
   getFieldArgValues,
   getFieldArgVariables,
@@ -47,8 +47,11 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
     onRemoveFragmentSpread,
   } = useFieldTreeContext();
 
-  const [expanded, setExpanded] = useState(false);
   const fullPath = [...path, fieldSegment(field.name)];
+  const { expanded, setExpanded, flash, current, nodeRef } = useCursorReveal(
+    fullPath,
+    cursorPath,
+  );
   const argValues = getFieldArgValues(doc, fullPath, target);
   const argVariables = getFieldArgVariables(doc, fullPath, target);
 
@@ -90,12 +93,6 @@ export const FieldTreeNode: FC<FieldTreeNodeProps> = ({ field, path }) => {
     onExtractFragment &&
     expanded &&
     hasExtractableSelection,
-  );
-
-  const { flash, current, nodeRef } = useCursorReveal(
-    fullPath,
-    cursorPath,
-    setExpanded,
   );
 
   function handleExpand() {

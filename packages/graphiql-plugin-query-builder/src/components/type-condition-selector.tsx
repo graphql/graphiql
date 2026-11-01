@@ -7,7 +7,7 @@ import {
   type GraphQLObjectType,
   type GraphQLSchema,
 } from 'graphql';
-import { type FC, useEffect, useState } from 'react';
+import { type FC, useState } from 'react';
 import {
   inlineFragmentSegment,
   isInlineFragmentPresent,
@@ -66,21 +66,10 @@ export const TypeConditionSelector: FC<TypeConditionSelectorProps> = ({
   const { doc, schema, target, cursorPath } = useFieldTreeContext();
   // Whether the document currently has a type condition selected under this
   // field. Recomputed each render so a fragment added after mount can open the
-  // section (see the effect below).
+  // section.
   const hasSelectedCondition = (
     schema ? applicableTypeConditions(abstractType, schema) : []
   ).some(t => isInlineFragmentPresent(doc, fieldPath, t.name, target));
-  const [expanded, setExpanded] = useState(hasSelectedCondition);
-
-  // Open the section when a type condition becomes selected in the document.
-  // Only opens, never force-closes, so the user can still collapse it manually.
-  useEffect(() => {
-    if (hasSelectedCondition) {
-      // oxlint-disable-next-line react/set-state-in-effect -- Reveal changes from the external editor without overriding manual collapse.
-      setExpanded(true);
-    }
-  }, [hasSelectedCondition]);
-
   // Open the section when the editor cursor sits inside one of its type
   // conditions, so the reveal can cascade down to a field nested in a
   // `... on TypeName`. (A condition contributes an inlineFragment path segment
@@ -91,12 +80,29 @@ export const TypeConditionSelector: FC<TypeConditionSelectorProps> = ({
     cursorPath.length > fieldPath.length &&
     fieldPath.every((seg, i) => segmentsEqual(cursorPath[i]!, seg)) &&
     cursorPath[fieldPath.length]?.kind === 'inlineFragment';
-  useEffect(() => {
-    if (cursorInCondition) {
-      // oxlint-disable-next-line react/set-state-in-effect -- Reveal changes from the external editor without overriding manual collapse.
+  const [expanded, setExpanded] = useState(
+    hasSelectedCondition || cursorInCondition,
+  );
+  const [previousReveal, setPreviousReveal] = useState({
+    hasSelectedCondition,
+    cursorPath,
+    cursorInCondition,
+  });
+  if (
+    previousReveal.hasSelectedCondition !== hasSelectedCondition ||
+    previousReveal.cursorPath !== cursorPath ||
+    previousReveal.cursorInCondition !== cursorInCondition
+  ) {
+    setPreviousReveal({ hasSelectedCondition, cursorPath, cursorInCondition });
+    if (
+      (hasSelectedCondition && !previousReveal.hasSelectedCondition) ||
+      (cursorInCondition &&
+        (!previousReveal.cursorInCondition ||
+          previousReveal.cursorPath !== cursorPath))
+    ) {
       setExpanded(true);
     }
-  }, [cursorPath, cursorInCondition]);
+  }
 
   if (!schema) {
     return null;
@@ -195,12 +201,10 @@ const TypeConditionEntry: FC<TypeConditionEntryProps> = ({
 }) => {
   const { cursorPath, onAddInlineFragment, onRemoveInlineFragment } =
     useFieldTreeContext();
-  const [expanded, setExpanded] = useState(false);
   const fragmentPath = [...fieldPath, inlineFragmentSegment(typeName)];
-  const { flash, current, nodeRef } = useCursorReveal(
+  const { expanded, setExpanded, flash, current, nodeRef } = useCursorReveal(
     fragmentPath,
     cursorPath,
-    setExpanded,
   );
 
   function handleToggle() {

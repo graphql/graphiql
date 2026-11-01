@@ -5,7 +5,7 @@ import {
   useGraphiQL,
 } from '@graphiql/react';
 import { OperationTypeNode } from 'graphql';
-import { type FC, useEffect, useState } from 'react';
+import { type FC, useState } from 'react';
 import { countSelectedFields } from '../lib/schema-walk';
 import { FragmentSection } from './fragment-section';
 import { FragmentEditor } from './fragment-editor';
@@ -41,10 +41,11 @@ export const QueryBuilder: FC = () => {
   const [manualExpanded, setManualExpanded] = useState<Record<string, boolean>>(
     {},
   );
-  useEffect(() => {
-    // oxlint-disable-next-line react/set-state-in-effect -- Reset local overrides when the external editor changes operation.
+  const [previousOpKind, setPreviousOpKind] = useState(activeOpKind);
+  if (activeOpKind !== previousOpKind) {
+    setPreviousOpKind(activeOpKind);
     setManualExpanded({});
-  }, [activeOpKind]);
+  }
 
   const header = (
     <PanelHeader

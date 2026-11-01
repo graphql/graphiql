@@ -13,7 +13,6 @@ import { segmentsEqual, type PathSegment } from '../lib/ast-path';
 export function useCursorReveal(
   fullPath: PathSegment[],
   cursorPath: PathSegment[] | undefined,
-  setExpanded: (value: boolean) => void,
 ) {
   const onCursorPath =
     cursorPath !== undefined &&
@@ -23,17 +22,29 @@ export function useCursorReveal(
   const isTarget = onCursorPath && cursorPath.length === fullPath.length;
 
   const nodeRef = useRef<HTMLDivElement>(null);
-  const [flash, setFlash] = useState(false);
+  const [expanded, setExpanded] = useState(isAncestor);
+  const [previousCursor, setPreviousCursor] = useState({
+    path: cursorPath,
+    isAncestor,
+    isTarget,
+  });
+  const [expiredCursorPath, setExpiredCursorPath] = useState<PathSegment[]>();
+  const flash = isTarget && expiredCursorPath !== cursorPath;
 
-  // Re-assert on every cursor move (depend on the `cursorPath` array identity,
-  // not just `isAncestor`): otherwise a node that's already an ancestor when it
-  // gets collapsed never re-expands as the cursor moves deeper, since
-  // `isAncestor` stays true and the effect wouldn't re-run.
-  useEffect(() => {
+  // Manual collapse lasts until the next cursor event, even on the same field.
+  if (
+    cursorPath !== previousCursor.path ||
+    isAncestor !== previousCursor.isAncestor ||
+    isTarget !== previousCursor.isTarget
+  ) {
+    setPreviousCursor({ path: cursorPath, isAncestor, isTarget });
     if (isAncestor) {
       setExpanded(true);
     }
-  }, [cursorPath, isAncestor, setExpanded]);
+    if (isTarget && !previousCursor.isTarget) {
+      setExpiredCursorPath(undefined);
+    }
+  }
 
   // Depend on the `cursorPath` array identity, not its contents: the editor
   // hands us a fresh array on every cursor event, so re-placing the cursor on
@@ -42,8 +53,6 @@ export function useCursorReveal(
     if (!isTarget) {
       return;
     }
-    // oxlint-disable-next-line react/set-state-in-effect -- Restart the highlight timer for each external editor cursor event.
-    setFlash(true);
     // Scroll the header row into view, not the whole node. For a composite field
     // the node also wraps its expanded children, so centering the node would
     // center that tall subtree and leave the field's own row off-center. The
@@ -51,9 +60,9 @@ export function useCursorReveal(
     // vertically so it doesn't land under the sticky operation header.
     const row = nodeRef.current?.firstElementChild ?? nodeRef.current;
     row?.scrollIntoView({ block: 'center' });
-    const timer = setTimeout(() => setFlash(false), 700);
+    const timer = setTimeout(() => setExpiredCursorPath(cursorPath), 700);
     return () => clearTimeout(timer);
   }, [cursorPath, isTarget]);
 
-  return { flash, current: isTarget, nodeRef };
+  return { expanded, setExpanded, flash, current: isTarget, nodeRef };
 }
