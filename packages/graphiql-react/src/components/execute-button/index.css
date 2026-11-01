@@ -56,15 +56,14 @@
   flex-shrink: 0;
   width: 34px;
   padding: 0;
-  background: oklch(var(--accent-graphql));
-  border-color: oklch(var(--accent-graphql));
+  background: oklch(var(--btn-primary));
+  border-color: oklch(var(--btn-primary-border));
   color: #fff;
 }
 
 .graphiql-execute-button
   button.graphiql-execute-button-primary:hover:not(:disabled) {
-  background: color-mix(in srgb, oklch(var(--accent-graphql)) 85%, #000);
-  border-color: color-mix(in srgb, oklch(var(--accent-graphql)) 85%, #000);
+  background: oklch(var(--btn-primary-border));
 }
 
 .graphiql-execute-button .graphiql-execute-button-operation {
@@ -118,11 +117,6 @@
 .graphiql-execute-button .graphiql-execute-button-segment:focus-visible {
   outline: 2px solid oklch(var(--accent-blue));
   outline-offset: -2px;
-}
-
-/* Keep the focus ring against the surrounding surface for contrast. */
-.graphiql-execute-button .graphiql-execute-button-primary:focus-visible {
-  outline-offset: 2px;
 }
 
 .graphiql-execute-button-menu-item {

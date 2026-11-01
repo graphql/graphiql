@@ -60,8 +60,8 @@
   --accent-purple: 80.05% 0.127 306; /* #D2A8FF */
   --accent-pink: 73.45% 0.163 26; /* #FF7B72 */
 
-  /* Run and selected controls use the GraphQL logo pink in both themes. */
-  --accent-graphql: 60.115561% 0.25182319 348.884443; /* #E10098 */
+  /* Selected controls use the GraphQL logo pink in both themes. */
+  --selection-accent: 60.115561% 0.25182319 348.884443; /* #E10098 */
 
   /* Type-name categories (see Accents comment). Public retheming surface. */
   --type-composite: var(--accent-orange);
