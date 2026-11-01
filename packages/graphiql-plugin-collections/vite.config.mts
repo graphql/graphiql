@@ -13,6 +13,7 @@ export default defineConfig({
       },
     }),
     dts({
+      compilerOptions: { rootDir: 'src' },
       include: ['src/**'],
       exclude: [
         '**/*.spec.{ts,tsx}',

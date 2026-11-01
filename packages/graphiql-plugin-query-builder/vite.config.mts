@@ -22,6 +22,7 @@ export const plugins: PluginOption[] = [
     },
   }),
   dts({
+    compilerOptions: { rootDir: 'src' },
     include: ['src/**'],
     exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],
   }),

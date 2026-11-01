@@ -93,7 +93,7 @@
     "@types/node": "^24",
     "@types/vscode": "1.62.0",
     "@types/ws": "8.2.2",
-    "@typescript/native": "npm:typescript@7.1.0-beta",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "@vscode/vsce": "^3.9.2",
     "esbuild": "0.28.2",
     "ovsx": "0.8.3"
@@ -111,7 +111,7 @@
     "nullthrows": "1.1.1",
     "svelte": "^5.55.7",
     "svelte2tsx": "^0.7.61",
-    "typescript": "^5.8.0",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
     "wonka": "^6.3.6",
     "ws": "8.21.0"
   }

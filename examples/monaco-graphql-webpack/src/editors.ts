@@ -41,7 +41,7 @@ export function createEditors() {
     Uri.file('/1/variables.json'),
   );
 
-  const variablesEditor = editor.create(document.getElementById('variables'), {
+  const variablesEditor = editor.create(document.getElementById('variables')!, {
     model: variablesModel,
     language: 'json',
     formatOnPaste: true,
@@ -59,7 +59,7 @@ export function createEditors() {
     Uri.file('/1/operation.graphql'),
   );
 
-  const operationEditor = editor.create(document.getElementById('operation'), {
+  const operationEditor = editor.create(document.getElementById('operation')!, {
     model: operationModel,
     formatOnPaste: true,
     formatOnType: true,
@@ -74,7 +74,7 @@ export function createEditors() {
     Uri.file('/1/schema.graphqls'),
   );
 
-  const schemaEditor = editor.create(document.getElementById('schema-sdl'), {
+  const schemaEditor = editor.create(document.getElementById('schema-sdl')!, {
     model: schemaModel,
     formatOnPaste: true,
     formatOnType: true,
@@ -89,7 +89,7 @@ export function createEditors() {
     Uri.file('/1/results.json'),
   );
 
-  const resultsEditor = editor.create(document.getElementById('results'), {
+  const resultsEditor = editor.create(document.getElementById('results')!, {
     model: resultsModel,
     language: 'json',
     theme: THEME,

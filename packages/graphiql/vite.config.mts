@@ -62,6 +62,7 @@ export default defineConfig({
   plugins: [
     ...plugins,
     dts({
+      compilerOptions: { rootDir: 'src' },
       include: ['src/**'],
       outDir: ['dist'],
       exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],

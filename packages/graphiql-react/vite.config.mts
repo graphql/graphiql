@@ -55,6 +55,7 @@ export const plugins: PluginOption[] = [
     },
   }),
   dts({
+    compilerOptions: { rootDir: 'src' },
     include: ['src/**'],
     outDir: ['dist'],
     exclude: [

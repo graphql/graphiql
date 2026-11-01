@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES2022",
     "lib": ["es2021", "dom"],
     "types": ["cypress", "node"],
     "strictNullChecks": true,
