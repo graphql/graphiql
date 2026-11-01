@@ -65,7 +65,7 @@
     "@babel/register": "^8.0.6",
     "@changesets/changelog-github": "1.0.1",
     "@changesets/cli": "^3.0.3",
-    "@types/codemirror": "^0.0.90",
+    "@types/codemirror": "^5.60.18",
     "@types/copy": "^0.3.1",
     "@types/node": "^24",
     "@types/ws": "8.18.2",

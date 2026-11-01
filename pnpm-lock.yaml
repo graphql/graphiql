@@ -66,8 +66,8 @@ importers:
         specifier: ^3.0.3
         version: 3.0.3
       '@types/codemirror':
-        specifier: ^0.0.90
-        version: 0.0.90
+        specifier: ^5.60.18
+        version: 5.60.18
       '@types/copy':
         specifier: ^0.3.1
         version: 0.3.5
@@ -536,8 +536,8 @@ importers:
   packages/codemirror-graphql:
     dependencies:
       '@types/codemirror':
-        specifier: ^0.0.90
-        version: 0.0.90
+        specifier: ^5.60.18
+        version: 5.60.18
       graphql-language-service:
         specifier: 6.0.0
         version: link:../graphql-language-service
@@ -5952,8 +5952,8 @@ packages:
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
 
-  '@types/codemirror@0.0.90':
-    resolution: {integrity: sha512-8Z9+tSg27NPRGubbUPUCrt5DDG/OWzLph5BvcDykwR5D7RyZh5mhHG0uS1ePKV1YFCA+/cwc4Ey2AJAEFfV3IA==}
+  '@types/codemirror@5.60.18':
+    resolution: {integrity: sha512-aSBOPXH2PXRYixxUpVP1sJ5+S0vEfKDvR+lABZ7Kju/9Qb0SSbZk72NihWaKoQbANyibs92q4DBfYasywxnNkA==}
 
   '@types/connect-history-api-fallback@1.5.4':
     resolution: {integrity: sha512-n6Cr2xS1h4uAulPRdlw6Jl6s1oG8KrVilPN2yUITEs+K48EzMJJ3W1xy8K5eWuFvjp3R74AOIGSmp2UfBJ8HFw==}
@@ -16409,7 +16409,7 @@ snapshots:
       '@types/deep-eql': 4.0.2
       assertion-error: 2.0.1
 
-  '@types/codemirror@0.0.90':
+  '@types/codemirror@5.60.18':
     dependencies:
       '@types/tern': 0.23.9
 
