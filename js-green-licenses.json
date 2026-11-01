@@ -8,6 +8,7 @@
     // BlueOak-1.0.0 — permissive, not in jsgl's default greenLicenses
     "glob",
     "minimatch",
+    "@isaacs/nonrecursive-glob-match", // cspell:ignore nonrecursive
     "minipass",
     "path-scurry",
     "lru-cache",
