@@ -3,8 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - main
-      - release/*
+      - 5.x.x
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -31,10 +30,6 @@ jobs:
       # To enable trusted publishing
       id-token: write
 
-    outputs:
-      vscode-published: ${{ steps.vscode.outputs.published }}
-      published-packages: ${{ steps.changesets.outputs.publishedPackages }}
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
@@ -57,73 +52,16 @@ jobs:
         uses: changesets/action@v1
         with:
           version: pnpm ci:version
-          # This expects you to have a script called release which does a build for your packages and calls changeset publish
           publish: pnpm release
+          createGithubReleases: false
 
-      - name: Note VSCode extension release
-        id: vscode
-        if: ${{ steps.changesets.outputs.published == 'true' && contains(steps.changesets.outputs.publishedPackages, '"name":"vscode-graphql') }}
-        run: echo "published=true" >> "$GITHUB_OUTPUT"
-
-      - name: Build VSCode extension .vsix files
-        if: ${{ steps.vscode.outputs.published == 'true' }}
+      # The action only pushes tags when it creates GitHub releases. Keep the
+      # maintenance tags without changing GitHub's latest release.
+      - name: Push maintenance release tags
+        if: ${{ steps.changesets.outputs.published == 'true' }}
         env:
           PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
-        run: node scripts/release-vscode.mts build
-
-      - name: Attach VSCode .vsix files to GitHub Releases
-        if: ${{ steps.vscode.outputs.published == 'true' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
-        run: node scripts/release-vscode.mts attach
-
-      - name: Upload VSCode extension .vsix artifacts
-        if: ${{ steps.vscode.outputs.published == 'true' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: vscode-extensions
-          path: packages/vscode-graphql*/*.vsix
-          if-no-files-found: error
-
-  publish-vscode-extensions:
-    name: Publish to ${{ matrix.registry }}
-    needs: release
-    if: ${{ needs.release.outputs.vscode-published == 'true' }}
-    runs-on: ubuntu-latest
-    permissions: {}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - registry: VSCode Marketplace
-            command: publish-vsce
-          - registry: Open VSX Registry
-            command: publish-ovsx
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: '.node-version'
-          cache: pnpm
-
-      - run: pnpm install --frozen-lockfile
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: vscode-extensions
-          # `upload-artifact` strips the path prefix up to the first wildcard
-          # segment, so the artifact contains `vscode-graphql*/*.vsix` rather
-          # than `packages/vscode-graphql*/*.vsix`. Restore the `packages/`
-          # prefix here so the layout lines up with `vsixPath('vsix', …)` in
-          # the script.
-          path: vsix/packages
-
-      - name: Publish
-        env:
-          VSCE_PAT: ${{ secrets.VSCE_PAT }}
-          OVSX_PAT: ${{ secrets.OPEN_VSX_TOKEN }}
-          PUBLISHED_PACKAGES: ${{ needs.release.outputs.published-packages }}
-        run: node scripts/release-vscode.mts ${{ matrix.command }}
+        run: |
+          while IFS= read -r tag; do
+            git push origin "refs/tags/$tag"
+          done < <(jq -r '.[] | "\(.name)@\(.version)"' <<< "$PUBLISHED_PACKAGES")

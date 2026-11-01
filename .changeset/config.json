@@ -4,7 +4,7 @@
   "commit": false,
   "linked": [],
   "access": "public",
-  "baseBranch": "main",
+  "baseBranch": "5.x.x",
   "ignore": [
     "example-graphiql-vite",
     "example-graphiql-vite-react-router",

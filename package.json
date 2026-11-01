@@ -38,7 +38,7 @@
     "svgo": "svgo --pretty --indent 2 --eol lf --final-newline -r -f . --exclude node_modules",
     "svgo-check": "pnpm svgo && git diff --exit-code -- '*.svg'",
     "ci:version": "pnpm changeset version && pnpm install --no-frozen-lockfile && pnpm build && pnpm fix",
-    "release": "pnpm build && pnpm build-bundles && pnpm changeset publish",
+    "release": "pnpm build && pnpm build-bundles && pnpm changeset publish --tag latest-5",
     "repo:lint": "manypkg check",
     "repo:fix": "manypkg fix",
     "repo:resolve": "node scripts/set-resolution.mts",
