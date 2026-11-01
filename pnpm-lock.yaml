@@ -11,7 +11,7 @@ overrides:
   dompurify@3: ^3.4.17
   eslint: ^10.12.0
   postcss@8: ^8.5.23
-  vscode-languageserver-types: 3.17.3
+  vscode-languageserver-types: 3.18.5
   markdown-it: 15.0.3
   react: 19.3.1
   react-dom: 19.3.1
@@ -1245,8 +1245,8 @@ importers:
         specifier: ^3.1.2
         version: 3.1.2
       vscode-languageserver-types:
-        specifier: 3.17.3
-        version: 3.17.3
+        specifier: 3.18.5
+        version: 3.18.5
     devDependencies:
       '@types/benchmark':
         specifier: ^2.1.5
@@ -1370,8 +1370,8 @@ importers:
         specifier: ^8.0.1
         version: 8.1.0
       vscode-languageserver-types:
-        specifier: 3.17.3
-        version: 3.17.3
+        specifier: 3.18.5
+        version: 3.18.5
       vscode-uri:
         specifier: ^3.0.2
         version: 3.2.0
@@ -1423,8 +1423,8 @@ importers:
         specifier: ^8.3.5
         version: 8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)
       vscode-languageserver-types:
-        specifier: 3.17.3
-        version: 3.17.3
+        specifier: 3.18.5
+        version: 3.18.5
 
   packages/vscode-graphql:
     dependencies:
@@ -11428,8 +11428,8 @@ packages:
   vscode-languageserver-textdocument@1.0.16:
     resolution: {integrity: sha512-qeNEuOi9a3qkqRf7Gfez2WL2VwlBTLCNekHBGO9kxPVUp9XuY15yfTJ9jwvOwKI0I2MhUUfZq95NSp+LK1CLQg==}
 
-  vscode-languageserver-types@3.17.3:
-    resolution: {integrity: sha512-SYU4z1dL0PyIMd4Vj8YOqFvHu7Hz/enbWtpfnVbJHU4Nd1YNYx8u0ennumc6h48GQNeOLxmwySmnADouT/AuZA==}
+  vscode-languageserver-types@3.18.5:
+    resolution: {integrity: sha512-kPd6+JQNz3HMJvjKlqUxERSlZHAntl/aGpsk7ImwIh0ewDKDcjgAEyVSYciPiOJD3ftbK9IrfiqUeTZLSbCizw==}
 
   vscode-languageserver@8.1.0:
     resolution: {integrity: sha512-eUt8f1z2N2IEUDBsKaNapkz7jl5QpskN2Y0G01T/ItMxBxw1fJwvtySGB9QMecatne8jFIWJGWI61dWjyTLQsw==}
@@ -22357,21 +22357,21 @@ snapshots:
   vscode-languageserver-protocol@3.17.2:
     dependencies:
       vscode-jsonrpc: 8.0.2
-      vscode-languageserver-types: 3.17.3
+      vscode-languageserver-types: 3.18.5
 
   vscode-languageserver-protocol@3.17.3:
     dependencies:
       vscode-jsonrpc: 8.1.0
-      vscode-languageserver-types: 3.17.3
+      vscode-languageserver-types: 3.18.5
 
   vscode-languageserver-protocol@3.18.5:
     dependencies:
       vscode-jsonrpc: 10.0.0
-      vscode-languageserver-types: 3.17.3
+      vscode-languageserver-types: 3.18.5
 
   vscode-languageserver-textdocument@1.0.16: {}
 
-  vscode-languageserver-types@3.17.3: {}
+  vscode-languageserver-types@3.18.5: {}
 
   vscode-languageserver@8.1.0:
     dependencies:
