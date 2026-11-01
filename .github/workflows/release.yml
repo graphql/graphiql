@@ -3,7 +3,8 @@ name: Release
 on:
   push:
     branches:
-      - 5.x.x
+      - main
+      - '*.x.x'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -88,7 +89,7 @@ jobs:
   publish-vscode-extensions:
     name: Publish to ${{ matrix.registry }}
     needs: release
-    if: ${{ github.ref_name != '5.x.x' && needs.release.outputs.vscode-published == 'true' }}
+    if: false
     runs-on: ubuntu-latest
     permissions: {}
     strategy:
