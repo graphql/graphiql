@@ -6,11 +6,11 @@
 .graphiql-selection-item:is([aria-pressed='true'], [aria-checked='true']) {
   background: color-mix(
     in srgb,
-    oklch(var(--selection-accent)) 8%,
+    oklch(var(--accent-graphql)) 8%,
     oklch(var(--bg-elevated))
   );
   color: oklch(var(--fg-strong));
-  border-inline-start-color: oklch(var(--selection-accent));
+  border-inline-start-color: oklch(var(--accent-graphql));
   border-start-start-radius: 0;
   border-end-start-radius: 0;
 
@@ -18,7 +18,7 @@
   &:hover {
     background: color-mix(
       in srgb,
-      oklch(var(--selection-accent)) 12%,
+      oklch(var(--accent-graphql)) 12%,
       oklch(var(--bg-elevated))
     );
   }
