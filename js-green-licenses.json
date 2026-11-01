@@ -10,6 +10,7 @@
     "minimatch",
     "@isaacs/nonrecursive-glob-match", // cspell:ignore nonrecursive
     "minipass",
+    "minipass-flush",
     "path-scurry",
     "lru-cache",
     "rimraf",
