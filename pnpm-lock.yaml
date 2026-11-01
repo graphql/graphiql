@@ -310,8 +310,8 @@ importers:
         specifier: ^6
         version: 6.1.0(webpack-cli@7.2.3)(webpack@5.112.2)
       webpack-manifest-plugin:
-        specifier: ^5
-        version: 5.0.1(webpack@5.112.2)
+        specifier: ^6.0.1
+        version: 6.0.1(webpack@5.112.2)
       workbox-webpack-plugin:
         specifier: ^7
         version: 7.4.1(@types/babel__core@7.20.5)(webpack@5.112.2)
@@ -11538,9 +11538,9 @@ packages:
       webpack-cli:
         optional: true
 
-  webpack-manifest-plugin@5.0.1:
-    resolution: {integrity: sha512-xTlX7dC3hrASixA2inuWFMz6qHsNi6MT3Uiqw621sJjRTShtpMjbDYhPPZBwWUKdIYKIjSq9em6+uzWayf38aQ==}
-    engines: {node: '>=14'}
+  webpack-manifest-plugin@6.0.1:
+    resolution: {integrity: sha512-R0p/8/IJVY5hIhQtkeWUQugalVpIwojc09eb14zGq+oiZOCmN5paAz2NBJfd+6v9eBbxAS3YMjc2ov8UMlCDLQ==}
+    engines: {node: '>=20.19.0'}
     peerDependencies:
       webpack: ^5.75.0
 
@@ -11550,10 +11550,6 @@ packages:
 
   webpack-sources@1.4.3:
     resolution: {integrity: sha512-lgTS3Xhv1lCOKo7SA5TjKXMjpSM4sBjNV5+q2bqesbSPs5FjGmU6jjtBSkX9b4qW87vDIsCIlUPOEhbZrMdjeQ==}
-
-  webpack-sources@2.3.1:
-    resolution: {integrity: sha512-y9EI9AO42JjEcrTJFOYmVywVZdKVUfOvDUPsJea5GIr1JOEGFVqwlY2K098fFoIjOkDzHn2AjRvM8dsBZu+gCA==}
-    engines: {node: '>=10.13.0'}
 
   webpack-sources@3.6.0:
     resolution: {integrity: sha512-EIMmPVvNI0CYXyRPp34F2Qk7W37/BZVZIofS6LAUnrNjCVahS+hO4mxwFJDjQjODTGZDtVzLYoN2+1dYkhk9qA==}
@@ -22509,11 +22505,11 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  webpack-manifest-plugin@5.0.1(webpack@5.112.2):
+  webpack-manifest-plugin@6.0.1(webpack@5.112.2):
     dependencies:
       tapable: 2.3.3
       webpack: 5.112.2(esbuild@0.28.2)(postcss@8.5.32)(svgo@4.1.0)(webpack-cli@7.2.3)
-      webpack-sources: 2.3.1
+      webpack-sources: 3.6.0
 
   webpack-merge@6.0.1:
     dependencies:
@@ -22522,11 +22518,6 @@ snapshots:
       wildcard: 2.0.1
 
   webpack-sources@1.4.3:
-    dependencies:
-      source-list-map: 2.0.1
-      source-map: 0.6.1
-
-  webpack-sources@2.3.1:
     dependencies:
       source-list-map: 2.0.1
       source-map: 0.6.1
