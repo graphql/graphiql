@@ -7,7 +7,6 @@ const envConfig = {
 if (process.env.ESM) {
   envConfig.modules = false;
   envConfig.targets = { node: 'current' };
-  envConfig.bugfixes = true;
 }
 
 if (process.env.CDN) {
@@ -18,8 +17,14 @@ if (process.env.CDN) {
 module.exports = {
   presets: [
     [require.resolve('@babel/preset-env'), envConfig],
-    require.resolve('@babel/preset-react'),
-    require.resolve('@babel/preset-typescript'),
+    [
+      require.resolve('@babel/preset-react'),
+      { runtime: 'classic', development: false },
+    ],
+    [
+      require.resolve('@babel/preset-typescript'),
+      { onlyRemoveTypeImports: false },
+    ],
   ],
   env: {
     development: {
