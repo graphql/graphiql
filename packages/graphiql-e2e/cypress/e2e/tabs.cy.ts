@@ -1,4 +1,36 @@
 describe('Tabs', () => {
+  it('Should reorder tabs by dragging without changing the active tab', () => {
+    cy.visitGraphiQL({ query: 'query First {id}' });
+    cy.get('.graphiql-tab-button').eq(0).should('have.text', 'First');
+    cy.get('.graphiql-tab-add').click();
+    cy.typeInEditor('query Second {id}');
+    cy.get('.graphiql-tab-button').eq(1).should('have.text', 'Second');
+
+    cy.get('.graphiql-tab').then($tabs => {
+      const first = $tabs[0].getBoundingClientRect();
+      const second = $tabs[1].getBoundingClientRect();
+      const startX = first.left + first.width / 2;
+      const endX = second.right - 4;
+      const y = first.top + first.height / 2;
+
+      cy.wrap($tabs[0]).realMouseDown({ position: 'center' });
+      for (let step = 1; step <= 8; step++) {
+        cy.get('body').realMouseMove(startX + ((endX - startX) * step) / 8, y, {
+          keepMouseDownButton: 'left',
+        });
+      }
+      cy.get('body').realMouseUp({ x: endX, y });
+    });
+
+    cy.get('.graphiql-tab-button').eq(0).should('have.text', 'Second');
+    cy.get('.graphiql-tab-button').eq(1).should('have.text', 'First');
+    cy.get('.graphiql-tab-active .graphiql-tab-button').should(
+      'have.text',
+      'Second',
+    );
+    cy.assertHasValues({ query: 'query Second {id}' });
+  });
+
   it('Should store editor contents when switching between tabs', () => {
     cy.visitGraphiQL({ defaultQuery: '' });
 

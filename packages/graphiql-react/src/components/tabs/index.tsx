@@ -21,6 +21,7 @@ const TabContext = createContext({ isActive: false });
 const TabRoot = forwardRef<HTMLLIElement, TabProps>(
   ({ isActive, isDirty, value, children, className, ...props }, ref) => (
     <Reorder.Item
+      tabIndex={-1}
       {...props}
       ref={ref}
       value={value}
