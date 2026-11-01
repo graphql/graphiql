@@ -3,7 +3,7 @@
 ## Getting Started
 
 This is a working example of `monaco-editor` and `monaco-graphql` using
-Next.js 15 with Turbopack.
+Next.js 16 with Webpack. Node.js 20.9 or later is required.
 
 It shows how to use the latest monaco-editor with next.js and a custom
 webworker, without using `@monaco/react` or `monaco-editor-react`'s approach of
