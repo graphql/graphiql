@@ -94,9 +94,9 @@
     "@types/vscode": "1.62.0",
     "@types/ws": "8.18.2",
     "@typescript/native": "npm:typescript@^7.0.2",
-    "@vscode/vsce": "^3.9.2",
+    "@vscode/vsce": "^4.1.0",
     "esbuild": "0.28.2",
-    "ovsx": "0.8.3"
+    "ovsx": "^1.3.0"
   },
   "dependencies": {
     "@graphql-tools/code-file-loader": "8.1.43",
