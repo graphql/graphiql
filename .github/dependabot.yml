@@ -21,7 +21,6 @@ updates:
           - graphiql-explorer
           - json-schema
           - monaco-editor
-          - ovsx
           - oxfmt
           - regenerator-runtime
           - subscriptions-transport-ws

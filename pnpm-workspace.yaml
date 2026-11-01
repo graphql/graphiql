@@ -12,6 +12,8 @@ packages:
 minimumReleaseAge: 4320
 minimumReleaseAgeExclude:
   - monaco-editor@0.57.0
+  # Security fix for GHSA-xcx6-jx8p-x3h5; clears the 72-hour gate on Nov 1 at 22:16 UTC.
+  - '@azure/identity@4.14.1'
 engineStrict: true
 nodeLinker: isolated
 linkWorkspacePackages: true
@@ -31,8 +33,6 @@ allowBuilds:
 overrides:
   '@babel/traverse@7': ^7.29.10
   '@types/node': ^24
-  # Newer eligible releases introduce a separate authentication advisory.
-  '@vscode/vsce>@azure/identity': 4.13.0
   'start-server-and-test>wait-on': 7.2.0
   dompurify@3: ^3.4.17
   eslint: ^10.12.0

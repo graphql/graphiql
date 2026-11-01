@@ -90,10 +90,10 @@
     "wgutils": "^1.2.5"
   },
   "devDependencies": {
-    "@vscode/vsce": "^3.9.2",
+    "@vscode/vsce": "^4.1.0",
     "cspell": "^10.0.1",
     "jsdom": "^30.1.3",
-    "ovsx": "0.8.3",
+    "ovsx": "^1.3.0",
     "svgo": "^4.1.0"
   }
 }
