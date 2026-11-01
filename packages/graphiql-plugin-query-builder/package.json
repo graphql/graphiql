@@ -60,7 +60,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@typescript/native": "npm:typescript@^7.0.2",
+    "@typescript/native": "npm:typescript@7.1.0-beta",
     "@vitejs/plugin-react": "^5.2.0",
     "babel-plugin-react-compiler": "1.0.0",
     "graphql": "^17.0.2",

@@ -22,8 +22,7 @@
   width: var(--icon-button-size-md);
   height: var(--icon-button-size-md);
   border: 0;
-  border-left: 2px solid transparent;
-  margin-left: -2px;
+  margin-inline-start: -2px;
   background: transparent;
   color: oklch(var(--fg-subtle));
   border-radius: var(--radius-md);
@@ -45,13 +44,6 @@
 .graphiql-activity-rail-item:focus-visible {
   outline: 2px solid oklch(var(--accent-blue));
   outline-offset: 2px;
-}
-
-.graphiql-activity-rail-item.active {
-  background: oklch(var(--bg-subtle));
-  color: oklch(var(--fg-strong));
-  border-left-color: oklch(var(--accent-blue));
-  border-radius: 0 var(--radius-md) var(--radius-md) 0;
 }
 
 .graphiql-activity-rail-item svg {

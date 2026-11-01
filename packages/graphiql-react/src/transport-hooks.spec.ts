@@ -2,6 +2,7 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import type {
+  HttpMethod,
   Transport,
   TransportRequest,
   TransportResponse,
@@ -45,6 +46,53 @@ async function collect(
 }
 
 describe('TransportHookRegistry', () => {
+  it('forwards live method overrides and bound subscriptions', () => {
+    const registry = new TransportHookRegistry();
+    let override: HttpMethod | undefined;
+    const listeners = new Set<() => void>();
+    const transport: Transport = {
+      ...makeTransport(async () => makeResponse()),
+      get methodOverride() {
+        return override;
+      },
+      setMethod(method) {
+        expect(this).toBe(transport);
+        override = method;
+        this.method = method ?? 'POST';
+        listeners.forEach(listener => listener());
+      },
+      subscribe(listener) {
+        expect(this).toBe(transport);
+        listeners.add(listener);
+        return () => {
+          listeners.delete(listener);
+        };
+      },
+    };
+    const wrapped = registry.wrap(transport);
+    const listener = vi.fn(() => wrapped.methodOverride);
+    const unsubscribe = wrapped.subscribe!(listener);
+
+    wrapped.setMethod!('GET');
+    expect(wrapped.methodOverride).toBe('GET');
+    expect(listener).toHaveLastReturnedWith('GET');
+    transport.setMethod!();
+    expect(wrapped.methodOverride).toBeUndefined();
+    expect(listener.mock.results.at(-1)?.value).toBeUndefined();
+
+    unsubscribe();
+    wrapped.setMethod!('POST');
+    expect(listener).toHaveBeenCalledTimes(2);
+  });
+
+  it('preserves unobservable method policy on custom transports', () => {
+    const wrapped = new TransportHookRegistry().wrap(
+      makeTransport(async () => makeResponse()),
+    );
+    expect('methodOverride' in wrapped).toBe(false);
+    expect(wrapped.subscribe).toBeUndefined();
+  });
+
   it('forwards live transport state and binds methods to the original transport', () => {
     const registry = new TransportHookRegistry();
     const transport: Transport = {

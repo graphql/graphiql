@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { useState } from 'react';
+import type { HttpMethod } from '@graphiql/toolkit';
 import { parse, OperationDefinitionNode } from 'graphql';
 import { ExecuteButtonView } from './';
+import { Tooltip } from '../tooltip';
 
 function opsOf(source: string): OperationDefinitionNode[] {
   return parse(source).definitions.filter(
@@ -8,90 +11,119 @@ function opsOf(source: string): OperationDefinitionNode[] {
   );
 }
 
+const operations = opsOf(
+  'query GetViewer { viewer { id name } }\nmutation UpdateProfile { updateProfile { id name } }\nsubscription OnWidget { widgetAdded { id } }',
+);
+
 const meta: Meta<typeof ExecuteButtonView> = {
   title: 'Components/ExecuteButton',
   component: ExecuteButtonView,
   tags: ['autodocs'],
+  decorators: [
+    Story => (
+      <Tooltip.Provider>
+        <Story />
+      </Tooltip.Provider>
+    ),
+  ],
   args: {
     isFetching: false,
+    operations,
+    operationName: 'GetViewer',
+    queryMethod: 'QUERY',
+    supportedMethods: ['QUERY', 'POST', 'GET'],
+    isMethodAutomatic: true,
     onRun() {},
     onStop() {},
+    onSetOperationName() {},
+    onSetMethod() {},
   },
 };
 export default meta;
 
 type Story = StoryObj<typeof ExecuteButtonView>;
 
-/** A single operation: a plain pill, no caret. */
-export const Default: Story = {
-  args: {
-    operationName: null,
-  },
-  render: args => (
-    <ExecuteButtonView
-      {...args}
-      operations={opsOf('query GetWidget { widget { id } }')}
-    />
-  ),
-};
+export const Default: Story = {};
 
-/**
- * Several named operations: the button grows a caret opening the operation
- * picker for queries and mutations.
- */
+/** Selecting an operation only selects it; Run is a separate action. */
 export const MultipleOperationsWithPicker: Story = {
-  args: {
-    operationName: 'Beta',
-    onSetOperationName() {},
+  render(args) {
+    const [operationName, setOperationName] = useState('GetViewer');
+    const [methodOverride, setMethod] = useState<HttpMethod>();
+    const [isFetching, setFetching] = useState(false);
+    return (
+      <ExecuteButtonView
+        {...args}
+        operationName={operationName}
+        onSetOperationName={setOperationName}
+        queryMethod={methodOverride ?? 'QUERY'}
+        methodOverride={methodOverride}
+        isMethodAutomatic={methodOverride === undefined}
+        onSetMethod={setMethod}
+        isFetching={isFetching}
+        onRun={() => setFetching(true)}
+        onStop={() => setFetching(false)}
+      />
+    );
   },
-  render: args => (
-    <ExecuteButtonView
-      {...args}
-      operations={opsOf(
-        [
-          'query Alpha { widget { id } }',
-          'query Beta { gadget { id } }',
-          'mutation CreateWidget { createWidget { id } }',
-        ].join('\n\n'),
-      )}
-    />
-  ),
 };
 
-/** A mutation uses the same Run control as any other operation. */
+export const QueryOverride: Story = {
+  args: { queryMethod: 'GET', methodOverride: 'GET', isMethodAutomatic: false },
+};
+
+/** A mutation uses POST regardless of the stored query preference. */
 export const Mutation: Story = {
-  render: args => (
-    <ExecuteButtonView
-      {...args}
-      operations={opsOf('mutation CreateWidget { createWidget { id } }')}
-    />
-  ),
+  args: {
+    operationName: 'UpdateProfile',
+    queryMethod: 'GET',
+    methodOverride: 'GET',
+    isMethodAutomatic: false,
+  },
 };
 
-/** A request in flight: the button becomes Stop, and the picker is hidden. */
+export const SingleOperation: Story = {
+  args: { operations: opsOf('query GetViewer { viewer { id } }') },
+};
+
+export const SingleMethod: Story = {
+  args: { queryMethod: 'POST', supportedMethods: ['POST'] },
+};
+
+export const AnonymousOperation: Story = {
+  args: { operations: opsOf('{ viewer { id } }'), operationName: null },
+};
+
+export const LongOperationName: Story = {
+  args: {
+    operations: opsOf(
+      'query GetViewerWithOrganizationPermissions { viewer { id } }\nmutation UpdateProfile { updateProfile { id } }',
+    ),
+    operationName: 'GetViewerWithOrganizationPermissions',
+  },
+};
+
+/** A request in flight keeps its operation visible and disables selection. */
 export const Running: Story = {
-  args: {
-    isFetching: true,
-  },
-  render: args => (
-    <ExecuteButtonView
-      {...args}
-      operations={opsOf(
-        'query Alpha { widget { id } }\nquery Beta { gadget { id } }',
-      )}
-    />
-  ),
+  args: { isFetching: true },
 };
 
-/** An active subscription holds the button in its stop state. */
-export const Subscribed: Story = {
+export const Subscription: Story = {
   args: {
-    isSubscribed: true,
+    operations: opsOf('subscription OnWidget { widgetAdded { id } }'),
+    operationName: 'OnWidget',
   },
-  render: args => (
-    <ExecuteButtonView
-      {...args}
-      operations={opsOf('subscription OnWidget { widgetAdded { id } }')}
-    />
-  ),
+};
+
+export const Subscribed: Story = {
+  args: { ...Subscription.args, isSubscribed: true },
+};
+
+export const LegacyFetcher: Story = {
+  args: {
+    queryMethod: undefined,
+    supportedMethods: undefined,
+    onSetMethod: undefined,
+    isMethodAutomatic: false,
+  },
 };

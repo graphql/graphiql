@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/toolkit",
-  "version": "1.0.0-rc.0",
+  "version": "1.0.0-rc.1",
   "description": "Utility to build a fetcher for GraphiQL",
   "contributors": [
     "Rikki Schulte <rikki.schulte@gmail.com> (https://rikki.dev)"
@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@types/node": "^24",
-    "@typescript/native": "npm:typescript@^7.0.2",
+    "@typescript/native": "npm:typescript@7.1.0-beta",
     "graphql": "^17.0.2",
     "graphql-ws": "^6.3.0",
     "isomorphic-fetch": "^3.0.0",

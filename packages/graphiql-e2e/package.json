@@ -23,9 +23,9 @@
     "test:a11y:update": "start-server-and-test start:source 'http-get://localhost:8080/graphql?query={test { id }}|http://localhost:5173' cypress:a11y:update"
   },
   "dependencies": {
-    "@graphiql/react": "1.0.0-rc.3",
-    "@graphiql/toolkit": "1.0.0-rc.0",
-    "graphiql": "6.0.0-rc.2",
+    "@graphiql/react": "1.0.0-rc.4",
+    "@graphiql/toolkit": "1.0.0-rc.1",
+    "graphiql": "6.0.0-rc.3",
     "graphql": "^17.0.2",
     "graphql-ws": "^6.3.0",
     "react": "^19.1.0",
@@ -34,7 +34,7 @@
   "devDependencies": {
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@typescript/native": "npm:typescript@^7.0.2",
+    "@typescript/native": "npm:typescript@7.1.0-beta",
     "@vitejs/plugin-react": "^5.2.0",
     "axe-core": "^4",
     "babel-plugin-react-compiler": "1.0.0",
@@ -42,6 +42,7 @@
     "cross-env": "^10.1.0",
     "cypress": "^16.0.0",
     "cypress-axe": "^1",
+    "cypress-each": "^1.14.1",
     "cypress-real-events": "^1.15.1",
     "start-server-and-test": "^1.10.11",
     "typescript": "^5.8.0",

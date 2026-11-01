@@ -85,6 +85,12 @@ export type Transport = {
    */
   method: HttpMethod;
   /**
+   * Explicit query method override, or undefined for automatic selection.
+   * Custom transports may omit this property when their selection policy is
+   * not observable.
+   */
+  readonly methodOverride?: HttpMethod;
+  /**
    * Currently available HTTP methods. May change after discovery; an empty
    * list means the endpoint advertises no usable methods.
    */
@@ -96,6 +102,13 @@ export type Transport = {
    * Optional for custom transports that do not support method selection.
    */
   setMethod?: (method?: HttpMethod) => void;
+  /**
+   * Observe changes to the query method override or discovered capabilities.
+   * Read method, methodOverride and supportedMethods after each notification.
+   * Listener errors are logged without interrupting execution or other listeners.
+   * Returns a function that removes the listener.
+   */
+  subscribe?: (listener: () => void) => () => void;
   /**
    * Executes an operation and owns its routing and method safety policy.
    * Custom HTTP transports must prevent mutations over safe methods such as

@@ -38,6 +38,112 @@ afterEach(() => {
 });
 
 describe('HTTP method discovery', () => {
+  it('isolates failing observers and notifies a resubscribed listener once per change', async () => {
+    const { transport } = setup('GET, POST, QUERY');
+    const error = new Error('Observer failure');
+    const logged = vi.spyOn(console, 'error').mockImplementation(() => {});
+    transport.subscribe!(() => {
+      throw error;
+    });
+    let unsubscribe: () => void;
+    const rejoining = vi.fn(() => {
+      unsubscribe();
+      unsubscribe = transport.subscribe!(rejoining);
+    });
+    unsubscribe = transport.subscribe!(rejoining);
+    const observer = vi.fn(() => transport.method);
+    transport.subscribe!(observer);
+
+    await expect(transport.send({ query })).resolves.toMatchObject({
+      method: 'QUERY',
+    });
+    expect(rejoining).toHaveBeenCalledOnce();
+    expect(observer).toHaveLastReturnedWith('QUERY');
+    expect(logged).toHaveBeenCalledWith(
+      'GraphiQL: a transport state listener threw:',
+      error,
+    );
+
+    transport.setMethod!('GET');
+    expect(rejoining).toHaveBeenCalledTimes(2);
+    expect(observer).toHaveLastReturnedWith('GET');
+  });
+
+  it('notifies subscribers with live discovered methods and overrides', async () => {
+    const { transport, fetch } = setup('GET, POST, QUERY');
+    const listener = vi.fn(() => ({
+      method: transport.method,
+      override: transport.methodOverride,
+      supportedMethods: transport.supportedMethods,
+    }));
+    const unsubscribe = transport.subscribe!(listener);
+    expect(listener).not.toHaveBeenCalled();
+    expect(transport.methodOverride).toBeUndefined();
+
+    await transport.send({ query });
+    expect(listener).toHaveLastReturnedWith({
+      method: 'QUERY',
+      override: undefined,
+      supportedMethods: ['GET', 'POST', 'QUERY'],
+    });
+
+    transport.setMethod!('GET');
+    expect(listener).toHaveLastReturnedWith({
+      method: 'GET',
+      override: 'GET',
+      supportedMethods: ['GET', 'POST', 'QUERY'],
+    });
+    transport.setMethod!();
+    expect(listener).toHaveBeenCalledTimes(3);
+    expect(listener).toHaveLastReturnedWith({
+      method: 'QUERY',
+      override: undefined,
+      supportedMethods: ['GET', 'POST', 'QUERY'],
+    });
+
+    // Repeating the same selection or discovery result is not a state change.
+    const methods = transport.supportedMethods;
+    transport.setMethod!();
+    await transport.send({ query, headers: { authorization: 'new' } });
+    expect(transport.supportedMethods).toBe(methods);
+    expect(listener).toHaveBeenCalledTimes(3);
+
+    unsubscribe();
+    fetch.mockResolvedValue(response('POST'));
+    await transport.send({ query, headers: { authorization: 'latest' } });
+    transport.setMethod!('POST');
+    expect(listener).toHaveBeenCalledTimes(3);
+    expect(transport.method).toBe('POST');
+  });
+
+  it('observes automatic versus explicit selection even when the method is unchanged', () => {
+    const { transport } = setup(undefined, {
+      method: 'POST',
+      supportedMethods: ['POST'],
+    });
+    const listener = vi.fn();
+    transport.subscribe!(listener);
+    expect(transport.methodOverride).toBe('POST');
+    transport.setMethod!();
+    expect(transport.method).toBe('POST');
+    expect(transport.methodOverride).toBeUndefined();
+    expect(listener).toHaveBeenCalledOnce();
+    transport.setMethod!('POST');
+    expect(transport.methodOverride).toBe('POST');
+    expect(listener).toHaveBeenCalledTimes(2);
+  });
+
+  it('notifies when discovery removes all usable methods before execution fails', async () => {
+    const { transport } = setup('OPTIONS, HEAD');
+    const listener = vi.fn(() => transport.supportedMethods);
+    transport.subscribe!(listener);
+    await expect(transport.send({ query })).rejects.toThrow(
+      /no supported GraphQL HTTP methods/,
+    );
+    expect(listener).toHaveBeenCalledOnce();
+    expect(listener).toHaveLastReturnedWith([]);
+  });
+
   it('discovers lazily and automatically prefers QUERY', async () => {
     const { transport, fetch } = setup('QUERY, POST, GET, QUERY, OPTIONS');
     expect(fetch).not.toHaveBeenCalled();

@@ -243,11 +243,13 @@ describe('keyboard navigation', () => {
     cy.get('.result-window').should('contain.text', '__typename');
   });
 
-  it('The Run button caret opens a keyboard-operable operation picker', () => {
+  it('The operation picker selects without running and supports keyboard navigation', () => {
+    const pickedOperations: string[] = [];
     cy.clock(Date.now(), ['setTimeout', 'clearTimeout']);
     cy.intercept('POST', '/graphql', request => {
       if (['A', 'B'].includes(request.body.operationName)) {
         request.alias = 'pickedOperation';
+        pickedOperations.push(request.body.operationName);
       }
     });
     cy.visitGraphiQL({
@@ -266,16 +268,24 @@ describe('keyboard navigation', () => {
     cy.realPress('Enter');
     cy.get('[role="menu"]').should('be.visible');
     cy.tick(0);
-    cy.focused().should('have.attr', 'role', 'menuitem').and('have.text', 'A');
+    cy.focused()
+      .should('have.attr', 'role', 'menuitemradio')
+      .and('contain.text', 'A');
+    cy.focused().find('.graphiql-method-pill').should('have.text', 'QRY');
 
     cy.realPress('ArrowDown');
     cy.tick(0);
-    cy.focused().should('have.attr', 'role', 'menuitem').and('have.text', 'B');
+    cy.focused()
+      .should('have.attr', 'role', 'menuitemradio')
+      .and('contain.text', 'B');
+    cy.focused().find('.graphiql-method-pill').should('have.text', 'QRY');
     cy.realPress('Enter');
     cy.tick(0);
-    cy.wait('@pickedOperation')
-      .its('request.body.operationName')
-      .should('equal', 'B');
+    cy.get('[aria-label="Choose operation to run"]').should(
+      'contain.text',
+      'B',
+    );
+    cy.then(() => expect(pickedOperations).to.deep.equal([]));
     cy.get('.graphiql-tab-active .graphiql-tab-button').should(
       'contain.text',
       'B',
@@ -296,7 +306,7 @@ describe('keyboard navigation', () => {
     cy.realPress('Enter');
     cy.get('[role="menu"]').should('be.visible');
     cy.tick(0);
-    cy.focused().should('have.attr', 'role', 'menuitem');
+    cy.focused().should('have.attr', 'role', 'menuitemradio');
     cy.realPress('Escape');
     cy.get('[role="menu"]').should('not.exist');
     cy.tick(0);

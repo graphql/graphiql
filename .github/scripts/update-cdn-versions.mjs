@@ -128,7 +128,7 @@ async function main() {
     .replace('{{GRAPHIQL_CSS_URL}}', graphiqlCss)
     .replace('{{GRAPHIQL_CSS_INTEGRITY}}', graphiqlCssHash);
 
-  console.log(output);
+  process.stdout.write(output);
 }
 
 main();

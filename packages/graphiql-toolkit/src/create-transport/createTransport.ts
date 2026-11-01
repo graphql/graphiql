@@ -98,7 +98,22 @@ export function createTransport(opts: CreateTransportOptions): Transport {
     throw new Error('supportedMethods must contain at least one HTTP method.');
   }
   let methodOverride = opts.method;
+  const listeners = new Set<() => void>();
   let discovery: { key: string; result: Promise<HttpMethod[]> } | undefined;
+
+  function notify() {
+    // A listener may unsubscribe and resubscribe itself during notification.
+    // oxlint-disable-next-line unicorn/no-useless-spread
+    for (const listener of [...listeners]) {
+      try {
+        listener();
+      } catch (error) {
+        // Observing transport state must not interrupt request execution.
+        // eslint-disable-next-line no-console
+        console.error('GraphiQL: a transport state listener threw:', error);
+      }
+    }
+  }
 
   function discover(headers: Record<string, string>): Promise<HttpMethod[]> {
     const key = JSON.stringify(Object.entries(headers).sort());
@@ -114,8 +129,13 @@ export function createTransport(opts: CreateTransportOptions): Transport {
     discovery = current;
     current.result = (async () => {
       const methods = await current.result;
-      if (discovery === current) {
+      if (
+        discovery === current &&
+        (methods.length !== supportedMethods.length ||
+          methods.some((method, index) => method !== supportedMethods[index]))
+      ) {
         supportedMethods = methods;
+        notify();
       }
       return methods;
     })();
@@ -270,9 +290,22 @@ export function createTransport(opts: CreateTransportOptions): Transport {
     get supportedMethods() {
       return supportedMethods;
     },
+    get methodOverride() {
+      return methodOverride;
+    },
     send,
     setMethod(method) {
+      if (methodOverride === method) {
+        return;
+      }
       methodOverride = method;
+      notify();
+    },
+    subscribe(listener) {
+      listeners.add(listener);
+      return () => {
+        listeners.delete(listener);
+      };
     },
   };
   return transport;
