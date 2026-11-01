@@ -33,6 +33,7 @@
     "fork-ts-checker-webpack-plugin": "^7",
     "html-webpack-plugin": "^5",
     "monaco-editor-webpack-plugin": "^7",
+    "postcss": "^8.5.32",
     "style-loader": "^4",
     "typescript": "^5",
     "webpack": "^5",
