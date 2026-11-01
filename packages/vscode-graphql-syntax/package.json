@@ -156,7 +156,7 @@
     "@typescript/native": "npm:typescript@7.1.0-beta",
     "@vscode/vsce": "^3.9.2",
     "ovsx": "0.8.3",
-    "vscode-oniguruma": "^1.7.0",
+    "vscode-oniguruma": "^2.0.1",
     "vscode-textmate": "^9.0.0"
   },
   "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-syntax/README.md",
