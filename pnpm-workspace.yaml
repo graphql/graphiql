@@ -33,8 +33,6 @@ overrides:
   '@types/node': ^24
   # Keep the release-plan version aligned with its behavior patch below.
   '@changesets/assemble-release-plan': 6.0.3
-  # Later parser patches remove the importMeta plugin used by the server.
-  'graphql-language-service-server>@babel/parser': 8.0.4
   # Newer eligible releases introduce a separate authentication advisory.
   '@vscode/vsce>@azure/identity': 4.13.0
   # Stay below the affected esbuild patches while satisfying tsup's range.

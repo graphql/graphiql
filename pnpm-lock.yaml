@@ -8,7 +8,6 @@ overrides:
   '@babel/traverse': ^7.23.2
   '@types/node': ^24
   '@changesets/assemble-release-plan': 6.0.3
-  graphql-language-service-server>@babel/parser: 8.0.4
   '@vscode/vsce>@azure/identity': 4.13.0
   tsup>esbuild: 0.27.2
   start-server-and-test>wait-on: 7.2.0
@@ -1273,7 +1272,7 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       '@babel/parser':
-        specifier: 8.0.4
+        specifier: ^8.0.4
         version: 8.0.4
       '@babel/types':
         specifier: ^8.0.4
