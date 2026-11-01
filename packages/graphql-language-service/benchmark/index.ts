@@ -54,7 +54,7 @@ const runSplitTest = (name: string, schema: string) => {
         state = { ...prevState };
       },
       onError: console.log,
-      onComplete(e) {
+      onComplete(e: { target: Benchmark }) {
         state = completeState;
         stats.push(e.target.stats);
       },
