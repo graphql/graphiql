@@ -34,7 +34,7 @@
     "graphql": "^17.0.2",
     "graphql-ws": "^6.3.0",
     "isomorphic-fetch": "^3.0.0",
-    "tsup": "^8.2.4",
+    "tsup": "^9.0.0",
     "typescript": "npm:@typescript/typescript6@^6.0.2"
   },
   "peerDependencies": {

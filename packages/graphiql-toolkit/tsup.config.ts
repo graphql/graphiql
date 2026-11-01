@@ -4,12 +4,7 @@ const opts: Options = {
   entry: ['src/**/*.ts', '!**/__tests__'],
   bundle: false,
   clean: true,
-  dts: {
-    compilerOptions: {
-      // Tsup injects baseUrl into its declaration build using the TypeScript 6 API.
-      ignoreDeprecations: '6.0',
-    },
-  },
+  dts: true,
   minifySyntax: true,
 };
 
