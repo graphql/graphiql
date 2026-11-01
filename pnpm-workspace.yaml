@@ -1,0 +1,46 @@
+packages:
+  - packages/*
+  - functions
+  - packages/graphiql-e2e/test
+  - examples/monaco-graphql-webpack
+  - examples/monaco-graphql-nextjs
+  - examples/monaco-graphql-react-vite
+  - examples/graphiql-vite
+  - examples/graphiql-vite-react-router
+  - examples/graphiql-webpack
+
+minimumReleaseAge: 4320
+minimumReleaseAgeExclude:
+  - monaco-editor@0.57.0
+  # Security fix for GHSA-xcx6-jx8p-x3h5; clears the 72-hour gate on Nov 1 at 22:16 UTC.
+  - '@azure/identity@4.14.1'
+engineStrict: true
+nodeLinker: isolated
+linkWorkspacePackages: true
+preferWorkspacePackages: true
+
+allowBuilds:
+  '@vscode/vsce-sign': false
+  core-js: false
+  cypress: true
+  ejs: false
+  esbuild: false
+  fsevents: false
+  keytar: false
+  msw: false
+  sharp: false
+
+overrides:
+  '@babel/traverse@7': ^7.29.10
+  '@types/node': ^24
+  dompurify@3: ^3.4.17
+  eslint: ^10.12.0
+  postcss@8: ^8.5.23
+  vscode-languageserver-types: 3.18.5
+  markdown-it: 15.0.3
+  react: 19.3.1
+  react-dom: 19.3.1
+  vite: ^8.3.5
+
+patchedDependencies:
+  js-green-licenses@4.0.0: resources/patches/js-green-licenses+4.0.0.patch

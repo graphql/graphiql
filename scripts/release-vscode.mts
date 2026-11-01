@@ -71,12 +71,12 @@ async function runForEach(
 async function build(packages: VscodePackage[]): Promise<void> {
   await runForEach(packages, 'build', async pkg => {
     console.log(`Building ${pkg}.vsix`);
-    const { status } = spawnSync('yarn', ['workspace', pkg, 'vsce:package'], {
+    const { status } = spawnSync('pnpm', ['--filter', pkg, 'vsce:package'], {
       stdio: 'inherit',
     });
     if (status !== 0) {
       throw new Error(
-        `yarn workspace ${pkg} vsce:package exited with status ${status}`,
+        `pnpm --filter ${pkg} vsce:package exited with status ${status}`,
       );
     }
   });

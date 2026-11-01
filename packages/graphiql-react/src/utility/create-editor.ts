@@ -2,7 +2,7 @@ import type { KeyboardEventHandler, RefObject } from 'react';
 import type * as monaco from 'monaco-editor';
 import type { MonacoEditor } from '../types';
 import { monacoStore } from '../stores';
-import { Uri } from '../utility';
+import { Uri } from './monaco-ssr';
 
 export const onEditorContainerKeyDown: KeyboardEventHandler<
   HTMLDivElement
@@ -45,7 +45,7 @@ export function createEditor(
   if (!monaco) {
     throw new Error('Monaco editor is not initialized');
   }
-  return monaco.editor.create(domElement.current, {
+  const editor = monaco.editor.create(domElement.current, {
     language,
     automaticLayout: true,
     fontSize: 15,
@@ -59,12 +59,43 @@ export function createEditor(
     },
     scrollBeyondLastLine: false, // cleans up unnecessary "padding-bottom" on each editor
     fontFamily: '"Fira Code"',
-    // Enable font ligatures and fix incorrect caret position on Windows
-    // See: https://github.com/graphql/graphiql/issues/4040
-    fontLigatures: true,
+    // Disable Fira Code's ligatures without regressing the Windows caret fix.
+    // This is deliberately an explicit `font-feature-settings` string, not
+    // `false`: Monaco only takes its monospace caret-measurement fast path when
+    // this exactly equals its OFF constant (`"liga" off, "calt" off`), and that
+    // fast path mis-positions the caret with Fira Code on Windows (#4040). Any
+    // other string keeps ligatures off while forcing per-character width
+    // measurement, so the caret stays correct. See PR #4430 for the full write-up.
+    fontLigatures: '"liga" off, "calt" off, "clig" off',
     lineNumbersMinChars: 2, // reduce line numbers width on the left size
     roundedSelection: false, // prevent multiline text selection from highlighting +1 characters after beginning/end of selection
     tabIndex: -1, // Do not allow tabbing into the editor, only via by pressing Enter or its container
     ...options,
   });
+  const ownerDocument = domElement.current.ownerDocument;
+  const completionEscapeEvents = new WeakSet<KeyboardEvent>();
+  const rememberCompletionEscape = (event: KeyboardEvent) => {
+    if (
+      event.key === 'Escape' &&
+      ownerDocument.querySelector('.suggest-widget.visible')
+    ) {
+      completionEscapeEvents.add(event);
+    }
+  };
+  const stopCompletionEscape = (event: KeyboardEvent) => {
+    if (completionEscapeEvents.has(event)) {
+      event.stopImmediatePropagation();
+    }
+  };
+  ownerDocument.addEventListener('keydown', rememberCompletionEscape, true);
+  ownerDocument.addEventListener('keydown', stopCompletionEscape);
+  editor.onDidDispose(() => {
+    ownerDocument.removeEventListener(
+      'keydown',
+      rememberCompletionEscape,
+      true,
+    );
+    ownerDocument.removeEventListener('keydown', stopCompletionEscape);
+  });
+  return editor;
 }

@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - release/*
+      - '*.x.x'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -41,20 +41,24 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
-          cache: yarn
+          cache: pnpm
 
-      - run: yarn install --immutable
+      - run: pnpm install --frozen-lockfile
+
+      - name: Turbo cache
+        uses: ./.github/actions/turbo-cache
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
         with:
-          version: yarn ci:version
+          version: pnpm ci:version
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
-          publish: yarn release
+          publish: pnpm release
 
       - name: Note VSCode extension release
         id: vscode
@@ -85,7 +89,7 @@ jobs:
   publish-vscode-extensions:
     name: Publish to ${{ matrix.registry }}
     needs: release
-    if: ${{ needs.release.outputs.vscode-published == 'true' }}
+    if: ${{ github.ref_name == 'main' && needs.release.outputs.vscode-published == 'true' }}
     runs-on: ubuntu-latest
     permissions: {}
     strategy:
@@ -99,12 +103,13 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
-          cache: yarn
+          cache: pnpm
 
-      - run: yarn install --immutable
+      - run: pnpm install --frozen-lockfile
 
       - uses: actions/download-artifact@v4
         with:

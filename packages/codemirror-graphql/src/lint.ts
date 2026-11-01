@@ -8,8 +8,12 @@
  */
 
 import CodeMirror from 'codemirror';
+import type { Annotation } from 'codemirror/addon/lint/lint';
 import { FragmentDefinitionNode, GraphQLSchema, ValidationRule } from 'graphql';
-import { getDiagnostics } from 'graphql-language-service';
+import {
+  getDiagnostics,
+  GraphQLLanguageServiceOptions,
+} from 'graphql-language-service';
 
 const SEVERITY = ['error', 'warning', 'information', 'hint'];
 const TYPE: Record<string, string> = {
@@ -22,6 +26,7 @@ interface GraphQLLintOptions {
   schema?: GraphQLSchema;
   validationRules: ValidationRule[];
   externalFragments?: string | FragmentDefinitionNode[];
+  languageServiceOptions?: GraphQLLanguageServiceOptions;
 }
 
 /**
@@ -41,14 +46,20 @@ interface GraphQLLintOptions {
 CodeMirror.registerHelper(
   'lint',
   'graphql',
-  (text: string, options: GraphQLLintOptions): CodeMirror.Annotation[] => {
-    const { schema, validationRules, externalFragments } = options;
+  (text: string, options: GraphQLLintOptions): Annotation[] => {
+    const {
+      schema,
+      validationRules,
+      externalFragments,
+      languageServiceOptions,
+    } = options;
     const rawResults = getDiagnostics(
       text,
       schema,
       validationRules,
       undefined,
       externalFragments,
+      languageServiceOptions,
     );
 
     const results = rawResults.map(error => ({

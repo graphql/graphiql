@@ -3,6 +3,7 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./",
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
     "composite": true,
     "jsx": "react",
     "strictPropertyInitialization": false

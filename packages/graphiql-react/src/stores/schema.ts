@@ -3,7 +3,9 @@ import {
   fetcherReturnToPromise,
   formatError,
   formatResult,
+  isAsyncIterable,
   isPromise,
+  type Fetcher,
 } from '@graphiql/toolkit';
 import {
   buildClientSchema,
@@ -12,6 +14,7 @@ import {
   GraphQLSchema,
   IntrospectionQuery,
 } from 'graphql';
+import type { JSONSchema6 } from 'graphql-language-service';
 import type { Dispatch } from 'react';
 import type { StateCreator } from 'zustand';
 import type { SlicesWithActions, SchemaReference } from '../types';
@@ -22,6 +25,7 @@ type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 type CreateSchemaSlice = (
   initial: Pick<
     SchemaSlice,
+    | 'customScalarSchemas'
     | 'inputValueDeprecation'
     | 'introspectionQueryName'
     | 'onSchemaChange'
@@ -60,6 +64,7 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
         onSchemaChange,
         headerEditor,
         fetcher,
+        transport,
         inputValueDeprecation,
         introspectionQueryName,
         schemaDescription,
@@ -94,9 +99,39 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
           schemaDescription,
         });
 
+        // When the consumer passed a `transport`, project it into a Fetcher-shaped
+        // adapter just for introspection: take the first yielded `TransportResponse`
+        // and return its `body` (the `ExecutionResult`).
+        const introspectionFetcher: Fetcher = transport
+          ? ((async params => {
+              const sendResult = transport.send({
+                query: params.query,
+                operationName: params.operationName,
+                variables: params.variables,
+                headers: headers as Record<string, string> | undefined,
+              });
+              let body: unknown;
+              if (isAsyncIterable(sendResult)) {
+                const iter = sendResult[Symbol.asyncIterator]();
+                const first = await iter.next();
+                await iter.return?.();
+                if (first.done || !first.value) {
+                  throw new Error(
+                    'Empty introspection response from transport.',
+                  );
+                }
+                body = first.value.body;
+              } else {
+                body = (await sendResult).body;
+              }
+              const result = Array.isArray(body) ? body[0] : body;
+              return result as Awaited<ReturnType<Fetcher>>;
+            }) as Fetcher)
+          : fetcher!;
+
         function doIntrospection(query: string) {
           const fetch = fetcherReturnToPromise(
-            fetcher(
+            introspectionFetcher(
               { query, operationName: introspectionQueryName },
               fetcherOpts,
             ),
@@ -167,6 +202,7 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
 
 export interface SchemaSlice extends Pick<
   SchemaProps,
+  | 'customScalarSchemas'
   | 'inputValueDeprecation'
   | 'introspectionQueryName'
   | 'schemaDescription'
@@ -289,4 +325,26 @@ export interface SchemaProps {
    * @see {@link https://github.com/graphql/graphql-js/blob/main/src/utilities/getIntrospectionQuery.ts|Utility for creating the introspection query}
    */
   schemaDescription?: boolean;
+
+  /**
+   * JSON Schema fragments used to validate custom scalars in the variable
+   * editor. Without this, the variable editor's live JSON Schema linter
+   * assumes every custom scalar only accepts primitives (string, number,
+   * boolean, integer), and will report an "Incorrect type" error
+   * for any custom scalar that legitimately accepts an object or array
+   * (e.g. a `JSON` or `GeoJSON` scalar).
+   *
+   * Pass an empty object (`{}`) for a scalar to accept any JSON value, or
+   * a more specific schema to constrain it further.
+   * @example
+   * ```ts
+   * {
+   *   customScalarSchemas: {
+   *     GeoJSON: {},
+   *     DateTime: { type: 'string', format: 'date-time' },
+   *   }
+   * }
+   * ```
+   */
+  customScalarSchemas?: Record<string, JSONSchema6>;
 }

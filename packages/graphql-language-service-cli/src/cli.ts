@@ -8,11 +8,14 @@
  */
 
 import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 import client from './client';
+import { version } from '../package.json';
 
 import { startServer } from 'graphql-language-service-server';
 
-const { argv } = yargs
+const argv = yargs(hideBin(process.argv))
+  .version(version)
   .usage(
     'GraphQL Language Service Command-Line Interface.\n' +
       'Usage: graphql-lsp <command> <file>\n' +
@@ -98,7 +101,8 @@ const { argv } = yargs
     alias: 'schemaPath',
     describe: 'a path to schema DSL file\n',
     type: 'string',
-  });
+  })
+  .parseSync();
 
 const command = argv._.pop();
 

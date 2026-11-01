@@ -5,6 +5,7 @@ import {
   fuzzyExtractOperationName,
   getDefaultTabState,
   clearHeadersFromTabs,
+  serializeTabState,
 } from './tabs';
 import { STORAGE_KEY } from '../constants';
 
@@ -27,6 +28,24 @@ describe('createTab', () => {
         title: 'Foo',
       }),
     );
+  });
+
+  it('initializes lastSavedQuery to null', () => {
+    expect(createTab({ query: 'query Foo {}' })).toEqual(
+      expect.objectContaining({ lastSavedQuery: null }),
+    );
+  });
+});
+
+describe('serializeTabState', () => {
+  it('persists lastSavedQuery so dirty state survives a reload', () => {
+    const tab = {
+      ...createTab({ query: 'query Foo {}' }),
+      lastSavedQuery: 'query Foo {}',
+    };
+    const state = { tabs: [tab], activeTabIndex: 0 };
+    const parsed = JSON.parse(serializeTabState(state));
+    expect(parsed.tabs[0].lastSavedQuery).toBe('query Foo {}');
   });
 });
 
@@ -122,6 +141,32 @@ describe('getDefaultTabState', () => {
         }),
       ],
     });
+  });
+
+  it('does not create an extra tab on reload when no editor state was stored', () => {
+    const storage = new StorageAPI();
+    // First visit: no storage at all, so the default tab is created…
+    const initial = getDefaultTabState({
+      defaultQuery: '# Default',
+      headers: null,
+      query: null,
+      variables: null,
+      storage,
+    });
+    // …and persisted, while the query/variables/headers storage keys are
+    // only written on edit, so they remain empty.
+    storage.set(STORAGE_KEY.tabs, serializeTabState(initial));
+
+    const reloaded = getDefaultTabState({
+      defaultQuery: '# Default',
+      headers: null,
+      query: null,
+      variables: null,
+      storage,
+    });
+    storage.clear();
+    expect(reloaded.tabs).toHaveLength(1);
+    expect(reloaded.activeTabIndex).toBe(0);
   });
 
   it('returns initial tabs', () => {

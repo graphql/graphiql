@@ -47,7 +47,7 @@ Starting from GraphiQL 5, you need to set up Monaco workers in your project:
 
 > [!NOTE]
 >
-> See [Next.js example](../../examples/graphiql-nextjs/src/app/page.tsx).
+> See [Next.js example](../../examples/graphiql-nextjs/src/app/graphiql.tsx).
 
 - For ESM-based CDN usages, you must use
   [`?worker` query](https://esm.sh/#web-worker) to load the module as a web

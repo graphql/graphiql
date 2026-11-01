@@ -4,7 +4,10 @@ import packageJSON from './package.json' with { type: 'json' };
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
-  plugins: [react(), dts({ include: ['src/**'] })],
+  plugins: [
+    react(),
+    dts({ compilerOptions: { rootDir: 'src' }, include: ['src/**'] }),
+  ],
   css: {
     transformer: 'lightningcss',
   },

@@ -39,6 +39,16 @@ describe('findGraphQLTags', () => {
     expect(contents.length).toEqual(0);
   });
 
+  it('finds queries in modules that use import.meta', async () => {
+    const contents = await findGraphQLTags(
+      'import { gql } from "graphql-tag"; const url = import.meta.url; gql`query Test { test }`;',
+      '.js',
+    );
+
+    expect(contents).toHaveLength(1);
+    expect(contents[0].template).toBe('query Test { test }');
+  });
+
   it('finds queries in tagged templates', async () => {
     const text = `
 // @flow
@@ -619,5 +629,6 @@ export function Example(arg: string) {}`;
     <p>Year: {film.releaseDate}</p>`;
     const contents = await findGraphQLTags(text, '.astro');
     expect(contents.length).toEqual(1);
+    expect(contents[0].range.start.line).toEqual(8);
   });
 });

@@ -30,7 +30,12 @@
 import CharacterStream from './CharacterStream';
 import { State, Token, Rule, RuleKind } from './types';
 
-import { LexRules, ParseRules, isIgnored } from './Rules';
+import {
+  ExperimentalFragmentArgumentParseRules,
+  LexRules,
+  ParseRules,
+  isIgnored,
+} from './Rules';
 import { Kind } from 'graphql';
 
 export type ParserOptions = {
@@ -40,17 +45,23 @@ export type ParserOptions = {
   editorConfig: { [name: string]: any };
 };
 
-export default function onlineParser(
-  options: ParserOptions = {
-    eatWhitespace: stream => stream.eatWhile(isIgnored),
-    lexRules: LexRules,
-    parseRules: ParseRules,
-    editorConfig: {},
-  },
-): {
+export type OnlineParserOptions = Partial<ParserOptions> & {
+  experimentalFragmentArguments?: boolean;
+};
+
+export default function onlineParser(options: OnlineParserOptions = {}): {
   startState: () => State;
   token: (stream: CharacterStream, state: State) => string;
 } {
+  const parserOptions: ParserOptions = {
+    eatWhitespace: stream => stream.eatWhile(isIgnored),
+    lexRules: LexRules,
+    parseRules: options.experimentalFragmentArguments
+      ? ExperimentalFragmentArgumentParseRules
+      : ParseRules,
+    editorConfig: {},
+    ...options,
+  };
   return {
     startState() {
       const initialState = {
@@ -64,11 +75,11 @@ export default function onlineParser(
         prevState: null,
       };
 
-      pushRule(options.parseRules, initialState, Kind.DOCUMENT);
+      pushRule(parserOptions.parseRules, initialState, Kind.DOCUMENT);
       return initialState;
     },
     token(stream: CharacterStream, state: State) {
-      return getToken(stream, state, options);
+      return getToken(stream, state, parserOptions);
     },
   };
 }

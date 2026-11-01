@@ -5,7 +5,14 @@
       "label": "watch-vscode",
       "type": "npm",
       "script": "watch-vscode",
-      "problemMatcher": ["$tsc-watch"],
+      "problemMatcher": {
+        "base": "$tsc",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "bundling vscode-graphql$",
+          "endsPattern": "successfully bundled vscode-graphql 🚀"
+        }
+      },
       "isBackground": true,
       "presentation": {
         "reveal": "always"
@@ -19,7 +26,14 @@
       "label": "watch-vscode-exec",
       "type": "npm",
       "script": "watch-vscode-exec",
-      "problemMatcher": ["$tsc-watch"],
+      "problemMatcher": {
+        "base": "$tsc",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "bundling vscode-graphql-execution$",
+          "endsPattern": "successfully bundled vscode-graphql-execution 🚀"
+        }
+      },
       "isBackground": true,
       "presentation": {
         "reveal": "always"

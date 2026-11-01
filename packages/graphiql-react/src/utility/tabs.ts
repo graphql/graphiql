@@ -48,6 +48,14 @@ export interface TabState extends TabDefinition {
    * The contents of the response editor of this tab.
    */
   response: string | null;
+
+  /**
+   * The query text at the point of the last explicit save (toolbar Save button
+   * or ⌘S). Used to derive the tab dirty state: a tab is dirty when
+   * `query !== lastSavedQuery`. `null` means the tab has never been explicitly
+   * saved.
+   */
+  lastSavedQuery: string | null;
 }
 
 /**
@@ -119,8 +127,21 @@ export function getDefaultTabState({
         }
       }
 
+      // The individual query/variables/headers storage keys are only written
+      // on edit. When all of them are empty there is no editor state to
+      // restore into a tab — pushing one anyway would add an empty tab on
+      // every reload of a session that never touched the editors.
+      const hasStoredEditorState =
+        query != null || variables != null || headersForHash != null;
+
       if (matchingTabIndex >= 0) {
         parsed.activeTabIndex = matchingTabIndex;
+      } else if (!hasStoredEditorState && parsed.tabs.length > 0) {
+        // Keep the stored active tab, but make sure the index is in range.
+        parsed.activeTabIndex = Math.min(
+          Math.max(parsed.activeTabIndex, 0),
+          parsed.tabs.length - 1,
+        );
       } else {
         const operationName = query ? fuzzyExtractOperationName(query) : null;
         parsed.tabs.push({
@@ -132,9 +153,17 @@ export function getDefaultTabState({
           headers,
           operationName,
           response: null,
+          lastSavedQuery: null,
         });
         parsed.activeTabIndex = parsed.tabs.length - 1;
       }
+
+      // Tabs loaded from storage won't have lastSavedQuery — initialize it.
+      parsed.tabs = parsed.tabs.map(tab =>
+        'lastSavedQuery' in (tab as object)
+          ? tab
+          : { ...tab, lastSavedQuery: null },
+      );
 
       return parsed;
     }
@@ -160,7 +189,8 @@ function isTabsState(obj: any): obj is TabsState {
 }
 
 function isTabState(obj: any): obj is TabState {
-  // We don't persist the hash, so we skip the check here
+  // We don't persist hash, and lastSavedQuery is optional (absent in tabs
+  // saved before it was persisted), so skip those checks here.
   return (
     obj &&
     typeof obj === 'object' &&
@@ -215,6 +245,7 @@ export function createTab({
     headers,
     operationName,
     response: null,
+    lastSavedQuery: null,
   };
 }
 

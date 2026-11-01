@@ -3,7 +3,7 @@ const [, , arg] = process.argv;
 
 const logger = console;
 
-const isWatchMode = arg === '--watch';
+logger.log('bundling vscode-graphql-execution');
 
 build({
   entryPoints: ['src/extension.ts'],
@@ -12,6 +12,8 @@ build({
   platform: 'node',
   outdir: 'out/',
   external: [
+    // Optional Glimmer compiler loaded by GraphQL Tools.
+    'content-tag',
     'squirrelly',
     'teacup',
     'coffee-script',
@@ -22,6 +24,8 @@ build({
     'babel-core',
     'htmling',
     'ractive',
+    'react',
+    'react-dom/server',
     'mote',
     'eco',
     'jqtpl',
@@ -41,6 +45,7 @@ build({
     'dot',
     'bracket-template',
     'handlebars',
+    'ejs',
     'vscode',
     'velocityjs',
     'dustjs-linkedin',
@@ -64,12 +69,6 @@ build({
     }
 
     logger.log('successfully bundled vscode-graphql-execution 🚀');
-
-    if (isWatchMode) {
-      logger.log('watching... 🕰');
-    } else {
-      process.exit();
-    }
   })
   .catch(err => {
     logger.error(err);

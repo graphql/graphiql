@@ -11,7 +11,7 @@ import { Hover } from 'vscode-languageserver-types';
 
 import fs from 'node:fs';
 import { buildSchema, GraphQLSchema } from 'graphql';
-import { Position } from 'graphql-language-service';
+import { Position } from '../../index';
 import path from 'node:path';
 
 import { getHoverInformation } from '../getHoverInformation';
@@ -127,6 +127,20 @@ describe('getHoverInformation', () => {
       new Position(0, 46),
     );
     expect(actual).toEqual('Color.GREEN');
+  });
+
+  it('provides fragment argument type information', () => {
+    const query =
+      'fragment Details($id: String!) on TestType { testField } query { thing { ...Details(id: "x") } }';
+    const actual = getHoverInformation(
+      schema,
+      query,
+      new Position(0, query.lastIndexOf('id:') + 1),
+      undefined,
+      { experimentalFragmentArguments: true },
+    );
+
+    expect(actual).toEqual('(id: String!)');
   });
 
   it('provides variable type information', () => {

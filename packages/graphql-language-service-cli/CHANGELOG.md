@@ -1,5 +1,68 @@
 # graphql-language-service-cli
 
+## 4.0.0
+
+### Major Changes
+
+- [#4478](https://github.com/graphql/graphiql/pull/4478) [`066528a`](https://github.com/graphql/graphiql/commit/066528a6bb7706d685536888d7b5549d6fd5a109) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - GraphQL.js 15 and 16.0–16.10 are no longer supported peer dependencies. The supported range is `^16.11.0 || ^17.0.0`. GraphQL.js 16.11 fixes OneOf input validation for nullable variables and tightens input-object coercion to reject arrays, giving GraphiQL 6 a correct baseline for OneOf inputs. Upgrade `graphql` before upgrading these packages.
+
+### Patch Changes
+
+- [#4642](https://github.com/graphql/graphiql/pull/4642) [`009944b`](https://github.com/graphql/graphiql/commit/009944b0cf4968aa1f9e49cbc24bc3e7ccc3d02f) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Stop loading the deprecated `@babel/polyfill` package. The CLI output targets ES2018 and runs on Node versions with native support for the required runtime features.
+
+- Updated dependencies [[`4225e29`](https://github.com/graphql/graphiql/commit/4225e29ebea023591aeb5c54a84cf98b226f6df7), [`066528a`](https://github.com/graphql/graphiql/commit/066528a6bb7706d685536888d7b5549d6fd5a109), [`5affc68`](https://github.com/graphql/graphiql/commit/5affc680b14dc04feb02fc8713a18dfdd56b4a81), [`3d368ba`](https://github.com/graphql/graphiql/commit/3d368ba8747ac2ad0bd73c8bf6f46f952122cfc8)]:
+  - graphql-language-service-server@3.0.0
+  - graphql-language-service@6.0.0
+
+## 4.0.0-rc.2
+
+### Patch Changes
+
+- [#4642](https://github.com/graphql/graphiql/pull/4642) [`009944b`](https://github.com/graphql/graphiql/commit/009944b0cf4968aa1f9e49cbc24bc3e7ccc3d02f) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Stop loading the deprecated `@babel/polyfill` package. The CLI output targets ES2018 and runs on Node versions with native support for the required runtime features.
+
+- Updated dependencies [[`4225e29`](https://github.com/graphql/graphiql/commit/4225e29ebea023591aeb5c54a84cf98b226f6df7), [`3d368ba`](https://github.com/graphql/graphiql/commit/3d368ba8747ac2ad0bd73c8bf6f46f952122cfc8)]:
+  - graphql-language-service-server@3.0.0-rc.2
+  - graphql-language-service@6.0.0-rc.1
+
+## 4.0.0-rc.1
+
+### Patch Changes
+
+- [#4474](https://github.com/graphql/graphiql/pull/4474) [`a539b83`](https://github.com/graphql/graphiql/commit/a539b83cac07d3987a8098346b1647a0ddec67f4) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Restore caret ranges for internal GraphiQL dependencies. The RC versions sort after the stale canary and `next` versions that beta ranges selected, so the exact pins from the beta cycle are no longer necessary.
+
+- Updated dependencies [[`a539b83`](https://github.com/graphql/graphiql/commit/a539b83cac07d3987a8098346b1647a0ddec67f4)]:
+  - graphql-language-service-server@3.0.0-rc.1
+
+## 4.0.0-rc.0
+
+### Patch Changes
+
+- [#4595](https://github.com/graphql/graphiql/pull/4595) [`bcd13dc`](https://github.com/graphql/graphiql/commit/bcd13dca46e2bb75837b33fce9f574712c669457) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Move the GraphiQL 6 package family from beta to release candidate versions.
+
+- Updated dependencies [[`bcd13dc`](https://github.com/graphql/graphiql/commit/bcd13dca46e2bb75837b33fce9f574712c669457)]:
+  - graphql-language-service-server@3.0.0-rc.0
+  - graphql-language-service@6.0.0-rc.0
+
+## 4.0.0-beta.1
+
+### Patch Changes
+
+- Updated dependencies [[`5affc68`](https://github.com/graphql/graphiql/commit/5affc680b14dc04feb02fc8713a18dfdd56b4a81)]:
+  - graphql-language-service@6.0.0-beta.1
+  - graphql-language-service-server@3.0.0-beta.1
+
+## 4.0.0-beta.0
+
+### Major Changes
+
+- [#4478](https://github.com/graphql/graphiql/pull/4478) [`066528a`](https://github.com/graphql/graphiql/commit/066528a6bb7706d685536888d7b5549d6fd5a109) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - GraphQL.js 15 and 16.0–16.10 are no longer supported peer dependencies. The supported range is `^16.11.0 || ^17.0.0`. GraphQL.js 16.11 fixes OneOf input validation for nullable variables and tightens input-object coercion to reject arrays, giving GraphiQL 6 a correct baseline for OneOf inputs. Upgrade `graphql` before upgrading these packages.
+
+### Patch Changes
+
+- Updated dependencies [[`066528a`](https://github.com/graphql/graphiql/commit/066528a6bb7706d685536888d7b5549d6fd5a109)]:
+  - graphql-language-service@6.0.0-beta.0
+  - graphql-language-service-server@3.0.0-beta.0
+
 ## 3.5.0
 
 ### Minor Changes
@@ -31,7 +94,6 @@
   note that `schemaCacheTTL` can only be set in extension settings or graphql config at the top level - it will be ignored if configured per-project in the graphql config
 
   **Code Improvements**
-
   - Fixes flaky tests, and `schemaCacheTTL` setting not being passed to the cache
   - Adds a test to validate network schema changes are reflected in the cache
 
@@ -57,7 +119,6 @@
   This fixes multiple cacheing bugs, upon addomg some in-depth integration test coverage for the LSP server. It also solves several bugs regarding loading config types, and properly restarts the server and invalidates schema when there are config changes.
 
   ### Bugfix Summary
-
   - configurable polling updates for network and other code first schema configuration, set to a 30s interval by default. powered by `schemaCacheTTL` which can be configured in the IDE settings (vscode, nvim) or in the graphql config file. (1)
   - jump to definition in embedded files offset bug, for both fragments and code files with SDL strings
   - cache invalidation for fragments (fragment lookup/autcoomplete data is more accurate, but incomplete/invalid fragments still do not autocomplete or validate, and remember fragment options always filter/validate by the `on` type!)
@@ -65,11 +126,9 @@
   - schema definition lookups & autocomplete crossing over into the wrong project
 
   **Notes**
-
   1. If possible, configuring for your locally running framework or a schema registry client to handle schema updates and output to a `schema.graphql` or `introspection.json` will always provide a better experience. many graphql frameworks have this built in! Otherwise, we must use this new lazy polling approach if you provide a url schema (this includes both introspection URLs and remote file URLs, and the combination of these).
 
   ### Known Bugs Fixed
-
   - #3318
   - #2357
   - #3469
@@ -78,7 +137,6 @@
   - many more!
 
   ### Test Improvements
-
   - new, high level integration spec suite for the LSP with a matching test utility
   - more unit test coverage
   - **total increased test coverage of about 25% in the LSP server codebase.**
@@ -94,7 +152,6 @@
 ### Patch Changes
 
 - [#3521](https://github.com/graphql/graphiql/pull/3521) [`aa6dbbb4`](https://github.com/graphql/graphiql/commit/aa6dbbb45bf51c1966537640fbe5c4f375735c8d) Thanks [@acao](https://github.com/acao)! - Fixes several issues with Type System (SDL) completion across the ecosystem:
-
   - restores completion for object and input type fields when the document context is not detectable or parseable
   - correct top-level completions for either of the unknown, type system or executable definitions. this leads to mixed top level completions when the document is unparseable, but now you are not seemingly restricted to only executable top level definitions
   - `.graphqls` ad-hoc standard functionality remains, but is not required, as it is not part of the official spec, and the spec also allows mixed mode documents in theory, and this concept is required when the type is unknown
@@ -111,7 +168,7 @@
 
   ```ts
   // import it
-  import { locateCommand } from './graphql/tooling/lsp/locate.js';
+  import { locateCommand } from "./graphql/tooling/lsp/locate.js";
   export default {
     languageService: {
       locateCommand,
@@ -119,12 +176,12 @@
 
     projects: {
       a: {
-        schema: 'https://localhost:8000/graphql',
-        documents: './a/**/*.{ts,tsx,jsx,js,graphql}',
+        schema: "https://localhost:8000/graphql",
+        documents: "./a/**/*.{ts,tsx,jsx,js,graphql}",
       },
       b: {
-        schema: './schema/ascode.ts',
-        documents: './b/**/*.{ts,tsx,jsx,js,graphql}',
+        schema: "./schema/ascode.ts",
+        documents: "./b/**/*.{ts,tsx,jsx,js,graphql}",
       },
     },
   };
@@ -133,7 +190,7 @@
   ```ts
   // or define it inline
 
-  import { type LocateCommand } from 'graphql-language-service-server';
+  import { type LocateCommand } from "graphql-language-service-server";
 
   // relay LSP style
   const locateCommand = (projectName: string, typePath: string) => {
@@ -159,8 +216,8 @@
     languageService: {
       locateCommand,
     },
-    schema: 'https://localhost:8000/graphql',
-    documents: './**/*.{ts,tsx,jsx,js,graphql}',
+    schema: "https://localhost:8000/graphql",
+    documents: "./**/*.{ts,tsx,jsx,js,graphql}",
   };
   ```
 

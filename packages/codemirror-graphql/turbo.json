@@ -1,0 +1,20 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "outputs": [
+        "$TURBO_EXTENDS$",
+        "*.js",
+        "*.js.flow",
+        "*.js.map",
+        "*.d.ts",
+        "*.d.ts.map",
+        "cm6-legacy/**",
+        "results/**",
+        "utils/**",
+        "variables/**"
+      ]
+    }
+  }
+}

@@ -7,19 +7,25 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { parseArgs } from 'node:util';
+
+const { values } = parseArgs({
+  options: {
+    'graphiql-tag': { type: 'string', default: 'latest' },
+  },
+});
 
 const PACKAGES = [
   'react',
   'react-dom',
   'graphiql',
-  '@graphiql/plugin-explorer',
   '@graphiql/react',
   '@graphiql/toolkit',
   'graphql',
 ];
 
 /**
- * Given the name of an npm package, return a tuple of: [name, latest version]
+ * Given the name of an npm package, return a tuple of: [name, version at the selected tag]
  *
  * @example
  *
@@ -27,7 +33,11 @@ const PACKAGES = [
  *   => ['left-pad', '1.0.1']
  */
 async function fetchLatestVersion(packageName) {
-  const url = `https://registry.npmjs.org/${packageName}/latest`;
+  const tag =
+    packageName === 'graphiql' || packageName.startsWith('@graphiql/')
+      ? values['graphiql-tag']
+      : 'latest';
+  const url = `https://registry.npmjs.org/${packageName}/${encodeURIComponent(tag)}`;
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`Failed to fetch ${packageName}: ${response.statusText}`);
@@ -60,6 +70,7 @@ async function main() {
   );
   const cdnUrl = packageName =>
     `https://esm.sh/${packageName}@${versions[packageName]}`;
+  const setupWorkers = `${cdnUrl('graphiql')}/setup-workers/esm.sh?deps=@graphiql/react@${versions['@graphiql/react']}`;
 
   // JS
   const imports = {
@@ -69,7 +80,7 @@ async function main() {
     'react-dom/': `${cdnUrl('react-dom')}/`,
     graphiql: `${cdnUrl('graphiql')}?standalone&external=react,react-dom,@graphiql/react,graphql`,
     'graphiql/': `${cdnUrl('graphiql')}/`,
-    '@graphiql/plugin-explorer': `${cdnUrl('@graphiql/plugin-explorer')}?standalone&external=react,@graphiql/react,graphql`,
+    'graphiql/setup-workers/esm.sh': setupWorkers,
     '@graphiql/react': `${cdnUrl('@graphiql/react')}?standalone&external=react,react-dom,graphql,@graphiql/toolkit,@emotion/is-prop-valid`,
     '@graphiql/toolkit': `${cdnUrl('@graphiql/toolkit')}?standalone&external=graphql`,
     graphql: cdnUrl('graphql'),
@@ -82,8 +93,8 @@ async function main() {
         cdnUrl('react'),
         cdnUrl('react-dom'),
         cdnUrl('graphiql'),
+        setupWorkers,
         `${cdnUrl('graphiql')}?standalone&external=react,react-dom,@graphiql/react,graphql`,
-        cdnUrl('@graphiql/plugin-explorer'),
         `${cdnUrl('@graphiql/react')}?standalone&external=react,react-dom,graphql,@graphiql/toolkit,@emotion/is-prop-valid`,
         `${cdnUrl('@graphiql/toolkit')}?standalone&external=graphql`,
         cdnUrl('graphql'),
@@ -96,10 +107,6 @@ async function main() {
   // CSS
   const graphiqlCss = `${cdnUrl('graphiql')}/dist/style.css`;
   const graphiqlCssHash = (await fetchIntegrityHash(graphiqlCss))[1];
-  const graphiqlPluginExplorer = `${cdnUrl('@graphiql/plugin-explorer')}/dist/style.css`;
-  const graphiqlPluginExplorerHash = (
-    await fetchIntegrityHash(graphiqlPluginExplorer)
-  )[1];
 
   // Generate index.html
   const templatePath = path.join(
@@ -119,11 +126,9 @@ async function main() {
   const output = template
     .replace('{{IMPORTMAP}}', importMap)
     .replace('{{GRAPHIQL_CSS_URL}}', graphiqlCss)
-    .replace('{{GRAPHIQL_CSS_INTEGRITY}}', graphiqlCssHash)
-    .replace('{{PLUGIN_EXPLORER_CSS_URL}}', graphiqlPluginExplorer)
-    .replace('{{PLUGIN_EXPLORER_CSS_INTEGRITY}}', graphiqlPluginExplorerHash);
+    .replace('{{GRAPHIQL_CSS_INTEGRITY}}', graphiqlCssHash);
 
-  console.log(output);
+  process.stdout.write(output);
 }
 
 main();

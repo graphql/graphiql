@@ -1,10 +1,14 @@
+import type { OperationTypeNode } from 'graphql';
 import { StorageAPI } from './base';
+
+export type Operation = `${OperationTypeNode}`;
 
 export type QueryStoreItem = {
   query?: string;
   variables?: string;
   headers?: string;
   operationName?: string;
+  operation?: Operation;
   label?: string;
   favorite?: boolean;
 };

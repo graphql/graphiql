@@ -5,12 +5,14 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { DocumentNode, FragmentDefinitionNode, parse, visit } from 'graphql';
-import nullthrows from 'nullthrows';
+import { DocumentNode, FragmentDefinitionNode, visit } from 'graphql';
+import { parseDocument } from '../parser';
+import type { GraphQLLanguageServiceOptions } from '../types';
 
 export const getFragmentDependencies = (
   operationString: string,
   fragmentDefinitions?: Map<string, FragmentDefinitionNode> | null,
+  options?: GraphQLLanguageServiceOptions,
 ): FragmentDefinitionNode[] => {
   // If there isn't context for fragment references,
   // return an empty array.
@@ -21,7 +23,7 @@ export const getFragmentDependencies = (
   // Return an empty array.
   let parsedOperation;
   try {
-    parsedOperation = parse(operationString);
+    parsedOperation = parseDocument(operationString, options);
   } catch {
     return [];
   }
@@ -52,8 +54,9 @@ export const getFragmentDependenciesForAST = (
 
   const asts = new Set<FragmentDefinitionNode>();
   for (const name of referencedFragNames) {
-    if (!existingFrags.has(name) && fragmentDefinitions.has(name)) {
-      asts.add(nullthrows(fragmentDefinitions.get(name)));
+    const fragment = fragmentDefinitions.get(name);
+    if (!existingFrags.has(name) && fragment) {
+      asts.add(fragment);
     }
   }
 
@@ -62,11 +65,9 @@ export const getFragmentDependenciesForAST = (
   for (const ast of asts) {
     visit(ast, {
       FragmentSpread(node) {
-        if (
-          !referencedFragNames.has(node.name.value) &&
-          fragmentDefinitions.get(node.name.value)
-        ) {
-          asts.add(nullthrows(fragmentDefinitions.get(node.name.value)));
+        const fragment = fragmentDefinitions.get(node.name.value);
+        if (!referencedFragNames.has(node.name.value) && fragment) {
+          asts.add(fragment);
           referencedFragNames.add(node.name.value);
         }
       },

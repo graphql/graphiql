@@ -3,7 +3,7 @@
 ## Getting Started
 
 This is a working example of `monaco-editor` and `monaco-graphql` using
-Next.js 15 with Turbopack.
+Next.js 16 with Webpack. Use the repository’s Node.js 24 toolchain.
 
 It shows how to use the latest monaco-editor with next.js and a custom
 webworker, without using `@monaco/react` or `monaco-editor-react`'s approach of
@@ -20,5 +20,5 @@ This work was sponsored by [Grafbase](https://grafbase.com)!
 
 ## Setup
 
-1. In monorepo root directory run `yarn` and `yarn build`.
-1. In this directory run `yarn dev`.
+1. In the monorepo root directory, run `pnpm install` and `pnpm build`.
+1. In this directory, run `pnpm dev`.

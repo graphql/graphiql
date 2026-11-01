@@ -16,6 +16,7 @@
   "ignorePaths": [
     "**/CHANGELOG.md",
     "**/package.json",
+    "pnpm-lock.yaml",
     "**/esbuild.js",
     ".oxlintrc.json",
     ".vscode/extensions.json",

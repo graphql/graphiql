@@ -25,6 +25,7 @@ import type {
   GraphQLEnumValue,
   GraphQLField,
   GraphQLInputFieldMap,
+  GraphQLInputObjectType,
   GraphQLInterfaceType,
   GraphQLObjectType,
   GraphQLType,
@@ -131,6 +132,16 @@ export type GraphQLFileInfo = {
   mtime: number;
 };
 
+/** Experimental GraphQL language features that must be explicitly enabled. */
+export type GraphQLLanguageServiceOptions = {
+  experimentalFragmentArguments?: boolean;
+};
+
+export type ArgumentInfo = Pick<
+  GraphQLArgument,
+  'name' | 'type' | 'description'
+>;
+
 export type AllTypeInfo = {
   type: Maybe<GraphQLType>;
   parentType: Maybe<GraphQLType>;
@@ -138,9 +149,10 @@ export type AllTypeInfo = {
   directiveDef: Maybe<GraphQLDirective>;
   fieldDef: Maybe<GraphQLField<any, any>>;
   enumValue: Maybe<GraphQLEnumValue>;
-  argDef: Maybe<GraphQLArgument>;
-  argDefs: Maybe<GraphQLArgument[]>;
+  argDef: Maybe<ArgumentInfo>;
+  argDefs: Maybe<ArgumentInfo[]>;
   objectFieldDefs: Maybe<GraphQLInputFieldMap>;
+  inputObjectType: Maybe<GraphQLInputObjectType>;
   interfaceDef: Maybe<GraphQLInterfaceType>;
   objectTypeDef: Maybe<GraphQLObjectType>;
 };
@@ -163,7 +175,8 @@ export type ObjectTypeInfo = {
   definition: TypeDefinitionNode;
 };
 
-export type Diagnostic = DiagnosticType;
+/** GraphQL error messages remain plain text when LSP also permits markup. */
+export type Diagnostic = DiagnosticType & { message: string };
 
 export type CompletionItemBase = {
   label: string;

@@ -4,10 +4,12 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import { parse, visit } from 'graphql';
+import { visit } from 'graphql';
+import { parseDocument } from '../parser';
 import { collectVariables } from './collectVariables';
 
 import type { VariableToType } from './collectVariables';
+import type { GraphQLLanguageServiceOptions } from '../types';
 import type {
   GraphQLSchema,
   DocumentNode,
@@ -79,13 +81,14 @@ export type QueryFacts = OperationFacts;
 export default function getOperationFacts(
   schema?: GraphQLSchema | null,
   documentString?: string | null,
+  options?: GraphQLLanguageServiceOptions,
 ): OperationFacts | undefined {
   if (!documentString) {
     return;
   }
 
   try {
-    const documentAST = parse(documentString);
+    const documentAST = parseDocument(documentString, options);
     return {
       ...getOperationASTFacts(documentAST, schema),
       documentAST,

@@ -1,29 +1,153 @@
-button.graphiql-execute-button {
-  background-color: hsl(var(--color-primary));
-  border: none;
-  border-radius: var(--border-radius-8);
+.graphiql-execute-button {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-md);
+  color: oklch(var(--fg-default));
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Dropdown triggers reset box sizing through UnStyledButton. */
+.graphiql-execute-button .graphiql-execute-button-segment {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--px-8);
+  height: 28px;
+  padding: 0 var(--px-10);
+  border: 1px solid oklch(var(--border-strong));
+  border-radius: 0;
+  background: oklch(var(--bg-subtle));
+  color: inherit;
+  font: inherit;
+}
+
+.graphiql-execute-button
+  .graphiql-execute-button-segment
+  + .graphiql-execute-button-segment {
+  border-left: 0;
+}
+
+.graphiql-execute-button .graphiql-execute-button-segment:first-child {
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.graphiql-execute-button .graphiql-execute-button-segment:last-child {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.graphiql-execute-button button.graphiql-execute-button-segment {
   cursor: pointer;
-  height: var(--toolbar-width);
+}
+
+.graphiql-execute-button
+  button.graphiql-execute-button-segment:not(
+    .graphiql-execute-button-primary
+  ):hover:not(:disabled) {
+  background: oklch(var(--bg-overlay));
+}
+
+.graphiql-execute-button .graphiql-execute-button-primary {
+  flex-shrink: 0;
+  width: 34px;
   padding: 0;
-  width: var(--toolbar-width);
+  background: oklch(var(--btn-primary));
+  border-color: oklch(var(--btn-primary-border));
+  color: #fff;
+}
 
-  &:hover {
-    background-color: hsla(var(--color-primary), 0.9);
+.graphiql-execute-button
+  button.graphiql-execute-button-primary:hover:not(:disabled) {
+  background: oklch(var(--btn-primary-border));
+}
+
+.graphiql-execute-button .graphiql-execute-button-operation {
+  min-width: 0;
+}
+
+.graphiql-execute-button-name {
+  min-width: 0;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.graphiql-execute-button-operation .graphiql-method-pill,
+.graphiql-execute-button-menu-item .graphiql-method-pill {
+  flex-shrink: 0;
+}
+
+.graphiql-execute-button .graphiql-execute-button-method {
+  flex-shrink: 0;
+}
+
+.graphiql-execute-button-method-label {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-small);
+  color: oklch(var(--accent-green-light));
+}
+
+.graphiql-execute-button-tooltip-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-8);
+}
+
+.graphiql-execute-button-caret-icon {
+  width: 8px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+.graphiql-execute-button-icon {
+  width: auto;
+  height: 11px;
+}
+
+.graphiql-execute-button button:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.graphiql-execute-button .graphiql-execute-button-segment:focus-visible {
+  outline: 2px solid oklch(var(--accent-blue));
+  outline-offset: -2px;
+}
+
+.graphiql-execute-button-menu-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-6);
+}
+
+.graphiql-execute-button-option[aria-checked='true'] {
+  font-weight: var(--font-weight-medium);
+}
+
+.graphiql-execute-button-option:focus-visible {
+  outline: 2px solid oklch(var(--accent-blue));
+  outline-offset: -2px;
+}
+
+/* Unavailable methods stay focusable so keyboard users can read the reason. */
+.graphiql-execute-button-method-option[aria-disabled='true'] {
+  color: oklch(var(--fg-disabled));
+  cursor: default;
+}
+
+@media (forced-colors: active) {
+  .graphiql-execute-button-option:focus-visible {
+    outline-color: Highlight;
   }
+}
 
-  &:active {
-    background-color: hsla(var(--color-primary), 0.8);
-  }
-
-  &:focus {
-    outline: hsla(var(--color-primary), 0.8) auto 1px;
-  }
-
-  & > svg {
-    color: white;
-    display: block;
-    height: var(--px-16);
-    margin: auto;
-    width: var(--px-16);
+@media (max-width: 600px) {
+  .graphiql-execute-button-name {
+    max-width: 130px;
   }
 }

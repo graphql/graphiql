@@ -7,11 +7,11 @@ by adding `.client` to the file name.
 ```tsx
 // graphiql.client.tsx
 import { GraphiQL } from 'graphiql';
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { createTransport } from '@graphiql/toolkit';
 
-const fetcher = createGraphiQLFetcher({ url: 'https://my.backend/graphql' });
+const transport = createTransport({ url: 'https://my.backend/graphql' });
 
-export const graphiql = <GraphiQL fetcher={fetcher} />;
+export const graphiql = <GraphiQL transport={transport} />;
 ```
 
 ```ts
@@ -38,5 +38,5 @@ export default Route;
 
 ## Setup
 
-1. `yarn dev` to start Vite dev server.
-1. `yarn build` to build production ready transpiled files. Find the output in `dist` folder.
+1. `pnpm dev` to start Vite dev server.
+1. `pnpm build` to build production ready transpiled files. Find the output in `dist` folder.

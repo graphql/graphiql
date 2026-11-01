@@ -2,6 +2,22 @@
 
 TODO: Redo for `changesets`. See [`Changesets Readme`](./.changeset/README.md)
 
+## Release branches
+
+Use `main` for development and current releases. Name maintenance branches
+`<major>.x.x`, such as `5.x.x`. The release workflow runs on `main` and branches
+matching `*.x.x`.
+
+Before pushing a new maintenance branch, set `baseBranch` in
+`.changeset/config.json` to that branch and add `--tag latest-<major>` to its
+`changeset publish` command in `package.json`. For example, `5.x.x` uses
+`latest-5`, while `main` publishes under npm's `latest` tag. The branch pattern
+does not configure these values automatically. Protect the maintenance branch
+so it can use the `deploy` environment.
+
+Maintenance branches create npm and GitHub releases. Publishing extensions to
+the VSCode Marketplace and Open VSX is restricted to `main`.
+
 ## VSCode extension releases
 
 After Changesets publishes the npm packages, the release workflow hands the

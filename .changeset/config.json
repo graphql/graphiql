@@ -1,5 +1,5 @@
 {
-  "$schema": "https://unpkg.com/@changesets/config@3.0.2/schema.json",
+  "$schema": "https://unpkg.com/@changesets/config@4.0.1/schema.json",
   "changelog": ["@changesets/changelog-github", { "repo": "graphql/graphiql" }],
   "commit": false,
   "linked": [],
@@ -11,14 +11,12 @@
     "example-graphiql-webpack",
     "example-monaco-graphql-nextjs",
     "example-monaco-graphql-react-vite",
-    "example-monaco-graphql-webpack"
+    "example-monaco-graphql-webpack",
+    "graphiql-e2e"
   ],
   "updateInternalDependencies": "patch",
   "privatePackages": {
     "version": true,
     "tag": true
-  },
-  "___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": {
-    "onlyUpdatePeerDependentsWhenOutOfRange": true
   }
 }
