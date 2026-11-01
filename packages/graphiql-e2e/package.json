@@ -27,9 +27,9 @@
     "@graphiql/toolkit": "1.0.0",
     "graphiql": "6.0.0",
     "graphql": "^17.0.2",
-    "graphql-ws": "^6.3.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "graphql-ws": "^6.4.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
     "@types/react": "^19",
@@ -38,14 +38,14 @@
     "@vitejs/plugin-react": "^5.2.0",
     "axe-core": "^4",
     "babel-plugin-react-compiler": "1.0.0",
-    "concurrently": "^10.0.5",
+    "concurrently": "^10.0.6",
     "cross-env": "^10.1.0",
-    "cypress": "^16.0.0",
+    "cypress": "^16.2.1",
     "cypress-axe": "^1",
     "cypress-each": "^1.14.1",
     "cypress-real-events": "^1.15.1",
     "start-server-and-test": "^1.10.11",
     "typescript": "^5.8.0",
-    "vite": "^8.2.2"
+    "vite": "^8.3.5"
   }
 }

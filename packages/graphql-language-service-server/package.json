@@ -44,8 +44,8 @@
   "COMMENT": "please do not remove dependencies without thorough testing. many dependencies are not imported directly, as they are peer dependencies",
   "dependencies": {
     "@astrojs/compiler": "^4.0.0",
-    "@babel/parser": "^8.0.4",
-    "@babel/types": "^8.0.4",
+    "@babel/parser": "^8.0.10",
+    "@babel/types": "^8.0.10",
     "@graphql-tools/code-file-loader": "8.0.3",
     "@graphql-tools/load": "^8.1.0",
     "cosmiconfig-toml-loader": "^1.0.0",
@@ -55,18 +55,18 @@
     "glob": "^13.0.6",
     "graphql-config": "^5.1.6",
     "graphql-language-service": "^6.0.0",
-    "lru-cache": "^11.5.2",
-    "node-abort-controller": "^3.0.1",
+    "lru-cache": "^11.5.3",
+    "node-abort-controller": "^3.1.1",
     "nullthrows": "^1.0.0",
     "source-map-js": "1.2.2",
-    "svelte": "^5.55.7",
+    "svelte": "^5.57.3",
     "svelte2tsx": "^0.7.61",
     "typescript": "^5.8.0",
     "vscode-jsonrpc": "^9.0.2",
     "vscode-languageserver": "^8.0.1",
-    "vscode-languageserver-types": "^3.17.2",
-    "vscode-uri": "^3.0.2",
-    "vue": "^3.2.0"
+    "vscode-languageserver-types": "^3.18.5",
+    "vscode-uri": "^3.2.0",
+    "vue": "^3.5.44"
   },
   "devDependencies": {
     "@types/debounce-promise": "^3.1.9",
@@ -74,6 +74,6 @@
     "@typescript/native": "npm:typescript@7.1.0-beta",
     "graphql": "^17.0.2",
     "msw": "^2.13.4",
-    "vscode-languageserver-protocol": "^3.17.1"
+    "vscode-languageserver-protocol": "^3.18.5"
   }
 }

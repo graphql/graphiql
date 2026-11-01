@@ -33,12 +33,12 @@
   },
   "dependencies": {
     "debounce-promise": "^3.1.2",
-    "vscode-languageserver-types": "^3.17.1"
+    "vscode-languageserver-types": "^3.18.5"
   },
   "devDependencies": {
     "@types/benchmark": "^2.1.5",
     "@types/debounce-promise": "^3.1.9",
-    "@types/json-schema": "7.0.9",
+    "@types/json-schema": "7.0.15",
     "@typescript/native": "npm:typescript@7.1.0-beta",
     "benchmark": "^2.1.4",
     "graphql": "^17.0.2",
