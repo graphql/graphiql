@@ -1,10 +1,12 @@
 ---
 '@graphiql/toolkit': minor
 '@graphiql/react': minor
-'graphiql': minor
+'graphiql': major
 ---
 
 Add `createTransport` and a structured `Transport` API for queries, mutations, subscriptions, and incremental delivery. Pass a transport through `<GraphiQL transport={...}>`; the `transport` and `fetcher` props are mutually exclusive at the type level.
+
+`GraphiQLProps` is now a union. If a TypeScript wrapper uses `interface AppProps extends GraphiQLProps`, replace it with a type intersection such as `type AppProps = GraphiQLProps & { applicationName: string }`, even when retaining `fetcher`. See the [migration overview](https://github.com/graphql/graphiql/blob/c2e792bc446d5d6751bd7cd1d9ac283a4a1d8fc4/docs/migration/graphiql-6.0.0.md#overview).
 
 When `supportedMethods` is omitted, `createTransport` discovers endpoint capabilities through `OPTIONS` and the `Allow` header. Queries prefer QUERY, then POST, then GET. Mutations and operations of unknown type require POST. An explicit `method` override applies to queries and fails if the endpoint excludes it. GET sends GraphQL parameters in the URL; POST and QUERY send a JSON body.
 
@@ -16,4 +18,4 @@ Plugins can transform outgoing requests with `onBeforeSend` and observe response
 
 Transports can expose query method preferences through optional `setMethod`, `methodOverride`, and `subscribe(listener)` APIs. Calling `setMethod()` without an argument restores automatic selection. `methodOverride` distinguishes an explicit preference from Auto; `Transport.method` reflects the query method, while `TransportResponse.method` reports the method actually used for an execution. `subscribe(listener)` notifies GraphiQL of preference and capability changes and returns an unsubscribe function. These notifications are independent of request lifecycle hooks. `createTransport` implements these APIs; custom transports can omit them.
 
-`createGraphiQLFetcher`, `Fetcher`, and `<GraphiQL fetcher={...}>` are deprecated but remain supported. See `docs/migration/graphiql-6.0.0.md` for migration examples and custom transport requirements.
+`createGraphiQLFetcher`, `Fetcher`, and `<GraphiQL fetcher={...}>` are deprecated but remain supported. See the [Transport migration guide](https://github.com/graphql/graphiql/blob/c2e792bc446d5d6751bd7cd1d9ac283a4a1d8fc4/docs/migration/graphiql-6.0.0.md#new-transport-api) for examples and custom transport requirements.

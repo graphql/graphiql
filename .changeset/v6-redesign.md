@@ -1,8 +1,6 @@
 ---
 'graphiql': major
 '@graphiql/react': minor
-'@graphiql/plugin-doc-explorer': minor
-'@graphiql/plugin-history': patch
 ---
 
 pr: 4228
@@ -17,4 +15,4 @@ Improve keyboard focus visibility and screen-reader labels throughout the interf
 
 Unify GraphQL syntax coloring across Documentation Explorer, History, and Query Builder. Use the `--type-scalar`, `--type-enum`, `--type-input`, and `--type-composite` CSS tokens and the exported `typeCategory` helper to customize type-category colors.
 
-The design tokens use OKLCH colors, and the build targets the `defaults` browserslist preset. Custom CSS that overrides internal class names may need updating; CSS custom properties are the supported theming API. See `docs/migration/graphiql-6.0.0.md` for migration guidance. Refs graphql/graphiql#4219.
+The design tokens use OKLCH colors, and the build targets the `defaults` browserslist preset. The v5 `--color-*` variables remain defined but no longer theme the built-in UI; migrate existing overrides to the new OKLCH tokens. Custom CSS that overrides internal class names may also need updating. See [CSS and retheming](https://github.com/graphql/graphiql/blob/c2e792bc446d5d6751bd7cd1d9ac283a4a1d8fc4/docs/migration/graphiql-6.0.0.md#css-and-retheming) for migration guidance. Refs graphql/graphiql#4219.
