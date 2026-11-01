@@ -56,9 +56,10 @@ jobs:
           createGithubReleases: false
 
       # The action only pushes tags when it creates GitHub releases. Keep the
-      # maintenance tags without changing GitHub's latest release.
+      # maintenance tags, including after a partial publish, without changing
+      # GitHub's latest release.
       - name: Push maintenance release tags
-        if: ${{ steps.changesets.outputs.published == 'true' }}
+        if: ${{ !cancelled() && steps.changesets.outputs.published == 'true' }}
         env:
           PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
         run: |
