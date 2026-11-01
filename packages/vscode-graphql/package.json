@@ -181,7 +181,7 @@
   },
   "devDependencies": {
     "@types/capitalize": "2.0.2",
-    "@types/vscode": "1.62.0",
+    "@types/vscode": "1.63.2",
     "@typescript/native": "npm:typescript@^7.0.2",
     "@vscode/vsce": "^4.1.0",
     "esbuild": "0.28.2",
