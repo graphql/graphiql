@@ -216,7 +216,6 @@ export class MessageProcessor {
       : this._rootPath;
     if (settings?.dotEnvPath) {
       require('dotenv').config({
-        quiet: true,
         path: path.resolve(rootDir, settings.dotEnvPath),
       });
     }

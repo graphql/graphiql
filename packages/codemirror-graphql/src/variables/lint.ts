@@ -8,7 +8,6 @@
  */
 
 import CodeMirror from 'codemirror';
-import type { Annotation } from 'codemirror/addon/lint/lint';
 import {
   GraphQLEnumType,
   GraphQLInputObjectType,
@@ -84,7 +83,7 @@ function validateVariables(
   variableToType: VariableToType,
   variablesAST: ParseObjectOutput,
 ) {
-  const errors: Annotation[] = [];
+  const errors: CodeMirror.Annotation[] = [];
 
   for (const member of variablesAST.members) {
     if (member) {
@@ -223,7 +222,7 @@ function lintError(
   editor: CodeMirror.Editor,
   node: { start: number; end: number },
   message: string,
-): Annotation & { type: string } {
+): CodeMirror.Annotation & { type: string } {
   return {
     message,
     severity: 'error',
