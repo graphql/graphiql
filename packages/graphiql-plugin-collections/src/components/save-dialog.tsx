@@ -25,6 +25,7 @@ export const SaveDialog: FC = () => {
   useEffect(() => {
     if (open) {
       const { collections: current } = collectionsStore.getState();
+      // oxlint-disable-next-line react/set-state-in-effect -- Initialize the form for a save request from the external collections store.
       setName(initialName);
       setDescription('');
       setSelectedCollectionId(current[0]?.id ?? NEW_COLLECTION);

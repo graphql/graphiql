@@ -42,6 +42,7 @@ export const QueryBuilder: FC = () => {
     {},
   );
   useEffect(() => {
+    // oxlint-disable-next-line react/set-state-in-effect -- Reset local overrides when the external editor changes operation.
     setManualExpanded({});
   }, [activeOpKind]);
 

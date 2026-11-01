@@ -76,6 +76,7 @@ export const TypeConditionSelector: FC<TypeConditionSelectorProps> = ({
   // Only opens, never force-closes, so the user can still collapse it manually.
   useEffect(() => {
     if (hasSelectedCondition) {
+      // oxlint-disable-next-line react/set-state-in-effect -- Reveal changes from the external editor without overriding manual collapse.
       setExpanded(true);
     }
   }, [hasSelectedCondition]);
@@ -92,6 +93,7 @@ export const TypeConditionSelector: FC<TypeConditionSelectorProps> = ({
     cursorPath[fieldPath.length]?.kind === 'inlineFragment';
   useEffect(() => {
     if (cursorInCondition) {
+      // oxlint-disable-next-line react/set-state-in-effect -- Reveal changes from the external editor without overriding manual collapse.
       setExpanded(true);
     }
   }, [cursorPath, cursorInCondition]);

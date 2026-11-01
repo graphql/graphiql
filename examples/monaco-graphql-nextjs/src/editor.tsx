@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useRef, useState } from 'react';
+import { ReactElement, useEffect, useRef } from 'react';
 import { getIntrospectionQuery, IntrospectionQuery } from 'graphql';
 import { editor, KeyMod, KeyCode } from 'monaco-graphql/monaco-editor';
 
@@ -69,8 +69,6 @@ export default function Editor(): ReactElement {
   const responseRef = useRef<HTMLDivElement>(null!);
   const tsRef = useRef<HTMLDivElement>(null!);
 
-  const [schema, setSchema] = useState<IntrospectionQuery>();
-  const [loading, setLoading] = useState(false);
   /**
    * Create the models & editors
    */
@@ -169,18 +167,12 @@ export default function Editor(): ReactElement {
    * Handle the initial schema load
    */
   useEffect(() => {
-    if (schema || loading) {
-      return;
-    }
-    setLoading(true);
     void getSchema().then(async introspectionJSON => {
       MONACO_GRAPHQL_API.setSchemaConfig([
         { introspectionJSON, uri: 'my-schema.graphql' },
       ]);
-      setSchema(introspectionJSON);
-      setLoading(false);
     });
-  }, [schema, loading]);
+  }, []);
 
   return (
     <>

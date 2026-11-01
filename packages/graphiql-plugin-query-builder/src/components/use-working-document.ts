@@ -156,6 +156,7 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     lastSyncedRef.current = queryText ?? null;
     const parsed = tryParse(queryText);
     if (parsed) {
+      // oxlint-disable-next-line react/set-state-in-effect -- Adopt external editor edits while retaining the last valid document.
       setWorkingDoc(parsed);
     } else if (!queryText?.trim()) {
       setWorkingDoc(emptyDoc());
@@ -187,6 +188,7 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
         : undefined;
   useEffect(() => {
     if (cursorFragment !== undefined) {
+      // oxlint-disable-next-line react/set-state-in-effect -- Keep the target synchronized with the external editor cursor.
       setActiveFragment(cursorFragment);
     }
   }, [cursorFragment]);
@@ -242,6 +244,7 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
 
   useEffect(() => {
     if (activeFragment != null && visibleFragment == null) {
+      // oxlint-disable-next-line react/set-state-in-effect -- Restore the editor cursor when its active fragment disappears.
       moveCursorToTarget({ kind: 'operation', name: operationName });
     }
   }, [activeFragment, visibleFragment, operationName, moveCursorToTarget]);

@@ -42,6 +42,7 @@ export function useCursorReveal(
     if (!isTarget) {
       return;
     }
+    // oxlint-disable-next-line react/set-state-in-effect -- Restart the highlight timer for each external editor cursor event.
     setFlash(true);
     // Scroll the header row into view, not the whole node. For a composite field
     // the node also wraps its expanded children, so centering the node would
