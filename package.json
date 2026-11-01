@@ -78,7 +78,7 @@
     "execa": "^10.0.1",
     "js-green-licenses": "4.0.0",
     "msw": "^3.0.3",
-    "oxfmt": "^0.67.0",
+    "oxfmt": "^0.75.0",
     "oxlint": "^1.90.0",
     "oxlint-plugin-eslint": "^1.90.0",
     "oxlint-tsgolint": "7.0.2005",
