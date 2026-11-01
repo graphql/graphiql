@@ -89,7 +89,7 @@
     "vsce:package": "pnpm compile && vsce package --no-dependencies"
   },
   "devDependencies": {
-    "@types/capitalize": "2.0.0",
+    "@types/capitalize": "2.0.2",
     "@types/node": "^24",
     "@types/vscode": "1.62.0",
     "@types/ws": "8.18.2",
