@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import { Button, Dialog } from '@graphiql/react';
 import { useCollectionsStore, collectionsStore } from '../store';
 
@@ -10,29 +10,26 @@ const NEW_COLLECTION = '__new__';
  * it imperatively via `requestSave`.
  */
 export const SaveDialog: FC = () => {
-  const collections = useCollectionsStore(s => s.collections);
-  const actions = useCollectionsStore(s => s.actions);
-  const { open, name: initialName } = useCollectionsStore(s => s.saveDialog);
-  const [saving, setSaving] = useState(false);
+  const { open, name, requestId } = useCollectionsStore(s => s.saveDialog);
+  const closeSaveDialog = useCollectionsStore(s => s.actions.closeSaveDialog);
 
+  return (
+    <Dialog open={open} onOpenChange={o => !o && closeSaveDialog()}>
+      {open && <SaveDialogForm key={requestId} initialName={name} />}
+    </Dialog>
+  );
+};
+
+const SaveDialogForm: FC<{ initialName: string }> = ({ initialName }) => {
+  const collections = useCollectionsStore(s => s.collections);
+  const closeSaveDialog = useCollectionsStore(s => s.actions.closeSaveDialog);
+  const [saving, setSaving] = useState(false);
   const [name, setName] = useState(initialName);
   const [description, setDescription] = useState('');
-  const [selectedCollectionId, setSelectedCollectionId] =
-    useState<string>(NEW_COLLECTION);
+  const [selectedCollectionId, setSelectedCollectionId] = useState(
+    () => collections[0]?.id ?? NEW_COLLECTION,
+  );
   const [newCollectionName, setNewCollectionName] = useState('New Collection');
-
-  // Reset the form each time the dialog opens with a fresh operation.
-  useEffect(() => {
-    if (open) {
-      const { collections: current } = collectionsStore.getState();
-      // oxlint-disable-next-line react/set-state-in-effect -- Initialize the form for a save request from the external collections store.
-      setName(initialName);
-      setDescription('');
-      setSelectedCollectionId(current[0]?.id ?? NEW_COLLECTION);
-      setNewCollectionName('New Collection');
-      setSaving(false);
-    }
-  }, [open, initialName]);
 
   const handleSave = async () => {
     setSaving(true);
@@ -54,7 +51,7 @@ export const SaveDialog: FC = () => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={o => !o && actions.closeSaveDialog()}>
+    <>
       <Dialog.Header>Save to collection</Dialog.Header>
       <Dialog.Description className="graphiql-sr-only">
         Save the current operation to a collection.
@@ -116,11 +113,7 @@ export const SaveDialog: FC = () => {
           )}
         </Dialog.Body>
         <Dialog.Footer>
-          <Button
-            type="button"
-            disabled={saving}
-            onClick={() => actions.closeSaveDialog()}
-          >
+          <Button type="button" disabled={saving} onClick={closeSaveDialog}>
             Cancel
           </Button>
           <Button type="submit" variant="primary" disabled={saving}>
@@ -128,6 +121,6 @@ export const SaveDialog: FC = () => {
           </Button>
         </Dialog.Footer>
       </form>
-    </Dialog>
+    </>
   );
 };

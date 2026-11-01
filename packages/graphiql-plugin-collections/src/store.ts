@@ -17,6 +17,8 @@ import { loadTabLinks, saveTabLinks, type TabLink } from './storage/tab-links';
 /** The active operation being saved, as seen by the save dialog. */
 export type SaveDialogState = {
   open: boolean;
+  /** Identifies a fresh request, including operations with the same name. */
+  requestId?: number;
   /** The tab this save originated from, linked to the item once saved. */
   tabId?: string;
   query: string;
@@ -100,12 +102,13 @@ type CollectionsActions = {
     collectionId?: string;
     newCollectionName?: string;
   }): Promise<void>;
-  openSaveDialog(input: Omit<SaveDialogState, 'open'>): void;
+  openSaveDialog(input: Omit<SaveDialogState, 'open' | 'requestId'>): void;
   closeSaveDialog(): void;
 };
 
 const INITIAL_SAVE_DIALOG: SaveDialogState = {
   open: false,
+  requestId: 0,
   query: '',
   variables: '',
   headers: '',
@@ -700,7 +703,13 @@ export const collectionsStore = createStore<StoreShape>((set, get) => {
         }
       },
       openSaveDialog(input) {
-        set({ saveDialog: { ...input, open: true } });
+        set(s => ({
+          saveDialog: {
+            ...input,
+            open: true,
+            requestId: (s.saveDialog.requestId ?? 0) + 1,
+          },
+        }));
       },
       closeSaveDialog() {
         if (committingDialog) {
