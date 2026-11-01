@@ -41,8 +41,8 @@ overrides:
   postcss@8: ^8.5.23
   vscode-languageserver-types: 3.17.3
   markdown-it: 15.0.3
-  react: 19.2.7
-  react-dom: 19.2.7
+  react: 19.3.1
+  react-dom: 19.3.1
   vite: ^8.3.5
 
 patchedDependencies:
