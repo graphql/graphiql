@@ -11,7 +11,7 @@ Redesign GraphiQL with light and dark themes, an endpoint and Run bar, a plugin 
 
 The top bar joins Run/Stop with the selected operation name, its QRY/MUT/SUB label, and an HTTP method selector. Selecting an operation does not execute it; use Run or the keyboard shortcut. The method menu offers Auto for queries and explains unavailable options. Selected rows use the GraphQL logo pink, while keyboard focus has a separate outline.
 
-The response pane adds HTTP method, status, timing, and size from transports that provide them, a copy action, and persisted JSON, Tree, and Table views ([#4321](https://github.com/graphql/graphiql/pull/4321)). Tree expands response objects and arrays; Table presents each list field separately. Saved operations show when they have unsaved edits, and tabs with multiple operations identify the active operation.
+The response pane adds HTTP method, status, timing, and size from transports that provide them, a copy action, and persisted JSON, Tree, and Table views. Tree expands response objects and arrays; Table presents each list field separately. Saved operations show when they have unsaved edits, and tabs with multiple operations identify the active operation.
 
 Improve keyboard focus visibility and screen-reader labels throughout the interface. Escape cancels History label edits and returns focus to the edit button. Closing Settings returns focus to its trigger.
 
