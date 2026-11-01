@@ -92,7 +92,7 @@
     "@types/capitalize": "2.0.0",
     "@types/node": "^24",
     "@types/vscode": "1.62.0",
-    "@types/ws": "8.2.2",
+    "@types/ws": "8.18.2",
     "@typescript/native": "npm:typescript@^7.0.2",
     "@vscode/vsce": "^3.9.2",
     "esbuild": "0.28.2",
@@ -106,13 +106,13 @@
     "dotenv": "10.0.0",
     "graphql": "^16.14.2",
     "graphql-config": "^5.1.6",
-    "graphql-ws": "6.0.8",
+    "graphql-ws": "6.4.1",
     "node-fetch": "^3.3.2",
     "nullthrows": "1.1.1",
     "svelte": "^5.55.7",
     "svelte2tsx": "^0.7.61",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "wonka": "^6.3.6",
-    "ws": "8.21.0"
+    "ws": "8.22.0"
   }
 }

@@ -76,8 +76,8 @@ importers:
         specifier: ^24
         version: 24.19.2
       '@types/ws':
-        specifier: 8.2.2
-        version: 8.2.2
+        specifier: 8.18.2
+        version: 8.18.2
       '@typescript/native':
         specifier: npm:typescript@^7.0.2
         version: typescript@7.0.2
@@ -736,10 +736,10 @@ importers:
         version: 1.13.0(graphql@17.0.2)
       graphql-ws:
         specifier: ^6.3.0
-        version: 6.4.1(graphql@17.0.2)(ws@8.21.0)
+        version: 6.4.1(graphql@17.0.2)(ws@8.22.0)
       ws:
-        specifier: 8.21.0
-        version: 8.21.0
+        specifier: 8.22.0
+        version: 8.22.0
 
   packages/graphiql-plugin-code-exporter:
     dependencies:
@@ -1485,8 +1485,8 @@ importers:
         specifier: ^5.1.6
         version: 5.1.8(@types/node@24.19.2)(@typescript/typescript6@6.0.2)(cosmiconfig-toml-loader@1.0.0)(graphql@16.14.2)
       graphql-ws:
-        specifier: 6.0.8
-        version: 6.0.8(graphql@16.14.2)(ws@8.21.0)
+        specifier: 6.4.1
+        version: 6.4.1(graphql@16.14.2)(ws@8.22.0)
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
@@ -1506,8 +1506,8 @@ importers:
         specifier: ^6.3.6
         version: 6.3.6
       ws:
-        specifier: 8.21.0
-        version: 8.21.0
+        specifier: 8.22.0
+        version: 8.22.0
     devDependencies:
       '@types/capitalize':
         specifier: 2.0.0
@@ -1519,8 +1519,8 @@ importers:
         specifier: 1.62.0
         version: 1.62.0
       '@types/ws':
-        specifier: 8.2.2
-        version: 8.2.2
+        specifier: 8.18.2
+        version: 8.18.2
       '@typescript/native':
         specifier: npm:typescript@^7.0.2
         version: typescript@7.0.2
@@ -5857,9 +5857,6 @@ packages:
   '@types/ws@8.18.2':
     resolution: {integrity: sha512-67MQl+fpWKVTT1NYdnmo3U4sc/xPo/zQBncVnI74qmQa0z/b+1g6iYqNmGCPbxO+zz2aklb08a0oHfegiVd0/w==}
 
-  '@types/ws@8.2.2':
-    resolution: {integrity: sha512-NOn5eIcgWLOo6qW8AcuLZ7G8PycXu0xTxxkS6Q18VWFxgPUSOwV0pBj2a/4viNZVu25i7RIB7GttdkAIUUXOOg==}
-
   '@types/yargs-parser@21.0.3':
     resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
 
@@ -8072,22 +8069,6 @@ packages:
     resolution: {integrity: sha512-cqDKMoRywKjnL0ZWCTB0GOiBgsH6d3nU4JGDF6RuzAyd35tmalzKpSxkx3NNp4H5RvnKWnrukWzR51wUq277ng==}
     peerDependencies:
       graphql: ^15.3.0 || ^16.0.0
-
-  graphql-ws@6.0.8:
-    resolution: {integrity: sha512-m3EOaNsUBXwAnkBWbzPfe0Nq8pXUfxsWnolC54sru3FzHvhTZL0Ouf/BoQsaGAXqM+YPerXOJ47BUnmgmoupCw==}
-    engines: {node: '>=20'}
-    peerDependencies:
-      '@fastify/websocket': ^10 || ^11
-      crossws: ~0.3
-      graphql: ^15.10.1 || ^16
-      ws: ^8
-    peerDependenciesMeta:
-      '@fastify/websocket':
-        optional: true
-      crossws:
-        optional: true
-      ws:
-        optional: true
 
   graphql-ws@6.4.1:
     resolution: {integrity: sha512-a3MzY5u+tCHHwuyimzxMAHZQ6TY7bOpkQURtKXE5kKIkBdsZ2axlb7sLzMpzGFO4guhws9FyMVB1onyX58pO4w==}
@@ -11674,18 +11655,6 @@ packages:
       utf-8-validate:
         optional: true
 
-  ws@8.21.0:
-    resolution: {integrity: sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-
   ws@8.22.0:
     resolution: {integrity: sha512-Ydggc987+RO0AnWtZ/7Wq9FtNvcrL1b/RO0ud9mWjUPgDrsAAwQSF51sm2hm1XofbU/4jkpGEsLFsZZxU+1DOg==}
     engines: {node: '>=10.0.0'}
@@ -13993,10 +13962,10 @@ snapshots:
       '@graphql-tools/utils': 12.1.0(graphql@16.14.2)
       '@whatwg-node/disposablestack': 0.0.6
       graphql: 16.14.2
-      graphql-ws: 6.4.1(graphql@16.14.2)(ws@8.21.0)
-      isows: 1.0.7(ws@8.21.0)
+      graphql-ws: 6.4.1(graphql@16.14.2)(ws@8.22.0)
+      isows: 1.0.7(ws@8.22.0)
       tslib: 2.8.1
-      ws: 8.21.0
+      ws: 8.22.0
     transitivePeerDependencies:
       - '@fastify/websocket'
       - bufferutil
@@ -14009,10 +13978,10 @@ snapshots:
       '@graphql-tools/utils': 12.1.0(graphql@17.0.2)
       '@whatwg-node/disposablestack': 0.0.6
       graphql: 17.0.2
-      graphql-ws: 6.4.1(graphql@17.0.2)(ws@8.21.0)
-      isows: 1.0.7(ws@8.21.0)
+      graphql-ws: 6.4.1(graphql@17.0.2)(ws@8.22.0)
+      isows: 1.0.7(ws@8.22.0)
       tslib: 2.8.1
-      ws: 8.21.0
+      ws: 8.22.0
     transitivePeerDependencies:
       - '@fastify/websocket'
       - bufferutil
@@ -16395,10 +16364,6 @@ snapshots:
   '@types/vscode@1.62.0': {}
 
   '@types/ws@8.18.2':
-    dependencies:
-      '@types/node': 24.19.2
-
-  '@types/ws@8.2.2':
     dependencies:
       '@types/node': 24.19.2
 
@@ -19038,29 +19003,11 @@ snapshots:
     dependencies:
       graphql: 17.0.2
 
-  graphql-ws@6.0.8(graphql@16.14.2)(ws@8.21.0):
-    dependencies:
-      graphql: 16.14.2
-    optionalDependencies:
-      ws: 8.21.0
-
-  graphql-ws@6.4.1(graphql@16.14.2)(ws@8.21.0):
-    dependencies:
-      graphql: 16.14.2
-    optionalDependencies:
-      ws: 8.21.0
-
   graphql-ws@6.4.1(graphql@16.14.2)(ws@8.22.0):
     dependencies:
       graphql: 16.14.2
     optionalDependencies:
       ws: 8.22.0
-
-  graphql-ws@6.4.1(graphql@17.0.2)(ws@8.21.0):
-    dependencies:
-      graphql: 17.0.2
-    optionalDependencies:
-      ws: 8.21.0
 
   graphql-ws@6.4.1(graphql@17.0.2)(ws@8.22.0):
     dependencies:
@@ -19582,9 +19529,9 @@ snapshots:
     dependencies:
       ws: 8.22.0
 
-  isows@1.0.7(ws@8.21.0):
+  isows@1.0.7(ws@8.22.0):
     dependencies:
-      ws: 8.21.0
+      ws: 8.22.0
 
   isstream@0.1.2: {}
 
@@ -22600,7 +22547,7 @@ snapshots:
       opener: 1.5.2
       picocolors: 1.1.1
       sirv: 3.0.2
-      ws: 8.21.0
+      ws: 8.22.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -22630,7 +22577,7 @@ snapshots:
       schema-utils: 4.8.1(webpack@5.112.2)
     optionalDependencies:
       webpack: 5.112.2(esbuild@0.28.2)(postcss@8.5.32)(svgo@4.1.0)(webpack-cli@7.2.3)
-      ws: 8.21.0
+      ws: 8.22.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -22660,7 +22607,7 @@ snapshots:
       serve-index: 1.9.2
       tinyglobby: 0.2.17
       webpack-dev-middleware: 8.5.0(webpack@5.112.2)
-      ws: 8.21.0
+      ws: 8.22.0
     optionalDependencies:
       webpack: 5.112.2(esbuild@0.28.2)(postcss@8.5.32)(svgo@4.1.0)(webpack-cli@7.2.3)
       webpack-cli: 7.2.3(js-yaml@4.3.2)(json5@2.2.3)(webpack-bundle-analyzer@5.4.0)(webpack-dev-server@6.1.0)(webpack@5.112.2)
@@ -23040,8 +22987,6 @@ snapshots:
   wrappy@1.0.2: {}
 
   ws@7.5.13: {}
-
-  ws@8.21.0: {}
 
   ws@8.22.0: {}
 
