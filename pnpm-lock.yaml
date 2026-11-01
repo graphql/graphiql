@@ -1249,8 +1249,8 @@ importers:
         specifier: ^3.1.9
         version: 3.1.9
       '@types/json-schema':
-        specifier: 7.0.9
-        version: 7.0.9
+        specifier: 7.0.15
+        version: 7.0.15
       '@typescript/native':
         specifier: npm:typescript@^7.0.2
         version: typescript@7.0.2
@@ -1433,8 +1433,8 @@ importers:
         version: 8.0.2
     devDependencies:
       '@types/capitalize':
-        specifier: 2.0.0
-        version: 2.0.0
+        specifier: 2.0.2
+        version: 2.0.2
       '@types/vscode':
         specifier: 1.62.0
         version: 1.62.0
@@ -1500,8 +1500,8 @@ importers:
         version: 8.22.0
     devDependencies:
       '@types/capitalize':
-        specifier: 2.0.0
-        version: 2.0.0
+        specifier: 2.0.2
+        version: 2.0.2
       '@types/node':
         specifier: ^24
         version: 24.19.2
@@ -5937,8 +5937,8 @@ packages:
   '@types/cacheable-request@6.0.3':
     resolution: {integrity: sha512-IQ3EbTzGxIigb1I3qPZc1rWJnH0BmSKv5QYTalEwweFvyBDLSAe24zP0le/hyi7ecGfZVlIVAg4BZqb8WBwKqw==}
 
-  '@types/capitalize@2.0.0':
-    resolution: {integrity: sha512-Jxz08Zch+/J+R3DUcPGmXZ4hNzZImd/FXXij32ByTfclrCQr15+geQjV5teTyFQb3zYPi7O5pRv2/YsyDfRmjA==}
+  '@types/capitalize@2.0.2':
+    resolution: {integrity: sha512-J3I2HyJL4ui26Nwg6fQHx+1pg4Mn0i25T2Q1DIE1fyfySERXlT7j0F06gI52COlt8J26YETAWUCzrWNH/F/PeA==}
 
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
@@ -6005,9 +6005,6 @@ packages:
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
-
-  '@types/json-schema@7.0.9':
-    resolution: {integrity: sha512-qcUXuemtEu+E5wZSJHNxUXeCZhAfXKQ41D+duX+VYPde7xyEVZci+/oXKJL13tnRs9lR2pr4fod59GT6/X1/yQ==}
 
   '@types/keyv@3.1.4':
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
@@ -16375,7 +16372,7 @@ snapshots:
       '@types/node': 24.19.2
       '@types/responselike': 1.0.3
 
-  '@types/capitalize@2.0.0': {}
+  '@types/capitalize@2.0.2': {}
 
   '@types/chai@5.2.3':
     dependencies:
@@ -16445,8 +16442,6 @@ snapshots:
   '@types/jsesc@2.5.1': {}
 
   '@types/json-schema@7.0.15': {}
-
-  '@types/json-schema@7.0.9': {}
 
   '@types/keyv@3.1.4':
     dependencies:
@@ -21174,7 +21169,7 @@ snapshots:
 
   schema-utils@3.3.0:
     dependencies:
-      '@types/json-schema': 7.0.9
+      '@types/json-schema': 7.0.15
       ajv: 6.15.0
       ajv-keywords: 3.5.2(ajv@6.15.0)
 

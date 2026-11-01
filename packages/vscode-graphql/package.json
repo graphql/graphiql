@@ -180,7 +180,7 @@
     "env:source": "export $(cat .envrc | xargs)"
   },
   "devDependencies": {
-    "@types/capitalize": "2.0.0",
+    "@types/capitalize": "2.0.2",
     "@types/vscode": "1.62.0",
     "@typescript/native": "npm:typescript@^7.0.2",
     "@vscode/vsce": "^4.1.0",
