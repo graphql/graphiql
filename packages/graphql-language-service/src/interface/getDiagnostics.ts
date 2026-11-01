@@ -25,9 +25,9 @@ import { CharacterStream, onlineParser, parseDocument } from '../parser';
 
 import { Range, validateWithCustomRules, Position } from '../utils';
 
-import { DiagnosticSeverity, Diagnostic } from 'vscode-languageserver-types';
+import { DiagnosticSeverity } from 'vscode-languageserver-types';
 
-import { GraphQLLanguageServiceOptions, IRange } from '../types';
+import { GraphQLLanguageServiceOptions, IRange, Diagnostic } from '../types';
 
 // this doesn't work without the 'as', kinda goofy
 

@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "debounce-promise": "^3.1.2",
-    "vscode-languageserver-types": "^3.17.1"
+    "vscode-languageserver-types": "^3.18.5"
   },
   "devDependencies": {
     "@types/benchmark": "^2.1.5",

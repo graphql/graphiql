@@ -37,7 +37,7 @@ overrides:
   dompurify@3: ^3.4.17
   eslint: ^10.12.0
   postcss@8: ^8.5.23
-  vscode-languageserver-types: 3.17.3
+  vscode-languageserver-types: 3.18.5
   markdown-it: 15.0.3
   react: 19.3.1
   react-dom: 19.3.1
