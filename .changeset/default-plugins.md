@@ -2,4 +2,6 @@
 'graphiql': minor
 ---
 
-Export the immutable `DEFAULT_PLUGINS` array and the default Query Builder and Collections plugin constants. Customize GraphiQL's defaults without importing its plugin packages directly.
+Include Query Builder and Collections alongside History in GraphiQL's default plugin set. Passing `plugins` replaces this set; use `plugins={[...DEFAULT_PLUGINS, customPlugin]}` to extend it. The Documentation Explorer remains controlled separately by `referencePlugin`.
+
+Export the immutable `DEFAULT_PLUGINS` array, `QUERY_BUILDER_PLUGIN`, and `COLLECTIONS_PLUGIN` from `graphiql` so you can customize the defaults without importing each plugin package.

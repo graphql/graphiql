@@ -3,6 +3,6 @@
 'graphiql': minor
 ---
 
-pr: 4338
+Add `useGraphiQLSettings()` for reading and updating persisted theme, density, and font-size preferences. Settings are shared between consumers, including plugins and the exported `SettingsDialog`. The hook exposes `resolvedTheme` so plugins can follow light and dark appearance, including operating-system changes when the theme is `auto`.
 
-Add a `SettingsDialog` with theme, density, font-size, and persist-headers controls, backed by a new `useGraphiQLSettings()` hook that persists preferences to `localStorage` and applies them to the GraphiQL container via `data-*` attributes. Density and font-size presets fill in concrete token values for the `[data-density]` and `[data-font-size]` blocks in `tokens.css`; Monaco editor font size, the status bar, and UI icon sizes follow the active font-size preset. The `forcedTheme` and `showPersistHeadersSettings` props continue to work, with `forcedTheme` hiding the theme control.
+`SettingsDialog` also controls header persistence. The existing `forcedTheme` and `showPersistHeadersSettings` props continue to apply; a forced theme hides the theme control.

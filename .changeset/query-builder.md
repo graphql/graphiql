@@ -3,6 +3,6 @@
 'graphiql': minor
 ---
 
-Add `@graphiql/plugin-query-builder`, a first-party visual query builder. It renders the schema's root types as a collapsible tree; checking a field adds it to the current operation and unchecking removes it, with the document parsed, mutated, and reprinted through the `graphql` package's AST utilities. Fields expose argument inputs (scalars, enums, lists, and input objects, including lists of input objects), scalar arguments can be promoted to variables, named fragments can be extracted from a field's selection and edited in place, and union/interface fields offer inline-fragment type-condition selectors.
+Add `@graphiql/plugin-query-builder` for building operations from a schema. Select fields and arguments, promote scalar arguments to variables, extract and edit named fragments, and add inline fragments for union or interface types. Edits update the active operation in the editor.
 
-The query builder is default-installed in the `graphiql` meta-package, so it is available with no extra setup. It takes over from `@graphiql/plugin-explorer`.
+The package exports `QUERY_BUILDER_PLUGIN` for registration and `QueryBuilder` for custom integrations.

@@ -4,14 +4,8 @@
 'graphiql': minor
 ---
 
-pr: 4359
+Add `@graphiql/plugin-collections` for saving operations in named collections, reopening them in tabs, and sharing or importing collections as JSON. Save with Cmd+S/Ctrl+S or the Save button. Re-saving an operation opened from a collection updates that saved item. Imports match items by stable ID and offer conflict resolution; merging preserves existing items.
 
-New `@graphiql/plugin-collections` plugin for saving named operations into folder collections and reusing them later, default-installed in the `graphiql` meta-package so a Collections rail icon appears out of the box (passing the `plugins` prop opts out of the default set as before).
+Use `COLLECTIONS_PLUGIN` for the default configuration, or `collectionsPlugin(options)` to configure a storage adapter, `readOnly`, `allowImportExport`, and `allowReplace`. The default adapter uses `localStorage`.
 
-- Collapsible tree UI with inline rename, hover-revealed row actions, and QRY/MUT/SUB pills (a `MIX` pill when a saved document holds more than one operation).
-- Save the current operation with ⌘S/Ctrl+S or the tab-strip Save button. An operation opened from a collection stays linked, so re-saving updates it in place; otherwise a "Save to collection" dialog opens. Clicking a saved item opens it in a new tab.
-- Reorder within and across collections by drag-and-drop or keyboard (focus a row's drag handle, Space to grab, arrow keys to move, Space to drop, Escape to cancel).
-- Copy a raw query or Share an importable envelope from any row; collection headers expose Share. Paste or drop a collections export anywhere in the pane to merge it in, or import/export JSON from the dialog. Imports reconcile by stable id, so re-importing updates in place and never duplicates; a conflict dialog lets you apply incoming changes, keep yours, or review each, and merge never deletes.
-- Pluggable persistence via the `storage` option (defaults to `localStorage`), plus `readOnly`, `allowImportExport`, and `allowReplace` for governed deployments.
-
-To support this without the core depending on any specific plugin, `@graphiql/react` gains a save API: `registerSaveHandler(handler)` connects one plugin to ⌘S/Ctrl+S and the Save button, and a second registration throws. The handler returns a promise, so GraphiQL waits for persistence before marking the submitted query snapshot saved; cancellation and errors leave it dirty. Collections waits for its storage adapter to commit linked and dialog saves. `GraphiQLPlugin.sessionActions` is an always-mounted plugin slot for toolbar buttons, dialogs, or behavior registration. The dirty-state dot means "a saved operation has unsaved edits" and survives a reload, so a tab that was never saved reads clean.
+`@graphiql/react` adds `registerSaveHandler(handler)` to connect a plugin to the save shortcut and button. Only one handler can be registered at a time. GraphiQL waits for its promise to resolve before marking the submitted query snapshot saved; cancellation and errors leave it unsaved. `GraphiQLPlugin.sessionActions` provides an always-mounted slot for plugin actions, dialogs, and behavior registration.
