@@ -15,7 +15,6 @@ updates:
           - '@changesets/changelog-github'
           - '@types/codemirror'
           - '@types/copy'
-          - '@whatwg-node/fetch'
           - copy
           - esbuild
           - graphiql-explorer
