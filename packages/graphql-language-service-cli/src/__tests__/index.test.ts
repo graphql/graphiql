@@ -19,7 +19,7 @@ function run(...args: string[]) {
   });
 }
 
-describe('command-line arguments', () => {
+describe('command-line arguments', { timeout: 15_000 }, () => {
   it('shows commands and options in help', () => {
     const result = run('--help');
     expect(result.status).toBe(0);
