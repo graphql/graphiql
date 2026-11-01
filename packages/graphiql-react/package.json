@@ -71,6 +71,7 @@
     "zustand": "^5"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.6",
     "@storybook/addon-a11y": "^10.3.6",
     "@storybook/addon-vitest": "^10.6.1",
     "@storybook/react-vite": "^10.3.6",
@@ -83,7 +84,7 @@
     "@types/react-dom": "^19.1.2",
     "@types/set-value": "^4.0.1",
     "@typescript/native": "npm:typescript@^7.0.2",
-    "@vitejs/plugin-react": "^5.2.0",
+    "@vitejs/plugin-react": "^6.1.2",
     "@vitest/browser-playwright": "^5.0.3",
     "@vitest/web-worker": "^5.0.3",
     "babel-plugin-react-compiler": "1.0.0",
@@ -93,10 +94,11 @@
     "react-dom": "^19.1.0",
     "storybook": "^10.6.1",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "vite": "^8.2.4",
+    "vite": "^8.3.5",
     "vite-plugin-dts": "^5.1.2",
     "vite-plugin-svgr": "^5.2.0",
-    "vitest-canvas-mock": "^1.2.0"
+    "vitest-canvas-mock": "^1.2.0",
+    "@rolldown/plugin-babel": "^0.2.4"
   },
   "browser": {
     "//": "Prevents esm.sh from injecting Node.js globals like `process`, which can break browser features (e.g., Mac `Cmd` key) when loading from CDN.",

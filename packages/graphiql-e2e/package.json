@@ -32,10 +32,11 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@typescript/native": "npm:typescript@^7.0.2",
-    "@vitejs/plugin-react": "^5.2.0",
+    "@vitejs/plugin-react": "^6.1.2",
     "axe-core": "^4",
     "babel-plugin-react-compiler": "1.0.0",
     "concurrently": "^10.0.5",
@@ -46,6 +47,7 @@
     "cypress-real-events": "^1.15.1",
     "start-server-and-test": "^1.15.5",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "vite": "^8.2.2"
+    "vite": "^8.3.5",
+    "@rolldown/plugin-babel": "^0.2.4"
   }
 }

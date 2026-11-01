@@ -82,7 +82,7 @@
     "graphql": "^17.0.2",
     "monaco-editor": "0.57.0",
     "prettier": "3.3.2",
-    "vite": "^8.2.2",
+    "vite": "^8.3.5",
     "vscode-languageserver-types": "^3.17.1"
   },
   "peerDependencies": {
