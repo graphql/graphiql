@@ -1,8 +1,14 @@
 module.exports = {
   presets: [
     require.resolve('@babel/preset-env'),
-    require.resolve('@babel/preset-typescript'),
-    require.resolve('@babel/preset-react'),
+    [
+      require.resolve('@babel/preset-typescript'),
+      { onlyRemoveTypeImports: false },
+    ],
+    [
+      require.resolve('@babel/preset-react'),
+      { runtime: 'classic', development: false },
+    ],
   ],
   plugins: [
     require.resolve('@babel/plugin-transform-class-properties'),
