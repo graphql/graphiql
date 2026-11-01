@@ -1328,8 +1328,8 @@ importers:
         specifier: ^3.1.2
         version: 3.1.2
       dotenv:
-        specifier: 10.0.0
-        version: 10.0.0
+        specifier: ^18.0.9
+        version: 18.0.9
       fast-glob:
         specifier: ^3.2.7
         version: 3.3.3
@@ -1475,8 +1475,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       dotenv:
-        specifier: 10.0.0
-        version: 10.0.0
+        specifier: ^18.0.9
+        version: 18.0.9
       graphql:
         specifier: ^16.14.2
         version: 16.14.2
@@ -7600,9 +7600,10 @@ packages:
   dot-case@3.0.4:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
 
-  dotenv@10.0.0:
-    resolution: {integrity: sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==}
-    engines: {node: '>=10'}
+  dotenv@18.0.9:
+    resolution: {integrity: sha512-3fVOW4cB02R066PUSwn8O4TJyz9NckQl7F81blIbaq9jKBm2tSmOKky7ZHIXzGvkVPXCSn6jkpziBPZdGFs8Tw==}
+    engines: {node: '>=12'}
+    hasBin: true
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -18177,7 +18178,7 @@ snapshots:
       no-case: 3.0.4
       tslib: 2.8.1
 
-  dotenv@10.0.0: {}
+  dotenv@18.0.9: {}
 
   dunder-proto@1.0.1:
     dependencies:
