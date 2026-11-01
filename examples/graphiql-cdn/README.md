@@ -16,10 +16,14 @@ Open [the example](http://localhost:8000/) in your browser.
 
 ## Update dependencies
 
-The checked-in example uses the GraphiQL 6 release candidate. Regenerate it from the repository root with:
+After GraphiQL 6 and its companion packages are published under npm's `latest` tag, regenerate the example from the repository root:
 
 ```sh
-node .github/scripts/update-cdn-versions.mjs --graphiql-tag rc > examples/graphiql-cdn/index.html
+node .github/scripts/update-cdn-versions.mjs > examples/graphiql-cdn/index.html
 ```
 
-`--graphiql-tag` selects the npm tag for `graphiql`, `@graphiql/react`, and `@graphiql/toolkit`. React, React DOM, and GraphQL use `latest`. Omit the option to use `latest` for every package once GraphiQL 6 is stable.
+The generator resolves published versions, downloads the CDN modules and stylesheet, and computes their integrity hashes. Commit the generated version URLs and hashes together; changing URLs alone leaves the hashes invalid.
+
+Serve the regenerated example with the command above, then verify that a query runs, editor completion and formatting work, and the browser console has no worker, module-loading, or integrity errors.
+
+For prerelease testing, pass `--graphiql-tag rc`. The option selects the npm tag for `graphiql`, `@graphiql/react`, and `@graphiql/toolkit`; React, React DOM, and GraphQL still use `latest`.
