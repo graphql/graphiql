@@ -60,7 +60,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@typescript/native": "npm:typescript@7.1.0-beta",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "@vitejs/plugin-react": "^5.2.0",
     "babel-plugin-react-compiler": "1.0.0",
     "graphql": "^17.0.2",
@@ -69,6 +69,6 @@
     "storybook": "^10.6.1",
     "vite": "^8.2.2",
     "vite-plugin-dts": "^4.5.3",
-    "typescript": "^5.8.0"
+    "typescript": "npm:@typescript/typescript6@^6.0.2"
   }
 }
