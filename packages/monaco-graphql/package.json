@@ -81,7 +81,7 @@
     "@typescript/native": "npm:typescript@^7.0.2",
     "graphql": "^17.0.2",
     "monaco-editor": "0.57.0",
-    "prettier": "3.3.2",
+    "prettier": "3.9.10",
     "vite": "^8.3.5",
     "vscode-languageserver-types": "^3.17.1"
   },
