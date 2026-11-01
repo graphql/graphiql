@@ -29,7 +29,7 @@
     "cross-env": "^10",
     "css-loader": "^7",
     "file-loader": "^6",
-    "fork-ts-checker-webpack-plugin": "^7",
+    "fork-ts-checker-webpack-plugin": "^9.1.0",
     "html-webpack-plugin": "^5",
     "monaco-editor-webpack-plugin": "^7",
     "postcss": "^8.5.32",
