@@ -12,6 +12,8 @@ build({
   platform: 'node',
   outdir: 'out/',
   external: [
+    // Optional Glimmer compiler loaded by GraphQL Tools.
+    'content-tag',
     'squirrelly',
     'teacup',
     'coffee-script',

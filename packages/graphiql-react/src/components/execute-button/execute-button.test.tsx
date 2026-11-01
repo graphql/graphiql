@@ -78,7 +78,7 @@ describe('ExecuteButtonView', () => {
     const user = userEvent.setup();
     render(<ExecuteButtonView {...DEFAULTS} />);
     await user.hover(screen.getByRole('button', { name: 'Run operation' }));
-    expect(await screen.findByRole('tooltip')).toHaveTextContent(/Run/);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('Run');
     expect(
       screen.getAllByLabelText('Run operation shortcut').length,
     ).toBeGreaterThan(0);

@@ -58,7 +58,7 @@
     "@radix-ui/react-tooltip": "^1.2",
     "@radix-ui/react-visually-hidden": "^1.2",
     "clsx": "^2.1.1",
-    "framer-motion": "^14.0.0",
+    "framer-motion": "14.0.0",
     "get-value": "^4.1.0",
     "graphql-language-service": "^6.0.0",
     "jsonc-parser": "^3.3.1",

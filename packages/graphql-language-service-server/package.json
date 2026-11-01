@@ -46,7 +46,7 @@
     "@astrojs/compiler": "^4.0.0",
     "@babel/parser": "^8.0.4",
     "@babel/types": "^8.0.4",
-    "@graphql-tools/code-file-loader": "8.0.3",
+    "@graphql-tools/code-file-loader": "8.1.43",
     "@graphql-tools/load": "^8.1.0",
     "cosmiconfig-toml-loader": "^1.0.0",
     "debounce-promise": "^3.1.2",

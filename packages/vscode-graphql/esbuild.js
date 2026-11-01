@@ -18,6 +18,8 @@ build({
   format: 'cjs',
   sourcemap: true,
   external: [
+    // Optional Glimmer compiler loaded by GraphQL Tools.
+    'content-tag',
     // Avoid bundling @vue/compiler-sfc's dynamic dependencies
     'squirrelly',
     'teacup',

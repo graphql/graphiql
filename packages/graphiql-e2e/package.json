@@ -44,7 +44,7 @@
     "cypress-axe": "^1",
     "cypress-each": "^1.14.1",
     "cypress-real-events": "^1.15.1",
-    "start-server-and-test": "^1.10.11",
+    "start-server-and-test": "^1.15.5",
     "typescript": "^5.8.0",
     "vite": "^8.2.2"
   }
