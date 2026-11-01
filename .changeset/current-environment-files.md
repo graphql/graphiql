@@ -1,5 +1,5 @@
 ---
-'graphql-language-service-server': patch
+'graphql-language-service-server': major
 ---
 
-Update dotenv to version 18 while keeping environment-file loading quiet. Multiline values are supported; quote values containing `#` to preserve literal hash characters.
+Environment files now treat unquoted # as inline comments; quote values containing # to retain them. Quoted multiline values are supported; loading stays quiet.
