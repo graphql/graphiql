@@ -293,6 +293,9 @@ importers:
       html-webpack-plugin:
         specifier: ^5
         version: 5.6.8(webpack@5.112.2)
+      postcss:
+        specifier: ^8.5.23
+        version: 8.5.32
       react-hot-loader:
         specifier: ^4
         version: 4.13.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -455,6 +458,9 @@ importers:
       monaco-editor-webpack-plugin:
         specifier: ^7
         version: 7.1.1(monaco-editor@0.57.0)(webpack@5.112.2)
+      postcss:
+        specifier: ^8.5.23
+        version: 8.5.32
       style-loader:
         specifier: ^4
         version: 4.0.0(webpack@5.112.2)
@@ -463,7 +469,7 @@ importers:
         version: '@typescript/typescript6@6.0.2'
       webpack:
         specifier: ^5
-        version: 5.112.2(esbuild@0.28.2)(svgo@4.1.0)(webpack-cli@7.2.3)
+        version: 5.112.2(esbuild@0.28.2)(postcss@8.5.32)(svgo@4.1.0)(webpack-cli@7.2.3)
       webpack-bundle-analyzer:
         specifier: ^5
         version: 5.4.0
@@ -18738,7 +18744,7 @@ snapshots:
       semver: 7.8.5
       tapable: 2.3.3
       typescript: '@typescript/typescript6@6.0.2'
-      webpack: 5.112.2(esbuild@0.28.2)(svgo@4.1.0)(webpack-cli@7.2.3)
+      webpack: 5.112.2(esbuild@0.28.2)(postcss@8.5.32)(svgo@4.1.0)(webpack-cli@7.2.3)
 
   form-data@4.0.6:
     dependencies:
@@ -20161,17 +20167,6 @@ snapshots:
       svgo: 4.1.0
     optional: true
 
-  minimizer-webpack-plugin@5.13.1(esbuild@0.28.2)(svgo@4.1.0)(webpack@5.112.2):
-    dependencies:
-      '@jridgewell/trace-mapping': 0.3.31
-      jest-worker: 27.5.1
-      schema-utils: 4.8.1(webpack@5.112.2)
-      terser: 5.51.2
-      webpack: 5.112.2(esbuild@0.28.2)(svgo@4.1.0)(webpack-cli@7.2.3)
-    optionalDependencies:
-      esbuild: 0.28.2
-      svgo: 4.1.0
-
   minipass-collect@2.0.1:
     dependencies:
       minipass: 7.1.3
@@ -20208,7 +20203,7 @@ snapshots:
     dependencies:
       loader-utils: 2.0.4
       monaco-editor: 0.57.0
-      webpack: 5.112.2(esbuild@0.28.2)(svgo@4.1.0)(webpack-cli@7.2.3)
+      webpack: 5.112.2(esbuild@0.28.2)(postcss@8.5.32)(svgo@4.1.0)(webpack-cli@7.2.3)
 
   monaco-editor@0.57.0:
     dependencies:
@@ -22862,45 +22857,6 @@ snapshots:
       - svgo
       - uglify-js
     optional: true
-
-  webpack@5.112.2(esbuild@0.28.2)(svgo@4.1.0)(webpack-cli@7.2.3):
-    dependencies:
-      '@types/estree': 1.0.10
-      '@types/json-schema': 7.0.15
-      '@webassemblyjs/ast': 1.14.1
-      '@webassemblyjs/wasm-edit': 1.14.1
-      '@webassemblyjs/wasm-parser': 1.14.1
-      browserslist: 4.29.5
-      chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.26.0
-      es-module-lexer: 2.3.2
-      events: 3.3.0
-      graceful-fs: 4.2.11
-      mime-db: 1.54.0
-      minimizer-webpack-plugin: 5.13.1(esbuild@0.28.2)(svgo@4.1.0)(webpack@5.112.2)
-      schema-utils: 4.8.1(webpack@5.112.2)
-      tapable: 2.3.3
-      watchpack: 2.6.3
-      webpack-sources: 3.6.0
-    optionalDependencies:
-      webpack-cli: 7.2.3(js-yaml@4.3.2)(json5@2.2.3)(webpack-bundle-analyzer@5.4.0)(webpack-dev-server@6.1.0)(webpack@5.112.2)
-    transitivePeerDependencies:
-      - '@minify-html/node'
-      - '@napi-rs/image'
-      - '@swc/core'
-      - '@swc/css'
-      - '@swc/html'
-      - clean-css
-      - cssnano
-      - csso
-      - esbuild
-      - html-minifier-terser
-      - imagemin
-      - lightningcss
-      - postcss
-      - sharp
-      - svgo
-      - uglify-js
 
   wgutils@1.4.3:
     dependencies:
