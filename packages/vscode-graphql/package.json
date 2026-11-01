@@ -191,6 +191,6 @@
     "graphql": "^16.14.2",
     "graphql-language-service-server": "^3.0.0",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "vscode-languageclient": "8.0.2"
+    "vscode-languageclient": "8.1.0"
   }
 }

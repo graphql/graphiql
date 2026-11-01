@@ -1428,8 +1428,8 @@ importers:
         specifier: npm:@typescript/typescript6@^6.0.2
         version: '@typescript/typescript6@6.0.2'
       vscode-languageclient:
-        specifier: 8.0.2
-        version: 8.0.2
+        specifier: 8.1.0
+        version: 8.1.0
     devDependencies:
       '@types/capitalize':
         specifier: 2.0.2
@@ -11593,10 +11593,6 @@ packages:
     resolution: {integrity: sha512-USSfxg0vDIpTQqlQBGxF3mBARyoS8cU7LHLpbYNh6dOJt32dlskxPWB0Irrh5TllTmyf7oNLAvqDqzklbwwnpA==}
     engines: {node: '>=14.17.0'}
 
-  vscode-jsonrpc@8.0.2:
-    resolution: {integrity: sha512-RY7HwI/ydoC1Wwg4gJ3y6LpU9FJRZAUnTYMXthqhFXXu77ErDd/xkREpGuk4MyYkk4a+XDWAMqe0S3KkelYQEQ==}
-    engines: {node: '>=14.0.0'}
-
   vscode-jsonrpc@8.1.0:
     resolution: {integrity: sha512-6TDy/abTQk+zDGYazgbIPc+4JoXdwC8NHU9Pbn4UJP1fehUyZmM4RHp5IthX7A6L5KS30PRui+j+tbbMMMafdw==}
     engines: {node: '>=14.0.0'}
@@ -11605,12 +11601,9 @@ packages:
     resolution: {integrity: sha512-qETYf9PCl1lVfwR+oBmMfc4vP2nqLNA35ABxorw3j06+xlKRgDVxbLgKm4Y/xPL0YWdeDjLoI4ImICIT3nB0zQ==}
     engines: {node: '>=14.0.0'}
 
-  vscode-languageclient@8.0.2:
-    resolution: {integrity: sha512-lHlthJtphG9gibGb/y72CKqQUxwPsMXijJVpHEC2bvbFqxmkj9LwQ3aGU9dwjBLqsX1S4KjShYppLvg1UJDF/Q==}
+  vscode-languageclient@8.1.0:
+    resolution: {integrity: sha512-GL4QdbYUF/XxQlAsvYWZRV3V34kOkpRlvV60/72ghHfsYFnS/v2MANZ9P6sHmxFcZKOse8O+L9G7Czg0NUWing==}
     engines: {vscode: ^1.67.0}
-
-  vscode-languageserver-protocol@3.17.2:
-    resolution: {integrity: sha512-8kYisQ3z/SQ2kyjlNeQxbkkTNmVFoQCqkmGrzLH6A9ecPlgTbp3wDTnUNqaUxYr4vlAcloxx8zwy7G5WdguYNg==}
 
   vscode-languageserver-protocol@3.17.3:
     resolution: {integrity: sha512-924/h0AqsMtA5yK22GgMtCYiMdCOtWTSGgUOkgEDX+wk2b0x4sAfLiO4NxBxqbiVtz7K7/1/RgVrVI0NClZwqA==}
@@ -22993,22 +22986,15 @@ snapshots:
 
   vscode-jsonrpc@10.0.0: {}
 
-  vscode-jsonrpc@8.0.2: {}
-
   vscode-jsonrpc@8.1.0: {}
 
   vscode-jsonrpc@9.0.3: {}
 
-  vscode-languageclient@8.0.2:
+  vscode-languageclient@8.1.0:
     dependencies:
-      minimatch: 3.1.5
+      minimatch: 5.1.9
       semver: 7.8.5
-      vscode-languageserver-protocol: 3.17.2
-
-  vscode-languageserver-protocol@3.17.2:
-    dependencies:
-      vscode-jsonrpc: 8.0.2
-      vscode-languageserver-types: 3.18.5
+      vscode-languageserver-protocol: 3.17.3
 
   vscode-languageserver-protocol@3.17.3:
     dependencies:
