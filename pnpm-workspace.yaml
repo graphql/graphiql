@@ -31,8 +31,6 @@ allowBuilds:
 overrides:
   '@babel/traverse': ^7.23.2
   '@types/node': ^24
-  # Keep the release-plan version aligned with its behavior patch below.
-  '@changesets/assemble-release-plan': 6.0.3
   # Newer eligible releases introduce a separate authentication advisory.
   '@vscode/vsce>@azure/identity': 4.13.0
   # Stay below the affected esbuild patches while satisfying tsup's range.
@@ -50,5 +48,4 @@ overrides:
   vite: 8.2.4
 
 patchedDependencies:
-  '@changesets/assemble-release-plan@6.0.3': resources/patches/@changesets+assemble-release-plan+6.0.3.patch
   js-green-licenses@4.0.0: resources/patches/js-green-licenses+4.0.0.patch
