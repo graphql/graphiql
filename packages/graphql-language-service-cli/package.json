@@ -40,13 +40,16 @@
     "graphql": "^16.11.0 || ^17.0.0"
   },
   "dependencies": {
-    "@types/yargs": "16.0.5",
     "graphql-language-service": "^6.0.0",
     "graphql-language-service-server": "^3.0.0",
-    "yargs": "^16.2.0"
+    "yargs": "^18.2.0"
   },
   "devDependencies": {
     "@typescript/native": "npm:typescript@^7.0.2",
-    "graphql": "^17.0.2"
+    "graphql": "^17.0.2",
+    "@types/yargs": "^17.0.35"
+  },
+  "engines": {
+    "node": "^20.19.0 || ^22.12.0 || >=23"
   }
 }
