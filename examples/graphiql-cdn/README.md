@@ -27,3 +27,7 @@ The generator resolves published versions, downloads the CDN modules and stylesh
 Serve the regenerated example with the command above, then verify that a query runs, editor completion and formatting work, and the browser console has no worker, module-loading, or integrity errors.
 
 For prerelease testing, pass `--graphiql-tag rc`. The option selects the npm tag for `graphiql`, `@graphiql/react`, and `@graphiql/toolkit`; React, React DOM, and GraphQL still use `latest`.
+
+## Upstream sanitizer limitation
+
+Monaco 0.57.0 embeds DOMPurify 3.4.15 in its ESM, development, and minified distributions. The repository's dependency overrides do not replace that vendored code, and esm.sh includes it in the compiled editor bundle. These sanitizer advisories require an upstream Monaco release containing [DOMPurify 3.4.17 or later](https://github.com/cure53/DOMPurify/releases/tag/3.4.17); refreshing this example's package pins does not resolve them.

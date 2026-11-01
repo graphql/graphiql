@@ -264,7 +264,7 @@ describe('keyboard navigation', () => {
     );
     cy.activateOperation('A');
 
-    cy.get('[aria-label="Choose operation to run"]').as('caret').focus();
+    cy.get('button.graphiql-execute-button-operation').as('caret').focus();
     cy.realPress('Enter');
     cy.get('[role="menu"]').should('be.visible');
     cy.tick(0);
@@ -281,7 +281,7 @@ describe('keyboard navigation', () => {
     cy.focused().find('.graphiql-method-pill').should('have.text', 'QRY');
     cy.realPress('Enter');
     cy.tick(0);
-    cy.get('[aria-label="Choose operation to run"]').should(
+    cy.get('button.graphiql-execute-button-operation').should(
       'contain.text',
       'B',
     );
@@ -310,6 +310,6 @@ describe('keyboard navigation', () => {
     cy.realPress('Escape');
     cy.get('[role="menu"]').should('not.exist');
     cy.tick(0);
-    cy.focused().should('have.attr', 'aria-label', 'Choose operation to run');
+    cy.focused().should('have.class', 'graphiql-execute-button-operation');
   });
 });

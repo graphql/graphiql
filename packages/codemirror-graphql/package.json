@@ -39,17 +39,17 @@
     "test": "vitest run"
   },
   "peerDependencies": {
-    "@codemirror/language": "6.0.0",
+    "@codemirror/language": "^6.0.0",
     "codemirror": "^5.65.3",
     "graphql": "^16.11.0 || ^17.0.0"
   },
   "dependencies": {
-    "@types/codemirror": "^0.0.90",
+    "@types/codemirror": "^5.60.18",
     "graphql-language-service": "6.0.0"
   },
   "devDependencies": {
     "@codemirror/language": "^6.0.0",
-    "@typescript/native": "npm:typescript@7.1.0-beta",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "codemirror": "^5.65.3",
     "graphql": "^17.0.2"
   }

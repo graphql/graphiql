@@ -98,7 +98,11 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
   const canSelectMethod = Boolean(onSetMethod);
   const name = (
     <>
-      {activeOperation && <MethodPill operation={activeOperation.operation} />}
+      {activeOperation && (
+        <>
+          <MethodPill operation={activeOperation.operation} />{' '}
+        </>
+      )}
       <span id={nameId} className="graphiql-execute-button-name">
         {operationLabel}
       </span>
@@ -155,15 +159,16 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
             <DropdownMenu.Button
               type="button"
               className="graphiql-execute-button-segment graphiql-execute-button-operation"
-              aria-label="Choose operation to run"
-              aria-describedby={nameId}
               disabled={isRunning}
             >
               {name}
               <ChevronDownIcon
                 className="graphiql-execute-button-caret-icon"
                 aria-hidden="true"
-              />
+              />{' '}
+              <span className="graphiql-sr-only">
+                {activeOperation ? 'Choose operation to run' : 'to run'}
+              </span>
             </DropdownMenu.Button>
           </Tooltip>
           <DropdownMenu.Content align="end">
@@ -207,15 +212,14 @@ export const ExecuteButtonView: FC<ExecuteButtonViewProps> = ({
             <DropdownMenu.Button
               type="button"
               className="graphiql-execute-button-segment graphiql-execute-button-method"
-              aria-label="Choose request method"
-              aria-describedby={`${nameId}-method`}
               disabled={isRunning}
             >
               {methodLabel}
               <ChevronDownIcon
                 className="graphiql-execute-button-caret-icon"
                 aria-hidden="true"
-              />
+              />{' '}
+              <span className="graphiql-sr-only">Choose request method</span>
             </DropdownMenu.Button>
             <DropdownMenu.Content align="end" aria-label="Request method">
               {isQuery && (

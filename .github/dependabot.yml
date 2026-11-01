@@ -13,16 +13,13 @@ updates:
         # Dependabot cannot exclude dependencies based on their current version, so keep this list in sync with current 0.x dependencies.
         exclude-patterns:
           - '@changesets/changelog-github'
-          - '@codemirror/buildhelper'
-          - '@types/codemirror'
+          - '@rolldown/plugin-babel'
           - '@types/copy'
-          - '@whatwg-node/fetch'
           - copy
           - esbuild
           - graphiql-explorer
           - json-schema
           - monaco-editor
-          - ovsx
           - oxfmt
           - regenerator-runtime
           - subscriptions-transport-ws

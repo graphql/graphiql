@@ -1,4 +1,5 @@
-import { EditorState, EditorView, basicSetup } from '@codemirror/basic-setup';
+import { EditorState } from '@codemirror/state';
+import { EditorView, basicSetup } from 'codemirror6';
 import { StreamLanguage } from '@codemirror/language';
 import { graphql } from 'codemirror-graphql/cm6-legacy/mode';
 import query from './sample-query';

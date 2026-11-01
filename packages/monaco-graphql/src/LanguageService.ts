@@ -15,9 +15,10 @@ import {
   Source,
 } from 'graphql';
 import { minimatch } from 'minimatch';
-import type { Diagnostic, Hover } from 'vscode-languageserver-types';
+import type { Hover } from 'vscode-languageserver-types';
 import type {
   AutocompleteSuggestionOptions,
+  Diagnostic,
   IPosition,
 } from 'graphql-language-service';
 import {

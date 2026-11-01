@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import react from '@vitejs/plugin-react';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
+import babel from '@rolldown/plugin-babel';
 import { defineConfig, type Alias } from 'vite';
 import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-compiler';
 import { reactCompilerConfig as $reactCompilerConfig } from '../graphiql-react/vite.config.mjs';
@@ -78,10 +79,10 @@ export default defineConfig(({ mode }) => {
       },
     },
     plugins: [
-      react({
-        babel: {
-          plugins: [['babel-plugin-react-compiler', reactCompilerConfig]],
-        },
+      react(),
+      babel({
+        include: /\.[jt]sx?(?:$|\?)/,
+        presets: [reactCompilerPreset(reactCompilerConfig)],
       }),
     ],
     worker: {

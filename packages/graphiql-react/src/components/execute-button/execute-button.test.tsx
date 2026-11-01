@@ -62,8 +62,26 @@ describe('ExecuteButtonView', () => {
   it('does not imply that an ambiguous document has a selected operation', () => {
     render(<ExecuteButtonView {...DEFAULTS} operations={TWO_OPS} />);
     expect(
-      screen.getByRole('button', { name: 'Choose operation to run' }),
+      screen.getByRole('button', { name: /choose operation to run/i }),
     ).toHaveTextContent('Choose operation');
+  });
+
+  it('includes visible operation and method labels in accessible picker names', () => {
+    render(
+      <ExecuteButtonView
+        {...DEFAULTS}
+        {...QUERY_METHODS}
+        operations={TWO_OPS}
+        operationName="Alpha"
+        onSetMethod={vi.fn()}
+      />,
+    );
+    expect(
+      screen.getByRole('button', { name: /choose operation to run/i }),
+    ).toHaveAccessibleName('QRY Alpha Choose operation to run');
+    expect(
+      screen.getByRole('button', { name: /choose request method/i }),
+    ).toHaveAccessibleName('QUERY Choose request method');
   });
 
   it('runs only when the primary action is clicked', async () => {
@@ -78,7 +96,7 @@ describe('ExecuteButtonView', () => {
     const user = userEvent.setup();
     render(<ExecuteButtonView {...DEFAULTS} />);
     await user.hover(screen.getByRole('button', { name: 'Run operation' }));
-    expect(await screen.findByRole('tooltip')).toHaveTextContent(/Run/);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('Run');
     expect(
       screen.getAllByLabelText('Run operation shortcut').length,
     ).toBeGreaterThan(0);
@@ -99,15 +117,15 @@ describe('ExecuteButtonView', () => {
         screen.getByRole('button', { name: 'Stop operation' }),
       ).toBeEnabled();
       expect(
-        screen.getByRole('button', { name: 'Choose operation to run' }),
+        screen.getByRole('button', { name: /choose operation to run/i }),
       ).toHaveTextContent('Alpha');
       expect(
-        screen.getByRole('button', { name: 'Choose request method' }),
+        screen.getByRole('button', { name: /choose request method/i }),
       ).toHaveTextContent('QUERY');
       expect(screen.queryByText('POST')).not.toBeInTheDocument();
       rerender(<ExecuteButtonView {...props} />);
       expect(
-        screen.getByRole('button', { name: 'Choose operation to run' }),
+        screen.getByRole('button', { name: /choose operation to run/i }),
       ).toHaveTextContent('Change');
       expect(screen.getByText('POST')).toBeVisible();
     });
@@ -143,10 +161,10 @@ describe('ExecuteButtonView', () => {
       );
       expect(screen.getByText('Alpha')).toBeVisible();
       expect(
-        screen.getByRole('button', { name: 'Choose operation to run' }),
+        screen.getByRole('button', { name: /choose operation to run/i }),
       ).toBeDisabled();
       expect(
-        screen.getByRole('button', { name: 'Choose request method' }),
+        screen.getByRole('button', { name: /choose request method/i }),
       ).toBeDisabled();
       await user.click(screen.getByRole('button', { name: 'Stop operation' }));
       expect(onStop).toHaveBeenCalledOnce();
@@ -164,7 +182,7 @@ describe('ExecuteButtonView', () => {
       );
       expect(screen.getByText('Alpha')).toBeVisible();
       expect(
-        screen.queryByRole('button', { name: 'Choose operation to run' }),
+        screen.queryByRole('button', { name: /choose operation to run/i }),
       ).not.toBeInTheDocument();
     });
 
@@ -182,7 +200,7 @@ describe('ExecuteButtonView', () => {
         />,
       );
       await user.click(
-        screen.getByRole('button', { name: 'Choose operation to run' }),
+        screen.getByRole('button', { name: /choose operation to run/i }),
       );
       expect(
         await screen.findByRole('menuitemradio', { name: /QRY.*Alpha/ }),
@@ -208,7 +226,7 @@ describe('ExecuteButtonView', () => {
         />,
       );
       await user.click(
-        screen.getByRole('button', { name: 'Choose operation to run' }),
+        screen.getByRole('button', { name: /choose operation to run/i }),
       );
       await user.click(
         await screen.findByRole('menuitemradio', { name: /QRY.*Alpha/ }),
@@ -229,7 +247,7 @@ describe('ExecuteButtonView', () => {
         />,
       );
       const picker = screen.getByRole('button', {
-        name: 'Choose operation to run',
+        name: /choose operation to run/i,
       });
       picker.focus();
       await user.keyboard('{Enter}');
@@ -258,7 +276,7 @@ describe('ExecuteButtonView', () => {
         />,
       );
       expect(
-        screen.queryByRole('button', { name: 'Choose request method' }),
+        screen.queryByRole('button', { name: /choose request method/i }),
       ).not.toBeInTheDocument();
       expect(screen.queryByText('QUERY')).not.toBeInTheDocument();
       expect(screen.queryByText('POST')).not.toBeInTheDocument();
@@ -276,7 +294,7 @@ describe('ExecuteButtonView', () => {
         />,
       );
       const picker = screen.getByRole('button', {
-        name: 'Choose request method',
+        name: /choose request method/i,
       });
       expect(picker).toHaveTextContent('QUERY');
       expect(screen.queryByText('Auto')).not.toBeInTheDocument();
@@ -303,7 +321,7 @@ describe('ExecuteButtonView', () => {
           />,
         );
         await user.click(
-          screen.getByRole('button', { name: 'Choose request method' }),
+          screen.getByRole('button', { name: /choose request method/i }),
         );
         expect(
           screen.getAllByRole('menuitemradio', { name: 'POST' }),
@@ -350,7 +368,7 @@ describe('ExecuteButtonView', () => {
         />,
       );
       const picker = screen.getByRole('button', {
-        name: 'Choose request method',
+        name: /choose request method/i,
       });
       expect(within(picker).queryByText('Auto')).not.toBeInTheDocument();
       await user.click(picker);
@@ -389,11 +407,11 @@ describe('ExecuteButtonView', () => {
         <ExecuteButtonView {...props} operationName="Alpha" />,
       );
       expect(
-        screen.getByRole('button', { name: 'Choose request method' }),
+        screen.getByRole('button', { name: /choose request method/i }),
       ).toHaveTextContent('GET');
       rerender(<ExecuteButtonView {...props} operationName="Change" />);
       const picker = screen.getByRole('button', {
-        name: 'Choose request method',
+        name: /choose request method/i,
       });
       expect(picker).toHaveTextContent('POST');
       await user.click(picker);
@@ -413,7 +431,7 @@ describe('ExecuteButtonView', () => {
       await user.click(screen.getByRole('menuitemradio', { name: 'POST' }));
       rerender(<ExecuteButtonView {...props} operationName="Alpha" />);
       expect(
-        screen.getByRole('button', { name: 'Choose request method' }),
+        screen.getByRole('button', { name: /choose request method/i }),
       ).toHaveTextContent('GET');
       expect(props.onSetMethod).not.toHaveBeenCalled();
     });
@@ -429,7 +447,7 @@ describe('ExecuteButtonView', () => {
       );
       expect(screen.queryByText('QUERY')).not.toBeInTheDocument();
       expect(
-        screen.queryByRole('button', { name: 'Choose request method' }),
+        screen.queryByRole('button', { name: /choose request method/i }),
       ).not.toBeInTheDocument();
     });
 
@@ -442,7 +460,7 @@ describe('ExecuteButtonView', () => {
         />,
       );
       expect(
-        screen.queryByRole('button', { name: 'Choose request method' }),
+        screen.queryByRole('button', { name: /choose request method/i }),
       ).not.toBeInTheDocument();
       expect(screen.queryByText('POST')).not.toBeInTheDocument();
       expect(screen.queryByText('Auto')).not.toBeInTheDocument();
@@ -460,7 +478,7 @@ describe('ExecuteButtonView', () => {
       );
       expect(screen.getByText('GET')).toBeVisible();
       expect(
-        screen.queryByRole('button', { name: 'Choose request method' }),
+        screen.queryByRole('button', { name: /choose request method/i }),
       ).not.toBeInTheDocument();
       expect(screen.queryByText('Auto')).not.toBeInTheDocument();
     });

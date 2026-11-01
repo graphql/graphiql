@@ -194,7 +194,7 @@ export const HistoryItem: FC<QueryHistoryItemProps> = props => {
                   type="button"
                   className="graphiql-history-item-label"
                   onClick={handleHistoryItemClick}
-                  aria-label="Set active"
+                  aria-label={`Set active: ${displayName}`}
                 >
                   {displayName}
                 </UnStyledButton>

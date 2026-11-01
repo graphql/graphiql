@@ -8,6 +8,7 @@
  */
 
 import CodeMirror from 'codemirror';
+import type { Annotation } from 'codemirror/addon/lint/lint';
 import { FragmentDefinitionNode, GraphQLSchema, ValidationRule } from 'graphql';
 import {
   getDiagnostics,
@@ -45,7 +46,7 @@ interface GraphQLLintOptions {
 CodeMirror.registerHelper(
   'lint',
   'graphql',
-  (text: string, options: GraphQLLintOptions): CodeMirror.Annotation[] => {
+  (text: string, options: GraphQLLintOptions): Annotation[] => {
     const {
       schema,
       validationRules,

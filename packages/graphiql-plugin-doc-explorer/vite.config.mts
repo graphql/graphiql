@@ -1,5 +1,6 @@
 import { defineConfig, PluginOption } from 'vite';
-import react from '@vitejs/plugin-react';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
+import babel from '@rolldown/plugin-babel';
 import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-compiler';
 import packageJSON from './package.json' with { type: 'json' };
 import dts from 'vite-plugin-dts';
@@ -16,12 +17,13 @@ export const reactCompilerConfig: Partial<ReactCompilerConfig> = {
 };
 
 export const plugins: PluginOption[] = [
-  react({
-    babel: {
-      plugins: [['babel-plugin-react-compiler', reactCompilerConfig]],
-    },
+  react(),
+  babel({
+    include: /\.[jt]sx?(?:$|\?)/,
+    presets: [reactCompilerPreset(reactCompilerConfig)],
   }),
   dts({
+    compilerOptions: { rootDir: 'src' },
     include: ['src/**'],
     exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],
   }),

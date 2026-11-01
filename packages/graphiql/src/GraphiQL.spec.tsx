@@ -51,7 +51,10 @@ describe('GraphiQL', () => {
     let isMonacoReady = false;
 
     const MonacoReady: FC = () => {
-      isMonacoReady = useMonaco(state => Boolean(state.monaco));
+      const ready = useMonaco(state => Boolean(state.monaco));
+      useEffect(() => {
+        isMonacoReady = ready;
+      }, [ready]);
       return null;
     };
 
