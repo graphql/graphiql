@@ -136,7 +136,7 @@
 
 /* Unavailable methods stay focusable so keyboard users can read the reason. */
 .graphiql-execute-button-method-option[aria-disabled='true'] {
-  color: oklch(var(--fg-disabled));
+  color: oklch(var(--fg-disabled) / 0.5);
   cursor: default;
 }
 
