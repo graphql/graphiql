@@ -1,5 +1,18 @@
 # @graphiql/react
 
+## 1.0.1
+
+### Patch Changes
+
+- [#4734](https://github.com/graphql/graphiql/pull/4734) [`1a78747`](https://github.com/graphql/graphiql/commit/1a7874770c53700076427c6f7c5a4c4c183d1d06) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Include visible operation names and request methods in picker accessible names, and include history item labels in their activation controls.
+
+- [#4734](https://github.com/graphql/graphiql/pull/4734) [`1a78747`](https://github.com/graphql/graphiql/commit/1a7874770c53700076427c6f7c5a4c4c183d1d06) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Update dependencies, including upstream security fixes.
+
+- [#4749](https://github.com/graphql/graphiql/pull/4749) [`3e940f6`](https://github.com/graphql/graphiql/commit/3e940f6c7608745b49e93625100886a9d610d32f) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Make disabled HTTP methods more visually distinct in the request method menu.
+- Updated dependencies [[`1a78747`](https://github.com/graphql/graphiql/commit/1a7874770c53700076427c6f7c5a4c4c183d1d06)]:
+  - graphql-language-service@6.0.1
+  - monaco-graphql@2.0.1
+
 ## 1.0.0
 
 ### Major Changes

@@ -1,5 +1,13 @@
 # @graphiql/plugin-query-builder
 
+## 1.0.1
+
+### Patch Changes
+
+- [#4745](https://github.com/graphql/graphiql/pull/4745) [`a8393d0`](https://github.com/graphql/graphiql/commit/a8393d02b9b4260832821c37ccd6dec4a322317a) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Reset the collection save form for each save request and reduce extra renders when the query builder follows editor changes.
+- Updated dependencies [[`1a78747`](https://github.com/graphql/graphiql/commit/1a7874770c53700076427c6f7c5a4c4c183d1d06), [`1a78747`](https://github.com/graphql/graphiql/commit/1a7874770c53700076427c6f7c5a4c4c183d1d06), [`3e940f6`](https://github.com/graphql/graphiql/commit/3e940f6c7608745b49e93625100886a9d610d32f)]:
+  - @graphiql/react@1.0.1
+
 ## 1.0.0
 
 ### Major Changes
