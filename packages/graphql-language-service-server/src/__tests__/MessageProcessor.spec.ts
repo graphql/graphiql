@@ -700,4 +700,57 @@ export const ItemFragment = gql\`
 
     expect(fragmentDefinition[0]?.uri).toEqual(project.uri('fragments.ts'));
   });
+
+  it('skips documents inside node_modules by default when loading documents', async () => {
+    project = new MockProject({
+      files: [
+        [
+          'schema.graphql',
+          `
+type Item {
+  foo: String
+}
+
+type Query {
+  items: [Item]
+}
+          `,
+        ],
+        [
+          'src/query.graphql',
+          `
+query ValidQuery {
+  items {
+    foo
+  }
+}
+          `,
+        ],
+        [
+          'node_modules/some-lib/ignored.graphql',
+          `
+query InvalidQuery {
+  items {
+    invalidFieldThatDoesNotExist
+  }
+}
+          `,
+        ],
+        [
+          'graphql.config.json',
+          '{ "schema": "./schema.graphql", "documents": "./**/*.graphql" }',
+        ],
+      ],
+    });
+
+    const initParams = await project.init('src/query.graphql');
+    expect(initParams.diagnostics).toEqual([]);
+
+    const definition = await project.lsp.handleDefinitionRequest({
+      textDocument: { uri: project.uri('src/query.graphql') },
+      position: { character: 5, line: 3 },
+    });
+
+    expect(definition[0]?.uri).toEqual(project.uri('schema.graphql'));
+  });
 });
