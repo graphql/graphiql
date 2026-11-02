@@ -102,7 +102,7 @@ const argv = yargs(hideBin(process.argv))
     describe: 'a path to schema DSL file\n',
     type: 'string',
   })
-  .parseSync();
+  .parse();
 
 const command = argv._.pop();
 
