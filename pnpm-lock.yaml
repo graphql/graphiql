@@ -178,16 +178,16 @@ importers:
   examples/graphiql-vite-react-router:
     dependencies:
       '@graphiql/plugin-collections':
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: link:../../packages/graphiql-plugin-collections
       '@graphiql/plugin-history':
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: link:../../packages/graphiql-plugin-history
       '@graphiql/plugin-query-builder':
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: link:../../packages/graphiql-plugin-query-builder
       '@graphiql/react':
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: link:../../packages/graphiql-react
       '@graphiql/toolkit':
         specifier: ^1.0.0
@@ -242,7 +242,7 @@ importers:
         specifier: ^6.0.0
         version: link:../../packages/graphiql-plugin-code-exporter
       '@graphiql/react':
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: link:../../packages/graphiql-react
       '@graphiql/toolkit':
         specifier: ^1.0.0
@@ -330,7 +330,7 @@ importers:
         specifier: 0.57.0
         version: 0.57.0
       monaco-graphql:
-        specifier: ^2.0.0
+        specifier: ^2.0.1
         version: link:../../packages/monaco-graphql
       next:
         specifier: ^16.4.3
@@ -364,7 +364,7 @@ importers:
         specifier: ^17.0.2
         version: 17.0.2
       graphql-language-service:
-        specifier: ^6.0.0
+        specifier: ^6.0.1
         version: link:../../packages/graphql-language-service
       jsonc-parser:
         specifier: ^3
@@ -373,7 +373,7 @@ importers:
         specifier: 0.57.0
         version: 0.57.0
       monaco-graphql:
-        specifier: ^2.0.0
+        specifier: ^2.0.1
         version: link:../../packages/monaco-graphql
       react:
         specifier: 19.3.1
@@ -395,7 +395,7 @@ importers:
         specifier: ^17.0.2
         version: 17.0.2
       graphql-language-service:
-        specifier: ^6.0.0
+        specifier: ^6.0.1
         version: link:../../packages/graphql-language-service
       json-schema:
         specifier: ^0.4
@@ -407,7 +407,7 @@ importers:
         specifier: 0.57.0
         version: 0.57.0
       monaco-graphql:
-        specifier: ^2.0.0
+        specifier: ^2.0.1
         version: link:../../packages/monaco-graphql
       prettier:
         specifier: ^3
@@ -538,7 +538,7 @@ importers:
         specifier: ^0.0.90
         version: 0.0.90
       graphql-language-service:
-        specifier: 6.0.0
+        specifier: 6.0.1
         version: link:../graphql-language-service
     devDependencies:
       '@codemirror/language':
@@ -648,7 +648,7 @@ importers:
   packages/graphiql-e2e:
     dependencies:
       '@graphiql/react':
-        specifier: 1.0.0
+        specifier: 1.0.1
         version: link:../graphiql-react
       '@graphiql/toolkit':
         specifier: 1.0.0
@@ -789,7 +789,7 @@ importers:
         version: 5.0.16(@types/react@19.3.0)(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))
     devDependencies:
       '@graphiql/react':
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: link:../graphiql-react
       '@storybook/react-vite':
         specifier: ^10.3.6
@@ -941,7 +941,7 @@ importers:
         specifier: ^7.29.6
         version: 7.29.7
       '@graphiql/react':
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: link:../graphiql-react
       '@rolldown/plugin-babel':
         specifier: ^0.2.4
@@ -1005,7 +1005,7 @@ importers:
         specifier: ^7.29.6
         version: 7.29.7
       '@graphiql/react':
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: link:../graphiql-react
       '@rolldown/plugin-babel':
         specifier: ^0.2.4
@@ -1095,7 +1095,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0
       graphql-language-service:
-        specifier: ^6.0.0
+        specifier: ^6.0.1
         version: link:../graphql-language-service
       jsonc-parser:
         specifier: ^3.3.1
@@ -1107,7 +1107,7 @@ importers:
         specifier: '>=0.56.0 <0.58.0'
         version: 0.57.0
       monaco-graphql:
-        specifier: ^2.0.0
+        specifier: ^2.0.1
         version: link:../monaco-graphql
       prettier:
         specifier: ^3.5.3
@@ -1278,10 +1278,10 @@ importers:
   packages/graphql-language-service-cli:
     dependencies:
       graphql-language-service:
-        specifier: ^6.0.0
+        specifier: ^6.0.1
         version: link:../graphql-language-service
       graphql-language-service-server:
-        specifier: ^3.0.0
+        specifier: ^3.0.1
         version: link:../graphql-language-service-server
       yargs:
         specifier: ^16.2.2
@@ -1333,7 +1333,7 @@ importers:
         specifier: ^5.1.8
         version: 5.1.8(@types/node@24.19.2)(@typescript/typescript6@6.0.2)(cosmiconfig-toml-loader@1.0.0)(graphql@17.0.2)
       graphql-language-service:
-        specifier: ^6.0.0
+        specifier: ^6.0.1
         version: link:../graphql-language-service
       lru-cache:
         specifier: ^11.5.2
@@ -1391,7 +1391,7 @@ importers:
   packages/monaco-graphql:
     dependencies:
       graphql-language-service:
-        specifier: ^6.0.0
+        specifier: ^6.0.1
         version: link:../graphql-language-service
       minimatch:
         specifier: ^11.0.3
@@ -1422,7 +1422,7 @@ importers:
         specifier: ^16.14.2
         version: 16.14.2
       graphql-language-service-server:
-        specifier: ^3.0.0
+        specifier: ^3.0.1
         version: link:../graphql-language-service-server
       typescript:
         specifier: npm:@typescript/typescript6@^6.0.2

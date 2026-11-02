@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-history",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "sideEffects": [
     "*.css"
   ],
@@ -37,7 +37,7 @@
     "test": "vitest run"
   },
   "peerDependencies": {
-    "@graphiql/react": "^1.0.0",
+    "@graphiql/react": "^1.0.1",
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   },
@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.29.6",
-    "@graphiql/react": "^1.0.0",
+    "@graphiql/react": "^1.0.1",
     "@storybook/react-vite": "^10.3.6",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.1.0",

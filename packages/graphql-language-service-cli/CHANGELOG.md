@@ -1,5 +1,14 @@
 # graphql-language-service-cli
 
+## 4.0.1
+
+### Patch Changes
+
+- [#4734](https://github.com/graphql/graphiql/pull/4734) [`1a78747`](https://github.com/graphql/graphiql/commit/1a7874770c53700076427c6f7c5a4c4c183d1d06) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Update dependencies, including upstream security fixes.
+- Updated dependencies [[`1a78747`](https://github.com/graphql/graphiql/commit/1a7874770c53700076427c6f7c5a4c4c183d1d06)]:
+  - graphql-language-service@6.0.1
+  - graphql-language-service-server@3.0.1
+
 ## 4.0.0
 
 ### Major Changes
