@@ -4,7 +4,7 @@
  * and enabled, the others are collapsed and disabled. The active operation is
  * driven by `operationName` from the editor store (mocked via graphiql-react-mock).
  */
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
@@ -70,6 +70,22 @@ describe('QueryBuilder — root operation sections', () => {
 
     expect(screen.getByText('createItem')).toBeInTheDocument();
     expect(screen.queryByText('items')).toBeNull();
+  });
+
+  it('resets manual collapse when the active operation kind changes', () => {
+    const { rerender } = render(<QueryBuilder />);
+    fireEvent.click(screen.getByRole('button', { name: /Query/i }));
+    expect(screen.queryByText('items')).not.toBeInTheDocument();
+
+    state.queryText = 'mutation M { createItem }';
+    state.operationName = 'M';
+    rerender(<QueryBuilder />);
+    expect(screen.getByText('createItem')).toBeInTheDocument();
+
+    state.queryText = '{ items }';
+    state.operationName = undefined;
+    rerender(<QueryBuilder />);
+    expect(screen.getByText('items')).toBeInTheDocument();
   });
 
   it('shows the selected-field count only on the active root', () => {

@@ -171,5 +171,51 @@ describe('QueryBuilder — cursor as the editing target', () => {
       screen.queryByRole('button', { name: /back to query/i }),
     ).not.toBeInTheDocument();
     expect(fake.setPositions.at(-1)?.offset).toBeLessThan(text.length);
+
+    // Restoring the definition must not resurrect the stale fragment target.
+    text = QUERY;
+    state.queryText = text;
+    rerender(<QueryBuilder />);
+    expect(
+      screen.queryByRole('button', { name: /back to query/i }),
+    ).not.toBeInTheDocument();
   });
+
+  it.each([false, true])(
+    'does not replay a deleted-fragment cursor reset on a replacement editor (navigate first: %s)',
+    navigateFirst => {
+      let text = `${QUERY}\nfragment OtherFields on User { email }`;
+      const fake = makeFakeEditor(() => text);
+      const state = installGraphiQLReactMock({
+        schema: TestSchema,
+        queryText: text,
+        queryEditor: fake.editor,
+      });
+      const { rerender } = render(<QueryBuilder />);
+      act(() => {
+        fake.moveCursorTo(text.indexOf('name'));
+        vi.advanceTimersByTime(100);
+      });
+
+      text = `${QUERY_WITHOUT_FRAGMENT}\nfragment OtherFields on User { email }`;
+      state.queryText = text;
+      rerender(<QueryBuilder />);
+      if (navigateFirst) {
+        act(() => {
+          fake.moveCursorTo(text.indexOf('email'));
+          vi.advanceTimersByTime(100);
+        });
+      }
+
+      const replacement = makeFakeEditor(() => text);
+      replacement.moveCursorTo(text.indexOf('email'));
+      state.queryEditor = replacement.editor;
+      rerender(<QueryBuilder />);
+
+      expect(replacement.setPositions).toHaveLength(0);
+      expect(
+        screen.getByRole('button', { name: /back to query/i }),
+      ).toBeInTheDocument();
+    },
+  );
 });

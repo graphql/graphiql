@@ -10,7 +10,7 @@ import {
   print,
   valueFromASTUntyped,
 } from 'graphql';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   addInlineFragment,
   argValueToValueNode,
@@ -119,13 +119,26 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
   // round-trip lag. The editor is a peer, not the source of truth: its echo of
   // our own write is ignored, and only a genuine external edit replaces the
   // working document.
-  const [workingDoc, setWorkingDoc] = useState<DocumentNode>(
-    () => tryParse(queryText) ?? emptyDoc(),
-  );
+  const [documentState, setDocumentState] = useState(() => ({
+    doc: tryParse(queryText) ?? emptyDoc(),
+    observedText: queryText,
+    syncedText: queryText ?? null,
+  }));
+  const workingDoc = documentState.doc;
 
-  // The exact text we last synced to the editor; an incoming queryText equal to
-  // it is our own echo and must not clobber in-progress edits.
-  const lastSyncedRef = useRef<string | null>(queryText ?? null);
+  // Reconcile external edits before rendering children. Incomplete text keeps
+  // the last valid document, and our own editor echo keeps its document identity.
+  if (queryText !== documentState.observedText) {
+    setDocumentState({
+      doc:
+        queryText === documentState.syncedText
+          ? workingDoc
+          : (tryParse(queryText) ??
+            (queryText?.trim() ? workingDoc : emptyDoc())),
+      observedText: queryText,
+      syncedText: queryText ?? null,
+    });
+  }
 
   const writeToEditor = (printed: string) => {
     if (queryEditor) {
@@ -139,30 +152,11 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
       if (position) {
         queryEditor.setPosition(position);
       }
-      lastSyncedRef.current = queryEditor.getValue();
-      return;
+      return queryEditor.getValue();
     }
-    lastSyncedRef.current = printed;
     updateActiveTabValues({ query: printed });
+    return printed;
   };
-
-  // Adopt a genuine external editor edit. Keep the last valid working document
-  // when the in-progress text doesn't parse, so the tree doesn't flicker to
-  // empty mid-edit.
-  useEffect(() => {
-    if (queryText === lastSyncedRef.current) {
-      return; // our own echo
-    }
-    lastSyncedRef.current = queryText ?? null;
-    const parsed = tryParse(queryText);
-    if (parsed) {
-      // oxlint-disable-next-line react/set-state-in-effect -- Adopt external editor edits while retaining the last valid document.
-      setWorkingDoc(parsed);
-    } else if (!queryText?.trim()) {
-      setWorkingDoc(emptyDoc());
-    }
-    // unparseable in-progress text: keep the last valid working document
-  }, [queryText]);
 
   // The active operation has exactly one root type (query, mutation, or
   // subscription); that root is the only one the builder can edit.
@@ -174,10 +168,9 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
   // The editor cursor is the single source of truth for what's being edited:
   // its definition is the active target. "Editing a fragment" is just the
   // cursor being inside that fragment, tracked here as its name (null = the
-  // operation). The focus/back handlers below don't set this directly; they
-  // move the editor cursor, and the resulting cursor update flows back here.
+  // operation). Focus/back clicks update the target optimistically while the
+  // editor cursor read is debounced.
   const cursor = useCursorContext();
-  const [activeFragment, setActiveFragment] = useState<string | null>(null);
   // The active fragment the cursor implies: its name inside a fragment, null
   // inside an operation, undefined when outside any definition (leave as-is).
   const cursorFragment: string | null | undefined =
@@ -186,18 +179,39 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
       : cursor.target?.kind === 'operation'
         ? null
         : undefined;
-  useEffect(() => {
-    if (cursorFragment !== undefined) {
-      // oxlint-disable-next-line react/set-state-in-effect -- Keep the target synchronized with the external editor cursor.
-      setActiveFragment(cursorFragment);
-    }
-  }, [cursorFragment]);
-
+  const [fragmentState, setFragmentState] = useState<{
+    name: string | null;
+    cursorFragment: typeof cursorFragment;
+    resetCursor?: {
+      operationName: typeof operationName;
+      editor: typeof queryEditor;
+    };
+  }>({ name: cursorFragment ?? null, cursorFragment });
+  const activeFragment =
+    cursorFragment !== fragmentState.cursorFragment &&
+    cursorFragment !== undefined
+      ? cursorFragment
+      : fragmentState.name;
   const visibleFragment =
     activeFragment != null &&
     findDefinition(workingDoc, { kind: 'fragment', name: activeFragment })
       ? activeFragment
       : null;
+  if (
+    fragmentState.cursorFragment !== cursorFragment ||
+    fragmentState.name !== visibleFragment ||
+    (fragmentState.resetCursor &&
+      fragmentState.resetCursor.editor !== queryEditor)
+  ) {
+    setFragmentState({
+      name: visibleFragment,
+      cursorFragment,
+      resetCursor:
+        activeFragment != null && visibleFragment == null
+          ? { operationName, editor: queryEditor }
+          : undefined,
+    });
+  }
   const target: DefinitionTarget =
     visibleFragment != null
       ? { kind: 'fragment', name: visibleFragment }
@@ -217,11 +231,8 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
   // the active target (above). Setting the target this way — rather than
   // directly — keeps the editor and builder from diverging, which is what made
   // the old click-override approach prone to stale-target bugs.
-  const moveCursorToTarget = useCallback(
+  const moveEditorCursorToTarget = useCallback(
     (next: DefinitionTarget) => {
-      // Optimistically reflect the move so the panel updates without waiting for
-      // the debounced cursor read (and for the no-editor case in tests).
-      setActiveFragment(next.kind === 'fragment' ? next.name : null);
       if (!queryEditor) {
         return;
       }
@@ -242,12 +253,25 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
     [queryEditor],
   );
 
+  const resetCursor = fragmentState.resetCursor;
   useEffect(() => {
-    if (activeFragment != null && visibleFragment == null) {
-      // oxlint-disable-next-line react/set-state-in-effect -- Restore the editor cursor when its active fragment disappears.
-      moveCursorToTarget({ kind: 'operation', name: operationName });
+    if (resetCursor && resetCursor.editor === queryEditor) {
+      moveEditorCursorToTarget({
+        kind: 'operation',
+        name: resetCursor.operationName,
+      });
     }
-  }, [activeFragment, visibleFragment, operationName, moveCursorToTarget]);
+  }, [resetCursor, queryEditor, moveEditorCursorToTarget]);
+
+  function moveCursorToTarget(next: DefinitionTarget) {
+    // Reflect clicks immediately while the editor's cursor read is debounced.
+    setFragmentState(state => ({
+      ...state,
+      name: next.kind === 'fragment' ? next.name : null,
+      resetCursor: undefined,
+    }));
+    moveEditorCursorToTarget(next);
+  }
 
   function handleFocusFragment(fragmentName: string) {
     moveCursorToTarget({ kind: 'fragment', name: fragmentName });
@@ -263,8 +287,12 @@ export function useWorkingDocument(): UseWorkingDocumentResult {
   // edit immediately (the working document is the source of truth, so there is
   // no in-flight state to debounce).
   function applyDoc(next: DocumentNode) {
-    setWorkingDoc(next);
-    writeToEditor(print(next));
+    const printed = print(next);
+    setDocumentState(state => ({ ...state, doc: next, syncedText: printed }));
+    const syncedText = writeToEditor(printed);
+    if (syncedText !== printed) {
+      setDocumentState(state => ({ ...state, syncedText }));
+    }
   }
 
   function applyVariables(next: Record<string, unknown>) {
