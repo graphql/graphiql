@@ -17,7 +17,11 @@ import {
 } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
-import { loadConfig, GraphQLExtensionDeclaration } from 'graphql-config';
+import {
+  loadConfig,
+  GraphQLConfig,
+  GraphQLExtensionDeclaration,
+} from 'graphql-config';
 import {
   GraphQLSchema,
   parse,
@@ -84,6 +88,45 @@ describe('GraphQLCache', () => {
       expect(config.extensions.get('extension-used')).toEqual({
         name: 'extension-used',
       });
+    });
+  });
+
+  describe('getProjectForFile', () => {
+    const createCache = (config: GraphQLConfig['rawConfig']) =>
+      new GraphQLCache({
+        configDir,
+        config: new GraphQLConfig(
+          { config, filepath: `${configDir}/.graphqlrc.json` },
+          [],
+        ),
+        parser: parseDocument,
+        logger,
+      });
+
+    it('ignores embedded files not matched by `documents`', () => {
+      const projectCache = createCache({
+        schema: '__schema__/StarWarsSchema.graphql',
+        documents: '__queries__/*.graphql',
+      });
+      expect(
+        projectCache.getProjectForFile(`${configDir}/__queries__/test.graphql`),
+      ).toBeDefined();
+      expect(
+        projectCache.getProjectForFile(`${configDir}/__queries__/test.ts`),
+      ).toBeUndefined();
+      // non-embedded files such as a generated schema still fall back
+      expect(
+        projectCache.getProjectForFile('/tmp/generated-schema.graphql'),
+      ).toBeDefined();
+    });
+
+    it('falls back to the project when no `documents` are configured', () => {
+      const projectCache = createCache({
+        schema: '__schema__/StarWarsSchema.graphql',
+      });
+      expect(
+        projectCache.getProjectForFile(`${configDir}/__queries__/test.ts`),
+      ).toBeDefined();
     });
   });
 

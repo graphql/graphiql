@@ -29,6 +29,7 @@ import type {
 } from 'graphql-language-service';
 
 import { readFile } from 'node:fs/promises';
+import { extname } from 'node:path';
 import nullthrows from 'nullthrows';
 
 import {
@@ -52,6 +53,7 @@ import {
 import {
   DEFAULT_SUPPORTED_EXTENSIONS,
   DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
+  SupportedExtensionsEnum,
 } from './constants';
 import { NoopLogger, Logger } from './Logger';
 import { LRUCache } from 'lru-cache';
@@ -175,9 +177,20 @@ export class GraphQLCache {
 
   getProjectForFile = (uri: string): GraphQLProjectConfig | void => {
     try {
-      const project = this._graphQLConfig.getProjectForFile(
-        URI.parse(uri).fsPath,
-      );
+      const { fsPath } = URI.parse(uri);
+      const project = this._graphQLConfig.getProjectForFile(fsPath);
+      // graphql-config falls back to the first project without include/exclude,
+      // so skip embedded files that a project with `documents` doesn't match
+      if (
+        project.documents &&
+        DEFAULT_SUPPORTED_EXTENSIONS.includes(
+          extname(fsPath) as SupportedExtensionsEnum,
+        ) &&
+        // oxlint-disable-next-line unicorn/prefer-regexp-test -- false positive project is not string
+        !project.match(fsPath)
+      ) {
+        return;
+      }
       if (!project.documents) {
         this._logger.warn(
           `No documents configured for project ${project.name}. Many features will not work correctly.`,
