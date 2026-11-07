@@ -4,12 +4,12 @@ import { fileURLToPath } from 'node:url';
 
 const bundleArtifacts = [
   '{packages,examples}/*/{out,bundle}',
-  'packages/graphiql/{webpack,monaco,cm6,cdn}',
+  'packages/graphiql/{webpack,monaco,cm6,cdn,e2e,index.html}',
 ];
 
 const buildArtifacts = [
   ...bundleArtifacts,
-  '{packages,examples}/*/{dist,esm,.next,.react-router}',
+  '{packages,examples}/*/{dist,esm,.next,.react-router,storybook-static}',
   '{packages,examples}/*/*.tsbuildinfo',
   '*.tsbuildinfo',
   'resources/*.tsbuildinfo',

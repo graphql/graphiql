@@ -2,7 +2,8 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { defineConfig, PluginOption } from 'vite';
-import react from '@vitejs/plugin-react';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
+import babel from '@rolldown/plugin-babel';
 import svgr from 'vite-plugin-svgr';
 import type { PluginOptions as ReactCompilerConfig } from 'babel-plugin-react-compiler';
 import packageJSON from './package.json' with { type: 'json' };
@@ -19,7 +20,6 @@ export const reactCompilerConfig: Partial<ReactCompilerConfig> = {
   logger: {
     logEvent(filename, result) {
       if (result.kind === 'CompileSuccess') {
-        console.info('🚀 File', filename, 'was optimized with react-compiler');
         return;
       }
       if (result.kind === 'CompileSkip') {
@@ -45,10 +45,10 @@ export const reactCompilerConfig: Partial<ReactCompilerConfig> = {
 };
 
 export const plugins: PluginOption[] = [
-  react({
-    babel: {
-      plugins: [['babel-plugin-react-compiler', reactCompilerConfig]],
-    },
+  react(),
+  babel({
+    include: /\.[jt]sx?(?:$|\?)/,
+    presets: [reactCompilerPreset(reactCompilerConfig)],
   }),
   svgr({
     svgrOptions: {
@@ -56,9 +56,15 @@ export const plugins: PluginOption[] = [
     },
   }),
   dts({
+    compilerOptions: { rootDir: 'src' },
     include: ['src/**'],
-    outDir: ['dist'],
-    exclude: ['**/*.spec.{ts,tsx}', '**/__tests__/'],
+    outDirs: ['dist'],
+    exclude: [
+      '**/*.spec.{ts,tsx}',
+      '**/*.test.{ts,tsx}',
+      '**/*.stories.{ts,tsx}',
+      '**/__tests__/',
+    ],
   }),
   {
     name: 'copy-original-setup-workers-file',
@@ -87,8 +93,6 @@ export const plugins: PluginOption[] = [
         fs.writeFile(path.join(dest, 'webpack.js'), removeTypes(webpack)),
         fs.writeFile(path.join(dest, 'webpack.d.ts'), types),
       ]);
-
-      console.info(`Build finished! Created "${dest}"...`);
     },
   },
 ];
