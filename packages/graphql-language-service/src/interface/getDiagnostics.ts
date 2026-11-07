@@ -13,8 +13,11 @@ import {
   FragmentDefinitionNode,
   GraphQLError,
   GraphQLSchema,
+  Lexer,
   Location,
+  Source,
   SourceLocation,
+  TokenKind,
   ValidationRule,
   print,
   validate,
@@ -75,6 +78,11 @@ export function getDiagnostics(
           );
   }
   const enhancedQuery = fragments ? `${query}\n\n${fragments}` : query;
+  // Parsing a document that only contains ignored tokens (comments,
+  // whitespace and commas) fails with a bogus 'Unexpected <EOF>' error.
+  if (isEmptyDocument(enhancedQuery)) {
+    return [];
+  }
   try {
     ast = parseDocument(enhancedQuery, options);
   } catch (error) {
@@ -194,6 +202,20 @@ export function getRange(location: SourceLocation, queryText: string): IRange {
   // @ts-expect-error -- https://github.com/microsoft/TypeScript/pull/32695
   const end = stream.getCurrentPosition();
   return new Range(new Position(line, start), new Position(line, end));
+}
+
+/**
+ * A document is empty when it only contains ignored tokens. The GraphQL
+ * lexer skips whitespace, commas, comments and the BOM, so the first token
+ * of an empty document is EOF. Input the lexer cannot tokenize is not
+ * empty; the parser reports it as a syntax error instead.
+ */
+function isEmptyDocument(query: string): boolean {
+  try {
+    return new Lexer(new Source(query)).advance().kind === TokenKind.EOF;
+  } catch {
+    return false;
+  }
 }
 
 /**
