@@ -78,7 +78,7 @@
     "vite-plugin-dts": "^5.1.2",
     "vitest-canvas-mock": "^1.2.0",
     "zustand": "^5",
-    "@rolldown/plugin-babel": "^0.2.4"
+    "@rolldown/plugin-babel": "^0.3.0"
   },
   "browser": {
     "//": "esm.sh polyfills `process`, we don't need it",
