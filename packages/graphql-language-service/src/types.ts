@@ -175,7 +175,8 @@ export type ObjectTypeInfo = {
   definition: TypeDefinitionNode;
 };
 
-export type Diagnostic = DiagnosticType;
+/** GraphQL error messages remain plain text when LSP also permits markup. */
+export type Diagnostic = DiagnosticType & { message: string };
 
 export type CompletionItemBase = {
   label: string;

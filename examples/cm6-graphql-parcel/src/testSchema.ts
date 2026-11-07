@@ -63,7 +63,7 @@ export const TestInputObject: GraphQLInputObjectType =
 
 const TestInterface: GraphQLInterfaceType = new GraphQLInterfaceType({
   name: 'TestInterface',
-  resolveType: () => UnionFirst,
+  resolveType: () => UnionFirst.name,
   fields: {
     scalar: {
       type: GraphQLString,
@@ -74,7 +74,7 @@ const TestInterface: GraphQLInterfaceType = new GraphQLInterfaceType({
 
 const AnotherTestInterface: GraphQLInterfaceType = new GraphQLInterfaceType({
   name: 'AnotherTestInterface',
-  resolveType: () => UnionFirst,
+  resolveType: () => UnionFirst.name,
   fields: {
     example: {
       type: GraphQLString,
@@ -116,7 +116,7 @@ export const TestUnion = new GraphQLUnionType({
   name: 'TestUnion',
   types: [UnionFirst, UnionSecond],
   resolveType() {
-    return UnionFirst;
+    return UnionFirst.name;
   },
 });
 

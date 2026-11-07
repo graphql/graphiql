@@ -1,6 +1,6 @@
 {
   "name": "cm6-graphql",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "description": "GraphQL language support for CodeMirror 6",
   "repository": {
     "type": "git",
@@ -8,9 +8,9 @@
     "directory": "packages/cm6-graphql"
   },
   "scripts": {
-    "types:check": "tsgo --noEmit",
-    "build": "pnpm types:check && cm-buildhelper src/index.ts",
-    "prepack": "tsgo --noEmit && cm-buildhelper src/index.ts",
+    "types:check": "tsc --noEmit",
+    "build": "pnpm types:check && node build.mjs",
+    "prepack": "tsc --noEmit && node build.mjs",
     "test": "vitest run"
   },
   "main": "dist/index.cjs",
@@ -22,11 +22,10 @@
   "types": "dist/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "graphql-language-service": "^5.7.0"
+    "graphql-language-service": "^6.0.0"
   },
   "devDependencies": {
     "@codemirror/autocomplete": "^6.0.0",
-    "@codemirror/buildhelper": "^0.1.16",
     "@codemirror/language": "^6.0.0",
     "@codemirror/lint": "^6.9.7",
     "@codemirror/state": "^6.0.0",
@@ -35,9 +34,10 @@
     "@lezer/generator": "^1.1.0",
     "@lezer/highlight": "^1.0.0",
     "@lezer/lr": "^1.0.0",
-    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
-    "graphql": "^16.9.0",
-    "typescript": "^5.8.0"
+    "@marijn/buildtool": "^1.2.1",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "graphql": "^17.0.2",
+    "typescript": "npm:@typescript/typescript6@^6.0.2"
   },
   "peerDependencies": {
     "@codemirror/autocomplete": "^6.0.0",
@@ -46,7 +46,7 @@
     "@codemirror/state": "^6.0.0",
     "@codemirror/view": "^6.0.0",
     "@lezer/highlight": "^1.0.0",
-    "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0"
+    "graphql": "^16.11.0 || ^17.0.0"
   },
   "license": "MIT"
 }

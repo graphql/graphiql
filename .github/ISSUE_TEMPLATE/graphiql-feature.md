@@ -20,11 +20,6 @@ labels: [graphiql, enhancement]
     api:
     https://graphiql-test.netlify.app/typedoc/modules/graphiql_react.html#graphiqlplugin-2
 
-    examples:
-
-    https://github.com/graphql/graphiql/tree/main/packages/graphiql-plugin-explorer
-
-
   In the event that the plugin API doesn't allow you to build a feature, it
   may be that expanding the plugin API *itself* is the best place for the
   feature to be introduced!

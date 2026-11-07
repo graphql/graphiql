@@ -1,0 +1,50 @@
+.graphiql-doc-explorer-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  padding: var(--px-6) var(--px-16) 0;
+  font-family: var(--font-family-mono);
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+.graphiql-doc-explorer-breadcrumb-segment {
+  display: flex;
+  align-items: center;
+  gap: var(--px-4);
+}
+
+.graphiql-doc-explorer-breadcrumb-sep {
+  color: oklch(var(--fg-dim));
+  margin: 0 var(--px-4);
+  font-family: var(--font-family);
+  font-size: 13px;
+}
+
+/* Query root — accent blue */
+a.graphiql-doc-explorer-breadcrumb-root,
+span.graphiql-doc-explorer-breadcrumb-root {
+  color: oklch(var(--accent-blue));
+  text-decoration: none;
+}
+
+a.graphiql-doc-explorer-breadcrumb-root:hover {
+  text-decoration: underline;
+}
+
+/* Intermediate types — green */
+a.graphiql-doc-explorer-breadcrumb-intermediate,
+span.graphiql-doc-explorer-breadcrumb-intermediate {
+  color: oklch(var(--accent-green-light));
+  text-decoration: none;
+}
+
+a.graphiql-doc-explorer-breadcrumb-intermediate:hover {
+  text-decoration: underline;
+}
+
+/* Current (last) segment — strong foreground */
+span.graphiql-doc-explorer-breadcrumb-current {
+  color: oklch(var(--fg-strong));
+}

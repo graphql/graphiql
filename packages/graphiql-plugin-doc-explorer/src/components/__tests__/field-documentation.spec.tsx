@@ -78,7 +78,7 @@ describe('FieldDocumentation', () => {
       />,
     );
     expect(
-      container.querySelector('.graphiql-markdown-description'),
+      container.querySelector('.graphiql-doc-explorer-field-card-description'),
     ).not.toBeInTheDocument();
     expect(
       container.querySelector('.graphiql-doc-explorer-type-name'),
@@ -95,7 +95,7 @@ describe('FieldDocumentation', () => {
       />,
     );
     expect(
-      container.querySelector('.graphiql-markdown-description'),
+      container.querySelector('.graphiql-doc-explorer-field-card-description'),
     ).not.toBeInTheDocument();
     expect(
       container.querySelector('.graphiql-doc-explorer-type-name'),
@@ -113,7 +113,7 @@ describe('FieldDocumentation', () => {
       container.querySelector('.graphiql-doc-explorer-type-name'),
     ).toHaveTextContent('String');
     expect(
-      container.querySelector('.graphiql-markdown-description'),
+      container.querySelector('.graphiql-doc-explorer-field-card-description'),
     ).toHaveTextContent('Example String field with arguments');
   });
 
@@ -127,14 +127,14 @@ describe('FieldDocumentation', () => {
       container.querySelector('.graphiql-doc-explorer-type-name'),
     ).toHaveTextContent('String');
     expect(
-      container.querySelector('.graphiql-markdown-description'),
+      container.querySelector('.graphiql-doc-explorer-field-card-description'),
     ).toHaveTextContent('Example String field with arguments');
     expect(
       container.querySelectorAll('.graphiql-doc-explorer-argument'),
     ).toHaveLength(1);
     expect(
       container.querySelector('.graphiql-doc-explorer-argument'),
-    ).toHaveTextContent('stringArg: String');
+    ).toHaveTextContent('stringArg:String');
     // by default, the deprecation docs should be hidden
     expect(
       container.querySelectorAll('.graphiql-markdown-deprecation'),

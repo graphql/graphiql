@@ -1,4 +1,5 @@
-import { editor, Uri, languages } from 'monaco-graphql/monaco-editor';
+import { editor, Uri } from 'monaco-graphql/monaco-editor';
+import { jsonDefaults } from 'monaco-editor/languages/features/json/register';
 import { initializeMode } from 'monaco-graphql/initializeMode';
 import { parse, print } from 'graphql';
 
@@ -69,7 +70,7 @@ export const RESPONSE_URI = Uri.file('response.json');
 export const TS_URI = Uri.file('typescript.ts');
 
 // set these early on so that initial variables with comments don't flash an error
-languages.json.jsonDefaults.setDiagnosticsOptions({
+jsonDefaults.setDiagnosticsOptions({
   allowComments: true,
   trailingCommas: 'ignore',
 });

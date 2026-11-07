@@ -9,13 +9,11 @@ import type * as monaco from './monaco-editor';
 import { ICreateData } from './typings';
 
 // @ts-expect-error
-import { initialize } from 'monaco-editor/esm/vs/editor/editor.worker';
+import { initialize } from 'monaco-editor/editor/editor.worker';
 
 import { GraphQLWorker } from './GraphQLWorker';
 
-globalThis.onmessage = () => {
-  initialize(
-    (ctx: monaco.worker.IWorkerContext, createData: ICreateData) =>
-      new GraphQLWorker(ctx, createData),
-  );
-};
+initialize(
+  (ctx: monaco.worker.IWorkerContext, createData: ICreateData) =>
+    new GraphQLWorker(ctx, createData),
+);

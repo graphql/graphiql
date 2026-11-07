@@ -1,5 +1,87 @@
 # @graphiql/toolkit
 
+## 1.0.0
+
+### Major Changes
+
+- [#4478](https://github.com/graphql/graphiql/pull/4478) [`066528a`](https://github.com/graphql/graphiql/commit/066528a6bb7706d685536888d7b5549d6fd5a109) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - GraphQL.js 15 and 16.0–16.10 are no longer supported peer dependencies. The supported range is `^16.11.0 || ^17.0.0`. GraphQL.js 16.11 fixes OneOf input validation for nullable variables and tightens input-object coercion to reject arrays, giving GraphiQL 6 a correct baseline for OneOf inputs. Upgrade `graphql` before upgrading these packages.
+
+- [#4392](https://github.com/graphql/graphiql/pull/4392) [`26ae143`](https://github.com/graphql/graphiql/commit/26ae143ba68004d4a50468ba1feb649ace673f3a) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Remove the deprecated `legacyClient` alias from `CreateFetcherOptions`. It duplicated `legacyWsClient` — pass `legacyWsClient` instead.
+
+### Minor Changes
+
+- [#4333](https://github.com/graphql/graphiql/pull/4333) [`093cb10`](https://github.com/graphql/graphiql/commit/093cb100a4524b1005b82c1c064bb897416bfc82) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add `createTransport` and a structured `Transport` API for queries, mutations, subscriptions, and incremental delivery. Pass a transport through `<GraphiQL transport={...}>`; the `transport` and `fetcher` props are mutually exclusive at the type level.
+
+  `GraphiQLProps` is now a union. If a TypeScript wrapper uses `interface AppProps extends GraphiQLProps`, replace it with a type intersection such as `type AppProps = GraphiQLProps & { applicationName: string }`, even when retaining `fetcher`. See the [migration overview](https://github.com/graphql/graphiql/blob/c2e792bc446d5d6751bd7cd1d9ac283a4a1d8fc4/docs/migration/graphiql-6.0.0.md#overview).
+
+  When `supportedMethods` is omitted, `createTransport` discovers endpoint capabilities through `OPTIONS` and the `Allow` header. Queries prefer QUERY, then POST, then GET. Mutations and operations of unknown type require POST. An explicit `method` override applies to queries and fails if the endpoint excludes it. GET sends GraphQL parameters in the URL; POST and QUERY send a JSON body.
+
+  Discovery is shared by concurrent requests and repeats when effective request headers change. If discovery fails, exceeds two seconds, or the `Allow` header is missing or malformed, the transport assumes only its initially configured `method` (POST by default) is available. A valid advertisement containing no supported methods blocks execution. Pass a nonempty `supportedMethods` array to skip discovery for known capabilities. Cross-origin servers must permit OPTIONS and expose `Allow` through `Access-Control-Expose-Headers`.
+
+  `TransportResponse` exposes HTTP method, status, headers, timing, and byte sizes alongside the GraphQL result. HTTP metadata remains available when a response body is not valid JSON. Its `ok` field accounts for both HTTP status and GraphQL errors. `TransportRequest` supports GraphQL `extensions` and an abort `signal`. Subscriptions require an explicit `subscriptionClient` with an `iterate(request)` method, supported by `graphql-ws` v6 and `graphql-sse` clients.
+
+  Plugins can transform outgoing requests with `onBeforeSend` and observe responses or request failures with `onResponse` and `onError`, available through `useGraphiQLPluginContext().transport`. Each registration returns a cleanup function. This context field is absent when using the legacy `fetcher` prop.
+
+  Transports can expose query method preferences through optional `setMethod`, `methodOverride`, and `subscribe(listener)` APIs. Calling `setMethod()` without an argument restores automatic selection. `methodOverride` distinguishes an explicit preference from Auto; `Transport.method` reflects the query method, while `TransportResponse.method` reports the method actually used for an execution. `subscribe(listener)` notifies GraphiQL of preference and capability changes and returns an unsubscribe function. These notifications are independent of request lifecycle hooks. `createTransport` implements these APIs; custom transports can omit them.
+
+  `createGraphiQLFetcher`, `Fetcher`, and `<GraphiQL fetcher={...}>` are deprecated but remain supported. See the [Transport migration guide](https://github.com/graphql/graphiql/blob/c2e792bc446d5d6751bd7cd1d9ac283a4a1d8fc4/docs/migration/graphiql-6.0.0.md#new-transport-api) for examples and custom transport requirements.
+
+## 1.0.0-rc.1
+
+### Patch Changes
+
+- [#4665](https://github.com/graphql/graphiql/pull/4665) [`c4a62af`](https://github.com/graphql/graphiql/commit/c4a62afd30d858c51da233b3f7c7283a35e4d5d2) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Discover HTTP methods automatically when `createTransport` is called without `supportedMethods`. Previous RCs treated an omitted `supportedMethods` as `['POST']` and exposed a method chip and switcher in the top bar. The transport now sends an OPTIONS request without a body before its first HTTP operation, reads `Allow`, and automatically selects QUERY, then POST, then GET for queries. The top bar method controls are removed. The response pane instead shows the actual request method from the optional `TransportResponse.method` field alongside timing and size, including for HTTP error responses and incremental chunks. WebSocket events and custom transports without this metadata omit the method.
+
+  Discovery uses the effective request headers, is shared by concurrent requests, and runs again when headers change. If OPTIONS fails, times out after two seconds, or returns no usable `Allow` header, execution falls back to POST (or the configured `method` override). A valid advertisement containing no usable methods blocks HTTP execution. Mutations always require POST; GraphiQL delegates routing to the transport from Run, the operation dropdown, and the keyboard shortcut. An operation whose type cannot be determined also requires POST. If POST is unavailable, these operations fail without sending.
+
+  Pass `method: 'GET'` to override automatic query selection for testing. GET encodes queries, operation names, variables, and extensions in the URL without a body; mutations still require POST. An override that discovery excludes fails without silently choosing another method. `transport.setMethod?.('GET')` changes the override for subsequent queries, and `transport.setMethod?.()` restores automatic selection. Pass `supportedMethods: ['POST']` to preserve the previous POST-only default and skip OPTIONS, or use `method: 'GET', supportedMethods: ['GET', 'POST']` to test GET queries and POST mutations without discovery. If discovery fails with a configured GET override and no explicit capabilities, only GET is assumed available.
+
+  For cross-origin discovery, the server must permit OPTIONS and expose `Allow` through `Access-Control-Expose-Headers`. This discovers methods only, not QUERY request formats through `Accept-Query`, and does not retry operations with another method. Custom transports own routing and must prevent mutations over GET and QUERY. GraphiQL reads metadata from each response without subscribing to transport capability changes.
+
+## 1.0.0-rc.0
+
+### Patch Changes
+
+- [#4595](https://github.com/graphql/graphiql/pull/4595) [`bcd13dc`](https://github.com/graphql/graphiql/commit/bcd13dca46e2bb75837b33fce9f574712c669457) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Move the GraphiQL 6 package family from beta to release candidate versions.
+
+## 1.0.0-beta.2
+
+### Minor Changes
+
+- [#4333](https://github.com/graphql/graphiql/pull/4333) [`093cb10`](https://github.com/graphql/graphiql/commit/093cb100a4524b1005b82c1c064bb897416bfc82) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a structured `Transport` API alongside the existing `Fetcher`. `createTransport({...})` performs the GraphQL request and returns a `TransportResponse` carrying the real HTTP wire metadata (status, headers, timing, size) for queries, mutations, subscriptions, and incremental delivery, so the response pane can surface those values directly instead of fabricating them. That metadata is there even when the response body isn't valid JSON (an HTML error page from a proxy, a plain-text 401), so a broken response still shows its real status code instead of a generic error. `<GraphiQL>` accepts a new `transport` prop, mutually exclusive with `fetcher` at the type level.
+
+  Transports support GET, POST, and the [HTTP `QUERY`](https://datatracker.ietf.org/doc/draft-ietf-httpbis-safe-method-w-body/) method per the GraphQL over HTTP spec. Pass `method` / `supportedMethods` to choose; GET encodes the query into the URL with no body, `QUERY` sends a JSON body but is safe and idempotent, and mutations are always sent over POST (or blocked when POST is unavailable). `Transport` exposes `url`, `method`, `supportedMethods`, and an optional `setMethod`, and the top bar shows the active method and endpoint with an inline switcher that cycles through the supported methods. Every request, incremental delivery on or off, sends `application/graphql-response+json` in its `accept` header alongside `application/json`, so spec-compliant servers don't fall back to legacy response semantics. Subscriptions require an explicit `subscriptionClient` satisfying a small `SubscriptionClient` contract: a single `.iterate(request)` method that `graphql-ws` v6 and `graphql-sse` clients meet directly. The low-level `simpleHttpTransport` and `multipartHttpTransport` primitives also accept an optional `method`.
+
+  `TransportRequest` carries `extensions` for GraphQL-over-HTTP extensions such as automatic persisted queries (encoded into the URL for `GET`, included in the JSON body for `POST` and `QUERY`), and `signal`, an `AbortSignal` that cancels an in-flight query or mutation. Stopping a running query or mutation aborts the request; stopping a subscription closes the underlying socket or SSE connection. `TransportResponse.ok` reflects both layers: the HTTP status and the absence of top-level GraphQL errors, so a 401 or 500 is never `ok: true` just because its body happens to parse as JSON with no `errors`.
+
+  Plugins can observe and transform traffic through `transport.onBeforeSend`, `transport.onResponse`, and `transport.onError`, available via `useGraphiQLPluginContext()` (all three return a cleanup function; the `transport` field is `undefined` under the legacy `fetcher` path, so guard with optional chaining). `onError` fires when a request fails outright, such as a network error, so plugins can react to failures the same way they observe successful responses.
+
+  `createGraphiQLFetcher`, the `Fetcher` type and its companions, and `<GraphiQL fetcher={...}>` are deprecated but continue to work unchanged. Consumers on the deprecated path see a one-time dismissible banner in the response pane pointing at `docs/migration/graphiql-6.0.0.md` rather than fabricated status/timing/size values.
+
+## 1.0.0-beta.1
+
+### Major Changes
+
+- [#4478](https://github.com/graphql/graphiql/pull/4478) [`066528a`](https://github.com/graphql/graphiql/commit/066528a6bb7706d685536888d7b5549d6fd5a109) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - GraphQL.js 15 and 16.0–16.10 are no longer supported peer dependencies. The supported range is `^16.11.0 || ^17.0.0`. GraphQL.js 16.11 fixes OneOf input validation for nullable variables and tightens input-object coercion to reject arrays, giving GraphiQL 6 a correct baseline for OneOf inputs. Upgrade `graphql` before upgrading these packages.
+
+## 1.0.0-beta.0
+
+### Major Changes
+
+- [#4392](https://github.com/graphql/graphiql/pull/4392) [`26ae143`](https://github.com/graphql/graphiql/commit/26ae143ba68004d4a50468ba1feb649ace673f3a) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Remove the deprecated `legacyClient` alias from `CreateFetcherOptions`. It duplicated `legacyWsClient` — pass `legacyWsClient` instead.
+
+### Minor Changes
+
+- [#4333](https://github.com/graphql/graphiql/pull/4333) [`093cb10`](https://github.com/graphql/graphiql/commit/093cb100a4524b1005b82c1c064bb897416bfc82) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Add a structured `Transport` API alongside the existing `Fetcher`. `createTransport({...})` performs the GraphQL request and returns a `TransportResponse` carrying the real HTTP wire metadata (status, headers, timing, size) for queries, mutations, subscriptions, and incremental delivery, so the response pane can surface those values directly instead of fabricating them. That metadata is there even when the response body isn't valid JSON (an HTML error page from a proxy, a plain-text 401), so a broken response still shows its real status code instead of a generic error. `<GraphiQL>` accepts a new `transport` prop, mutually exclusive with `fetcher` at the type level.
+
+  Transports support GET, POST, and the [HTTP `QUERY`](https://datatracker.ietf.org/doc/draft-ietf-httpbis-safe-method-w-body/) method per the GraphQL over HTTP spec. Pass `method` / `supportedMethods` to choose; GET encodes the query into the URL with no body, `QUERY` sends a JSON body but is safe and idempotent, and mutations are always sent over POST (or blocked when POST is unavailable). `Transport` exposes `url`, `method`, `supportedMethods`, and an optional `setMethod`, and the top bar shows the active method and endpoint with an inline switcher that cycles through the supported methods. Every request, incremental delivery on or off, sends `application/graphql-response+json` in its `accept` header alongside `application/json`, so spec-compliant servers don't fall back to legacy response semantics. Subscriptions require an explicit `subscriptionClient` satisfying a small `SubscriptionClient` contract: a single `.subscribe(request, sink)` method that `graphql-ws` and `graphql-sse` clients meet directly. The low-level `simpleHttpTransport` and `multipartHttpTransport` primitives also accept an optional `method`.
+
+  `TransportRequest` carries `extensions` for GraphQL-over-HTTP extensions such as automatic persisted queries (encoded into the URL for `GET`, included in the JSON body for `POST` and `QUERY`), and `signal`, an `AbortSignal` that cancels an in-flight query or mutation. Stopping a running query or mutation aborts the request; stopping a subscription closes the underlying socket or SSE connection. `TransportResponse.ok` reflects both layers: the HTTP status and the absence of top-level GraphQL errors, so a 401 or 500 is never `ok: true` just because its body happens to parse as JSON with no `errors`.
+
+  Plugins can observe and transform traffic through `transport.onBeforeSend`, `transport.onResponse`, and `transport.onError`, available via `useGraphiQLPluginContext()` (all three return a cleanup function; the `transport` field is `undefined` under the legacy `fetcher` path, so guard with optional chaining). `onError` fires when a request fails outright, such as a network error, so plugins can react to failures the same way they observe successful responses.
+
+  `createGraphiQLFetcher`, the `Fetcher` type and its companions, and `<GraphiQL fetcher={...}>` are deprecated but continue to work unchanged. Consumers on the deprecated path see a one-time dismissible banner in the response pane pointing at `docs/migration/graphiql-6.0.0.md` rather than fabricated status/timing/size values. The CDN bundle exposes `GraphiQL.createTransport` and `GraphiQL.createWsClient` so script-tag consumers can adopt without a bundler.
+
 ## 0.12.1
 
 ### Patch Changes

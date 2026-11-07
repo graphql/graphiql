@@ -20,6 +20,15 @@ export interface GraphiQLPlugin {
    * title, the provider component will throw an error.
    */
   title: string;
+
+  /**
+   * An always-mounted component rendered in the session-header actions area for
+   * every registered plugin, regardless of whether the plugin's pane is
+   * visible. Use it to add toolbar buttons, mount dialogs, or register behavior
+   * such as a save handler. Unlike `content`, this stays mounted for the
+   * lifetime the plugin is registered.
+   */
+  sessionActions?: ComponentType;
 }
 
 export interface PluginSlice {

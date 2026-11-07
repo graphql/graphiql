@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { parseJSONC, tryParseJSONC } from './jsonc';
+import { formatJSONC, parseJSONC, tryParseJSONC } from './jsonc';
+
+describe('formatJSONC', () => {
+  it('formats without adding trailing commas', async () => {
+    expect(await formatJSONC('{"a":1}')).toBe('{\n  "a": 1\n}\n');
+  });
+});
 
 describe('parseJSONC', () => {
   it('parses JSONC with comments and trailing commas', () => {

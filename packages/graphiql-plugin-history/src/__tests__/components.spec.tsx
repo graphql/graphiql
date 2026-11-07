@@ -95,6 +95,9 @@ describe('QueryHistoryItem', () => {
       container.querySelector('button.graphiql-history-item-label')!
         .textContent,
     ).toBe(mockOperationName);
+    expect(
+      container.querySelector('button.graphiql-history-item-label'),
+    ).toHaveAccessibleName(`Set active: ${mockOperationName}`);
   });
 
   it('renders a string version of the query if label or operation name are not provided', () => {
