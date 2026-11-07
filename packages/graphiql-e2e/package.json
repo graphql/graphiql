@@ -48,6 +48,6 @@
     "start-server-and-test": "^3.0.13",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "vite": "^8.3.5",
-    "@rolldown/plugin-babel": "^0.2.4"
+    "@rolldown/plugin-babel": "^0.3.0"
   }
 }

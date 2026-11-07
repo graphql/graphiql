@@ -96,7 +96,7 @@
     "vite-plugin-dts": "^5.1.2",
     "vite-plugin-svgr": "^5.2.0",
     "vitest-canvas-mock": "^1.2.0",
-    "@rolldown/plugin-babel": "^0.2.4"
+    "@rolldown/plugin-babel": "^0.3.0"
   },
   "browser": {
     "//": "Prevents esm.sh from injecting Node.js globals like `process`, which can break browser features (e.g., Mac `Cmd` key) when loading from CDN.",

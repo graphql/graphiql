@@ -66,6 +66,6 @@
     "vite-plugin-dts": "^5.1.2",
     "vitest-canvas-mock": "^1.2.0",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "@rolldown/plugin-babel": "^0.2.4"
+    "@rolldown/plugin-babel": "^0.3.0"
   }
 }
