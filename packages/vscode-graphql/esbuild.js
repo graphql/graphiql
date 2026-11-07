@@ -1,4 +1,6 @@
 const { build } = require('esbuild');
+const { copyFile } = require('node:fs/promises');
+const { createRequire } = require('node:module');
 const [, , arg] = process.argv;
 
 const logger = console;
@@ -61,13 +63,22 @@ build({
     'twig',
   ],
 })
-  .then(({ errors, warnings }) => {
+  .then(async ({ errors, warnings }) => {
     if (warnings.length) {
       logger.warn(...warnings);
     }
     if (errors.length) {
       logger.error(...errors);
     }
+
+    // The bundled compiler resolves ../astro.wasm from each server entry point.
+    const requireFromServer = createRequire(
+      require.resolve('graphql-language-service-server/package.json'),
+    );
+    await copyFile(
+      requireFromServer.resolve('@astrojs/compiler/astro.wasm'),
+      'out/astro.wasm',
+    );
 
     logger.log('successfully bundled vscode-graphql 🚀');
   })
