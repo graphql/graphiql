@@ -33,7 +33,7 @@ jobs:
 
     outputs:
       vscode-published: ${{ steps.vscode.outputs.published }}
-      published-packages: ${{ steps.changesets.outputs.publishedPackages }}
+      published-packages: ${{ steps.changesets.outputs.published-packages }}
 
     steps:
       - name: Checkout Code
@@ -54,28 +54,28 @@ jobs:
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v2
         with:
-          version: pnpm ci:version
+          version-script: pnpm ci:version
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
-          publish: pnpm release
+          publish-script: pnpm release
 
       - name: Note VSCode extension release
         id: vscode
-        if: ${{ steps.changesets.outputs.published == 'true' && contains(steps.changesets.outputs.publishedPackages, '"name":"vscode-graphql') }}
+        if: ${{ steps.changesets.outputs.published == 'true' && contains(steps.changesets.outputs.published-packages, '"name":"vscode-graphql') }}
         run: echo "published=true" >> "$GITHUB_OUTPUT"
 
       - name: Build VSCode extension .vsix files
         if: ${{ steps.vscode.outputs.published == 'true' }}
         env:
-          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
+          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.published-packages }}
         run: node scripts/release-vscode.mts build
 
       - name: Attach VSCode .vsix files to GitHub Releases
         if: ${{ steps.vscode.outputs.published == 'true' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.publishedPackages }}
+          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.published-packages }}
         run: node scripts/release-vscode.mts attach
 
       - name: Upload VSCode extension .vsix artifacts
