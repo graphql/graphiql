@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "dependencies": {
-    "@graphiql/toolkit": "^1.0.0",
+    "@graphiql/toolkit": "^1.0.1",
     "graphql": "^17.0.2",
     "graphql-language-service": "^6.0.1",
     "jsonc-parser": "^3",
