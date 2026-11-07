@@ -82,8 +82,11 @@ export class HistoryStore {
     if (!document) {
       return;
     }
-    const operation = document.definitions.find(
+    const operations = document.definitions.filter(
       (d): d is OperationDefinitionNode => d.kind === 'OperationDefinition',
+    );
+    const operation = (
+      operations.find(d => d.name?.value === operationName) ?? operations[0]
     )?.operation;
     this.history.push({
       query,
