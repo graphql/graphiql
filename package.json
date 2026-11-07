@@ -50,7 +50,8 @@
     "test": "pnpm test:scripts && turbo run test --filter='./packages/*'",
     "test:scripts": "node --test scripts/*.spec.mts",
     "test:consumers": "node scripts/check-package-consumers.mts",
-    "gen-agenda": "wgutils agenda gen"
+    "gen-agenda": "wgutils agenda gen",
+    "test:vscode": "node scripts/test-vscode.mts"
   },
   "dependencies": {
     "@babel/cli": "^8.0.6",
@@ -91,6 +92,7 @@
     "wgutils": "^2.2.1"
   },
   "devDependencies": {
+    "@vscode/test-electron": "3.1.0",
     "@vscode/vsce": "^4.1.0",
     "cspell": "^10.0.1",
     "jsdom": "^30.1.3",

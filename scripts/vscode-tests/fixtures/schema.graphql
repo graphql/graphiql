@@ -1,0 +1,13 @@
+type Query {
+  greeting: String!
+  user: User!
+}
+
+type User {
+  id: ID!
+  name: String!
+}
+
+type Subscription {
+  counter: Int!
+}

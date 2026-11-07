@@ -54,3 +54,5 @@ packages/graphiql/monaco/
 
 storybook-static/
 .claude
+
+.vscode-test/
