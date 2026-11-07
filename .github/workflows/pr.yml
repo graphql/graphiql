@@ -166,8 +166,7 @@ jobs:
         run: xvfb-run -a pnpm test:vscode --extension syntax --version ${{ matrix.version }}
       - name: Test packaged syntax extension (macOS and Windows)
         if: runner.os != 'Linux'
-        # Historical Electron binaries cannot launch on current macOS runners.
-        run: pnpm test:vscode --extension syntax --version stable
+        run: pnpm test:vscode --extension syntax --version ${{ matrix.version }}
       - name: Upload extension-host reports
         if: always()
         uses: actions/upload-artifact@v7

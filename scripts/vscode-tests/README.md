@@ -29,14 +29,14 @@ Reports in `out/vscode-tests` include the checkout SHA, VSIX SHA-256 checksums, 
 
 Required language checks cover natural activation, IPC and stdio, local configuration/schema loading, completion, diagnostics, embedded TypeScript/Vue/Svelte/Astro GraphQL, schema watching, and restart with HTTP schema introspection. Execution checks cover natural activation, CodeLens, HTTP execution, local fragments, response rendering, and WebSocket subscription delivery. Syntax checks cover packaged grammar/configuration assets and GraphQL language registration; the existing syntax unit tests check tokenization.
 
-PR CI builds VSIX files once, then tests those same bytes at the runtime extensions' minimum and current stable on Linux, macOS, and Windows. The syntax minimum runs on Linux; syntax stable runs on all three platforms. The release workflow tests its own VSIX files before attaching them to releases or publishing to either registry. Reports and failing release artifacts are retained for inspection.
+PR CI builds VSIX files once, then tests those same bytes at the runtime extensions' minimum and current stable on Linux, macOS, and Windows. The syntax extension also runs at its own minimum and current stable on all three platforms. The release workflow tests its own VSIX files before attaching them to releases or publishing to either registry. Reports and failing release artifacts are retained for inspection.
 
 Two limitations remain separate from the editor minimum:
 
 - Closing the execution results panel does not cancel its subscription. The test records the observed result without treating this existing behavior as a host incompatibility.
 - These are local extension-host tests. SSH, WSL, Dev Containers, and Codespaces require additional real remote-host validation; local hosts and standalone Node probes do not establish that coverage.
 
-VS Code 1.63.0 and 1.67.0 could not start their CLI binaries on the development Mac, even before installing an extension. This is recorded as a host failure, not evidence that extension activation fails. No older extension release is recommended without testing its VSIX.
+Initial VS Code 1.63.0 and 1.67.0 installation probes failed because the runner omitted the legacy launcher’s Node-mode flag. Those runs provide no extension compatibility evidence. CI uses the corrected launcher handling. No older extension release is recommended without testing its VSIX.
 
 ## Initial artifact evidence
 

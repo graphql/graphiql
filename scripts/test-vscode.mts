@@ -15,7 +15,11 @@ import { tmpdir } from 'node:os';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs, promisify } from 'node:util';
-import { downloadAndUnzipVSCode, runTests } from '@vscode/test-electron';
+import {
+  downloadAndUnzipVSCode,
+  runTests,
+  runVSCodeCommand,
+} from '@vscode/test-electron';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const { values } = parseArgs({
@@ -213,26 +217,43 @@ try {
         evidence.stage = 'install';
         evidence.status = 'install-failed';
         for (const vsix of artifactsToInstall) {
-          // Invoke the CLI directly: older macOS launch scripts require Python 2.
-          const cli =
-            process.platform === 'darwin'
-              ? join(dirname(dirname(executable)), 'Resources/app/out/cli.js')
-              : join(dirname(executable), 'resources/app/out/cli.js');
-          const result = await run(
-            executable,
-            [
-              cli,
-              '--user-data-dir',
-              profile,
-              '--extensions-dir',
-              extensions,
-              '--install-extension',
-              vsix.path,
-              '--force',
-            ],
-            directory,
-            { ELECTRON_RUN_AS_NODE: '1' },
-          );
+          const args = [
+            '--user-data-dir',
+            profile,
+            '--extensions-dir',
+            extensions,
+            '--install-extension',
+            vsix.path,
+            '--force',
+          ];
+          let result: { stdout: string };
+          if (process.platform === 'darwin') {
+            // Bypass Python 2 in old macOS launchers, preserving their Node flag.
+            const app = join(dirname(dirname(executable)), 'Resources/app');
+            const launcher = await readFile(join(app, 'bin/code'), 'utf8');
+            const legacyArgs = launcher.includes(
+              '--ms-enable-electron-run-as-node',
+            )
+              ? ['--ms-enable-electron-run-as-node']
+              : [];
+            result = await run(
+              executable,
+              [join(app, 'out/cli.js'), ...legacyArgs, ...args],
+              directory,
+              { ELECTRON_RUN_AS_NODE: '1' },
+            );
+          } else {
+            // The shipped launcher knows versioned Windows layouts and legacy flags.
+            result = await runVSCodeCommand(args, {
+              version: requestedVersion,
+              cachePath: join(root, '.vscode-test'),
+              spawn: {
+                cwd: directory,
+                env: { ...process.env, NODE_PATH: '' },
+                timeout: 180_000,
+              },
+            });
+          }
           process.stdout.write(result.stdout);
         }
         evidence.stage = 'host-starting';
