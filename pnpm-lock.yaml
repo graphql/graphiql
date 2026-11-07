@@ -153,10 +153,10 @@ importers:
   examples/graphiql-vite:
     dependencies:
       '@graphiql/toolkit':
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: link:../../packages/graphiql-toolkit
       graphiql:
-        specifier: ^6.0.0
+        specifier: ^6.0.1
         version: link:../../packages/graphiql
       graphql:
         specifier: ^17.0.2
@@ -187,10 +187,10 @@ importers:
         specifier: ^1.0.1
         version: link:../../packages/graphiql-plugin-query-builder
       '@graphiql/react':
-        specifier: ^1.0.1
+        specifier: ^1.0.2
         version: link:../../packages/graphiql-react
       '@graphiql/toolkit':
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: link:../../packages/graphiql-toolkit
       '@react-router/fs-routes':
         specifier: ^8.3.1
@@ -202,7 +202,7 @@ importers:
         specifier: ^8.3.1
         version: 8.5.1(@typescript/typescript6@6.0.2)(react-router@8.5.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
       graphiql:
-        specifier: ^6.0.0
+        specifier: ^6.0.1
         version: link:../../packages/graphiql
       isbot:
         specifier: ^5
@@ -242,13 +242,13 @@ importers:
         specifier: ^6.0.0
         version: link:../../packages/graphiql-plugin-code-exporter
       '@graphiql/react':
-        specifier: ^1.0.1
+        specifier: ^1.0.2
         version: link:../../packages/graphiql-react
       '@graphiql/toolkit':
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: link:../../packages/graphiql-toolkit
       graphiql:
-        specifier: ^6.0.0
+        specifier: ^6.0.1
         version: link:../../packages/graphiql
       graphql:
         specifier: ^17.0.2
@@ -318,7 +318,7 @@ importers:
   examples/monaco-graphql-nextjs:
     dependencies:
       '@graphiql/toolkit':
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: link:../../packages/graphiql-toolkit
       graphql:
         specifier: ^17.0.2
@@ -358,7 +358,7 @@ importers:
   examples/monaco-graphql-react-vite:
     dependencies:
       '@graphiql/toolkit':
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: link:../../packages/graphiql-toolkit
       graphql:
         specifier: ^17.0.2
@@ -569,7 +569,7 @@ importers:
         specifier: ^1.0.0
         version: link:../graphiql-plugin-query-builder
       '@graphiql/react':
-        specifier: ^1.0.0
+        specifier: ^1.0.2
         version: link:../graphiql-react
       clsx:
         specifier: ^2.1.1
@@ -582,7 +582,7 @@ importers:
         specifier: ^7.29.6
         version: 7.29.7
       '@graphiql/toolkit':
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: link:../graphiql-toolkit
       '@rolldown/plugin-babel':
         specifier: ^0.2.4
@@ -648,13 +648,13 @@ importers:
   packages/graphiql-e2e:
     dependencies:
       '@graphiql/react':
-        specifier: 1.0.1
+        specifier: 1.0.2
         version: link:../graphiql-react
       '@graphiql/toolkit':
-        specifier: 1.0.0
+        specifier: 1.0.1
         version: link:../graphiql-toolkit
       graphiql:
-        specifier: 6.0.0
+        specifier: 6.0.1
         version: link:../graphiql
       graphql:
         specifier: ^17.0.2
@@ -1071,7 +1071,7 @@ importers:
   packages/graphiql-react:
     dependencies:
       '@graphiql/toolkit':
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: link:../graphiql-toolkit
       '@radix-ui/react-dialog':
         specifier: ^1.1

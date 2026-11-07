@@ -1,5 +1,15 @@
 # graphql-language-service-server
 
+## 3.0.2
+
+### Patch Changes
+
+- [#4617](https://github.com/graphql/graphiql/pull/4617) [`e6c67f6`](https://github.com/graphql/graphiql/commit/e6c67f668a1013788a7075a1eb8193cd4e9d1108) Thanks [@lazerg](https://github.com/lazerg)! - Bind the `textDocument/didClose` handler to the message processor. It was passed as an unbound method, so every file close failed with `Cannot read properties of undefined (reading '_isInitialized')` and closed documents were never removed from the cache.
+
+- [#4618](https://github.com/graphql/graphiql/pull/4618) [`7c7baaa`](https://github.com/graphql/graphiql/commit/7c7baaa44a0f25070fb77da6ebc54ceb67919a3b) Thanks [@lazerg](https://github.com/lazerg)! - Pass the project through when caching schema files, so their object types are indexed under the project that declared them. Previously the project was looked up again by file path, which could pick the first project in a multi-project config or fail with `doesn't match any project`.
+
+- [#4619](https://github.com/graphql/graphiql/pull/4619) [`ec1e270`](https://github.com/graphql/graphiql/commit/ec1e27091bcd5e78e2e05ff40eea84a1784d7696) Thanks [@lazerg](https://github.com/lazerg)! - Run only one cache initialization at a time while the server starts. File events that arrive before initialization finishes now wait for the in-flight run instead of starting another one, which replaced the cache several times and made go-to-definition unreliable until the last run finished.
+
 ## 3.0.1
 
 ### Patch Changes

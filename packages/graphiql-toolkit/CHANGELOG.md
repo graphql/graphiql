@@ -1,5 +1,11 @@
 # @graphiql/toolkit
 
+## 1.0.1
+
+### Patch Changes
+
+- [#4754](https://github.com/graphql/graphiql/pull/4754) [`ec0bc4c`](https://github.com/graphql/graphiql/commit/ec0bc4c0e2a2b3f3abd9eed41479c78f2af54894) Thanks [@RaphaelFakhri](https://github.com/RaphaelFakhri)! - Show the type of the executed operation on History rows when the document contains several operations, instead of the type of the first one.
+
 ## 1.0.0
 
 ### Major Changes

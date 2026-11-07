@@ -11,9 +11,9 @@
   },
   "dependencies": {
     "@graphiql/plugin-code-exporter": "^6.0.0",
-    "@graphiql/react": "^1.0.1",
-    "@graphiql/toolkit": "^1.0.0",
-    "graphiql": "^6.0.0",
+    "@graphiql/react": "^1.0.2",
+    "@graphiql/toolkit": "^1.0.1",
+    "graphiql": "^6.0.1",
     "graphql": "^17.0.2",
     "graphql-ws": "^6",
     "react": "^19",

@@ -1,5 +1,13 @@
 # Change Log
 
+## 6.0.1
+
+### Patch Changes
+
+- [#4757](https://github.com/graphql/graphiql/pull/4757) [`bb80494`](https://github.com/graphql/graphiql/commit/bb8049430e9c5c0306dfa0c28b458f588e7edf90) Thanks [@trevor-scheer](https://github.com/trevor-scheer)! - Remove the response pane's Tree view. JSON and Table views remain available. A saved Tree preference falls back to JSON. The exported `ResponseView` type now accepts only `'json'` and `'table'`.
+- Updated dependencies [[`bb80494`](https://github.com/graphql/graphiql/commit/bb8049430e9c5c0306dfa0c28b458f588e7edf90)]:
+  - @graphiql/react@1.0.2
+
 ## 6.0.0
 
 ### Major Changes
