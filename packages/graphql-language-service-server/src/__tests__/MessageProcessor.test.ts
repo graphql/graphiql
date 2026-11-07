@@ -738,6 +738,24 @@ describe('MessageProcessor', () => {
     });
   });
 
+  describe('_cacheSchemaFile', () => {
+    it('passes the project through to _cacheSchemaText', async () => {
+      const project = gqlConfig.getProject('testWithCustomDirectives');
+      const cacheSchemaText = vi.spyOn(messageProcessor, '_cacheSchemaText');
+
+      await messageProcessor._cacheSchemaFile(
+        '__schema__/StarWarsSchema.graphql',
+        project,
+      );
+      expect(cacheSchemaText).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.any(String),
+        expect.any(Number),
+        project,
+      );
+    });
+  });
+
   describe('handleDidOpenOrSaveNotification', () => {
     const mockReadFileSync = vi.mocked(fs.readFileSync);
 
