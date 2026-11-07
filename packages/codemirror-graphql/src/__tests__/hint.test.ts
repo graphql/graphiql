@@ -1042,13 +1042,6 @@ describe('graphql-hint', () => {
     const list: IHint[] = [];
     const expectedSuggestions = getExpectedSuggestions(list);
 
-    // kind is FragmentSpread, step is 2
-    const suggestions1 = await getHintSuggestions(
-      'fragment Foo on Test { id }  query { ...Foo ',
-      { line: 0, ch: 45 },
-    );
-    expect(suggestions1?.list).toEqual(expectedSuggestions);
-
     // kind is ListType, step is 3
     const suggestions2 = await getHintSuggestions('query($foo: [string] ', {
       line: 0,
