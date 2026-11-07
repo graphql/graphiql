@@ -101,7 +101,7 @@ jobs:
         run: node scripts/release-vscode.mts attach
 
       - name: Upload VSCode extension .vsix artifacts
-        if: ${{ steps.vscode.outputs.published == 'true' }}
+        if: ${{ always() && steps.vscode.outputs.published == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: vscode-extensions

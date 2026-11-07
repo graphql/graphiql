@@ -162,10 +162,7 @@ try {
       const directory = await realpath(
         await mkdtemp(join(tmpdir(), 'graphiql-vsix-')),
       );
-      const server = await fixture.startFixtureServer({
-        graphqlPath: requireFromExecution.resolve('graphql'),
-        wsPath: requireFromExecution.resolve('ws'),
-      });
+      let server: { url: string; close: () => Promise<void> } | undefined;
       const reportPath = join(output, `${label}.json`);
       const driverReportPath = join(directory, 'driver-report.json');
       const workspace = join(directory, 'workspace');
@@ -179,9 +176,22 @@ try {
         platform: process.platform,
         arch: process.arch,
         artifacts: [],
-        status: 'host-launch-failed',
+        stage: 'setup',
+        status: 'setup-failed',
       };
       try {
+        const artifactsToInstall: { path: string; sha256: string }[] = [];
+        evidence.artifacts = artifactsToInstall;
+        for (const dependency of mode !== 'syntax'
+          ? ['syntax' as const, mode]
+          : [mode]) {
+          artifactsToInstall.push(await artifact(dependency));
+        }
+        server = await fixture.startFixtureServer({
+          graphqlPath: requireFromExecution.resolve('graphql'),
+          wsPath: requireFromExecution.resolve('ws'),
+        });
+        assert.ok(server);
         await cp(join(root, 'scripts/vscode-tests/fixtures'), workspace, {
           recursive: true,
         });
@@ -194,17 +204,15 @@ try {
             'security.workspace.trust.enabled': false,
           }),
         );
+        evidence.stage = 'download';
+        evidence.status = 'download-failed';
         const executable = await downloadAndUnzipVSCode({
           version: requestedVersion,
           cachePath: join(root, '.vscode-test'),
         });
-        const installed = [];
-        for (const dependency of mode !== 'syntax'
-          ? ['syntax' as const, mode]
-          : [mode]) {
-          const vsix = await artifact(dependency);
-          installed.push(vsix);
-          evidence.artifacts = installed;
+        evidence.stage = 'install';
+        evidence.status = 'install-failed';
+        for (const vsix of artifactsToInstall) {
           // Invoke the CLI directly: older macOS launch scripts require Python 2.
           const cli =
             process.platform === 'darwin'
@@ -227,8 +235,8 @@ try {
           );
           process.stdout.write(result.stdout);
         }
-        evidence.artifacts = installed;
-        evidence.status = 'extension-test-failed';
+        evidence.stage = 'host-starting';
+        evidence.status = 'host-launch-failed';
         await runTests({
           vscodeExecutablePath: executable,
           extensionDevelopmentPath: join(root, 'scripts/vscode-tests/driver'),
@@ -256,6 +264,8 @@ try {
             '--no-sandbox',
           ],
         });
+        evidence.stage = 'result-validation';
+        evidence.status = 'result-validation-failed';
         const completed = JSON.parse(await readFile(driverReportPath, 'utf8'));
         assert.equal(
           completed.status,
@@ -280,6 +290,7 @@ try {
             'Packaged minimum differs from source manifest',
           );
         }
+        evidence.stage = 'completed';
         evidence.status = 'passed';
       } catch (error) {
         failures++;
@@ -302,6 +313,16 @@ try {
         const driver = await readFile(driverReportPath, 'utf8')
           .then(JSON.parse)
           .catch(() => {});
+        if (driver?.status === 'failed') {
+          evidence.stage = 'extension-tests';
+          evidence.status = 'extension-test-failed';
+        } else if (
+          driver?.status === 'passed' &&
+          evidence.status !== 'passed'
+        ) {
+          evidence.stage = 'result-validation';
+          evidence.status = 'result-validation-failed';
+        }
         const runtimes = await readFile(
           join(workspace, 'runtime-versions.jsonl'),
           'utf8',
@@ -317,7 +338,7 @@ try {
         };
         await writeFile(reportPath, JSON.stringify(report, null, 2) + '\n');
         results.push({ report: basename(reportPath), ...report });
-        await server.close();
+        await server?.close();
         await rm(directory, {
           recursive: true,
           force: true,
