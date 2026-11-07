@@ -20,7 +20,6 @@ export const ResponseView: StoryObj = {
         ariaLabel="Response view"
         options={[
           { value: 'json', label: 'JSON' },
-          { value: 'tree', label: 'Tree' },
           { value: 'table', label: 'Table' },
         ]}
       />

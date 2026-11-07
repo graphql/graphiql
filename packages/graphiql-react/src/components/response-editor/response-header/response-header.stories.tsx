@@ -60,9 +60,9 @@ export const ErrorStatus: Story = {
   },
 };
 
-export const TreeView: Story = {
+export const TableView: Story = {
   render() {
-    const [view, setView] = useState<ResponseView>('tree');
+    const [view, setView] = useState<ResponseView>('table');
     return (
       <ResponseHeader
         status={200}
