@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.base.esm.json",
+  "compilerOptions": {
+    // GraphQL 17's CJS and ESM declarations have incompatible private class fields.
+    "customConditions": ["node"]
+  }
+}

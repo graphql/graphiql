@@ -75,7 +75,6 @@ export const BABEL_PLUGINS: ParserPlugin[] = [
   'exportDefaultFrom',
   'functionBind',
   'functionSent',
-  'importMeta',
   'jsx',
   'moduleBlocks',
   // ['pipelineOperator', { proposal: 'hack' }],

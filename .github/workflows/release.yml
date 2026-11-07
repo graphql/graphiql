@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - release/*
+      - '*.x.x'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -41,7 +41,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'
@@ -89,7 +89,7 @@ jobs:
   publish-vscode-extensions:
     name: Publish to ${{ matrix.registry }}
     needs: release
-    if: ${{ needs.release.outputs.vscode-published == 'true' }}
+    if: ${{ github.ref_name == 'main' && needs.release.outputs.vscode-published == 'true' }}
     runs-on: ubuntu-latest
     permissions: {}
     strategy:
@@ -103,7 +103,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.node-version'

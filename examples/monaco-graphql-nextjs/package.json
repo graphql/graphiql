@@ -3,25 +3,29 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "^22.0.0 || >=24.0.0"
+  },
   "scripts": {
-    "types:check": "tsc --noEmit",
-    "dev": "next",
-    "build": "next build",
+    "types:check": "next typegen && tsc --noEmit",
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
     "start": "next start"
   },
   "dependencies": {
-    "@graphiql/toolkit": "^0.12.1",
-    "graphql": "^16",
+    "@graphiql/toolkit": "^1.0.0",
+    "graphql": "^17.0.2",
     "jsonc-parser": "^3",
-    "monaco-editor": "^0.52",
-    "monaco-graphql": "^1.9.0",
-    "next": "^15",
+    "monaco-editor": "0.57.0",
+    "monaco-graphql": "^2.0.1",
+    "next": "^16.4.3",
     "react": "^19",
     "react-dom": "^19"
   },
   "devDependencies": {
     "@types/node": "^24",
     "@types/react": "^19",
-    "typescript": "^5"
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "typescript": "npm:@typescript/typescript6@^6.0.2"
   }
 }

@@ -9,8 +9,8 @@ import {
   processRequest,
   type ProcessRequestResult,
 } from 'graphql-helix';
-import { createSchema } from '../packages/graphiql/test/schema.js';
-import { createExecute } from '../packages/graphiql/test/execute.js';
+import { createSchema } from '../packages/graphiql-e2e/test/schema.js';
+import { createExecute } from '../packages/graphiql-e2e/test/execute.js';
 
 type HandlerOptions = {
   schema: graphql.GraphQLSchema;
@@ -68,6 +68,14 @@ async function bufferMultipartResponse(
  */
 export function createHandler(options: HandlerOptions): NetlifyHandler {
   return async function handleRequest(event: NetlifyHandlerEvent) {
+    if (event.httpMethod === 'OPTIONS') {
+      return {
+        statusCode: 204,
+        headers: { Allow: 'GET, POST, OPTIONS' },
+        body: '',
+      };
+    }
+
     try {
       const rawBody =
         event.body && event.isBase64Encoded

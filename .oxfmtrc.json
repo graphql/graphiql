@@ -6,7 +6,12 @@
   "proseWrap": "never",
   "printWidth": 80,
   "sortPackageJson": false,
-  "ignorePatterns": ["**/CHANGELOG.md", "working-group/agendas/**"],
+  "ignorePatterns": [
+    "**/CHANGELOG.md",
+    "working-group/agendas/**",
+    "examples/monaco-graphql-nextjs/next-env.d.ts",
+    "examples/graphiql-nextjs/next-env.d.ts"
+  ],
   "overrides": [
     {
       "files": ["*.md", "*.mdx"],

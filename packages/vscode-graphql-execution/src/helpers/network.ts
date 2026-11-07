@@ -1,7 +1,7 @@
 import { visit, OperationTypeNode, GraphQLError } from 'graphql';
-import { fetch } from '@whatwg-node/fetch';
+import { getFetch } from './fetch';
 import { Agent } from 'node:https';
-import * as ws from 'ws';
+import NodeWebSocket from 'ws';
 import { pipe, subscribe } from 'wonka';
 
 import { Endpoint } from './extensions';
@@ -54,7 +54,7 @@ export class NetworkHelper {
       const wsClient = createWSClient({
         url: wsEndpointURL,
         connectionAckWaitTimeout: 3000,
-        webSocketImpl: ws,
+        webSocketImpl: NodeWebSocket,
       });
       exchanges.splice(
         1,
@@ -74,7 +74,7 @@ export class NetworkHelper {
 
     return createClient({
       url: endpoint.url,
-      fetch: global.fetch ?? fetch,
+      fetch: getFetch(),
       fetchOptions: {
         headers: endpoint.headers as HeadersInit,
         // this is an option that's only available in `node-fetch`, not in the standard fetch API

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "test": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/packages/graphiql-plugin-history/src/**",
+        "$TURBO_ROOT$/packages/graphiql-plugin-history/package.json",
+        "$TURBO_ROOT$/packages/graphiql-plugin-history/tsconfig.json",
+        "$TURBO_ROOT$/packages/graphiql-plugin-query-builder/src/**",
+        "$TURBO_ROOT$/packages/graphiql-plugin-query-builder/package.json",
+        "$TURBO_ROOT$/packages/graphiql-plugin-query-builder/tsconfig.json"
+      ]
+    },
+    "build-storybook": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/packages/graphiql-plugin-history/src/**",
+        "$TURBO_ROOT$/packages/graphiql-plugin-history/package.json",
+        "$TURBO_ROOT$/packages/graphiql-plugin-history/tsconfig.json",
+        "$TURBO_ROOT$/packages/graphiql-plugin-query-builder/src/**",
+        "$TURBO_ROOT$/packages/graphiql-plugin-query-builder/package.json",
+        "$TURBO_ROOT$/packages/graphiql-plugin-query-builder/tsconfig.json"
+      ]
+    }
+  }
+}

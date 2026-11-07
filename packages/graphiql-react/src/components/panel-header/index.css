@@ -1,0 +1,42 @@
+.graphiql-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: var(--px-12) var(--px-14) var(--px-10);
+  border-bottom: 1px solid oklch(var(--border-default));
+  background: oklch(var(--bg-elevated));
+}
+
+.graphiql-panel-header-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.graphiql-panel-header-title {
+  margin: 0;
+  color: oklch(var(--fg-strong));
+  font-family: var(--font-family);
+  font-size: var(--font-size-mono);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.graphiql-panel-header-subtitle {
+  margin: 0;
+  color: oklch(var(--fg-subtle));
+  font-family: var(--font-family);
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-body);
+}
+
+.graphiql-panel-header-actions {
+  display: flex;
+  gap: var(--px-4);
+  color: oklch(var(--fg-subtle));
+}
+
+.graphiql-panel-header-actions svg {
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
+}

@@ -12,9 +12,7 @@ type ParseAstroResult =
     };
 
 async function parseAstro(source: string): Promise<ParseAstroResult> {
-  const { ast, diagnostics } = await parse(source, {
-    position: false, // defaults to `true`
-  });
+  const { ast, diagnostics } = await parse(source);
 
   if (diagnostics.some(d => d.severity === /* Error */ 1)) {
     return {

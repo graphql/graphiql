@@ -10,7 +10,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GraphiQL 5 with React 19 and GraphiQL Explorer</title>
+    <title>GraphiQL 6 with React 19</title>
     <style>
       body {
         margin: 0;
@@ -23,21 +23,49 @@
       .loading {
         height: 100%;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        font-size: 4rem;
+        gap: 24px;
+        color-scheme: light dark;
+        background: Canvas;
+        color: CanvasText;
+        font:
+          14px/1.5 system-ui,
+          sans-serif;
+      }
+
+      .loading-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .loading-status::before {
+        content: '';
+        width: 14px;
+        height: 14px;
+        border: 2px solid #e1009833;
+        border-top-color: #e10098;
+        border-radius: 50%;
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        .loading-status::before {
+          animation: graphiql-loading-spin 0.8s linear infinite;
+        }
+      }
+
+      @keyframes graphiql-loading-spin {
+        to {
+          transform: rotate(360deg);
+        }
       }
     </style>
     <link
       rel="stylesheet"
-      href="https://esm.sh/graphiql@5.4.0/dist/style.css"
-      integrity="sha384-TFpQQKp325U5sd3PddH4cS0KOB3Gz/aqdEe12Mqkkq3wm2MGcDhRX5WhWf+o8akh"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="stylesheet"
-      href="https://esm.sh/@graphiql/plugin-explorer@5.1.5/dist/style.css"
-      integrity="sha384-vTFGj0krVqwFXLB7kq/VHR0/j2+cCT/B63rge2mULaqnib2OX7DVLUVksTlqvMab"
+      href="https://esm.sh/graphiql@6.0.0/dist/style.css"
+      integrity="sha384-pHzXVzR6TL0s+jcKLsjQ4WlRVmR8RPyAJsLyyym4TLpYnIWUPf20JavS0VxzUz1Y"
       crossorigin="anonymous"
     />
     <!--
@@ -48,26 +76,26 @@
     <script type="importmap">
       {
         "imports": {
-          "react": "https://esm.sh/react@19.3.0",
-          "react/": "https://esm.sh/react@19.3.0/",
-          "react-dom": "https://esm.sh/react-dom@19.3.0",
-          "react-dom/": "https://esm.sh/react-dom@19.3.0/",
-          "graphiql": "https://esm.sh/graphiql@5.4.0?standalone&external=react,react-dom,@graphiql/react,graphql",
-          "graphiql/": "https://esm.sh/graphiql@5.4.0/",
-          "@graphiql/plugin-explorer": "https://esm.sh/@graphiql/plugin-explorer@5.1.5?standalone&external=react,@graphiql/react,graphql",
-          "@graphiql/react": "https://esm.sh/@graphiql/react@0.39.0?standalone&external=react,react-dom,graphql,@graphiql/toolkit,@emotion/is-prop-valid",
-          "@graphiql/toolkit": "https://esm.sh/@graphiql/toolkit@0.12.1?standalone&external=graphql",
+          "react": "https://esm.sh/react@19.3.1",
+          "react/": "https://esm.sh/react@19.3.1/",
+          "react-dom": "https://esm.sh/react-dom@19.3.1",
+          "react-dom/": "https://esm.sh/react-dom@19.3.1/",
+          "graphiql": "https://esm.sh/graphiql@6.0.0?standalone&external=react,react-dom,@graphiql/react,graphql",
+          "graphiql/": "https://esm.sh/graphiql@6.0.0/",
+          "graphiql/setup-workers/esm.sh": "https://esm.sh/graphiql@6.0.0/setup-workers/esm.sh?deps=@graphiql/react@1.0.1",
+          "@graphiql/react": "https://esm.sh/@graphiql/react@1.0.1?standalone&external=react,react-dom,graphql,@graphiql/toolkit,@emotion/is-prop-valid",
+          "@graphiql/toolkit": "https://esm.sh/@graphiql/toolkit@1.0.0?standalone&external=graphql",
           "graphql": "https://esm.sh/graphql@17.0.2",
           "@emotion/is-prop-valid": "data:text/javascript,"
         },
         "integrity": {
-          "https://esm.sh/react@19.3.0": "sha384-gq3XRS6InsfZ3Lv6d+6mBuySvNkEX/1Ciw3jSlg9gL82444AmhVcwtYbpJfKbDqf",
-          "https://esm.sh/react-dom@19.3.0": "sha384-xodfSorG86jrGERFAa4P/93Hfsvm7H8zpgSaybN6ruXaACScu/R7nOuoDgCfep8l",
-          "https://esm.sh/graphiql@5.4.0": "sha384-moUMjxK/ZmHQE08otOtzYT/Zke32MqPb9l0uUXUdsf8aXl53LPYBciaAf9ON2nuR",
-          "https://esm.sh/graphiql@5.4.0?standalone&external=react,react-dom,@graphiql/react,graphql": "sha384-P5rs3WtMR+YUHbk+eUuomiB3Grin+04e9jKjuOY5KMBdjnl/qOUaCALfnVqVpIL8",
-          "https://esm.sh/@graphiql/plugin-explorer@5.1.5": "sha384-hIrTiRjlICooYpU/kh97YrhFmYbV5WhIa37reJgertKXzyaM6kzkJaDUlQWs9+vb",
-          "https://esm.sh/@graphiql/react@0.39.0?standalone&external=react,react-dom,graphql,@graphiql/toolkit,@emotion/is-prop-valid": "sha384-snSfFGTvNof5jyaw3xkRx7zsKRy9DWiljMvYXoo+zIwrhQv/h2pWOH81boYwk5P2",
-          "https://esm.sh/@graphiql/toolkit@0.12.1?standalone&external=graphql": "sha384-+cNTwZgIW33q7A4E+ZoCMqzcXdfVIc2VthQvJ0uDpRXERBWYuDKPVMzvdQU8x48o",
+          "https://esm.sh/react@19.3.1": "sha384-ut1U+oIs0ClaOE7uF1+DZAaHVvYvEJZME3mUuqn95yVqQ70a+8u2LN2LD37JgJkO",
+          "https://esm.sh/react-dom@19.3.1": "sha384-FKbbSw/nINZRM0ej/iwjfXbJeAZMJdBKqKmn/I+aIM4Io5qupmM8sZJxaJZDO0sv",
+          "https://esm.sh/graphiql@6.0.0": "sha384-4t9K5VrZG+S+yt/m4xfOIM5zsF8FMY4l2Aftx55bVhOvtBuLThHoSK3eammwCVAR",
+          "https://esm.sh/graphiql@6.0.0/setup-workers/esm.sh?deps=@graphiql/react@1.0.1": "sha384-uRZR11cNRp3axJoK9E9JWMf12kxXKGZBy7exaCZkEc3uP6sbi5f6W7RSYth46lVu",
+          "https://esm.sh/graphiql@6.0.0?standalone&external=react,react-dom,@graphiql/react,graphql": "sha384-Cyeb/6CXzM443S0753DNctp2rJbXK7Yh2n9mzeYa+e7qMIqJb0XFRgw4wBFEXNfW",
+          "https://esm.sh/@graphiql/react@1.0.1?standalone&external=react,react-dom,graphql,@graphiql/toolkit,@emotion/is-prop-valid": "sha384-J+G5cflCBCPKFjkS8Lt7qA6W39wy/LSB09Pzb+9DgLqZ1XcDlyrMbfZ/pBqZVXlc",
+          "https://esm.sh/@graphiql/toolkit@1.0.0?standalone&external=graphql": "sha384-pW1hwiHXozNQ020c1EOLfZkjDANM06ecupsD3iPgx8Az8u2zlYrOL9JhjsjsyMOu",
           "https://esm.sh/graphql@17.0.2": "sha384-IPvlcmnvWT91sKqwbg9MxPXJUuPmSdwXCp22x6hcbBkAEhlfSKkMLR3v19K9iRUp"
         }
       }
@@ -75,20 +103,17 @@
     <script type="module">
       import React from 'react';
       import ReactDOM from 'react-dom/client';
-      import { GraphiQL, HISTORY_PLUGIN } from 'graphiql';
-      import { createGraphiQLFetcher } from '@graphiql/toolkit';
-      import { explorerPlugin } from '@graphiql/plugin-explorer';
+      import { GraphiQL } from 'graphiql';
+      import { createTransport } from '@graphiql/toolkit';
       import 'graphiql/setup-workers/esm.sh';
 
-      const fetcher = createGraphiQLFetcher({
+      const transport = createTransport({
         url: 'https://countries.trevorblades.com',
       });
-      const plugins = [HISTORY_PLUGIN, explorerPlugin()];
 
       function App() {
         return React.createElement(GraphiQL, {
-          fetcher,
-          plugins,
+          transport,
           defaultEditorToolsVisibility: true,
         });
       }
@@ -100,7 +125,31 @@
   </head>
   <body>
     <div id="graphiql">
-      <div class="loading">Loading…</div>
+      <div class="loading" role="status">
+        <svg
+          aria-hidden="true"
+          width="64"
+          height="64"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="#e10098"
+          viewBox="0 0 400 400"
+        >
+          <path d="m57.468 302.66-14.376-8.3 160.15-277.38 14.376 8.3z" />
+          <path d="M39.8 272.2h320.3v16.6H39.8z" />
+          <path
+            d="m206.348 374.026-160.21-92.5 8.3-14.376 160.21 92.5zm139.174-241.079-160.21-92.5 8.3-14.376 160.21 92.5z"
+          />
+          <path d="m54.482 132.883-8.3-14.375 160.21-92.5 8.3 14.376z" />
+          <path
+            d="m342.568 302.663-160.15-277.38 14.376-8.3 160.15 277.38zM52.5 107.5h16.6v185H52.5zm278.4 0h16.6v185h-16.6z"
+          />
+          <path d="m203.522 367-7.25-12.558 139.34-80.45 7.25 12.557z" />
+          <path
+            d="M369.5 297.9c-9.6 16.7-31 22.4-47.7 12.8s-22.4-31-12.8-47.7 31-22.4 47.7-12.8c16.8 9.7 22.5 31 12.8 47.7M90.9 137c-9.6 16.7-31 22.4-47.7 12.8s-22.4-31-12.8-47.7 31-22.4 47.7-12.8c16.7 9.7 22.4 31 12.8 47.7M30.5 297.9c-9.6-16.7-3.9-38 12.8-47.7 16.7-9.6 38-3.9 47.7 12.8 9.6 16.7 3.9 38-12.8 47.7-16.8 9.6-38.1 3.9-47.7-12.8M309.1 137c-9.6-16.7-3.9-38 12.8-47.7 16.7-9.6 38-3.9 47.7 12.8 9.6 16.7 3.9 38-12.8 47.7-16.7 9.6-38.1 3.9-47.7-12.8M200 395.8c-19.3 0-34.9-15.6-34.9-34.9S180.7 326 200 326s34.9 15.6 34.9 34.9c0 19.2-15.6 34.9-34.9 34.9M200 74c-19.3 0-34.9-15.6-34.9-34.9S180.7 4.2 200 4.2s34.9 15.6 34.9 34.9S219.3 74 200 74"
+          />
+        </svg>
+        <span class="loading-status">Loading GraphiQL…</span>
+      </div>
     </div>
   </body>
 </html>
