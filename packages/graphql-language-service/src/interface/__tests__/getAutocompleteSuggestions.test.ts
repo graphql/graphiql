@@ -285,6 +285,32 @@ describe('getAutocompleteSuggestions', () => {
       ]);
     });
 
+    it.each([true, false])(
+      'provides field name suggestions after a fragment spread (experimentalFragmentArguments: %s)',
+      experimentalFragmentArguments => {
+        const query = [
+          'fragment HumanName on Human { name }',
+          'query { human(id: "1") {',
+          '  id',
+          '  ...HumanName',
+          '  ',
+          '} }',
+        ].join('\n');
+        const result = testSuggestions(query, new Position(4, 2), [], {
+          ignoreInsert: true,
+          experimentalFragmentArguments,
+        });
+        expect(result).toEqual([
+          expectedResults.__typename,
+          expectedResults.appearsIn,
+          expectedResults.friends,
+          { label: 'id', detail: 'String!' },
+          { label: 'name', detail: 'String' },
+          { label: 'secretBackstory', detail: 'String' },
+        ]);
+      },
+    );
+
     it('provides correct field name suggestions with insertText', () => {
       const result = testSuggestions('{ ', new Position(0, 2), [], {
         ignoreInsert: false,
