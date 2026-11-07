@@ -336,8 +336,8 @@ async function run() {
   try {
     assert.ok(workspace, 'GRAPHIQL_TEST_WORKSPACE is required');
     assert.strictEqual(
-      vscode.workspace.workspaceFolders[0].uri.fsPath,
-      workspace,
+      path.relative(workspace, vscode.workspace.workspaceFolders[0].uri.fsPath),
+      '',
     );
     await syntax();
     if (report.mode === 'language') {
