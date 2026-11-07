@@ -10,6 +10,7 @@ build({
   bundle: true,
   minify: arg === '--minify',
   platform: 'node',
+  target: 'node20.19',
   outdir: 'out/',
   external: [
     // Optional Glimmer compiler loaded by GraphQL Tools.

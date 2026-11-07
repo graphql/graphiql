@@ -16,6 +16,7 @@ build({
   bundle: true,
   minify: arg === '--minify',
   platform: 'node',
+  target: 'node20.19',
   outdir: 'out/',
   format: 'cjs',
   sourcemap: true,
