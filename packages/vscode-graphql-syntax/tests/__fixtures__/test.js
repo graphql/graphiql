@@ -101,3 +101,35 @@ const queryWithLeadingAboveComment =
       }
     }
   `;
+
+const response = await client.graphql(graphql, { issue });
+
+client. graphql(graphql, { issue });
+
+client./* comment */graphql(graphql, { issue });
+
+if (response) {
+  const afterAmplify = true;
+}
+
+foo.graphql();
+
+const afterMember = 'after';
+
+class PrivateGraphqlClient {
+  #graphql(query) {
+    return query;
+  }
+
+  execute() {
+    return this.#graphql('query { id }');
+  }
+}
+
+const afterPrivateMember = 'after';
+
+graphql.experimental(`query { id }`);
+
+obj.graphql.experimental(`query { id }`);
+
+const afterExperimental = true;
