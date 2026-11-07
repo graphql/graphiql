@@ -48,7 +48,6 @@ function formatBytes(bytes: number): string {
 
 const VIEW_OPTIONS: { value: ResponseView; label: string }[] = [
   { value: 'json', label: 'JSON' },
-  { value: 'tree', label: 'Tree' },
   { value: 'table', label: 'Table' },
 ];
 

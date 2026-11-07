@@ -34,9 +34,9 @@ import { STORAGE_KEY } from '../constants';
 import { resolveActiveOperation } from '../utility/active-operation';
 import type { SlicesWithActions, MonacoEditor } from '../types';
 
-export type ResponseView = 'json' | 'tree' | 'table';
+export type ResponseView = 'json' | 'table';
 
-const RESPONSE_VIEWS: readonly ResponseView[] = ['json', 'tree', 'table'];
+const RESPONSE_VIEWS: readonly ResponseView[] = ['json', 'table'];
 
 const byteLength = (value: string): number =>
   typeof TextEncoder === 'undefined'

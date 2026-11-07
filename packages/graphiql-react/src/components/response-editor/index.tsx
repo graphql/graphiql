@@ -5,7 +5,6 @@ import { useGraphiQL, useGraphiQLActions } from '../provider';
 import { ImagePreview } from '../image-preview';
 import { ResponseHeader } from './response-header';
 import { ResponseTableView } from './response-table-view';
-import { ResponseTreeView } from './response-tree-view';
 import { Spinner } from '../spinner';
 import {
   getOrCreateModel,
@@ -221,14 +220,6 @@ export const ResponseEditor: FC<ResponseEditorProps> = ({
           className="result-window"
           hidden={responseView !== 'json'}
         />
-        {responseView === 'tree' &&
-          (lastResponse ? (
-            <ResponseTreeView data={lastResponse.body} />
-          ) : (
-            <div className="graphiql-response-empty-state" role="status">
-              <span>Run a query to see the tree view.</span>
-            </div>
-          ))}
         {responseView === 'table' && (
           <ResponseTableView data={lastResponse?.body} />
         )}

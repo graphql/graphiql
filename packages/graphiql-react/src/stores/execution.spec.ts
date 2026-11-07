@@ -438,13 +438,13 @@ it('does not infer a response method for legacy fetchers', async () => {
 });
 
 describe('isResponseView', () => {
-  it('accepts the three known views', () => {
+  it('accepts the supported views', () => {
     expect(isResponseView('json')).toBe(true);
-    expect(isResponseView('tree')).toBe(true);
     expect(isResponseView('table')).toBe(true);
   });
 
   it('rejects unknown values', () => {
+    expect(isResponseView('tree')).toBe(false);
     expect(isResponseView('graph')).toBe(false);
     expect(isResponseView('')).toBe(false);
     expect(isResponseView(null)).toBe(false);
@@ -460,8 +460,8 @@ describe('setResponseView', () => {
 
   it('updates state on call', () => {
     const { store } = makeStore();
-    store.getState().actions.setResponseView('tree');
-    expect(store.getState().responseView).toBe('tree');
+    store.getState().actions.setResponseView('table');
+    expect(store.getState().responseView).toBe('table');
   });
 
   it('writes the new view to storage', () => {
@@ -472,7 +472,7 @@ describe('setResponseView', () => {
 
   it('persists across action calls', () => {
     const { store, storage } = makeStore();
-    store.getState().actions.setResponseView('tree');
+    store.getState().actions.setResponseView('table');
     store.getState().actions.setResponseView('json');
     expect(storage.get(STORAGE_KEY.responseView)).toBe('json');
   });
