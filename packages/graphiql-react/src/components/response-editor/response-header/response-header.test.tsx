@@ -11,16 +11,16 @@ function renderWithTooltip(ui: React.ReactElement) {
 }
 
 describe('ResponseHeader', () => {
-  it('renders the view toggle with all three options', () => {
+  it('renders only JSON and Table view options', () => {
     renderWithTooltip(<ResponseHeader view="json" onViewChange={() => {}} />);
     expect(screen.getByRole('radio', { name: 'JSON' })).toBeInTheDocument();
-    expect(screen.getByRole('radio', { name: 'Tree' })).toBeInTheDocument();
+    expect(screen.getAllByRole('radio')).toHaveLength(2);
     expect(screen.getByRole('radio', { name: 'Table' })).toBeInTheDocument();
   });
 
   it('marks the active view as checked', () => {
-    renderWithTooltip(<ResponseHeader view="tree" onViewChange={() => {}} />);
-    expect(screen.getByRole('radio', { name: 'Tree' })).toBeChecked();
+    renderWithTooltip(<ResponseHeader view="table" onViewChange={() => {}} />);
+    expect(screen.getByRole('radio', { name: 'Table' })).toBeChecked();
     expect(screen.getByRole('radio', { name: 'JSON' })).not.toBeChecked();
   });
 
@@ -30,8 +30,8 @@ describe('ResponseHeader', () => {
     renderWithTooltip(
       <ResponseHeader view="json" onViewChange={onViewChange} />,
     );
-    await user.click(screen.getByRole('radio', { name: 'Tree' }));
-    expect(onViewChange).toHaveBeenCalledWith('tree');
+    await user.click(screen.getByRole('radio', { name: 'Table' }));
+    expect(onViewChange).toHaveBeenCalledWith('table');
   });
 
   it('renders status code when provided', () => {

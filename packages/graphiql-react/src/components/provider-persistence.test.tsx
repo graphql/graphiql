@@ -27,6 +27,33 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
+it.each([
+  ['tree', 'json'],
+  ['json', 'json'],
+  ['table', 'table'],
+])('restores a saved %s response view as %s', (saved, expected) => {
+  const storage = new StorageAPI(localStorage);
+  storage.set(STORAGE_KEY.responseView, saved);
+
+  const { result } = renderHook(
+    () => useGraphiQL(state => state.responseView),
+    {
+      wrapper: ({ children }) => (
+        <GraphiQLProvider
+          fetcher={async () => ({ data: {} })}
+          schema={null}
+          storage={localStorage}
+        >
+          {children}
+        </GraphiQLProvider>
+      ),
+    },
+  );
+
+  expect(result.current).toBe(expected);
+  expect(storage.get(STORAGE_KEY.responseView)).toBe(expected);
+});
+
 it('does not overwrite a completed save from an abandoned render', () => {
   const storage = new StorageAPI(localStorage);
   let suspend = true;
