@@ -1,0 +1,30 @@
+{
+  "name": "graphiql-packaged-tests",
+  "publisher": "graphiql-tests",
+  "version": "0.0.0",
+  "engines": {
+    "vscode": "^1.63.0"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "vue",
+        "extensions": [
+          ".vue"
+        ]
+      },
+      {
+        "id": "svelte",
+        "extensions": [
+          ".svelte"
+        ]
+      },
+      {
+        "id": "astro",
+        "extensions": [
+          ".astro"
+        ]
+      }
+    ]
+  }
+}

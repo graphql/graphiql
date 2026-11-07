@@ -17,7 +17,7 @@ jobs:
   release:
     environment: deploy
     name: Release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions:
       # To create a release, and to push branches:
       contents: write
@@ -70,6 +70,28 @@ jobs:
         env:
           PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.published-packages }}
         run: node scripts/release-vscode.mts build
+
+      - name: Test release VSIX files at their minimum editor versions
+        timeout-minutes: 15
+        if: ${{ steps.vscode.outputs.published == 'true' }}
+        env:
+          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.published-packages }}
+        run: xvfb-run -a pnpm test:vscode --published --artifacts-dir packages --version minimum
+
+      - name: Test release VSIX files on current stable
+        timeout-minutes: 15
+        if: ${{ steps.vscode.outputs.published == 'true' }}
+        env:
+          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs.published-packages }}
+        run: xvfb-run -a pnpm test:vscode --published --artifacts-dir packages --version stable
+
+      - name: Upload release extension-host reports
+        if: ${{ always() && steps.vscode.outputs.published == 'true' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: vscode-release-tests
+          path: out/vscode-tests
+          if-no-files-found: ignore
 
       - name: Attach VSCode .vsix files to GitHub Releases
         if: ${{ steps.vscode.outputs.published == 'true' }}

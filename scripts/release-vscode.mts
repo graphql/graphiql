@@ -69,7 +69,14 @@ async function runForEach(
 }
 
 async function build(packages: VscodePackage[]): Promise<void> {
-  await runForEach(packages, 'build', async pkg => {
+  const buildPackages = new Set(packages);
+  if (
+    buildPackages.has('vscode-graphql') ||
+    buildPackages.has('vscode-graphql-execution')
+  ) {
+    buildPackages.add('vscode-graphql-syntax');
+  }
+  await runForEach([...buildPackages], 'build', async pkg => {
     console.log(`Building ${pkg}.vsix`);
     const { status } = spawnSync('pnpm', ['--filter', pkg, 'vsce:package'], {
       stdio: 'inherit',

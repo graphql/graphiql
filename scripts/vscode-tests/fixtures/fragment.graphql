@@ -1,0 +1,3 @@
+fragment GreetingFields on Query {
+  greeting
+}
