@@ -120,6 +120,17 @@ describe('source.graphql grammar', () => {
       '__fixtures__/descriptions-and-values.graphql',
       scope,
     );
+    // Both quotes of a single-line description are highlighted like the
+    // description itself, as the quotes of a block description are.
+    const descriptionQuotes = result.filter(
+      token =>
+        token.text === '"' &&
+        token.scopes.includes('comment.line.documentation.graphql'),
+    );
+    expect(descriptionQuotes.length).toBeGreaterThan(0);
+    for (const token of descriptionQuotes) {
+      expect(token.scopes.at(-1)).toBe('comment.line.documentation.graphql');
+    }
     expect(result).toMatchSnapshot();
   });
 });

@@ -221,13 +221,8 @@
     "graphql-description-string": {
       "comment": "single-line string description; included only in definition positions, never where a string value can appear",
       "name": "comment.line.documentation.graphql",
-      "begin": "(\")",
-      "end": "(\")",
-      "beginCaptures": {
-        "1": {
-          "name": "punctuation.whitespace.comment.leading.graphql"
-        }
-      }
+      "begin": "\"",
+      "end": "\""
     },
     "graphql-description-singleline": {
       "name": "comment.line.number-sign.graphql",
