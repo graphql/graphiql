@@ -6,9 +6,9 @@
  */
 import { visit } from 'graphql';
 import { parseDocument } from '../parser';
-import { collectVariables } from './collectVariables';
+import { collectVariableInfo } from './collectVariables';
 
-import type { VariableToType } from './collectVariables';
+import type { VariableToInfo, VariableToType } from './collectVariables';
 import type { GraphQLLanguageServiceOptions } from '../types';
 import type {
   GraphQLSchema,
@@ -18,6 +18,7 @@ import type {
 
 export type OperationASTFacts = {
   variableToType?: VariableToType;
+  variableInfo?: VariableToInfo;
   operations: OperationDefinitionNode[];
 };
 
@@ -46,8 +47,13 @@ export function getOperationASTFacts(
   documentAST: DocumentNode,
   schema?: GraphQLSchema | null,
 ): OperationASTFacts {
-  const variableToType = schema
-    ? collectVariables(schema, documentAST)
+  const variableInfo = schema
+    ? collectVariableInfo(schema, documentAST)
+    : undefined;
+  const variableToType = variableInfo
+    ? Object.fromEntries(
+        Object.entries(variableInfo).map(([name, info]) => [name, info.type]),
+      )
     : undefined;
 
   // Collect operations by their names.
@@ -59,7 +65,7 @@ export function getOperationASTFacts(
     },
   });
 
-  return { variableToType, operations };
+  return { variableToType, variableInfo, operations };
 }
 
 export type OperationFacts = {
