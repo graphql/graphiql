@@ -1,9 +1,9 @@
 {
   "scopeName": "inline.graphql",
-  "injectionSelector": "L:(meta.embedded.block.javascript | meta.embedded.block.typescript | source.js | source.ts | source.tsx | source.vue | source.svelte | source.astro | text.html.vue) -source.graphql -inline.graphql -string -comment",
+  "injectionSelector": "L:(meta.embedded.block.javascript | meta.embedded.block.typescript | source.js | source.ts | source.tsx | source.vue | source.svelte | source.astro | text.html.vue) -source.graphql -inline.graphql -string -comment -meta.function-call",
   "patterns": [
     {
-      "begin": "\\s*+(?:(Relay)\\??\\.)(QL)|(gql|graphql|graphql\\.experimental)\\s*(?:<.*>)?\\s*\\(",
+      "begin": "\\s*+(?:(Relay)\\??\\.)(QL)|(?<!\\.(?:\\s|/\\*[\\s\\S]*?\\*/|//[^\\r\\n]*(?:\\r?\\n|$))*)(?<![#$\\w])(gql|graphql|graphql\\.experimental)\\s*(?:(?<typeArguments><(?:\"(?:[^\"\\\\\\r\\n]|\\\\.)*\"|'(?:[^'\\\\\\r\\n]|\\\\.)*'|[^<>\"'\\r\\n]+|\\g<typeArguments>)*>))?\\s*\\(",
       "end": "\\)",
       "beginCaptures": {
         "1": {
@@ -57,7 +57,7 @@
     },
     {
       "contentName": "meta.embedded.block.graphql",
-      "begin": "\\s*+(?:(?:(?:(Relay)\\??\\.)(QL)|(gql|graphql|graphql\\.experimental)\\s*(?:<.*>)?\\s*)|(/\\* GraphQL \\*/))\\s*(`|')",
+      "begin": "\\s*+(?:(?:(?:(Relay)\\??\\.)(QL)|(?<!\\.(?:\\s|/\\*[\\s\\S]*?\\*/|//[^\\r\\n]*(?:\\r?\\n|$))*)(?<![#$\\w])(gql|graphql|graphql\\.experimental)\\s*(?:(?<typeArguments><(?:\"(?:[^\"\\\\\\r\\n]|\\\\.)*\"|'(?:[^'\\\\\\r\\n]|\\\\.)*'|[^<>\"'\\r\\n]+|\\g<typeArguments>)*>))?\\s*)|(/\\* GraphQL \\*/))\\s*(`|')",
       "beginCaptures": {
         "1": {
           "name": "variable.other.class.js"
@@ -68,10 +68,10 @@
         "3": {
           "name": "entity.name.function.tagged-template.js"
         },
-        "4": {
+        "5": {
           "name": "comment.graphql.js"
         },
-        "5": {
+        "6": {
           "name": "punctuation.definition.string.template.begin.js"
         }
       },
