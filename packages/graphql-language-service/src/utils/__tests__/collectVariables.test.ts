@@ -16,9 +16,10 @@ import {
   parse,
   GraphQLEnumType,
   GraphQLObjectType,
+  Kind,
 } from 'graphql';
 
-import { collectVariables } from '../collectVariables';
+import { collectVariableInfo, collectVariables } from '../collectVariables';
 
 const TestEnum = new GraphQLEnumType({
   name: 'ExampleEnum',
@@ -77,5 +78,18 @@ describe('collectVariables', () => {
     expect(variableToType.baz).toEqual(GraphQLFloat);
     expect(variableToType.baz).toEqual(GraphQLFloat);
     expect(variableToType.bae).toEqual(TestEnum);
+  });
+
+  it('collects default value information separately from variable types', () => {
+    const variableInfo = collectVariableInfo(
+      TestSchema,
+      parse(`
+      query ($foo: Int! = 42, $bar: String!) { id }
+    `),
+    );
+    expect(variableInfo.foo.type.toString()).toBe('Int!');
+    expect(variableInfo.foo.defaultValue?.kind).toBe(Kind.INT);
+    expect(variableInfo.bar.type.toString()).toBe('String!');
+    expect(variableInfo.bar.defaultValue).toBeUndefined();
   });
 });

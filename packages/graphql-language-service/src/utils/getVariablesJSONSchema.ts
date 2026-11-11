@@ -23,7 +23,7 @@ import type {
   JSONSchema6Definition,
   JSONSchema6TypeName,
 } from 'json-schema';
-import type { VariableToType } from './collectVariables';
+import type { VariableToInfo, VariableToType } from './collectVariables';
 
 export type { JSONSchema6, JSONSchema6TypeName };
 
@@ -324,7 +324,7 @@ function getJSONSchemaFromGraphQLType(
 }
 
 /**
- * Generates a JSONSchema6 valid document for operation(s) from a map of Map<string, GraphQLInputType>.
+ * Generates a JSONSchema6 valid document for operation(s) from a map of variable information or types.
  *
  * It generates referenced Definitions for each type, so that no graphql types are repeated.
  *
@@ -361,7 +361,7 @@ function getJSONSchemaFromGraphQLType(
  * ```
  */
 export function getVariablesJSONSchema(
-  variableToType: VariableToType,
+  variableToType: VariableToType | VariableToInfo,
   options?: JSONSchemaOptions,
 ): JSONSchema6 {
   const jsonSchema: PropertiedJSON6 = {
@@ -387,12 +387,28 @@ export function getVariablesJSONSchema(
 
   if (variableToType) {
     // I would use a reduce here, but I wanted it to be readable.
-    for (const [variableName, type] of Object.entries(variableToType)) {
+    for (const [variableName, item] of Object.entries(variableToType)) {
+      if (!item || typeof item !== 'object') {
+        continue;
+      }
+      const isInfo = 'type' in item;
+      const type = isInfo ? item.type : (item as GraphQLInputType);
+
       const { definition, required, definitions } =
         getJSONSchemaFromGraphQLType(type, runtimeOptions);
       jsonSchema.properties[variableName] = definition;
-      if (required) {
+      if (required && (!isInfo || item.defaultValue === undefined)) {
         jsonSchema.required?.push(variableName);
+      }
+      if (
+        isInfo &&
+        item.defaultValue !== undefined &&
+        definition.default === undefined
+      ) {
+        const defaultVal = valueFromAST(item.defaultValue, type);
+        if (defaultVal !== undefined) {
+          definition.default = defaultVal as JSONSchema4Type;
+        }
       }
       if (definitions) {
         jsonSchema.definitions = { ...jsonSchema?.definitions, ...definitions };

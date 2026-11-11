@@ -288,12 +288,12 @@ export class LanguageService {
     if (schema && documentText.length > 3) {
       try {
         const documentAST = this.parse(documentText);
-        const { variableToType } = getOperationASTFacts(
+        const { variableToType, variableInfo } = getOperationASTFacts(
           documentAST,
           schema.schema,
         );
         if (variableToType) {
-          return getVariablesJSONSchema(variableToType, {
+          return getVariablesJSONSchema(variableInfo ?? variableToType, {
             ...options,
             scalarSchemas: schema.customScalarSchemas,
           });
