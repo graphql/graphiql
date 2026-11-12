@@ -11,7 +11,7 @@
 > root of the monorepo! The full GraphiQL docs are located at
 > [`packages/graphiql`](packages/graphiql)
 
-[![Build Status](https://github.com/graphql/graphiql/workflows/Node.JS%20CI/badge.svg)](https://github.com/graphql/graphiql/actions?query=workflow%3A%22Node.JS+CI%22)
+[![Build Status](https://github.com/graphql/graphiql/actions/workflows/pr.yml/badge.svg)](https://github.com/graphql/graphiql/actions/workflows/pr.yml)
 [![pkg.pr.new](https://pkg.pr.new/badge/graphql/graphiql)](https://pkg.pr.new/~/graphql/graphiql)
 [![Discord](https://img.shields.io/discord/625400653321076807.svg)](https://discord.gg/NP5vbPeUFp)
 [![Code Coverage](https://img.shields.io/codecov/c/github/graphql/graphiql)](https://codecov.io/gh/graphql/graphiql)
