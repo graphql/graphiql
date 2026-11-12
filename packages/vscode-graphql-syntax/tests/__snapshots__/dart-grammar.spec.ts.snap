@@ -1,0 +1,32 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`inline.graphql.dart grammar > should tokenize a simple dart file 1`] = `
+const query1 =  | 
+'''             | string.interpolated.triple.single.dart
+#graphql        | comment.line.graphql.js
+                | 
+query           | keyword.operation.graphql
+                | meta.selectionset.graphql
+{               | meta.selectionset.graphql punctuation.operation.graphql
+                | meta.selectionset.graphql
+id              | meta.selectionset.graphql variable.graphql
+                | meta.selectionset.graphql
+}               | meta.selectionset.graphql punctuation.operation.graphql
+'''             | string.interpolated.triple.single.dart
+;               | 
+                | 
+const query2 =  | 
+"""             | string.interpolated.triple.double.dart
+#graphql        | comment.line.graphql.js
+                | 
+query           | keyword.operation.graphql
+                | meta.selectionset.graphql
+{               | meta.selectionset.graphql punctuation.operation.graphql
+                | meta.selectionset.graphql
+id              | meta.selectionset.graphql variable.graphql
+                | meta.selectionset.graphql
+}               | meta.selectionset.graphql punctuation.operation.graphql
+"""             | string.interpolated.triple.double.dart
+;               | 
+                | 
+`;
