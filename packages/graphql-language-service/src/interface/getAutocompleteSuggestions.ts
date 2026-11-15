@@ -293,7 +293,9 @@ export function getAutocompleteSuggestions(
   if (
     kind === RuleKinds.SELECTION_SET ||
     kind === RuleKinds.FIELD ||
-    kind === RuleKinds.ALIASED_FIELD
+    kind === RuleKinds.ALIASED_FIELD ||
+    // past a complete fragment spread name, the next selection may start here
+    (kind === RuleKinds.FRAGMENT_SPREAD && step > 1)
   ) {
     return getSuggestionsForFieldNames(token, typeInfo, opts);
   }
