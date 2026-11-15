@@ -155,10 +155,12 @@ background: oklch(var(--bg-canvas));
 color: oklch(var(--fg-default) / 0.6);
 ```
 
-The tokens are scoped to `[data-theme='dark']` and `[data-theme='light']`
-rather than a media query, so a given variable resolves correctly regardless of
-which theme is active. The full set, defined in `tokens.css`, with when to reach
-for each:
+GraphiQL sets these tokens on its container. To use them in a separate portal
+host, add the `graphiql-theme` class to that element. Its `data-theme`,
+`data-density`, and `data-font-size` attributes select the same presets as
+the GraphiQL container.
+
+The full set is defined in `tokens.css`.
 
 **Backgrounds** — surfaces, ordered by how they stack:
 
