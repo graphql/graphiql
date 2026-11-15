@@ -1258,7 +1258,7 @@ export class MessageProcessor {
             return;
           }
 
-          await this._updateObjectTypeDefinition(uri, contents);
+          await this._updateObjectTypeDefinition(uri, contents, project);
           await this._updateFragmentDefinition(uri, contents);
           await this._invalidateCache({ version: 1, uri }, uri, contents);
         }),
