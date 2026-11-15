@@ -43,7 +43,7 @@ function ActivityRailDemo({
               const label = `${isActive ? 'Hide' : 'Show'} ${plugin.title}`;
               return (
                 <li key={plugin.title}>
-                  <Tooltip label={label}>
+                  <Tooltip label={label} side="right" align="center">
                     <button
                       type="button"
                       className={`graphiql-activity-rail-item${isActive ? ' active' : ''}`}
@@ -60,7 +60,7 @@ function ActivityRailDemo({
           </ul>
           <div className="graphiql-activity-rail-spacer" />
           {showSettings && (
-            <Tooltip label="Settings">
+            <Tooltip label="Settings" side="right" align="center">
               <button
                 type="button"
                 className="graphiql-activity-rail-settings"
