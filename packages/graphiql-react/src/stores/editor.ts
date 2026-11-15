@@ -6,6 +6,7 @@ import type {
 } from 'graphql';
 import type { OperationFacts } from 'graphql-language-service';
 import {
+  type TransportResponse,
   getSelectedOperationName,
   MaybePromise,
   mergeAst,
@@ -343,6 +344,7 @@ type CreateEditorSlice = (
 >;
 
 export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
+  const responsesByTab = new Map<string, TransportResponse | null>();
   const pendingSaves = new Set<string>();
   const queuedSaves = new Map<
     string,
@@ -374,19 +376,17 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
   }
 
   function setEditorValues({
+    id,
     query,
     variables,
     headers,
     response,
     operationName,
-  }: {
-    query: string | null;
-    variables?: string | null;
-    headers?: string | null;
-    response: string | null;
-    operationName?: string | null;
-  }) {
+  }: TabState) {
     const {
+      tabs,
+      activeTabIndex,
+      lastResponse,
       queryEditor,
       variableEditor,
       headerEditor,
@@ -395,6 +395,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
       schema,
       operations,
     } = get();
+    responsesByTab.set(tabs[activeTabIndex]!.id, lastResponse);
     queryEditor?.setValue(query ?? '');
     variableEditor?.setValue(variables ?? '');
     headerEditor?.setValue(headers ?? defaultHeaders ?? '');
@@ -404,6 +405,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         monacoStore.getState().monacoGraphQL?.experimentalFragmentArguments,
     });
     return {
+      lastResponse: responsesByTab.get(id) ?? null,
       documentAST: facts?.documentAST,
       operations: facts?.operations,
       operationName: getSelectedOperationName(
@@ -445,6 +447,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
   const $actions: EditorActions = {
     addTab() {
       set(({ defaultHeaders, onTabChange, tabs, activeTabIndex, actions }) => {
+        actions.stop();
         // Make sure the current tab stores the latest values
         const updatedValues = synchronizeActiveTabValues({
           tabs,
@@ -511,6 +514,7 @@ export const createEditorSlice: CreateEditorSlice = initial => (set, get) => {
         const operationFacts = setEditorValues(
           updated.tabs[updated.activeTabIndex]!,
         );
+        responsesByTab.delete(tabs[index]!.id);
         onTabChange?.(updated);
         return { ...updated, ...operationFacts };
       });
