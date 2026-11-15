@@ -323,17 +323,18 @@ describe('GraphiQL', () => {
         expect(pane).not.toBeVisible();
       });
 
-      act(() => {
-        window.dispatchEvent(
-          new KeyboardEvent('keydown', {
-            code: 'KeyK',
-            metaKey: isMacOs,
-            ctrlKey: !isMacOs,
-            bubbles: true,
-            cancelable: true,
-          }),
-        );
-      });
+      const shortcut = {
+        code: 'KeyK',
+        metaKey: isMacOs,
+        ctrlKey: !isMacOs,
+      };
+      expect(fireEvent.keyDown(document.body, shortcut)).toBe(true);
+      expect(pane).not.toBeVisible();
+
+      const settingsButton = container.querySelector(
+        '[aria-label="Settings"]',
+      )!;
+      expect(fireEvent.keyDown(settingsButton, shortcut)).toBe(false);
 
       await waitFor(() => {
         expect(pane).toBeVisible();

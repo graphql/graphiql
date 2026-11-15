@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { createRef } from 'react';
 import { render } from '@testing-library/react';
 import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql';
 import { type Mock } from 'vitest';
@@ -36,21 +37,24 @@ const schema = new GraphQLSchema({
 
 const setVisiblePlugin = vi.fn();
 
-function setup() {
+function setup(shortcutTarget = createRef<HTMLDivElement>()) {
   useGraphiQL.mockImplementation(cb =>
     cb({ schema, validationErrors: [], schemaReference: null }),
   );
   useGraphiQLActions.mockReturnValue({ setVisiblePlugin });
   return render(
-    <DocExplorerStore>
-      <div />
+    <DocExplorerStore shortcutTarget={shortcutTarget}>
+      <div className="graphiql-container" ref={shortcutTarget} />
     </DocExplorerStore>,
   );
 }
 
 // `isMacOs` is derived from the test environment's user agent, so build the
 // keydown event using whichever modifier this handler actually expects.
-function dispatchSearchShortcut(extra: Partial<KeyboardEventInit> = {}) {
+function dispatchSearchShortcut(
+  extra: Partial<KeyboardEventInit> = {},
+  target = document.querySelector('.graphiql-container')!,
+) {
   const event = new KeyboardEvent('keydown', {
     code: 'KeyK',
     metaKey: isMacOs,
@@ -60,7 +64,7 @@ function dispatchSearchShortcut(extra: Partial<KeyboardEventInit> = {}) {
     ...extra,
   });
   const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
-  window.dispatchEvent(event);
+  target.dispatchEvent(event);
   return { event, preventDefaultSpy };
 }
 
@@ -93,6 +97,16 @@ describe('DocExplorerStore keyboard shortcut', () => {
     expect(setVisiblePlugin).toHaveBeenCalledWith(DOC_EXPLORER_PLUGIN);
   });
 
+  it('opens search only in the GraphiQL instance that received the shortcut', () => {
+    setup();
+    const target = createRef<HTMLDivElement>();
+    setup(target);
+
+    dispatchSearchShortcut({}, target.current!);
+
+    expect(setVisiblePlugin).toHaveBeenCalledTimes(1);
+  });
+
   it('does nothing when the modifier key is missing', () => {
     setup();
 
@@ -108,7 +122,7 @@ describe('DocExplorerStore keyboard shortcut', () => {
     searchInput.className = 'graphiql-doc-explorer-search-row-input';
     const clickSpy = vi.fn();
     searchInput.addEventListener('click', clickSpy);
-    document.body.append(searchInput);
+    document.querySelector('.graphiql-container')!.append(searchInput);
 
     dispatchSearchShortcut();
 

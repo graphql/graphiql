@@ -6,6 +6,7 @@
  */
 import type {
   MouseEventHandler,
+  RefObject,
   ReactNode,
   FC,
   ComponentPropsWithoutRef,
@@ -89,6 +90,7 @@ export type GraphiQLProps = GraphiQLInterfaceProps &
  */
 const GraphiQL_: FC<GraphiQLProps> = ({
   maxHistoryLength,
+  containerRef: providedContainerRef,
   plugins = DEFAULT_PLUGINS,
   referencePlugin = DOC_EXPLORER_PLUGIN,
   onEditQuery,
@@ -116,7 +118,10 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   if (props.readOnly) {
     throw new TypeError('The `readOnly` prop has been removed.');
   }
+  const defaultContainerRef = useRef<HTMLDivElement>(null);
+  const containerRef = providedContainerRef ?? defaultContainerRef;
   const interfaceProps: GraphiQLInterfaceProps = {
+    containerRef,
     // TODO check if `showPersistHeadersSettings` prop is needed, or we can just use `shouldPersistHeaders` instead
     showPersistHeadersSettings:
       showPersistHeadersSettings ?? props.shouldPersistHeaders !== false,
@@ -133,8 +138,8 @@ const GraphiQL_: FC<GraphiQLProps> = ({
   };
   const hasHistoryPlugin = plugins.includes(HISTORY_PLUGIN);
   const HistoryToUse = hasHistoryPlugin ? HistoryStore : Fragment;
-  const DocExplorerToUse =
-    referencePlugin === DOC_EXPLORER_PLUGIN ? DocExplorerStore : Fragment;
+  const hasDocExplorer = referencePlugin === DOC_EXPLORER_PLUGIN;
+  const DocExplorerToUse = hasDocExplorer ? DocExplorerStore : Fragment;
 
   return (
     <GraphiQLProvider
@@ -143,7 +148,9 @@ const GraphiQL_: FC<GraphiQLProps> = ({
       {...props}
     >
       <HistoryToUse {...(hasHistoryPlugin && { maxHistoryLength })}>
-        <DocExplorerToUse>
+        <DocExplorerToUse
+          {...(hasDocExplorer && { shortcutTarget: containerRef })}
+        >
           <GraphiQLInterface {...interfaceProps}>{children}</GraphiQLInterface>
         </DocExplorerToUse>
       </HistoryToUse>
@@ -173,6 +180,8 @@ export interface GraphiQLInterfaceProps
     >,
     Pick<ComponentPropsWithoutRef<typeof TopBar>, 'brand'> {
   children?: ReactNode;
+  /** Ref to the GraphiQL interface container. */
+  containerRef?: RefObject<HTMLDivElement | null>;
   /**
    * Set the default state for the editor tools.
    * - `false` hides the editor tools
@@ -220,6 +229,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   defaultEditorToolsVisibility,
   isHeadersEditorEnabled = true,
   children: $children,
+  containerRef: providedContainerRef,
   confirmCloseTab,
   className,
   onEditQuery,
@@ -271,7 +281,8 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   );
   const hasMonaco = useMonaco(state => Boolean(state.monaco));
 
-  const containerRef = useRef<HTMLDivElement>(null);
+  const defaultContainerRef = useRef<HTMLDivElement>(null);
+  const containerRef = providedContainerRef ?? defaultContainerRef;
   const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(
     null,
   );
