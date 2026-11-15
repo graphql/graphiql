@@ -234,8 +234,22 @@ export default {
 You can specify any of these settings globally as above, or per project. Read
 the graphql-config docs to learn more about this!
 
-For secrets (headers, urls, etc), you can import `dotenv()` and set a base path
-as you wish in your `graphql-config` file to pre-load `process.env` variables.
+For secrets (headers, urls, etc), you can load `dotenv` in your
+`graphql-config` file to pre-load `process.env` variables. Resolve the `.env`
+path from the config file, because the config runs with the language server's
+working directory, which is not necessarily your workspace (see
+[#4562](https://github.com/graphql/graphiql/discussions/4562)):
+
+```ts
+import path from 'path';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: path.resolve(import.meta.dirname, '.env') });
+```
+
+In CommonJS configs, use
+`require('dotenv').config({ path: require('path').resolve(__dirname, '.env') })`.
+For YAML/JSON configs, use the `graphql-config.dotEnvPath` setting instead.
 
 ### Troubleshooting notes
 

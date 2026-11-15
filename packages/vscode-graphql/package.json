@@ -154,7 +154,7 @@
           "type": [
             "string"
           ],
-          "description": "optional .env load file path, if not the default. specify a relative path to the .env file to be loaded by dotenv module. you can also import dotenv in the config file.",
+          "description": "optional .env load file path, if not the default. specify a relative path to the .env file to be loaded by dotenv module. you can also load dotenv in a JS/TS config file, with a path resolved from the config file (not the working directory).",
           "default": null
         }
       }
