@@ -248,7 +248,7 @@ it('finds exact and prefix matches after the search result limit', () => {
     (_, i) => `myIssue${i}: Int`,
   );
   const schema = buildSchema(`
-    type Query { ${partialFields.join(' ')} }
+    type Query { ${partialFields.join(' ')} someIssue(issue: ID): Int }
     type IssueTracker { id: ID }
     type Issue { id: ID }
   `);
@@ -262,5 +262,7 @@ it('finds exact and prefix matches after the search result limit', () => {
     'Issue',
     'IssueTracker',
   ]);
+  expect(matches.fields[0]?.field.name).toBe('someIssue');
+  expect(matches.fields[0]?.argument?.name).toBe('issue');
   expect(matches.types.length + matches.fields.length).toBe(100);
 });

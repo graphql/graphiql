@@ -182,17 +182,17 @@ export function useSearchResults() {
     const prefix: Array<TypeMatch | FieldMatch> = [];
     const substring: Array<TypeMatch | FieldMatch> = [];
 
-    function matchBucket(name: string) {
+    const byRank = [exact, prefix, substring];
+
+    function matchRank(name: string): number {
       const lower = name.toLowerCase();
       if (!query || lower === query) {
-        return exact;
+        return 0;
       }
       if (lower.startsWith(query)) {
-        return prefix;
+        return 1;
       }
-      if (lower.includes(query)) {
-        return substring;
-      }
+      return lower.includes(query) ? 2 : Infinity;
     }
 
     function searchFields(type: GraphQLNamedType) {
@@ -207,18 +207,23 @@ export function useSearchResults() {
         if (exact.length === limit) {
           break;
         }
-        const bucket = matchBucket(field.name);
-        if (bucket) {
-          if (bucket.length < limit) {
-            bucket.push({ type, field });
-          }
-        } else if ('args' in field) {
+        const fieldRank = matchRank(field.name);
+        let showField = true;
+        if (fieldRank > 0 && 'args' in field) {
           for (const argument of field.args) {
-            const argBucket = matchBucket(argument.name);
-            if (argBucket && argBucket.length < limit) {
-              argBucket.push({ type, field, argument });
+            const rank = matchRank(argument.name);
+            if (rank < fieldRank) {
+              showField = false;
+              const bucket = byRank[rank]!;
+              if (bucket.length < limit) {
+                bucket.push({ type, field, argument });
+              }
             }
           }
+        }
+        const bucket = byRank[fieldRank];
+        if (showField && bucket && bucket.length < limit) {
+          bucket.push({ type, field });
         }
       }
     }
@@ -232,7 +237,7 @@ export function useSearchResults() {
       if (exact.length === limit) {
         break;
       }
-      const bucket = matchBucket(type.name);
+      const bucket = byRank[matchRank(type.name)];
       if (type !== withinType && bucket && bucket.length < limit) {
         bucket.push({ type });
       }
