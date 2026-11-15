@@ -11,8 +11,18 @@
  * names and internal selectors are not public API.
  */
 
-:root,
-[data-theme='dark'] {
+/* Portals inside a themed host inherit its overrides. Standalone Radix
+ * portals render under the body and need their own token defaults. */
+:where(
+  .graphiql-container,
+  .graphiql-theme,
+  :is(
+    .graphiql-dialog,
+    .graphiql-dialog-overlay,
+    .graphiql-dropdown-content,
+    .graphiql-tooltip
+  ):not(.graphiql-container *, .graphiql-theme *)
+) {
   /* Backgrounds */
   --bg-canvas: 17.63% 0.014 258; /* #0D1117 */
   --bg-elevated: 10.39% 0.019 248; /* #010409 */
@@ -103,70 +113,8 @@
 
   /* Motion */
   --transition-fast: 120ms ease;
-}
 
-[data-theme='light'] {
-  /* Backgrounds */
-  --bg-canvas: 99% 0.005 248;
-  --bg-elevated: 100% 0 248;
-  --bg-subtle: 96% 0.008 248;
-  --bg-overlay: 92% 0.01 248;
-
-  /* Borders — higher chroma than the dark theme so dividers hold up against
-   * the brighter backgrounds. */
-  --border-default: 86% 0.016 248;
-  --border-muted: 80% 0.018 248;
-  --border-strong: 72% 0.02 248;
-
-  /* Foreground */
-  --fg-default: 20% 0.013 248;
-  --fg-strong: 12% 0.011 248;
-  --fg-muted: 40% 0.013 248;
-  --fg-subtle: 50% 0.012 248;
-  --fg-disabled: 46% 0.012 248;
-  --fg-dim: 55% 0.011 248;
-
-  /* Accents — slightly darker / more saturated for AA contrast on light bg */
-  --accent-blue: 50% 0.193 248;
-  --accent-green: 50% 0.176 145;
-  /* Used as text (field/enum names), so on a light background it has to sit
-   * darker than `--accent-green` to clear AA — despite the "light" name, which
-   * describes its dark-theme appearance. Don't lighten it. */
-  --accent-green-light: 42% 0.19 145;
-  --accent-yellow: 70% 0.15 86;
-  --accent-orange: 48% 0.165 60;
-  --accent-red: 55% 0.224 27;
-  --accent-purple: 45% 0.18 295;
-  --accent-pink: 58% 0.22 17;
-
-  /* Type-name categories. Composite/scalar/enum alias the AA-tuned light
-   * accents; input gets its own darker gold because --accent-yellow is only
-   * AA-safe as a background fill, not as text. */
-  --type-composite: var(--accent-orange);
-  --type-scalar: var(--accent-blue);
-  --type-enum: var(--accent-green-light);
-  --type-input: 48% 0.115 92;
-
-  /* Action button (Run) — keeps the green; inverted bg lets it stand out */
-  --btn-primary: 51% 0.15 145;
-  --btn-primary-border: 45% 0.17 145;
-
-  /* Shadows — lighter to read on light surfaces */
-  --shadow-popover:
-    0 4px 12px oklch(0% 0 0 / 0.08), 0 1px 3px oklch(0% 0 0 / 0.04);
-
-  /* Typography, spacing, dimensions, and radii are inherited from :root. */
-}
-
-/* -------------------------------------------------------------------------
- * Density presets
- *
- * `comfortable` is the default; the combined selector makes it the fallback
- * when the attribute is absent.
- * ---------------------------------------------------------------------- */
-
-:root,
-[data-density='comfortable'] {
+  /* Comfortable density */
   --row-padding-y: 5px;
   --row-padding-x: 14px;
   --button-padding-y: 4px;
@@ -187,52 +135,8 @@
   --icon-button-size-sm: 28px;
   --icon-button-size-md: 32px;
   --icon-button-size-lg: 40px;
-}
 
-[data-density='compact'] {
-  --row-padding-y: 2px;
-  --row-padding-x: 10px;
-  --button-padding-y: 2px;
-  --button-padding-x: 7px;
-  --top-bar-height: 34px;
-  --status-bar-height: 20px;
-  --rail-width: 42px;
-  --tab-strip-height: 26px;
-  --dialog-padding-x: 12px;
-  --dialog-padding-y: 12px;
-  --dialog-bar-padding-y: 4px;
-  --dialog-gap: 12px;
-  --icon-button-size-sm: 24px;
-  --icon-button-size-md: 26px;
-  --icon-button-size-lg: 34px;
-}
-
-[data-density='spacious'] {
-  --row-padding-y: 9px;
-  --row-padding-x: 19px;
-  --button-padding-y: 7px;
-  --button-padding-x: 14px;
-  --top-bar-height: 48px;
-  --status-bar-height: 30px;
-  --rail-width: 56px;
-  --tab-strip-height: 40px;
-  --dialog-padding-x: 20px;
-  --dialog-padding-y: 20px;
-  --dialog-bar-padding-y: 10px;
-  --dialog-gap: 20px;
-  --icon-button-size-sm: 34px;
-  --icon-button-size-md: 40px;
-  --icon-button-size-lg: 48px;
-}
-
-/* -------------------------------------------------------------------------
- * Font-size presets
- *
- * `default` doubles as the fallback via the combined selector.
- * ---------------------------------------------------------------------- */
-
-:root,
-[data-font-size='default'] {
+  /* Default font size */
   --font-size-body: 13px;
   --font-size-small: 11px;
   --font-size-mono: 12px;
@@ -241,77 +145,166 @@
   --icon-size-sm: 10px;
   --icon-size-md: 12px;
   --icon-size-lg: 16px;
-}
 
-[data-font-size='compact'] {
-  --font-size-body: 12px;
-  --font-size-small: 11px;
-  --font-size-mono: 11.5px;
-  --font-size-eyebrow: 10px;
-  --line-height-body: 16px;
-  --icon-size-sm: 9px;
-  --icon-size-md: 11px;
-  --icon-size-lg: 15px;
-}
-
-[data-font-size='large'] {
-  --font-size-body: 14px;
-  --font-size-small: 12px;
-  --font-size-mono: 13px;
-  --font-size-eyebrow: 11.5px;
-  --line-height-body: 20px;
-  --icon-size-sm: 11px;
-  --icon-size-md: 13px;
-  --icon-size-lg: 18px;
-}
-
-[data-font-size='xl'] {
-  --font-size-body: 16px;
-  --font-size-small: 14px;
-  --font-size-mono: 14px;
-  --font-size-eyebrow: 13px;
-  --line-height-body: 22px;
-  --icon-size-sm: 12px;
-  --icon-size-md: 15px;
-  --icon-size-lg: 20px;
-}
-
-/*
- * Apply light overrides automatically when the system prefers light and the
- * user has not pinned dark. The values are duplicated rather than relying on
- * inheritance into a media query, which can resolve inconsistently across
- * browsers when the source rule is keyed off a different selector.
- */
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme='dark']) {
+  &[data-theme='light'],
+  :where(:root[data-theme='light']) &:not([data-theme]) {
+    /* Backgrounds */
     --bg-canvas: 99% 0.005 248;
     --bg-elevated: 100% 0 248;
     --bg-subtle: 96% 0.008 248;
     --bg-overlay: 92% 0.01 248;
+
+    /* Borders — higher chroma than the dark theme so dividers hold up against
+     * the brighter backgrounds. */
     --border-default: 86% 0.016 248;
     --border-muted: 80% 0.018 248;
     --border-strong: 72% 0.02 248;
+
+    /* Foreground */
     --fg-default: 20% 0.013 248;
     --fg-strong: 12% 0.011 248;
     --fg-muted: 40% 0.013 248;
     --fg-subtle: 50% 0.012 248;
     --fg-disabled: 46% 0.012 248;
     --fg-dim: 55% 0.011 248;
+
+    /* Accents — slightly darker / more saturated for AA contrast on light bg */
     --accent-blue: 50% 0.193 248;
     --accent-green: 50% 0.176 145;
+    /* Used as text (field/enum names), so on a light background it has to sit
+     * darker than `--accent-green` to clear AA — despite the "light" name, which
+     * describes its dark-theme appearance. Don't lighten it. */
     --accent-green-light: 42% 0.19 145;
     --accent-yellow: 70% 0.15 86;
     --accent-orange: 48% 0.165 60;
     --accent-red: 55% 0.224 27;
     --accent-purple: 45% 0.18 295;
     --accent-pink: 58% 0.22 17;
+
+    /* Type-name categories. Composite/scalar/enum alias the AA-tuned light
+     * accents; input gets its own darker gold because --accent-yellow is only
+     * AA-safe as a background fill, not as text. */
     --type-composite: var(--accent-orange);
     --type-scalar: var(--accent-blue);
     --type-enum: var(--accent-green-light);
     --type-input: 48% 0.115 92;
+
+    /* Action button (Run) — keeps the green; inverted bg lets it stand out */
     --btn-primary: 51% 0.15 145;
     --btn-primary-border: 45% 0.17 145;
+
+    /* Shadows — lighter to read on light surfaces */
     --shadow-popover:
       0 4px 12px oklch(0% 0 0 / 0.08), 0 1px 3px oklch(0% 0 0 / 0.04);
+  }
+
+  &[data-density='compact'],
+  :where(:root[data-density='compact']) &:not([data-density]) {
+    --row-padding-y: 2px;
+    --row-padding-x: 10px;
+    --button-padding-y: 2px;
+    --button-padding-x: 7px;
+    --top-bar-height: 34px;
+    --status-bar-height: 20px;
+    --rail-width: 42px;
+    --tab-strip-height: 26px;
+    --dialog-padding-x: 12px;
+    --dialog-padding-y: 12px;
+    --dialog-bar-padding-y: 4px;
+    --dialog-gap: 12px;
+    --icon-button-size-sm: 24px;
+    --icon-button-size-md: 26px;
+    --icon-button-size-lg: 34px;
+  }
+
+  &[data-density='spacious'],
+  :where(:root[data-density='spacious']) &:not([data-density]) {
+    --row-padding-y: 9px;
+    --row-padding-x: 19px;
+    --button-padding-y: 7px;
+    --button-padding-x: 14px;
+    --top-bar-height: 48px;
+    --status-bar-height: 30px;
+    --rail-width: 56px;
+    --tab-strip-height: 40px;
+    --dialog-padding-x: 20px;
+    --dialog-padding-y: 20px;
+    --dialog-bar-padding-y: 10px;
+    --dialog-gap: 20px;
+    --icon-button-size-sm: 34px;
+    --icon-button-size-md: 40px;
+    --icon-button-size-lg: 48px;
+  }
+
+  &[data-font-size='compact'],
+  :where(:root[data-font-size='compact']) &:not([data-font-size]) {
+    --font-size-body: 12px;
+    --font-size-small: 11px;
+    --font-size-mono: 11.5px;
+    --font-size-eyebrow: 10px;
+    --line-height-body: 16px;
+    --icon-size-sm: 9px;
+    --icon-size-md: 11px;
+    --icon-size-lg: 15px;
+  }
+
+  &[data-font-size='large'],
+  :where(:root[data-font-size='large']) &:not([data-font-size]) {
+    --font-size-body: 14px;
+    --font-size-small: 12px;
+    --font-size-mono: 13px;
+    --font-size-eyebrow: 11.5px;
+    --line-height-body: 20px;
+    --icon-size-sm: 11px;
+    --icon-size-md: 13px;
+    --icon-size-lg: 18px;
+  }
+
+  &[data-font-size='xl'],
+  :where(:root[data-font-size='xl']) &:not([data-font-size]) {
+    --font-size-body: 16px;
+    --font-size-small: 14px;
+    --font-size-mono: 14px;
+    --font-size-eyebrow: 13px;
+    --line-height-body: 22px;
+    --icon-size-sm: 12px;
+    --icon-size-md: 15px;
+    --icon-size-lg: 20px;
+  }
+
+  /* Follow the system preference while neither the host nor this scope has
+     * an explicit theme. */
+  @media (prefers-color-scheme: light) {
+    &:not([data-theme], :root[data-theme] *) {
+      --bg-canvas: 99% 0.005 248;
+      --bg-elevated: 100% 0 248;
+      --bg-subtle: 96% 0.008 248;
+      --bg-overlay: 92% 0.01 248;
+      --border-default: 86% 0.016 248;
+      --border-muted: 80% 0.018 248;
+      --border-strong: 72% 0.02 248;
+      --fg-default: 20% 0.013 248;
+      --fg-strong: 12% 0.011 248;
+      --fg-muted: 40% 0.013 248;
+      --fg-subtle: 50% 0.012 248;
+      --fg-disabled: 46% 0.012 248;
+      --fg-dim: 55% 0.011 248;
+      --accent-blue: 50% 0.193 248;
+      --accent-green: 50% 0.176 145;
+      --accent-green-light: 42% 0.19 145;
+      --accent-yellow: 70% 0.15 86;
+      --accent-orange: 48% 0.165 60;
+      --accent-red: 55% 0.224 27;
+      --accent-purple: 45% 0.18 295;
+      --accent-pink: 58% 0.22 17;
+      --type-composite: var(--accent-orange);
+      --type-scalar: var(--accent-blue);
+      --type-enum: var(--accent-green-light);
+      --type-input: 48% 0.115 92;
+      --btn-primary: 51% 0.15 145;
+      --btn-primary-border: 45% 0.17 145;
+      --shadow-popover:
+        0 4px 12px oklch(0% 0 0 / 0.08), 0 1px 3px oklch(0% 0 0 / 0.04);
+    }
   }
 }

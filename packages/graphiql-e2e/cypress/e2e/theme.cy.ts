@@ -55,6 +55,27 @@ function checkSharedSelection(item: HTMLElement) {
 }
 
 describe('Theme', () => {
+  it('keeps GraphiQL design tokens off the host page', () => {
+    cy.visitGraphiQL();
+    cy.get('.graphiql-container').should($container => {
+      const container = $container[0];
+      const root = container.ownerDocument.documentElement;
+      for (const name of [
+        '--radius-md',
+        '--row-padding-y',
+        '--font-size-body',
+      ]) {
+        expect(getComputedStyle(root).getPropertyValue(name), name).to.equal(
+          '',
+        );
+        expect(
+          getComputedStyle(container).getPropertyValue(name),
+          name,
+        ).not.to.equal('');
+      }
+    });
+  });
+
   describe('`defaultTheme`', () => {
     it('should have light theme', () => {
       cy.visitGraphiQL({ defaultTheme: 'light' });

@@ -26,6 +26,7 @@ const preview: Preview = {
       useEffect(() => {
         const root = document.documentElement;
         root.setAttribute('data-theme', ctx.globals.theme);
+        document.body.classList.add('graphiql-theme');
         document.body.style.background = 'oklch(var(--bg-canvas))';
         document.body.style.color = 'oklch(var(--fg-default))';
         document.body.style.margin = '0';

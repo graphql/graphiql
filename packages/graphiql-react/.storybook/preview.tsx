@@ -56,6 +56,7 @@ const preview: Preview = {
         root.setAttribute('data-theme', ctx.globals.theme);
         root.setAttribute('data-density', ctx.globals.density);
         root.setAttribute('data-font-size', ctx.globals.fontSize);
+        document.body.classList.add('graphiql-theme');
         document.body.style.background = 'oklch(var(--bg-canvas))';
         document.body.style.color = 'oklch(var(--fg-default))';
         document.body.style.margin = '0';
