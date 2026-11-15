@@ -331,7 +331,9 @@ describe('GraphiQL', () => {
       expect(fireEvent.keyDown(document.body, shortcut)).toBe(true);
       expect(pane).not.toBeVisible();
 
-      const settingsButton = container.querySelector('[aria-label="Settings"]')!;
+      const settingsButton = container.querySelector(
+        '[aria-label="Settings"]',
+      )!;
       expect(fireEvent.keyDown(settingsButton, shortcut)).toBe(false);
 
       await waitFor(() => {

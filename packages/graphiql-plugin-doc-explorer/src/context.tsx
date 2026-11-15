@@ -14,7 +14,7 @@ import {
   isScalarType,
   isUnionType,
 } from 'graphql';
-import { FC, ReactElement, ReactNode, useEffect } from 'react';
+import { FC, ReactElement, ReactNode, RefObject, useEffect } from 'react';
 import {
   SchemaReference,
   useGraphiQL,
@@ -277,25 +277,27 @@ export const docExplorerStore = createStore<DocExplorerStoreType>(set => ({
 // `setVisiblePlugin` commits, which isn't guaranteed to land within a single
 // animation frame, so poll across a few frames rather than assuming one is
 // enough.
-function focusSearchInputWhenMounted(framesLeft: number) {
+function focusSearchInputWhenMounted(container: Element, framesLeft: number) {
   if (framesLeft <= 0) {
     return;
   }
   requestAnimationFrame(() => {
-    const el = document.querySelector<HTMLDivElement>(
+    const el = container.querySelector<HTMLDivElement>(
       '.graphiql-doc-explorer-search-row-input',
     );
     if (el) {
       el.click();
     } else {
-      focusSearchInputWhenMounted(framesLeft - 1);
+      focusSearchInputWhenMounted(container, framesLeft - 1);
     }
   });
 }
 
 export const DocExplorerStore: FC<{
   children: ReactNode;
-}> = ({ children }) => {
+  /** The container in which Cmd/Ctrl+K opens documentation search. */
+  shortcutTarget?: RefObject<HTMLElement | null>;
+}> = ({ children, shortcutTarget }) => {
   const { schema, validationErrors, schemaReference } = useGraphiQL(
     pick('schema', 'validationErrors', 'schemaReference'),
   );
@@ -320,6 +322,7 @@ export const DocExplorerStore: FC<{
   }, [schema, validationErrors]);
 
   useEffect(() => {
+    const target = shortcutTarget?.current ?? document.documentElement;
     function handleKeyDown(event: KeyboardEvent) {
       const shouldOpenSearch =
         event[isMacOs ? 'metaKey' : 'ctrlKey'] &&
@@ -327,6 +330,16 @@ export const DocExplorerStore: FC<{
         // in English `˚` and in French `È`
         event.code === 'KeyK';
       if (!shouldOpenSearch) {
+        return;
+      }
+      const container =
+        event.target instanceof Element
+          ? event.target.closest('.graphiql-container')
+          : null;
+      if (
+        !container ||
+        (shortcutTarget && container !== shortcutTarget.current)
+      ) {
         return;
       }
       // Take priority over monaco-editor's built-in `Cmd/Ctrl+K` binding even
@@ -338,14 +351,14 @@ export const DocExplorerStore: FC<{
       // The panel (and its search input) mounts after this state update
       // commits, which isn't guaranteed to land within a single animation
       // frame, so poll across a few frames rather than assuming one is enough.
-      focusSearchInputWhenMounted(10);
+      focusSearchInputWhenMounted(container, 10);
     }
 
-    window.addEventListener('keydown', handleKeyDown, true);
+    target.addEventListener('keydown', handleKeyDown, true);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown, true);
+      target.removeEventListener('keydown', handleKeyDown, true);
     };
-  }, [setVisiblePlugin]);
+  }, [setVisiblePlugin, shortcutTarget]);
 
   return children as ReactElement;
 };
