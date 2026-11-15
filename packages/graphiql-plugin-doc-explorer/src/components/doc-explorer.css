@@ -18,6 +18,12 @@
   margin-top: var(--px-16);
 }
 
+/* Overview headers and rows supply their own horizontal padding. */
+.graphiql-doc-explorer-content > .graphiql-doc-explorer-schema-overview {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 /* TypeCard and FieldCard keep their own horizontal padding */
 .graphiql-doc-explorer-content .graphiql-doc-explorer-type-card,
 .graphiql-doc-explorer-content .graphiql-doc-explorer-field-card {
