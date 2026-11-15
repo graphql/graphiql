@@ -384,6 +384,7 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
         ? []
         : validateSchema(newSchema);
     const store = storeRef.current;
+    const shouldIntrospect = !newSchema && schema !== null;
     store.setState(({ requestCounter }) => ({
       /**
        * Increment the counter so that in-flight introspection requests don't
@@ -391,7 +392,8 @@ const InnerGraphiQLProvider: FC<GraphiQLProviderProps> = ({
        */
       requestCounter: requestCounter + 1,
       schema: newSchema,
-      shouldIntrospect: !newSchema && schema !== null,
+      shouldIntrospect,
+      isIntrospecting: shouldIntrospect,
       validationErrors,
     }));
 

@@ -160,25 +160,18 @@ export const createSchemaSlice: CreateSchemaSlice = initial => (set, get) => ({
             introspectionQuery.replace('subscriptionType { name }', ''),
           );
         }
-        set({ isIntrospecting: false });
-        let introspectionData: IntrospectionQuery | undefined;
-        if (result.data && '__schema' in result.data) {
-          introspectionData = result.data as IntrospectionQuery;
-        } else {
+        if (counter !== get().requestCounter) {
+          return;
+        }
+        if (!result.data || !('__schema' in result.data)) {
           // handle as if it were an error if the fetcher response is not a string or response.data is not present
           const responseString =
             typeof result === 'string' ? result : formatResult(result);
-          set({ fetchError: responseString });
-        }
-        /**
-         * Don't continue if another introspection request has been started in
-         * the meantime or if there is no introspection data.
-         */
-        if (counter !== get().requestCounter || !introspectionData) {
+          set({ isIntrospecting: false, fetchError: responseString });
           return;
         }
-        const newSchema = buildClientSchema(introspectionData);
-        set({ schema: newSchema });
+        const newSchema = buildClientSchema(result.data as IntrospectionQuery);
+        set({ schema: newSchema, isIntrospecting: false });
         onSchemaChange?.(newSchema);
       } catch (error) {
         /**

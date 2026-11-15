@@ -154,3 +154,23 @@ it('keeps loading when a superseded introspection returns', async () => {
   expect(result.current.isIntrospecting).toBe(false);
   expect(result.current.schema?.getQueryType()?.name).toBe('Query');
 });
+
+it('stops loading when an explicit schema supersedes introspection', async () => {
+  const pending = Promise.withResolvers<{ data: null }>();
+  const fetcher = () => pending.promise;
+  let schema: ReturnType<typeof buildSchema> | undefined;
+  const { result, rerender } = renderHook(() => useGraphiQL(state => state), {
+    wrapper: ({ children }) => (
+      <GraphiQLProvider fetcher={fetcher} schema={schema}>
+        {children}
+      </GraphiQLProvider>
+    ),
+  });
+  expect(result.current.isIntrospecting).toBe(true);
+  schema = buildSchema('type Query { foo: Int }');
+  rerender();
+  expect(result.current.isIntrospecting).toBe(false);
+  await act(async () => pending.resolve({ data: null }));
+  expect(result.current.schema).toBe(schema);
+  expect(result.current.fetchError).toBeNull();
+});
