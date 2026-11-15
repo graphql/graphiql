@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "engines": {
-    "vscode": "^1.63.0"
+    "vscode": "^1.100.3"
   },
   "main": "./out/extension.js",
   "icon": "assets/images/logo.png",
@@ -91,7 +91,7 @@
   "devDependencies": {
     "@types/capitalize": "2.0.2",
     "@types/node": "^24",
-    "@types/vscode": "1.63.2",
+    "@types/vscode": "1.100.0",
     "@types/ws": "8.18.2",
     "@typescript/native": "npm:typescript@^7.0.2",
     "@vscode/vsce": "^4.1.0",

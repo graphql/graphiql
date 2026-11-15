@@ -7,6 +7,8 @@ inline in your code for:
 - .js/.jsx
 - .graphql, .gql or .graphqls files
 
+Requires VS Code 1.100.3 or later. The extension runs in VS Code’s Node runtime; installing a newer system Node does not upgrade that runtime.
+
 ## How it works
 
 1. A codelens will appear above all operations - clicking will begin executing

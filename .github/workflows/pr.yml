@@ -108,6 +108,73 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: pnpm test:consumers
 
+  vscode-package:
+    name: Package VS Code extensions
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Turbo cache
+        uses: ./.github/actions/turbo-cache
+        with:
+          restore-build: true
+      - run: pnpm exec turbo run build --filter=vscode-graphql... --filter=vscode-graphql-execution... --output-logs=new-only
+      - run: pnpm test:vscode --package-only
+      - uses: actions/upload-artifact@v7
+        with:
+          name: vscode-test-vsix
+          path: out/vsix/*.vsix
+          if-no-files-found: error
+
+  vscode-test:
+    name: VS Code extensions (${{ matrix.os }}, ${{ matrix.version }})
+    runs-on: ${{ matrix.os }}
+    needs: [vscode-package]
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        # Keep the oldest declared editor runnable alongside current stable.
+        os: [ubuntu-22.04, macos-latest, windows-latest]
+        version: [minimum, stable]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@v4
+        with:
+          name: vscode-test-vsix
+          path: out/vsix
+      - name: Test packaged runtime extensions (Linux)
+        if: runner.os == 'Linux'
+        run: xvfb-run -a pnpm test:vscode --extension runtime --version ${{ matrix.version }}
+      - name: Test packaged runtime extensions (macOS and Windows)
+        if: runner.os != 'Linux'
+        run: pnpm test:vscode --extension runtime --version ${{ matrix.version }}
+      - name: Test packaged syntax extension (Linux)
+        if: runner.os == 'Linux'
+        run: xvfb-run -a pnpm test:vscode --extension syntax --version ${{ matrix.version }}
+      - name: Test packaged syntax extension (macOS and Windows)
+        if: runner.os != 'Linux'
+        run: pnpm test:vscode --extension syntax --version ${{ matrix.version }}
+      - name: Upload extension-host reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: vscode-tests-${{ matrix.os }}-${{ matrix.version }}
+          path: out/vscode-tests
+          if-no-files-found: ignore
+
   graphql-16-compatibility:
     name: GraphQL 16 Compatibility
     runs-on: ubuntu-latest
