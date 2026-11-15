@@ -42,7 +42,7 @@ export const ActivityRail: FC<ActivityRailProps> = ({
           const nextPlugin = isActive ? null : plugin;
           return (
             <li key={plugin.title}>
-              <Tooltip label={label}>
+              <Tooltip label={label} side="right" align="center">
                 <button
                   type="button"
                   className={`graphiql-activity-rail-item graphiql-selection-item${isActive ? ' active' : ''}`}
@@ -62,7 +62,7 @@ export const ActivityRail: FC<ActivityRailProps> = ({
       </ul>
       <div className="graphiql-activity-rail-spacer" />
       {onSettingsClick && (
-        <Tooltip label="Settings">
+        <Tooltip label="Settings" side="right" align="center">
           <button
             ref={settingsButtonRef}
             type="button"

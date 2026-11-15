@@ -172,6 +172,18 @@ describe('keyboard navigation', () => {
     cy.focused().should('match', '.ime-text-area, .native-edit-context');
   });
 
+  it('shows the full Settings tooltip when GraphiQL is embedded near the viewport bottom', () => {
+    cy.get('#graphiql').invoke('css', 'height', 'calc(100dvh - 12px)');
+    cy.get('button[aria-label="Settings"]').focus();
+    cy.get('.graphiql-tooltip')
+      .should('contain.text', 'Settings')
+      .should($tooltip => {
+        const tooltip = $tooltip[0];
+        expect(tooltip.getBoundingClientRect().top).to.be.greaterThan(0);
+        expect(tooltip.scrollHeight).to.equal(tooltip.clientHeight);
+      });
+  });
+
   it('Escape closes the settings dialog and returns focus to the gear', () => {
     cy.get('button[aria-label="Settings"]').focus();
     cy.realPress('Enter');
