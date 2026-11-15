@@ -1,13 +1,19 @@
 import { type Mock, describe, it, expect, vi, beforeEach } from 'vitest';
 import { useGraphiQL as $useGraphiQL, Tooltip } from '@graphiql/react';
-import { render } from '@testing-library/react';
-import { GraphQLInt, GraphQLObjectType, GraphQLSchema } from 'graphql';
+import { render, renderHook } from '@testing-library/react';
+import {
+  buildSchema,
+  GraphQLInt,
+  GraphQLObjectType,
+  GraphQLSchema,
+} from 'graphql';
 import { FC, useEffect } from 'react';
 import {
   DocExplorerStore,
   useDocExplorer,
   useDocExplorerActions,
 } from '../../context';
+import { useSearchResults } from '../search';
 import { DocExplorer } from '../doc-explorer';
 
 const useGraphiQL = $useGraphiQL as Mock;
@@ -234,4 +240,29 @@ describe('DocExplorer', () => {
     // Because `Query.field` doesn't exist anymore, the top-most item we can render is `Query`
     expect(breadcrumb2.textContent).toEqual('Query');
   });
+});
+
+it('finds exact and prefix matches after the search result limit', () => {
+  const partialFields = Array.from(
+    { length: 101 },
+    (_, i) => `myIssue${i}: Int`,
+  );
+  const schema = buildSchema(`
+    type Query { ${partialFields.join(' ')} someIssue(issue: ID): Int }
+    type IssueTracker { id: ID }
+    type Issue { id: ID }
+  `);
+  useGraphiQL.mockImplementation(cb => cb({ ...defaultSchemaContext, schema }));
+  const { result } = renderHook(useSearchResults, {
+    wrapper: DocExplorerStore,
+  });
+
+  const matches = result.current('iSsUe');
+  expect(matches.types.map(match => match.type.name)).toEqual([
+    'Issue',
+    'IssueTracker',
+  ]);
+  expect(matches.fields[0]?.field.name).toBe('someIssue');
+  expect(matches.fields[0]?.argument?.name).toBe('issue');
+  expect(matches.types.length + matches.fields.length).toBe(100);
 });

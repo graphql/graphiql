@@ -5,6 +5,7 @@ import {
   GraphQLNamedType,
   isInputObjectType,
   isInterfaceType,
+  isNamedType,
   isObjectType,
 } from 'graphql';
 import { FC, useEffect, useRef, useState } from 'react';
@@ -175,73 +176,90 @@ export function useSearchResults() {
     }
 
     const withinType = navItem.def;
+    const query = searchValue.toLowerCase();
+    const limit = 100;
+    const exact: Array<TypeMatch | FieldMatch> = [];
+    const prefix: Array<TypeMatch | FieldMatch> = [];
+    const substring: Array<TypeMatch | FieldMatch> = [];
 
-    const typeMap = schema.getTypeMap();
-    let typeNames = Object.keys(typeMap);
+    const byRank = [exact, prefix, substring];
 
-    // Move the within type name to be the first searched.
-    if (withinType) {
-      typeNames = typeNames.filter(n => n !== withinType.name);
-      typeNames.unshift(withinType.name);
+    function matchRank(name: string): number {
+      const lower = name.toLowerCase();
+      if (!query || lower === query) {
+        return 0;
+      }
+      if (lower.startsWith(query)) {
+        return 1;
+      }
+      return lower.includes(query) ? 2 : Infinity;
     }
-    for (const typeName of typeNames) {
-      if (
-        matches.within.length + matches.types.length + matches.fields.length >=
-        100
-      ) {
-        break;
-      }
 
-      const type = typeMap[typeName]!;
-      if (withinType !== type && isMatch(typeName, searchValue)) {
-        matches.types.push({ type });
-      }
-
+    function searchFields(type: GraphQLNamedType) {
       if (
         !isObjectType(type) &&
         !isInterfaceType(type) &&
         !isInputObjectType(type)
       ) {
-        continue;
+        return;
       }
-
-      const fields = type.getFields();
-      for (const fieldName in fields) {
-        const field = fields[fieldName]!;
-        let matchingArgs: GraphQLArgument[] | undefined;
-
-        if (!isMatch(fieldName, searchValue)) {
-          if ('args' in field) {
-            matchingArgs = field.args.filter(arg =>
-              isMatch(arg.name, searchValue),
-            );
-            if (matchingArgs.length === 0) {
-              continue;
+      for (const field of Object.values(type.getFields())) {
+        if (exact.length === limit) {
+          break;
+        }
+        const fieldRank = matchRank(field.name);
+        let showField = true;
+        if (fieldRank > 0 && 'args' in field) {
+          for (const argument of field.args) {
+            const rank = matchRank(argument.name);
+            if (rank < fieldRank) {
+              showField = false;
+              const bucket = byRank[rank]!;
+              if (bucket.length < limit) {
+                bucket.push({ type, field, argument });
+              }
             }
-          } else {
-            continue;
           }
         }
-
-        matches[withinType === type ? 'within' : 'fields'].push(
-          ...(matchingArgs
-            ? matchingArgs.map(argument => ({ type, field, argument }))
-            : [{ type, field }]),
-        );
+        const bucket = byRank[fieldRank];
+        if (showField && bucket && bucket.length < limit) {
+          bucket.push({ type, field });
+        }
       }
     }
 
+    // Break ties in the same order the explorer displays the groups.
+    if (isNamedType(withinType)) {
+      searchFields(withinType);
+    }
+    const types = Object.values(schema.getTypeMap());
+    for (const type of types) {
+      if (exact.length === limit) {
+        break;
+      }
+      const bucket = byRank[matchRank(type.name)];
+      if (type !== withinType && bucket && bucket.length < limit) {
+        bucket.push({ type });
+      }
+    }
+    for (const type of types) {
+      if (exact.length === limit) {
+        break;
+      }
+      if (type !== withinType) {
+        searchFields(type);
+      }
+    }
+
+    for (const match of exact.concat(prefix, substring).slice(0, limit)) {
+      if ('field' in match) {
+        matches[match.type === withinType ? 'within' : 'fields'].push(match);
+      } else {
+        matches.types.push(match);
+      }
+    }
     return matches;
   };
-}
-
-function isMatch(sourceText: string, searchValue: string): boolean {
-  try {
-    const escaped = searchValue.replaceAll(/[^_0-9A-Za-z]/g, ch => '\\' + ch);
-    return new RegExp(escaped, 'i').test(sourceText);
-  } catch {
-    return sourceText.toLowerCase().includes(searchValue.toLowerCase());
-  }
 }
 
 const Type: FC<{ type: GraphQLNamedType }> = ({ type }) => {
