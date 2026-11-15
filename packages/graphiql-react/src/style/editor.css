@@ -7,7 +7,7 @@
   }
 }
 
-.monaco-editor {
+:where(.graphiql-container) .monaco-editor {
   /* otherwise editor couldn't be resized */
   position: absolute !important;
   /* Prevent Monaco's focus outline from appearing around every editor.
@@ -36,15 +36,16 @@
 }
 
 /* Make hover contents be dynamic */
-.monaco-hover,
-.monaco-hover-content {
+:where(.graphiql-container) .monaco-hover,
+:where(.graphiql-container) .monaco-hover-content {
   width: auto !important;
   height: auto !important;
   max-width: none !important;
   max-height: none !important;
 }
 
-.monaco-editor
+:where(.graphiql-container)
+  .monaco-editor
   .suggest-widget
   .monaco-list
   .monaco-list-row
