@@ -20,6 +20,7 @@ import {
   MergeIcon,
   PlusIcon,
   PortalProvider,
+  usePortalContainer,
   PrettifyIcon,
   QueryEditor,
   ResponseEditor,
@@ -271,6 +272,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   );
   const hasMonaco = useMonaco(state => Boolean(state.monaco));
 
+  const outerPortalContainer = usePortalContainer();
   const containerRef = useRef<HTMLDivElement>(null);
   const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(
     null,
@@ -440,7 +442,13 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
 
   return (
     <Tooltip.Provider>
-      <PortalProvider container={portalContainer}>
+      <PortalProvider
+        container={
+          outerPortalContainer === undefined
+            ? portalContainer
+            : outerPortalContainer
+        }
+      >
         <div
           ref={setContainerRef}
           className={clsx('graphiql-container', className)}

@@ -525,7 +525,7 @@ describe('GraphiQL', () => {
         fireEvent.click(container.querySelector('[aria-label="Settings"]')!);
         await new Promise(resolve => setTimeout(resolve, 0));
       });
-      return document.querySelector('[role="dialog"]')!;
+      return document.querySelector<HTMLElement>('[role="dialog"]')!;
     }
 
     it('renders Settings in the enclosing PortalProvider', async () => {
