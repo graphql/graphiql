@@ -16,6 +16,7 @@ import { buildSchema, introspectionFromSchema } from 'graphql';
 import {
   ToolbarButton,
   GraphiQLProvider,
+  PortalProvider,
   useGraphiQL,
   useMonaco,
   useOperationsEditorState,
@@ -524,8 +525,22 @@ describe('GraphiQL', () => {
         fireEvent.click(container.querySelector('[aria-label="Settings"]')!);
         await new Promise(resolve => setTimeout(resolve, 0));
       });
-      return document.querySelector('[role="dialog"]')!;
+      return document.querySelector<HTMLElement>('[role="dialog"]')!;
     }
+
+    it('renders Settings in the enclosing PortalProvider', async () => {
+      const { container: portalHost } = render(<div />);
+      const { container } = render(
+        <PortalProvider container={portalHost}>
+          <GraphiQL fetcher={noOpFetcher} />
+        </PortalProvider>,
+      );
+
+      expect(portalHost).toContainElement(await openSettings(container));
+      expect(
+        portalHost.querySelector('.graphiql-dialog-overlay'),
+      ).toBeInTheDocument();
+    });
 
     it('shows the persist-headers control when shouldPersistHeaders is true', async () => {
       const { container } = render(

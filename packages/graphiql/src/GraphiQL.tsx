@@ -20,6 +20,7 @@ import {
   MergeIcon,
   PlusIcon,
   PortalProvider,
+  usePortalContainer,
   PrettifyIcon,
   QueryEditor,
   ResponseEditor,
@@ -280,6 +281,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     setPortalContainer(node);
   };
   useGraphiQLSettings(containerRef);
+  const outerPortalContainer = usePortalContainer();
 
   const {
     hiddenElement: pluginHiddenElement,
@@ -440,7 +442,13 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
 
   return (
     <Tooltip.Provider>
-      <PortalProvider container={portalContainer}>
+      <PortalProvider
+        container={
+          outerPortalContainer === undefined
+            ? portalContainer
+            : outerPortalContainer
+        }
+      >
         <div
           ref={setContainerRef}
           className={clsx('graphiql-container', className)}

@@ -196,6 +196,8 @@ Overriding these variables is the only officially supported way of customizing
 the appearance of GraphiQL. Starting from version 2, class names are no longer
 be considered stable and might change between minor or patch version updates.
 
+Dialogs, menus, and tooltips render inside the GraphiQL container by default. To render them elsewhere, wrap `GraphiQL` or `GraphiQLInterface` in a `PortalProvider` from `@graphiql/react` and pass the host element as its `container` prop. Apply your GraphiQL theme to that host so the portaled content inherits it.
+
 ### Editor Theme
 
 The query, variables, headers, and response editors are built on
