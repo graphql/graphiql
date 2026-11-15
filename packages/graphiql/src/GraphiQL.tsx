@@ -272,7 +272,6 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
   );
   const hasMonaco = useMonaco(state => Boolean(state.monaco));
 
-  const outerPortalContainer = usePortalContainer();
   const containerRef = useRef<HTMLDivElement>(null);
   const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(
     null,
@@ -282,6 +281,7 @@ export const GraphiQLInterface: FC<GraphiQLInterfaceProps> = ({
     setPortalContainer(node);
   };
   useGraphiQLSettings(containerRef);
+  const outerPortalContainer = usePortalContainer();
 
   const {
     hiddenElement: pluginHiddenElement,
