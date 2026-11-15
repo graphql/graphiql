@@ -1,5 +1,6 @@
 'use no memo';
 
+import { buildSchema, introspectionFromSchema } from 'graphql';
 import type { ReactNode } from 'react';
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
@@ -114,4 +115,42 @@ it('discovers through the wrapped transport using headers produced by request ho
     'POST',
     'QUERY',
   ]);
+});
+
+it('keeps loading when a superseded introspection returns', async () => {
+  let finishFirst!: (result: { data: null }) => void;
+  const first = new Promise<{ data: null }>(resolve => {
+    finishFirst = resolve;
+  });
+  const data = introspectionFromSchema(buildSchema('type Query { foo: Int }'));
+  let finishSecond!: () => void;
+  const second = new Promise<void>(resolve => {
+    finishSecond = resolve;
+  });
+  const fetcher = vi
+    .fn()
+    .mockReturnValueOnce(first)
+    .mockImplementationOnce(async () => {
+      await second;
+      return { data };
+    });
+  const { result } = renderHook(() => useGraphiQL(state => state), {
+    wrapper: ({ children }) => (
+      <GraphiQLProvider fetcher={fetcher}>{children}</GraphiQLProvider>
+    ),
+  });
+  let latest!: Promise<void>;
+  act(() => {
+    latest = result.current.actions.introspect();
+  });
+  await act(async () => finishFirst({ data: null }));
+  expect(result.current.isIntrospecting).toBe(true);
+  expect(result.current.fetchError).toBeNull();
+
+  await act(async () => {
+    finishSecond();
+    await latest;
+  });
+  expect(result.current.isIntrospecting).toBe(false);
+  expect(result.current.schema?.getQueryType()?.name).toBe('Query');
 });
