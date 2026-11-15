@@ -10,7 +10,8 @@
     "**/CHANGELOG.md",
     "working-group/agendas/**",
     "examples/monaco-graphql-nextjs/next-env.d.ts",
-    "examples/graphiql-nextjs/next-env.d.ts"
+    "examples/graphiql-nextjs/next-env.d.ts",
+    "packages/vscode-graphql-syntax/tests/__fixtures__/**"
   ],
   "overrides": [
     {

@@ -305,3 +305,4 @@ yjs
 yoshiakis
 zdravo
 zustand
+alnum
