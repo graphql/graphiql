@@ -7,6 +7,7 @@
     "spawndamnit",
     // BlueOak-1.0.0 — permissive, not in jsgl's default greenLicenses
     "glob",
+    "graceful-fs",
     "minimatch",
     "@isaacs/nonrecursive-glob-match", // cspell:ignore nonrecursive
     "minipass",
