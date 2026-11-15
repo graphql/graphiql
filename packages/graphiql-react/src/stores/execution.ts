@@ -568,6 +568,9 @@ export const createExecutionSlice: CreateExecutionSlice =
               );
 
               const value = await fetch;
+              if (newQueryId !== get().queryId) {
+                return;
+              }
               if (isObservable(value)) {
                 // If the fetcher returned an Observable, then subscribe to it, calling
                 // the callback on each next value and handling both errors and the
@@ -577,6 +580,9 @@ export const createExecutionSlice: CreateExecutionSlice =
                     handleResponse(result);
                   },
                   error(error: Error) {
+                    if (newQueryId !== get().queryId) {
+                      return;
+                    }
                     const errorText = formatError(error);
                     set({
                       isFetching: false,
@@ -586,7 +592,9 @@ export const createExecutionSlice: CreateExecutionSlice =
                     setResponse(errorText);
                   },
                   complete() {
-                    set({ isFetching: false, subscription: null });
+                    if (newQueryId === get().queryId) {
+                      set({ isFetching: false, subscription: null });
+                    }
                   },
                 });
                 set({ subscription: newSubscription });

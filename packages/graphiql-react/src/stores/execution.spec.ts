@@ -97,6 +97,7 @@ function makeRunnableStore(initial: { fetcher?: any; transport?: Transport }) {
 
   const queryEditor = {
     getValue: vi.fn(() => 'query Foo { bar }'),
+    setValue: vi.fn(),
   } as any;
   const responseEditor = {
     getValue: vi.fn(() => ''),
@@ -750,4 +751,55 @@ describe('run/stop — abort in-flight query/mutation', () => {
     expect(store.getState().lastResponse?.method).toBeUndefined();
     expect(store.getState().isFetching).toBe(false);
   });
+});
+
+it('restores the last response for the active tab', async () => {
+  const fetcher = vi
+    .fn()
+    .mockResolvedValueOnce({ data: { bar: 'first' } })
+    .mockResolvedValueOnce({ data: { bar: 'second' } });
+  const { store } = makeRunnableStore({ fetcher });
+  const { actions } = store.getState();
+
+  await actions.run();
+  const first = store.getState().lastResponse;
+  expect(first?.body).toEqual({ data: { bar: 'first' } });
+  actions.addTab();
+  expect(store.getState().lastResponse).toBeNull();
+  await actions.run();
+  const second = store.getState().lastResponse;
+  expect(second?.body).toEqual({ data: { bar: 'second' } });
+
+  actions.changeTab(0);
+  expect(store.getState().lastResponse).toBe(first);
+  actions.moveTab([...store.getState().tabs].reverse());
+  expect(store.getState().lastResponse).toBe(first);
+  actions.closeTab(1);
+  expect(store.getState().lastResponse).toBe(second);
+});
+
+it('discards a pending subscription when a new tab opens', async () => {
+  const subscribe = vi.fn();
+  const pending = Promise.withResolvers<{ subscribe: typeof subscribe }>();
+  const { store } = makeRunnableStore({ fetcher: () => pending.promise });
+  const { actions } = store.getState();
+  const running = actions.run();
+  actions.addTab();
+  pending.resolve({ subscribe });
+  await running;
+  expect(subscribe).not.toHaveBeenCalled();
+  expect(store.getState().lastResponse).toBeNull();
+});
+
+it('keeps a pending response with its tab when moving or closing other tabs', async () => {
+  const pending = Promise.withResolvers<{ data: { bar: number } }>();
+  const { store } = makeRunnableStore({ fetcher: () => pending.promise });
+  const { actions } = store.getState();
+  actions.addTab();
+  const running = actions.run();
+  actions.moveTab([...store.getState().tabs].reverse());
+  actions.closeTab(1);
+  pending.resolve({ data: { bar: 1 } });
+  await running;
+  expect(store.getState().lastResponse?.body).toEqual({ data: { bar: 1 } });
 });
