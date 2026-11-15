@@ -301,21 +301,6 @@ button.graphiql-tab-strip-action {
   }
 }
 
-/* The header of the settings dialog */
-.graphiql-dialog .graphiql-dialog-header {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  padding: var(--px-24);
-}
-
-/* The title of the settings dialog */
-.graphiql-dialog .graphiql-dialog-title {
-  font-size: var(--font-size-h3);
-  font-weight: var(--font-weight-medium);
-  margin: 0;
-}
-
 /* A section inside the settings dialog */
 .graphiql-dialog .graphiql-dialog-section {
   align-items: center;
