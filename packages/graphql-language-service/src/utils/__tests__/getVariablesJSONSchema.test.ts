@@ -8,10 +8,16 @@ import { describe, it, expect, beforeEach } from 'vitest';
  */
 
 import { readFileSync } from 'node:fs';
-import { buildSchema, GraphQLSchema, parse } from 'graphql';
+import {
+  buildSchema,
+  GraphQLSchema,
+  parse,
+  GraphQLNonNull,
+  GraphQLInputType,
+} from 'graphql';
 
 import { join } from 'node:path';
-import { collectVariables } from '../collectVariables';
+import { collectVariableInfo, collectVariables } from '../collectVariables';
 
 import { getVariablesJSONSchema } from '../getVariablesJSONSchema';
 
@@ -489,5 +495,52 @@ describe('getVariablesJSONSchema', () => {
 
     getVariablesJSONSchema(variableToType, { useMarkdownDescription: true });
     expect(true).toEqual(true);
+  });
+
+  it('does not mark non-null variable with default value as required (#4762)', () => {
+    const variableToType = collectVariableInfo(
+      schema,
+      parse(`query(
+          $requiredVar: String!,
+          $defaultVar: String! = "Hello"
+        ) {
+        characters{
+          name
+        }
+       }`),
+    );
+
+    const jsonSchema = getVariablesJSONSchema(variableToType);
+
+    expect(jsonSchema.required).toEqual(['requiredVar']);
+    expect(jsonSchema.required).not.toContain('defaultVar');
+    expect(jsonSchema.properties?.defaultVar).toBeDefined();
+    expect(jsonSchema.properties?.defaultVar?.default).toEqual('Hello');
+  });
+
+  it('supports legacy variableToType map with direct GraphQLInputType values', () => {
+    const stringType = schema.getType('String') as GraphQLInputType;
+    const legacyVariableToType = {
+      requiredVar: new GraphQLNonNull(stringType),
+      optionalVar: stringType,
+    };
+
+    const jsonSchema = getVariablesJSONSchema(legacyVariableToType);
+    expect(jsonSchema.properties?.requiredVar).toBeDefined();
+    expect(jsonSchema.properties?.optionalVar).toBeDefined();
+    expect(jsonSchema.required).toEqual(['requiredVar']);
+  });
+
+  it('gracefully handles nullish or malformed entries in variableToType', () => {
+    const stringType = schema.getType('String') as GraphQLInputType;
+    const sparseMap = {
+      validVar: stringType,
+      nullVar: null as any,
+      undefinedVar: undefined as any,
+    };
+
+    const jsonSchema = getVariablesJSONSchema(sparseMap);
+    expect(jsonSchema.properties?.validVar).toBeDefined();
+    expect(jsonSchema.properties?.nullVar).toBeUndefined();
   });
 });

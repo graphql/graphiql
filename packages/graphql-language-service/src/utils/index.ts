@@ -25,7 +25,13 @@ export { Position, Range, locToRange, offsetToPosition } from './Range';
 
 export { validateWithCustomRules } from './validateWithCustomRules';
 
-export { collectVariables, VariableToType } from './collectVariables';
+export {
+  collectVariableInfo,
+  collectVariables,
+  VariableInfo,
+  VariableToInfo,
+  VariableToType,
+} from './collectVariables';
 
 export {
   default as getOperationFacts,

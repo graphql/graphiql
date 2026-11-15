@@ -126,8 +126,11 @@ export {
   pointToOffset,
   Position,
   collectVariables,
+  collectVariableInfo,
   validateWithCustomRules,
   VariableToType,
+  VariableInfo,
+  VariableToInfo,
   QueryFacts,
   Range,
 } from './utils';
