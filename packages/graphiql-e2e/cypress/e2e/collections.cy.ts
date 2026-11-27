@@ -14,6 +14,17 @@ function saveNewOperation() {
   cy.get('[role="dialog"]').should('not.exist');
 }
 
+function expectBodyFontSize(selector: string) {
+  cy.get(selector).should($inputs => {
+    for (const input of $inputs) {
+      const style = getComputedStyle(input);
+      expect(style.fontSize).to.equal(
+        style.getPropertyValue('--font-size-body').trim(),
+      );
+    }
+  });
+}
+
 function expectPersistedQuery(query: string) {
   cy.window().then(win => {
     const state = JSON.parse(win.localStorage.getItem('graphiql:tabState')!);
@@ -35,6 +46,25 @@ function reopenSavedOperation(query: string) {
 }
 
 describe('Collections saves', () => {
+  it('uses the body font size for collection inputs', () => {
+    cy.visitGraphiQL({ defaultQuery: '' });
+    setQuery('query Saved { id }');
+
+    cy.get('[aria-label="Save query"], [aria-label="Save operation"]').click();
+    expectBodyFontSize('.graphiql-save-dialog-input');
+    cy.contains('label', 'Operation name')
+      .find('input')
+      .clear()
+      .type('Saved operation');
+    cy.get('[role="dialog"]')
+      .contains('button', /^Save$/)
+      .click();
+
+    cy.get('[aria-label="Show Collections"]').click();
+    cy.get('[aria-label="Rename Saved operation"]').click();
+    expectBodyFontSize('.graphiql-collection-item-edit-input');
+  });
+
   it('survives reloading before any edit or tab-persistence timer runs', () => {
     cy.clock(Date.now(), ['setTimeout', 'clearTimeout']);
     cy.visitGraphiQL({ defaultQuery: '' });

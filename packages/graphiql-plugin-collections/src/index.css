@@ -279,7 +279,7 @@
   gap: var(--px-4);
 }
 
-.graphiql-collection-item-edit-input {
+.graphiql-collection-item-edit-form > .graphiql-collection-item-edit-input {
   font-size: var(--font-size-body);
   background: oklch(var(--bg-subtle));
   border: 1px solid oklch(var(--border-default));
@@ -298,7 +298,7 @@
   color: oklch(var(--fg-subtle));
 }
 
-.graphiql-save-dialog-input,
+.graphiql-save-dialog-field > .graphiql-save-dialog-input,
 .graphiql-save-dialog-select {
   background: oklch(var(--bg-subtle));
   border: 1px solid oklch(var(--border-default));
